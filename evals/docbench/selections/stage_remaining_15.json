@@ -1,0 +1,175 @@
+{
+  "schema_version": "docbench-derived-selection-v1",
+  "selection_algorithm": "ordered-base-case-exclusion-v1",
+  "base_manifest": {
+    "path": "stage_20_v1.json",
+    "sha256": "c0836b7f0136443ce4ff98576aa0737925746e643fba671476325285dac6938b"
+  },
+  "excluded_case_ids": [
+    "docbench:15:1",
+    "docbench:79:4",
+    "docbench:96:0",
+    "docbench:170:3",
+    "docbench:190:0"
+  ],
+  "case_count": 15,
+  "domain_counts": {
+    "academia": 3,
+    "finance": 3,
+    "government": 3,
+    "laws": 3,
+    "news": 3
+  },
+  "cases": [
+    {
+      "case_id": "docbench:5:1",
+      "doc_id": 5,
+      "domain": "academia",
+      "pdf_filename": "C18-1117.pdf",
+      "pdf_sha256": "38e0b823933ec054986366247775738e3d4be090c4b3af87e04e0dcdf8bf0e9a",
+      "qa_sha256": "a3889a337d83900c1a5a7d8d5f1b5760231bb477aa219d866b740deb8727445d",
+      "question_index": 1,
+      "question_type": "unanswerable"
+    },
+    {
+      "case_id": "docbench:9:1",
+      "doc_id": 9,
+      "domain": "academia",
+      "pdf_filename": "D18-1334.pdf",
+      "pdf_sha256": "c96c36ab2661d9074de8bc9c57f9c1c912e01d311b9c559834d7262fd1cc4b17",
+      "qa_sha256": "dfaea06f9a3dad1ad8e53b851ebf7f48bd8722924b5327c67e3ace6b8d7a490d",
+      "question_index": 1,
+      "question_type": "text-only"
+    },
+    {
+      "case_id": "docbench:19:6",
+      "doc_id": 19,
+      "domain": "academia",
+      "pdf_filename": "D18-1034.pdf",
+      "pdf_sha256": "b0f136dc172a1b2668b84448f0219896856ae66b92c1db0ea0bc71a4741885e8",
+      "qa_sha256": "0a4239d5186f4189a334029903a4036b5d149eb1c8819a5eaf557f431cdc210a",
+      "question_index": 6,
+      "question_type": "unanswerable"
+    },
+    {
+      "case_id": "docbench:54:6",
+      "doc_id": 54,
+      "domain": "finance",
+      "pdf_filename": "NYSE_NVS_2021.pdf",
+      "pdf_sha256": "eec24608e75b1f8c0568aacf2040ea2e011016d8f2cee4c51474745057559ef1",
+      "qa_sha256": "c319add1f6733a6a36476390292f8f17ccbd5f285ec6dc493c9bc9884fc75240",
+      "question_index": 6,
+      "question_type": "meta-data"
+    },
+    {
+      "case_id": "docbench:72:0",
+      "doc_id": 72,
+      "domain": "finance",
+      "pdf_filename": "siemens-healthineers_2021.pdf",
+      "pdf_sha256": "606c6352a535dd641e707c175b17a6e21362cdb5af5613ab3704a71447025718",
+      "qa_sha256": "ed6c528dc54f3ee5e86dd0063e61790334f1b5c877959d5b47dc07dd9d84b638",
+      "question_index": 0,
+      "question_type": "text-only"
+    },
+    {
+      "case_id": "docbench:87:14",
+      "doc_id": 87,
+      "domain": "finance",
+      "pdf_filename": "ASX_LOV_2020.pdf",
+      "pdf_sha256": "81648327ff62ffeb30fbde09ed6b81989e55c22a101e39c681a0b8ca799ddb3c",
+      "qa_sha256": "b614d6d33c0e36d5e3c644b9ec12d33f87dddb1ba234330e018f8fb8f2ff1259",
+      "question_index": 14,
+      "question_type": "meta-data"
+    },
+    {
+      "case_id": "docbench:97:0",
+      "doc_id": 97,
+      "domain": "government",
+      "pdf_filename": "USCOURTS-laed-2_24-cv-00393-0.pdf",
+      "pdf_sha256": "e72425aab8cbb79f1e93171eda36b4b9ae526fde27909a5d6e75a2df2800d06f",
+      "qa_sha256": "330577bf465b6b52e2313d0e2a064ce26bfa52c50a0c0b43022890f9cfd1694d",
+      "question_index": 0,
+      "question_type": "text-only"
+    },
+    {
+      "case_id": "docbench:110:3",
+      "doc_id": 110,
+      "domain": "government",
+      "pdf_filename": "Country_Reports_on_Terrorism_2020.pdf",
+      "pdf_sha256": "c8f6f8f93342e5c1b671b588f035d2de4471d657b91c5bd7a6d91d0f55e53096",
+      "qa_sha256": "0a03a78e794254e43cd008bb53c08974c8e369de0ea1d4b95c460c6e5996b354",
+      "question_index": 3,
+      "question_type": "unanswerable"
+    },
+    {
+      "case_id": "docbench:123:0",
+      "doc_id": 123,
+      "domain": "government",
+      "pdf_filename": "USCOURTS-laed-2_23-cv-02060-0.pdf",
+      "pdf_sha256": "4ae40a9d43a0621b4e7e4675b70854b2594ec2311330384bc01d134ba4ee9ebd",
+      "qa_sha256": "beaab84d3684bc22a7c3393a7f2abd430f7eae66e10799d18cc493a01f2a7e6e",
+      "question_index": 0,
+      "question_type": "text-only"
+    },
+    {
+      "case_id": "docbench:143:0",
+      "doc_id": 143,
+      "domain": "laws",
+      "pdf_filename": "2023555923.pdf",
+      "pdf_sha256": "e36d529ba3170e7daae4bb5960eecd33e65a1186ea3e4855aef4fd934d516a1a",
+      "qa_sha256": "1a894a60a98852ba4f1b91ec64a9d75b42bb2c4a89f518a382636cc28f72ff3d",
+      "question_index": 0,
+      "question_type": "text-only"
+    },
+    {
+      "case_id": "docbench:156:4",
+      "doc_id": 156,
+      "domain": "laws",
+      "pdf_filename": "2019713402.pdf",
+      "pdf_sha256": "a6c1689777006a04d37bc88fec6299e350830038818a1b53b72eca916bfcef87",
+      "qa_sha256": "6caa81e03afb867eecde100b5917c91b3d6281f07a85e2e4ec0b3a1f00729c39",
+      "question_index": 4,
+      "question_type": "unanswerable"
+    },
+    {
+      "case_id": "docbench:157:2",
+      "doc_id": 157,
+      "domain": "laws",
+      "pdf_filename": "2023555935.pdf",
+      "pdf_sha256": "c2ac032575bb66dabf7a42a1c585897325cffb2d510c9f3fa0874af737c535f4",
+      "qa_sha256": "be616fcca9b139817e9f1241f80916bb3aef4e9a739f82e912b9de5d93093204",
+      "question_index": 2,
+      "question_type": "text-only"
+    },
+    {
+      "case_id": "docbench:191:2",
+      "doc_id": 191,
+      "domain": "news",
+      "pdf_filename": "20221013.pdf",
+      "pdf_sha256": "2df1ae0adf950b9dafac4d58cbc569b0e54c82763a9de514504cc0311cf79263",
+      "qa_sha256": "27a397eaf631a74144cf3ba250fc258d182aa28db3614c17ce019bb7627e2380",
+      "question_index": 2,
+      "question_type": "meta-data"
+    },
+    {
+      "case_id": "docbench:219:3",
+      "doc_id": 219,
+      "domain": "news",
+      "pdf_filename": "20220320.pdf",
+      "pdf_sha256": "10bc31ac1c1f66623d571dc73252a5b5a3d35de786ff01f86b66e4186048e74a",
+      "qa_sha256": "28c6264279dc730f355965f4d2b3fcc14bb7cb5e04c41aa28cbc97da57023474",
+      "question_index": 3,
+      "question_type": "unanswerable"
+    },
+    {
+      "case_id": "docbench:220:2",
+      "doc_id": 220,
+      "domain": "news",
+      "pdf_filename": "20230115.pdf",
+      "pdf_sha256": "476770e33d709cfc62ff19932aa7a762d4836212111eda18243a270d74768f68",
+      "qa_sha256": "bb85976a4286f5643ebd3c9c59a2a465e1254a1d5f28bbff3c2a101f62bc380a",
+      "question_index": 2,
+      "question_type": "unanswerable"
+    }
+  ]
+}

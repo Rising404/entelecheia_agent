@@ -1,0 +1,7 @@
+packages:
+  - .
+
+includeWorkspaceRoot: true
+
+allowBuilds:
+  electron: true

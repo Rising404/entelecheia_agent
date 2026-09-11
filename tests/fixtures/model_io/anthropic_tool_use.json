@@ -1,0 +1,15 @@
+{
+  "id": "msg_fixture_tool",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+    {
+      "type": "tool_use",
+      "id": "toolu_fixture_1",
+      "name": "file_list",
+      "input": {"path": "."}
+    }
+  ],
+  "stop_reason": "tool_use",
+  "usage": {"input_tokens": 10, "output_tokens": 8}
+}

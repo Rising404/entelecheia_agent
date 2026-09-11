@@ -1,0 +1,31 @@
+{
+  "schema_version": "docbench-derived-selection-v1",
+  "selection_algorithm": "ordered-base-case-exclusion-v1",
+  "base_manifest": {
+    "path": "stage_20_v1.json",
+    "sha256": "c0836b7f0136443ce4ff98576aa0737925746e643fba671476325285dac6938b"
+  },
+  "excluded_case_ids": [
+    "docbench:5:1", "docbench:9:1", "docbench:15:1", "docbench:19:6",
+    "docbench:54:6", "docbench:72:0", "docbench:79:4", "docbench:87:14",
+    "docbench:96:0", "docbench:97:0", "docbench:123:0", "docbench:143:0",
+    "docbench:156:4", "docbench:157:2", "docbench:170:3", "docbench:190:0",
+    "docbench:191:2", "docbench:219:3", "docbench:220:2"
+  ],
+  "case_count": 1,
+  "domain_counts": {
+    "academia": 0, "finance": 0, "government": 1, "laws": 0, "news": 0
+  },
+  "cases": [
+    {
+      "case_id": "docbench:110:3",
+      "doc_id": 110,
+      "domain": "government",
+      "pdf_filename": "Country_Reports_on_Terrorism_2020.pdf",
+      "pdf_sha256": "c8f6f8f93342e5c1b671b588f035d2de4471d657b91c5bd7a6d91d0f55e53096",
+      "qa_sha256": "0a03a78e794254e43cd008bb53c08974c8e369de0ea1d4b95c460c6e5996b354",
+      "question_index": 3,
+      "question_type": "unanswerable"
+    }
+  ]
+}

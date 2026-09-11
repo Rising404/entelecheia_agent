@@ -1,0 +1,85 @@
+{
+  "schema_version": "docbench-derived-selection-v1",
+  "selection_algorithm": "ordered-base-case-exclusion-v1",
+  "base_manifest": {
+    "path": "stage_20_v1.json",
+    "sha256": "c0836b7f0136443ce4ff98576aa0737925746e643fba671476325285dac6938b"
+  },
+  "excluded_case_ids": [
+    "docbench:5:1",
+    "docbench:9:1",
+    "docbench:15:1",
+    "docbench:19:6",
+    "docbench:72:0",
+    "docbench:87:14",
+    "docbench:97:0",
+    "docbench:110:3",
+    "docbench:123:0",
+    "docbench:143:0",
+    "docbench:156:4",
+    "docbench:157:2",
+    "docbench:191:2",
+    "docbench:219:3",
+    "docbench:220:2"
+  ],
+  "case_count": 5,
+  "domain_counts": {
+    "academia": 0,
+    "finance": 2,
+    "government": 1,
+    "laws": 1,
+    "news": 1
+  },
+  "cases": [
+    {
+      "case_id": "docbench:54:6",
+      "doc_id": 54,
+      "domain": "finance",
+      "pdf_filename": "NYSE_NVS_2021.pdf",
+      "pdf_sha256": "eec24608e75b1f8c0568aacf2040ea2e011016d8f2cee4c51474745057559ef1",
+      "qa_sha256": "c319add1f6733a6a36476390292f8f17ccbd5f285ec6dc493c9bc9884fc75240",
+      "question_index": 6,
+      "question_type": "meta-data"
+    },
+    {
+      "case_id": "docbench:79:4",
+      "doc_id": 79,
+      "domain": "finance",
+      "pdf_filename": "NASDAQ_COST_2022.pdf",
+      "pdf_sha256": "833a9a96dce97de3efc403c32c66242ed44e7bc7cc81b6f5c6f74cbea6405625",
+      "qa_sha256": "8ebbfb7c71a8714ecf8d8e74eeae80cbe27f9dda48f5c9c7c4bafb080ace4338",
+      "question_index": 4,
+      "question_type": "multimodal-f"
+    },
+    {
+      "case_id": "docbench:96:0",
+      "doc_id": 96,
+      "domain": "government",
+      "pdf_filename": "FBS_EB_29July2022_Public.pdf",
+      "pdf_sha256": "a67c692427dc7e1a89319216ad96eb594bc9e54aac6691973355b1e0f486dbe6",
+      "qa_sha256": "76197044df316141d6f420e8be127110f8573fdd169ebdd8580cd517708b47e4",
+      "question_index": 0,
+      "question_type": "text-only"
+    },
+    {
+      "case_id": "docbench:170:3",
+      "doc_id": 170,
+      "domain": "laws",
+      "pdf_filename": "2021687414.pdf",
+      "pdf_sha256": "a323b4a9bbd5235973a208e87a8fb9d15d7e3ad643d92b01e7fac6b254460086",
+      "qa_sha256": "264f6fba4ca96ecfef7d356921e22565e219b11c22e3a8c2761c2d7f63f8054c",
+      "question_index": 3,
+      "question_type": "text-only"
+    },
+    {
+      "case_id": "docbench:190:0",
+      "doc_id": 190,
+      "domain": "news",
+      "pdf_filename": "20230306.pdf",
+      "pdf_sha256": "4a94a776b9666c4a70a82982fc8da3ec7c2bce554856dec669c11935a7595029",
+      "qa_sha256": "90cf739513b8cc031bda8cd36ab4ec2c5c11e12be023ca4bcc419bed7ed22f41",
+      "question_index": 0,
+      "question_type": "text-only"
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "schema_version": "docbench-derived-selection-v1",
+  "selection_algorithm": "ordered-base-case-exclusion-v1",
+  "base_manifest": {
+    "path": "stage_20_v1.json",
+    "sha256": "c0836b7f0136443ce4ff98576aa0737925746e643fba671476325285dac6938b"
+  },
+  "excluded_case_ids": [
+    "docbench:9:1",
+    "docbench:15:1",
+    "docbench:19:6",
+    "docbench:54:6",
+    "docbench:72:0",
+    "docbench:79:4",
+    "docbench:87:14",
+    "docbench:96:0",
+    "docbench:97:0",
+    "docbench:110:3",
+    "docbench:143:0",
+    "docbench:157:2",
+    "docbench:170:3",
+    "docbench:190:0",
+    "docbench:191:2"
+  ],
+  "case_count": 5,
+  "domain_counts": {
+    "academia": 1,
+    "finance": 0,
+    "government": 1,
+    "laws": 1,
+    "news": 2
+  },
+  "cases": [
+    {
+      "case_id": "docbench:5:1",
+      "doc_id": 5,
+      "domain": "academia",
+      "pdf_filename": "C18-1117.pdf",
+      "pdf_sha256": "38e0b823933ec054986366247775738e3d4be090c4b3af87e04e0dcdf8bf0e9a",
+      "qa_sha256": "a3889a337d83900c1a5a7d8d5f1b5760231bb477aa219d866b740deb8727445d",
+      "question_index": 1,
+      "question_type": "unanswerable"
+    },
+    {
+      "case_id": "docbench:123:0",
+      "doc_id": 123,
+      "domain": "government",
+      "pdf_filename": "USCOURTS-laed-2_23-cv-02060-0.pdf",
+      "pdf_sha256": "4ae40a9d43a0621b4e7e4675b70854b2594ec2311330384bc01d134ba4ee9ebd",
+      "qa_sha256": "beaab84d3684bc22a7c3393a7f2abd430f7eae66e10799d18cc493a01f2a7e6e",
+      "question_index": 0,
+      "question_type": "text-only"
+    },
+    {
+      "case_id": "docbench:156:4",
+      "doc_id": 156,
+      "domain": "laws",
+      "pdf_filename": "2019713402.pdf",
+      "pdf_sha256": "a6c1689777006a04d37bc88fec6299e350830038818a1b53b72eca916bfcef87",
+      "qa_sha256": "6caa81e03afb867eecde100b5917c91b3d6281f07a85e2e4ec0b3a1f00729c39",
+      "question_index": 4,
+      "question_type": "unanswerable"
+    },
+    {
+      "case_id": "docbench:219:3",
+      "doc_id": 219,
+      "domain": "news",
+      "pdf_filename": "20220320.pdf",
+      "pdf_sha256": "10bc31ac1c1f66623d571dc73252a5b5a3d35de786ff01f86b66e4186048e74a",
+      "qa_sha256": "28c6264279dc730f355965f4d2b3fcc14bb7cb5e04c41aa28cbc97da57023474",
+      "question_index": 3,
+      "question_type": "unanswerable"
+    },
+    {
+      "case_id": "docbench:220:2",
+      "doc_id": 220,
+      "domain": "news",
+      "pdf_filename": "20230115.pdf",
+      "pdf_sha256": "476770e33d709cfc62ff19932aa7a762d4836212111eda18243a270d74768f68",
+      "qa_sha256": "bb85976a4286f5643ebd3c9c59a2a465e1254a1d5f28bbff3c2a101f62bc380a",
+      "question_index": 2,
+      "question_type": "unanswerable"
+    }
+  ]
+}

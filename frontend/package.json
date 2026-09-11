@@ -1,0 +1,39 @@
+{
+  "name": "entelecheia-frontend",
+  "productName": "Entelecheia",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Entelecheia desktop UI shell — From intent to actuality.",
+  "packageManager": "pnpm@11.9.0",
+  "engines": {
+    "node": ">=20",
+    "pnpm": "11.9.0"
+  },
+  "main": "electron/main.js",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --port 5174",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1 --port 5174",
+    "start": "vite build && electron .",
+    "start:electron": "electron .",
+    "launcher:mac": "node electron/macos-launcher.js",
+    "test": "vitest run",
+    "test:electron": "node --test electron/api-sidecar.test.cjs electron/runtime-recovery.test.cjs electron/window-wakeup.test.cjs electron/macos-launcher.test.cjs electron/windows-launcher.test.cjs electron/user-data-paths.test.cjs",
+    "check": "vitest run && node --test electron/api-sidecar.test.cjs electron/runtime-recovery.test.cjs electron/window-wakeup.test.cjs electron/macos-launcher.test.cjs electron/windows-launcher.test.cjs electron/user-data-paths.test.cjs && vite build && node --check electron/main.js && node --check electron/preload.js && node --check electron/api-sidecar.js && node --check electron/runtime-recovery.js && node --check electron/window-wakeup.js && node --check electron/macos-launcher.js && node --check electron/user-data-paths.js"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.2",
+    "@vue/test-utils": "^2.4.11",
+    "@vitejs/plugin-vue": "^6.0.7",
+    "electron": "^41.2.1",
+    "jsdom": "^29.1.1",
+    "tailwindcss": "^4.3.2",
+    "vite": "^8.1.3",
+    "vitest": "^4.1.10"
+  },
+  "dependencies": {
+    "@lucide/vue": "^1.23.0",
+    "pinia": "^3.0.4",
+    "vue": "^3.5.39"
+  }
+}

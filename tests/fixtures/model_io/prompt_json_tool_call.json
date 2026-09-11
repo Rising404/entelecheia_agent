@@ -1,0 +1,7 @@
+{
+  "name": "prompt_json_tool_call",
+  "transport": "prompt_json",
+  "raw_text": "{\"tool_calls\":[{\"tool\":\"file_list\",\"args\":{\"path\":\".\"}}]}",
+  "expected_kind": "tool_call_batch",
+  "expected_calls": 1
+}

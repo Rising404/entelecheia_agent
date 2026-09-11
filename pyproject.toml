@@ -1,0 +1,107 @@
+[build-system]
+requires = ["setuptools==81.0.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "entelecheia-agent"
+version = "0.1.0"
+description = "Host-orchestrated Entelecheia personal agent runtime."
+# PEP 639：SPDX 表达式 + 随包分发的许可证文件（setuptools >= 77 支持）
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+requires-python = ">=3.12"
+dependencies = [
+  "httpx>=0.28",
+  "pypdf>=4.0",
+  "pdfplumber>=0.11",  # PDF 版面/表格/bbox；MIT。PyMuPDF 因 AGPL-3.0 排除
+  "pypdfium2>=4.30",   # 视觉载荷的 PDF 页面/区域按需栅格化；BSD-3-Clause
+  "Pillow>=10.0",      # 图片摄取、视觉载荷与上下文图片预算校验
+  "reportlab>=4.0",    # 非 artifact 测试动态生成 PDF fixture
+  "python-docx>=1.1",
+  "python-pptx>=0.6.23",
+  "ddgs>=9.0",
+  "beautifulsoup4>=4.12",
+  "pydantic>=2.7",
+  "jsonschema>=4.23",  # Tool Platform：Draft 2020-12 输入/输出契约验证
+  "pyyaml>=6.0",
+  "pytest>=9.1",
+  "sqlite-vec>=0.1",
+  "send2trash>=1.8",  # 工作区文件删除 → 系统回收站（可恢复）
+  # 目录认知的遍历/忽略规则/匹配后端（24/002 E2）。Unlicense OR MIT，纯二进制无 Python 依赖。
+  # 钉版本：--json 事件格式跨大版本可能变。该 Python 包没有 Windows wheel；Windows 从 PATH 解析 rg.exe。
+  "ripgrep==15.1.0; sys_platform != 'win32'",
+]
+
+[project.optional-dependencies]
+# production 默认 BGE generation 需要（会安装 torch/FlagEmbedding 等较重依赖）。模型
+# 权重仍须显式预取；运行时只接受固定 revision 的本地缓存，已有 lexical 数据须重建新代索引。
+embeddings = [
+  "huggingface-hub>=0.25,<1",  # 固定 revision 的显式预取与 local-only cache 解析
+  # FlagEmbedding 1.4 的 encoder-only reranker 仍依赖 tokenizer.prepare_for_model；
+  # Transformers 5 已移除该 API，必须保持在兼容的 4.x 系列。
+  "transformers>=4.44,<5",
+  "FlagEmbedding>=1.3,<1.5",     # 统一检索 BGE-M3 编码与 bge-reranker-v2-m3 二阶段重排
+]
+
+# 版面检测 + OCR 的文档解析引擎。可选：缺失时 readers 自动退回 native 引擎，
+# 结构识别较弱但摄取本身不受影响。安装此 extra 即默认启用；可用
+# PERSONAGRAPH_DOCUMENT_ENGINE=native 强制选择轻量 native reader。
+documents-layout = [
+  "docling>=2.119",                           # MIT；PyMuPDF 因 AGPL-3.0 排除
+  "ocrmac>=1.0; sys_platform == 'darwin'",    # macOS 原生 OCR；跨平台默认走 RapidOCR
+]
+
+# Dataset preparation is explicit setup, never an agent inference dependency.
+eval = ["gdown>=6.1,<7"]
+
+# 开发与 CI 工具链。生产安装不需要；`pip install -e ".[dev]"` 获取。
+# ruff 钉死精确版本：新版本会引入新规则，浮动版本会让 CI 在没有代码改动时突然变红。
+dev = [
+  "ruff==0.16.6",
+]
+
+[project.scripts]
+entelecheia-api = "personagraph.api.server:main"
+entelecheia-retrieval = "personagraph.retrieval.operations.generation_admin:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["personagraph*"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py312"
+src = ["src"]
+# 生成物、第三方运行时与前端不属于本仓库的 Python 检查范围。
+extend-exclude = [".runtime", ".venv", "var", "tmp", "workspace", "frontend", "node_modules"]
+
+[tool.ruff.lint]
+# 规则集显式声明，不依赖 ruff 默认值：实测未配置的 ruff 0.16.6 启用 415 条规则、报 2,566 个
+# 问题，而默认值会随版本漂移，会让 CI 在没有代码改动时变红。这里只启用等价于历史默认集的
+# 四组：E4 导入、E7/E9 语句与语法、F pyflakes（未使用导入/变量、未定义名）。
+#
+# 未启用 `I`（import 排序）与 `ruff format`：二者分别会改动 789 / 839 个文件，属于全仓机械
+# diff，会一次性摧毁 git blame。启用需与一次大重构合批，并把该 commit 登记到
+# .git-blame-ignore-revs；行宽本身也需先单独决策。
+select = ["E4", "E7", "E9", "F"]
+
+[tool.ruff.lint.per-file-ignores]
+# 这些模块的 module-level import 同时充当**测试注入接缝**：测试用
+# `monkeypatch.setattr(<module>, "<name>", ...)` 替换它们，因此静态分析必然把它们看成
+# "imported but unused"，而删除会直接破坏注入点（实测删除 gateway.py 的 `import httpx`
+# 会让 19 个网关测试报 `module has no attribute 'httpx'`）。
+#
+# 静态检查区分不了「接缝」「历史遗留的死 re-export」和「真正的未使用导入」，这需要按模块
+# 由所有者逐个判定，不能由工具默认。因此对这 7 个模块不启用 F401；其余全仓文件正常受
+# F401 约束。收口方向：注入接缝改为显式命名的 seam（或测试改用依赖注入），历史遗留的
+# 死 re-export 直接删除，然后逐条移除下面的条目。不得整体 --fix。
+"src/personagraph/model_io/gateway.py" = ["F401"]
+"src/personagraph/model_io/provider_openai.py" = ["F401"]
+"src/personagraph/session/store.py" = ["F401"]
+"src/personagraph/runtime/entry/application.py" = ["F401"]
+"src/personagraph/l2/auxiliary_execution/planning/controller.py" = ["F401"]
+"src/personagraph/l2/auxiliary_execution/planning/goal_successor_controller.py" = ["F401"]
+"src/personagraph/l2/auxiliary_execution/planning/positive_controller.py" = ["F401"]

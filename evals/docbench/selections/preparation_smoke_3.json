@@ -1,0 +1,51 @@
+{
+  "schema_version": "docbench-derived-selection-v1",
+  "selection_algorithm": "ordered-base-case-exclusion-v1",
+  "base_manifest": {
+    "path": "stage_20_v1.json",
+    "sha256": "c0836b7f0136443ce4ff98576aa0737925746e643fba671476325285dac6938b"
+  },
+  "excluded_case_ids": [
+    "docbench:5:1", "docbench:15:1", "docbench:19:6", "docbench:54:6",
+    "docbench:72:0", "docbench:79:4", "docbench:87:14", "docbench:96:0",
+    "docbench:97:0", "docbench:123:0", "docbench:143:0", "docbench:156:4",
+    "docbench:157:2", "docbench:170:3", "docbench:191:2", "docbench:219:3",
+    "docbench:220:2"
+  ],
+  "case_count": 3,
+  "domain_counts": {
+    "academia": 1, "finance": 0, "government": 1, "laws": 0, "news": 1
+  },
+  "cases": [
+    {
+      "case_id": "docbench:9:1",
+      "doc_id": 9,
+      "domain": "academia",
+      "pdf_filename": "D18-1334.pdf",
+      "pdf_sha256": "c96c36ab2661d9074de8bc9c57f9c1c912e01d311b9c559834d7262fd1cc4b17",
+      "qa_sha256": "dfaea06f9a3dad1ad8e53b851ebf7f48bd8722924b5327c67e3ace6b8d7a490d",
+      "question_index": 1,
+      "question_type": "text-only"
+    },
+    {
+      "case_id": "docbench:110:3",
+      "doc_id": 110,
+      "domain": "government",
+      "pdf_filename": "Country_Reports_on_Terrorism_2020.pdf",
+      "pdf_sha256": "c8f6f8f93342e5c1b671b588f035d2de4471d657b91c5bd7a6d91d0f55e53096",
+      "qa_sha256": "0a03a78e794254e43cd008bb53c08974c8e369de0ea1d4b95c460c6e5996b354",
+      "question_index": 3,
+      "question_type": "unanswerable"
+    },
+    {
+      "case_id": "docbench:190:0",
+      "doc_id": 190,
+      "domain": "news",
+      "pdf_filename": "20230306.pdf",
+      "pdf_sha256": "4a94a776b9666c4a70a82982fc8da3ec7c2bce554856dec669c11935a7595029",
+      "qa_sha256": "90cf739513b8cc031bda8cd36ab4ec2c5c11e12be023ca4bcc419bed7ed22f41",
+      "question_index": 0,
+      "question_type": "text-only"
+    }
+  ]
+}

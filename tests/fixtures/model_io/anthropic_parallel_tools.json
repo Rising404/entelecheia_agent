@@ -1,0 +1,11 @@
+{
+  "id": "msg_fixture_parallel",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+    {"type": "tool_use", "id": "toolu_a", "name": "file_list", "input": {"path": "."}},
+    {"type": "tool_use", "id": "toolu_b", "name": "get_today", "input": {}}
+  ],
+  "stop_reason": "tool_use",
+  "usage": {"input_tokens": 12, "output_tokens": 16}
+}

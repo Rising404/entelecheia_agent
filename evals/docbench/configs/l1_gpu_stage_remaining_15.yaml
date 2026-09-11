@@ -1,0 +1,44 @@
+schema_version: docbench-l1-eval-v1
+lane: L1
+
+retrieval:
+  profile: bge_m3
+  failure_policy: strict
+  required_methods: [dense, learned_sparse, bm25]
+  encoder:
+    model_id: BAAI/bge-m3
+    revision: 5617a9f61b028005a4858fdac845db406aefb181
+  reranker:
+    mode: bge_v2_m3
+    model_id: BAAI/bge-reranker-v2-m3
+    revision: 953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e
+  local_files_only: true
+  device: auto
+  use_fp16: false
+
+providers:
+  main:
+    source: installation
+  vision:
+    source: installation
+
+dataset:
+  data_root: bench://source/data
+  selection: evals/docbench/selections/stage_remaining_15.json
+
+run:
+  runtime_features: evals/docbench/configs/runtime_closed_world.yaml
+  output_root: bench://runs
+  per_case_timeout_s: 1800
+  max_workers: 1
+
+prompt:
+  preamble: |
+    Answer the question using the attached document.
+
+scoring:
+  mode: docbench_prompt_compatible
+  prompt: bench://source/evaluation_prompt.txt
+  prompt_sha256: 784a6d6cf4f8151765b169c633f46e62d12dcd77f8941172e72edbf8b30f9bde
+  judge:
+    source: main

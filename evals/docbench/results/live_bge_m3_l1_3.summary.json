@@ -1,0 +1,131 @@
+{
+  "schema_version": "entelecheia-docbench-live-l1-summary-v1",
+  "recorded_at": "2026-08-31",
+  "scope": {
+    "benchmark": "DocBench",
+    "run_id": "bge-m3-cutover-3-20260830-v1",
+    "case_count": 3,
+    "result_kind": "live_l1_engineering_smoke",
+    "answer_generation_executed": true,
+    "judge_executed": false,
+    "answer_score": null,
+    "official_comparable": false,
+    "source_state": "uncommitted_worktree",
+    "initial_transport_failures_preserved": true,
+    "retry_recovered_case_count": 3,
+    "remaining_failed_case_count": 0
+  },
+  "models": {
+    "main": {
+      "provider": "openai-compatible",
+      "model": "deepseek-chat",
+      "context_window_tokens": 1000000
+    },
+    "encoder": {
+      "id": "BAAI/bge-m3",
+      "revision": "5617a9f61b028005a4858fdac845db406aefb181"
+    },
+    "reranker": {
+      "id": "BAAI/bge-reranker-v2-m3",
+      "revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e"
+    }
+  },
+  "runtime": {
+    "elapsed_s": 211.613,
+    "model_call_count": 14,
+    "tool_call_count": 5,
+    "input_tokens_total": 263781,
+    "output_tokens_total": 1541,
+    "model_call_purposes": {
+      "runtime_entry_classify": 3,
+      "runtime_l1_attempt": 8,
+      "runtime_l1_semantic_verifier": 3
+    },
+    "tool_call_purposes": {
+      "prepare_file_candidates": 3,
+      "retrieve_file_candidates": 2
+    }
+  },
+  "quota": {
+    "tokens_per_minute": 300000,
+    "max_in_flight": 2,
+    "ticket_count": 14,
+    "all_tickets_settled_succeeded": true,
+    "max_ticket_reservation": 109918,
+    "actual_tokens_total": 265322
+  },
+  "retrieval": {
+    "profile": "bge_m3",
+    "failure_policy": "strict",
+    "device": "cpu",
+    "use_fp16": false,
+    "local_files_only": true,
+    "sqlite_vec_ready": true,
+    "encoder_asset_ready": true,
+    "reranker_asset_ready": true,
+    "degradation_reasons": []
+  },
+  "cases": [
+    {
+      "case_id": "docbench:97:0",
+      "question_type": "text-only",
+      "status": "completed",
+      "execution_ok": true,
+      "lane_ok": true,
+      "interaction_ok": true,
+      "model_call_count": 5,
+      "tool_call_count": 2,
+      "input_tokens": 103643,
+      "output_tokens": 649,
+      "unit_count": 6,
+      "dense_ready": 6,
+      "learned_sparse_ready": 6,
+      "bm25_ready": 6,
+      "retrieve_file_candidates_called": true,
+      "manual_reference_alignment": "consistent"
+    },
+    {
+      "case_id": "docbench:104:1",
+      "question_type": "text-only",
+      "status": "completed",
+      "execution_ok": true,
+      "lane_ok": true,
+      "interaction_ok": true,
+      "model_call_count": 5,
+      "tool_call_count": 2,
+      "input_tokens": 102527,
+      "output_tokens": 560,
+      "unit_count": 16,
+      "dense_ready": 16,
+      "learned_sparse_ready": 16,
+      "bm25_ready": 16,
+      "retrieve_file_candidates_called": true,
+      "manual_reference_alignment": "consistent"
+    },
+    {
+      "case_id": "docbench:145:0",
+      "question_type": "meta-data",
+      "status": "completed",
+      "execution_ok": true,
+      "lane_ok": true,
+      "interaction_ok": true,
+      "model_call_count": 4,
+      "tool_call_count": 1,
+      "input_tokens": 57611,
+      "output_tokens": 332,
+      "unit_count": 16,
+      "dense_ready": 16,
+      "learned_sparse_ready": 16,
+      "bm25_ready": 16,
+      "retrieve_file_candidates_called": false,
+      "answered_from_verified_file_metadata": true,
+      "manual_reference_alignment": "consistent"
+    }
+  ],
+  "network": {
+    "main_model_called": true,
+    "web_tool_called": false,
+    "vision_model_called": false,
+    "hugging_face_network_enabled": false
+  }
+}

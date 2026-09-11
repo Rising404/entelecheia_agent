@@ -1,0 +1,58 @@
+name: Repository privacy
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  privacy-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the candidate tree
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Reject private runtime and evaluation data in every introduced commit
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          GIT_SHA: ${{ github.sha }}
+          BEFORE_SHA: ${{ github.event.before }}
+          PULL_REQUEST_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PULL_REQUEST_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          zero_sha=0000000000000000000000000000000000000000
+
+          case "$EVENT_NAME" in
+            push)
+              if [[ "$BEFORE_SHA" == "$zero_sha" ]] || \
+                ! git rev-parse --verify "$BEFORE_SHA^{commit}" >/dev/null 2>&1; then
+                revisions=$(git rev-list "$GIT_SHA")
+              else
+                revisions=$(git rev-list "$BEFORE_SHA..$GIT_SHA")
+              fi
+              ;;
+            pull_request)
+              revisions=$(git rev-list "$PULL_REQUEST_BASE_SHA..$PULL_REQUEST_HEAD_SHA")
+              ;;
+            workflow_dispatch)
+              revisions=HEAD
+              ;;
+            *)
+              echo "Unsupported event: $EVENT_NAME" >&2
+              exit 2
+              ;;
+          esac
+
+          privacy_exit_code=0
+          for revision in $revisions; do
+            python3 scripts/check_repository_privacy.py --tree "$revision" || \
+              privacy_exit_code=$?
+          done
+          exit "$privacy_exit_code"

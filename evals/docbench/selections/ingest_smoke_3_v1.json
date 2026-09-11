@@ -1,0 +1,45 @@
+{
+  "case_count": 3,
+  "cases": [
+    {
+      "case_id": "docbench:97:0",
+      "doc_id": 97,
+      "domain": "government",
+      "pdf_filename": "USCOURTS-laed-2_24-cv-00393-0.pdf",
+      "pdf_sha256": "e72425aab8cbb79f1e93171eda36b4b9ae526fde27909a5d6e75a2df2800d06f",
+      "qa_sha256": "330577bf465b6b52e2313d0e2a064ce26bfa52c50a0c0b43022890f9cfd1694d",
+      "question_index": 0,
+      "question_type": "text-only"
+    },
+    {
+      "case_id": "docbench:104:1",
+      "doc_id": 104,
+      "domain": "government",
+      "pdf_filename": "FBS_H_23FEB2022_PUBLIC-1.pdf",
+      "pdf_sha256": "7348d16f0048e7b12260a26dcb7a8cc88cc1fa9e1f62dc796ba2a2c71661e39a",
+      "qa_sha256": "503be0155bca692ec2ab05678ae9793560efffa26793be725627d65d553c75d6",
+      "question_index": 1,
+      "question_type": "text-only"
+    },
+    {
+      "case_id": "docbench:145:0",
+      "doc_id": 145,
+      "domain": "laws",
+      "pdf_filename": "2023555915.pdf",
+      "pdf_sha256": "f581b753d0f476c56a9c2849f0e206a5425928a4560def797b6e1d798b9b8e38",
+      "qa_sha256": "373ae7d7430a89c7e479923355f20c53a58df23e0030cf161640ac041979ca69",
+      "question_index": 0,
+      "question_type": "meta-data"
+    }
+  ],
+  "domain_counts": {
+    "academia": 0,
+    "finance": 0,
+    "government": 2,
+    "laws": 1,
+    "news": 0
+  },
+  "schema_version": "docbench-formal-selection-v1",
+  "seed": "docbench-ingest-regression-4-v1-959428",
+  "selection_algorithm": "sha256-null-delimited-rank-v1"
+}

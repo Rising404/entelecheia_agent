@@ -1,0 +1,647 @@
+@import "tailwindcss";
+
+/* 配色 token。
+ *
+ * 之前全项目散着 124 个硬编码色值、472 处引用，其中光"弱化文字的灰"就有十来种
+ * 肉眼分不出的变体——这是界面发闷的主因：每个组件各自发明了一个灰。
+ *
+ * 这里收敛成四个色族 + 一组中性阶梯。文字档位不是挑出来的，是按 WCAG 对比度
+ * 反解的：ink/ink-2/ink-3 在画布、卡片、沉底、深沉四种底色上全部 ≥4.5，因为本项目
+ * 229 处文字里有 222 处是 12–14px 的小字，正是需要 4.5 的那一档。
+ *
+ * 原来还有第四档更浅的灰（#a29b8c 一类，对比度 2.5），已经取消：层级该由字号和
+ * 字重做，不该靠把字调到看不清。
+ */
+@theme {
+  /* 冷调石墨蓝。玻璃面板要有东西可糊，所以底不是一块纯色，而是渐变加几团柔光
+   * （见 body::before）。画布这两档是那层渐变的两端。 */
+  --color-canvas:          #171c26;
+  --color-canvas-2:        #1d2430;
+  --color-sunken:          #f4f6f8;
+  --color-shade:           #e4e9ee;
+  --color-line:            #d3dae1;
+  --color-line-strong:     #b7c2ce;
+
+  /* 文字三档按 WCAG 反解，在画布、渐变末端、玻璃面、深沉四种底上全部 ≥4.5。
+   * 全项目 229 处文字里 222 处是 12–14px 小字，正是需要 4.5 的那一档。 */
+  --color-ink:             #101215;
+  --color-ink-2:           #353d46;
+  --color-ink-3:           #4e5a67;
+
+  /* 半透明面。surface 给普通卡片（只透不糊），glass 给外壳和浮层（透+糊），
+   * input 更实一些——输入框里的字压在花底上最容易看不清。 */
+  --color-surface:         rgba(255, 255, 255, 0.72);
+  --color-glass:           rgba(255, 255, 255, 0.58);
+  --color-glass-line:      rgba(255, 255, 255, 0.72);
+  --color-input:           rgba(255, 255, 255, 0.88);
+  /* 实心强调底上的文字。不能用 surface——那是半透明覆盖层，
+   * 当文字色会把字冲淡；深色外壳里更是直接看不见。 */
+  --color-on-solid:        #ffffff;
+
+  /* accent 靛蓝：主色、激活、选中。info 已并进来——新主色本来就是蓝的。 */
+  --color-accent:          #334d72;
+  --color-accent-text:     #45699a;
+  --color-accent-line:     #b6c6dd;
+  --color-accent-bg:       #e9eff7;
+  --color-accent-bg-strong:#d8e3f1;
+  --color-accent-solid:    #3f5d8a;
+
+  /* ok 青：完成、通过 */
+  --color-ok:              #1f554d;
+  --color-ok-text:         #2a7369;
+  --color-ok-line:         #a9cec7;
+  --color-ok-bg:           #e8f4f1;
+
+  /* warn 琥珀：待办、需要注意 */
+  --color-warn:            #5f491c;
+  --color-warn-text:       #816326;
+  --color-warn-line:       #ddc79a;
+  --color-warn-bg:         #fdf6e7;
+  --color-warn-bg-strong:  #f9ecca;
+  /* 浮层版：保留警示色调，但让它也能透出底下的内容 */
+  --color-warn-bg-glass:   rgba(253, 246, 231, 0.86);
+
+  /* danger 红：错误、危险 */
+  --color-danger:          #853123;
+  --color-danger-text:     #b44130;
+  --color-danger-line:     #e0aca2;
+  --color-danger-bg:       #fdf1ee;
+  --color-danger-bg-strong:#f6d9d2;
+
+  /* 深色代码面：全项目唯一一处反白区域 */
+  --color-code-bg:         #171b21;
+  --color-code-ink:        #e6ebf1;
+}
+
+
+:root {
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: var(--color-ink);
+  background: var(--color-canvas);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+/* 玻璃底层。
+ *
+ * backdrop-filter 只能糊它背后的东西——面板底下如果是一整片纯色，糊十遍还是同一个
+ * 纯色，加了等于没加。所以这里铺一层固定的渐变加三团柔光：它本身很淡，正常看几乎
+ * 只是"底色不那么死"，但玻璃面压上去之后，明暗和色相的变化被推开、被稀释，磨砂感
+ * 就是从这儿来的。
+ *
+ * 用 fixed + 负 z-index 而不是给 body 直接上背景：这样它不跟着内容滚动，玻璃面在
+ * 上面移动时糊出来的东西才会变，而不是整片一起走。 */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(26% 24% at 12% 16%, rgba(52, 88, 142, 0.52), transparent 62%),
+    radial-gradient(22% 20% at 34% 2%, rgba(38, 128, 138, 0.44), transparent 64%),
+    radial-gradient(30% 26% at 88% 10%, rgba(84, 96, 176, 0.48), transparent 62%),
+    radial-gradient(24% 22% at 66% 42%, rgba(46, 132, 120, 0.34), transparent 66%),
+    radial-gradient(34% 30% at 78% 92%, rgba(58, 92, 150, 0.46), transparent 64%),
+    radial-gradient(28% 26% at 18% 84%, rgba(104, 96, 168, 0.40), transparent 64%),
+    linear-gradient(158deg, var(--color-canvas) 0%, var(--color-canvas-2) 52%, #202836 100%);
+}
+
+/* 外壳与浮层：透 + 糊。
+ *
+ * 只有这一层带 backdrop-filter。内部卡片用 bg-surface 半透明就够了——模糊叠模糊
+ * 既吃性能，出来的颜色也会一层层发浑。saturate 是补偿：模糊会把颜色摊平，稍微提一点
+ * 饱和才不至于灰掉。 */
+/* 深色外壳（左侧栏）。
+ *
+ * 上一版把深色玻璃直接压在浅色页面上，两头不讨好：不透明度调低，浅色字糊；调高，
+ * 柔光透不出来，磨砂质感只剩 0.9% 的明度差。根子在于它背后是浅的——深玻璃一直在
+ * 跟背景对抗。
+ *
+ * 改成外壳自带深底和自己的柔光，玻璃糊的是它自己的光。同一套算法下质感反差从
+ * 0.9% 提到 7.3%，浅色文字也不再被背景往上顶。
+ *
+ * 子组件一个都没改：Tailwind 的工具类编译成 color:var(--color-ink-3) 这种形式，
+ * 在容器上把变量重定义掉，整棵子树自动翻成深色配色。 */
+/* 深色表面共用的一套 token。
+ *
+ * 侧栏和内容纸面现在是同一套配色，所以变量只写一份。子组件一个都不用改：
+ * Tailwind 的工具类编译成 color:var(--color-ink) 这种形式，在容器上把变量重
+ * 定义掉，整棵子树自动翻成深色。
+ *
+ * color 必须在这里再声明一次。祖先上的 text-ink 在它那一层就把 var(--color-ink)
+ * 算成了具体颜色，子元素继承到的是算好的值而不是变量引用——只改变量是不够的。 */
+.on-dark,
+.shell-dark,
+.sheet {
+  color: var(--color-ink);
+
+  --color-ink:              #eef2f7;
+  --color-ink-2:            #ccd5e0;
+  --color-ink-3:            #afb9c5;
+  --color-line:             rgba(255, 255, 255, 0.10);
+  --color-line-strong:      rgba(255, 255, 255, 0.20);
+  --color-surface:          rgba(255, 255, 255, 0.07);
+  --color-sunken:           rgba(255, 255, 255, 0.05);
+  --color-shade:            rgba(255, 255, 255, 0.10);
+  --color-input:            rgba(255, 255, 255, 0.09);
+  --color-glass-line:       rgba(255, 255, 255, 0.12);
+  --color-accent:           #d5e2f5;
+  --color-accent-text:      #a9c3e8;
+  --color-accent-line:      rgba(130, 166, 226, 0.45);
+  --color-accent-bg:        rgba(94, 133, 197, 0.30);
+  --color-accent-bg-strong: rgba(94, 133, 197, 0.42);
+  --color-accent-solid:     #4c7ab5;
+  --color-warn-text:        #e3c48c;
+  --color-warn-bg:          rgba(214, 168, 84, 0.18);
+  --color-danger:           #f0b0a3;
+  --color-danger-text:      #e59684;
+  --color-danger-bg:        rgba(198, 92, 70, 0.20);
+
+  /* 深色下层级是反的：strong 档要比 text 档更亮，不是更深。
+   * 漏掉这几个的后果很具体——text-warn 还是那个深棕 #5f491c，压在深底上直接看不见。 */
+  --color-warn:             #f2dfb4;
+  --color-warn-line:        rgba(214, 168, 84, 0.42);
+  --color-warn-bg-strong:   rgba(214, 168, 84, 0.30);
+  --color-warn-bg-glass:    rgba(58, 46, 24, 0.88);
+  --color-danger-line:      rgba(206, 104, 82, 0.46);
+  --color-danger-bg-strong: rgba(198, 92, 70, 0.32);
+  --color-ok:               #b6e6da;
+  --color-ok-text:          #8fd3c4;
+  --color-ok-line:          rgba(90, 190, 172, 0.42);
+  --color-ok-bg:            rgba(60, 170, 150, 0.18);
+}
+
+.shell-dark {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: #12161e;
+}
+
+/* 被糊的那层光。inset 取负值 + overflow:hidden，是为了让光斑的边缘落在盒子外面，
+ * 模糊之后看不到硬边。柔光浓度是算出来的：再浓一档，弱化文字压在最亮的光团上就
+ * 掉到 4.5 以下了。 */
+.shell-dark::before {
+  content: "";
+  position: absolute;
+  inset: -18%;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(38% 22% at 26% 10%, rgba(96, 140, 210, 0.44), transparent 68%),
+    radial-gradient(34% 20% at 76% 34%, rgba(64, 150, 138, 0.34), transparent 70%),
+    radial-gradient(42% 24% at 22% 82%, rgba(120, 110, 200, 0.36), transparent 72%),
+    radial-gradient(30% 18% at 84% 92%, rgba(88, 132, 196, 0.30), transparent 70%);
+  filter: blur(38px);
+}
+
+/* 深色外壳里的选中行：靠一条左侧亮边定位，而不是整块反白 */
+.shell-dark .task-row.active {
+  box-shadow: inset 2px 0 0 var(--color-accent-solid);
+}
+
+.glass {
+  /* 不要在这里写 position。
+   *
+   * styles.css 在 Tailwind 之后加载，而 .glass 和 .fixed 特异性相同，写在这里的
+   * position 会把模板上的 fixed 盖掉——右键菜单就是这么"消失"的：它照常渲染，
+   * 只是从 fixed 变成 relative，被推到了视口外面。
+   *
+   * 需要定位上下文的外壳自己声明（见 .shell-dark）。 */
+  background: var(--color-glass);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  /* 三样一起才读得出"玻璃"：
+   * 1) inset 顶部高光——真玻璃的上缘会反光，这是最强的一条视觉线索；
+   * 2) inset 底部暗线——给出厚度；
+   * 3) 外投影——让面浮起来，而不是印在背景上。 */
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.75),
+    inset 0 -1px 0 rgba(27, 32, 39, 0.05),
+    0 8px 28px -14px rgba(27, 32, 39, 0.28);
+}
+
+/* 内容纸面：浅色、半透明、糊掉底下的渐变。
+ *
+ * 和左侧栏同一套深色：深玻璃配浅字，背景越暗字越清楚，所以随便放什么夜景图都
+ * 站得住。浅色纸面做不到这一点——它压在暗图上会把小字压到 2.0 的对比度。 */
+.sheet {
+  position: relative;
+  /* 通透度由用户拖动决定：面板越透，背景图越清楚，但压在上面的小字越吃力。
+   * 这个取舍没有唯一正确答案，所以交出去而不是替他定死。安全区见设置里的说明。 */
+  background: rgba(16, 20, 27, var(--sheet-alpha, 0.55));
+  backdrop-filter: blur(26px) saturate(1.5);
+  -webkit-backdrop-filter: blur(26px) saturate(1.5);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 14px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.30),
+    0 14px 44px -20px rgba(0, 0, 0, 0.60);
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .sheet {
+    background: rgba(16, 20, 27, 0.94);
+  }
+}
+
+
+/* 磨砂的颗粒感。
+ *
+ * 纯 backdrop-filter 只是把背后均匀糊开，结果太干净，不像玻璃像半透明塑料。真正
+ * 的磨砂表面会散射光线，肉眼看是极细的颗粒。这里用 SVG 湍流噪声铺一层，透明度
+ * 压得很低——单看几乎看不见，但它是"这是一块有厚度的玻璃"和"这是一层半透明白"
+ * 之间的差别。
+ *
+ * 用伪元素而不是叠背景图，是为了不干扰 backdrop-filter：背景图会成为元素自己的
+ * 背景，被算进"需要被模糊的背后内容"之外，层序不对。 */
+.sheet::after,
+.message-stream::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  opacity: 0.35;
+  mix-blend-mode: soft-light;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.16'/%3E%3C/svg%3E");
+}
+
+/* 内容压在噪点之上，否则文字会被那层叠色蹭到 */
+.sheet > *,
+.message-stream > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* 浏览器不支持时退回不透明底，否则文字会直接压在渐变上 */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass {
+    background: rgba(255, 255, 255, 0.92);
+  }
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+}
+
+.field {
+  min-height: 40px;
+  border: 1px solid var(--color-line);
+  border-radius: 6px;
+  background: var(--color-input);
+  padding: 0 10px;
+  outline: none;
+}
+
+/* 图标压字的修法。
+ *
+ * `.field` 和 Tailwind 的 `.pl-9` 特异性相同，而 styles.css 在 Tailwind 之后加载，
+ * 所以工具类永远盖不过它——单靠在模板上写 pl-9 是没有效果的。这里用两个类
+ * 提高一级特异性，让带图标的输入框自己说了算。 */
+.field.with-icon-left {
+  padding-left: 2.25rem;
+}
+
+.field.with-icon-right {
+  padding-right: 2.25rem;
+}
+
+.field:focus,
+.title-input:focus,
+.date-input:focus,
+.slot-textarea:focus {
+  border-color: var(--color-accent-solid);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent-solid) 22%, transparent);
+}
+
+.icon-btn {
+  display: inline-flex;
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-line);
+  border-radius: 6px;
+  background: var(--color-surface);
+  color: var(--color-ink);
+}
+
+.icon-btn.primary {
+  border-color: var(--color-accent-solid);
+  background: var(--color-accent-solid);
+  color: var(--color-on-solid);
+}
+
+.seg {
+  display: inline-flex;
+  min-height: 32px;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border-radius: 5px;
+  color: var(--color-ink-3);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.seg.active {
+  background: var(--color-accent-solid);
+  color: var(--color-on-solid);
+}
+
+/* 列表行，不是卡片。
+ *
+ * 原来每一行都有描边加白底，于是会话列表看上去是一摞盒子：行与行之间靠边框分隔，
+ * 选中项和其他行的区别只剩边框颜色，很难一眼找到。去掉容器之后，选中项成了列表里
+ * 唯一有底色的行，反而自己跳出来；行高也从 68px 收到 54px，一屏能多放三分之一。
+ *
+ * 会话、任务、记忆、文档、提醒五个面板共用这个类，它们都是列表。 */
+.task-row {
+  display: flex;
+  min-height: 54px;
+  width: 100%;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  padding: 8px 10px;
+  text-align: left;
+  transition: background-color 120ms ease, border-color 120ms ease;
+}
+
+.task-row:hover {
+  background: var(--color-sunken);
+}
+
+.task-row.active {
+  border-color: var(--color-accent-line);
+  background: var(--color-accent-bg);
+}
+
+.task-row.active:hover {
+  background: var(--color-accent-bg-strong);
+}
+
+/* 空状态该安静。虚线框是"往这儿拖东西"的暗示，而"暂无会话"并不接受拖放。 */
+.empty {
+  display: flex;
+  min-height: 72px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--color-ink-3);
+  font-size: 13px;
+}
+
+.title-input {
+  min-height: 44px;
+  width: 100%;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  padding: 0 8px;
+  font-size: 28px;
+  font-weight: 700;
+  outline: none;
+}
+
+.date-input {
+  min-height: 34px;
+  border: 1px solid var(--color-line);
+  border-radius: 6px;
+  background: var(--color-surface);
+  padding: 0 8px;
+  outline: none;
+}
+
+.cmd {
+  display: inline-flex;
+  min-height: 36px;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--color-line);
+  border-radius: 6px;
+  background: var(--color-surface);
+  padding: 0 10px;
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.cmd.primary {
+  border-color: var(--color-accent-solid);
+  background: var(--color-accent-solid);
+  color: var(--color-on-solid);
+}
+
+.cmd.danger {
+  border-color: var(--color-danger-line);
+  color: var(--color-danger);
+}
+
+/* 对话区：左侧深玻璃的浅色对位。
+ *
+ * 它嵌在 .sheet 里，是页面上第二层玻璃。两层都糊会发浑，所以这一层的模糊半径比
+ * 外层小、白度比外层高——读起来是"同一块玻璃上更亮的一格"，而不是又叠了一层。 */
+.message-stream {
+  min-height: 0;
+  flex: 1;
+  overflow: auto;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 12px;
+  position: relative;
+  /* 相对纸面亮一格。纸面变透时它也跟着变透，两者的层次关系才不会塌掉。 */
+  background: rgba(255, 255, 255, calc(0.05 * var(--sheet-alpha, 0.55) / 0.55));
+  backdrop-filter: blur(16px) saturate(1.4);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  padding: 14px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.10),
+    0 8px 26px -20px rgba(0, 0, 0, 0.55);
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .message-stream {
+    background: rgba(38, 45, 58, 0.94);
+  }
+}
+
+.message-card,
+.approval-card {
+  margin-bottom: 10px;
+  border: 1px solid var(--color-line);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+/* 气泡按内容收缩，并按阅读宽度封顶。
+ *
+ * 原来是 margin-left/right: 12%，宽度因此跟着容器走：右栏收起后聊天区变宽，
+ * 一句话的消息会被拉成一条 800 多像素的横条。而超过约 70 个字符的行本来就难读，
+ * 所以上限用 ch（跟着字号走的字符宽度）而不是百分比——窗口再宽，行长也不再增加。 */
+.message-card {
+  width: fit-content;
+  max-width: min(72ch, 88%);
+}
+
+.message-card.user {
+  margin-left: auto;
+  border-color: rgba(132, 168, 226, 0.40);
+  background: rgba(96, 136, 205, 0.26);
+}
+
+.message-card.assistant {
+  margin-right: auto;
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.message-card.system,
+.message-card.tool {
+  border-color: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.approval-card {
+  border-color: var(--color-warn-line);
+  background: var(--color-warn-bg);
+}
+
+.review-pre {
+  max-height: 220px;
+  overflow: auto;
+  white-space: pre-wrap;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.72);
+  padding: 8px;
+  font-size: 12px;
+}
+
+.composer {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: end;
+}
+
+.composer-input {
+  min-height: 78px;
+  resize: vertical;
+  border: 1px solid var(--color-line);
+  border-radius: 8px;
+  background: var(--color-input);
+  padding: 10px;
+  line-height: 1.5;
+  outline: none;
+}
+
+.slot-panel {
+  min-height: 210px;
+  border: 1px solid var(--color-line);
+  border-radius: 8px;
+  background: var(--color-surface);
+  padding: 12px;
+}
+
+.mini-btn {
+  display: inline-flex;
+  width: 30px;
+  height: 30px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-line);
+  border-radius: 6px;
+  background: var(--color-sunken);
+}
+
+.slot-textarea {
+  min-height: 148px;
+  width: 100%;
+  resize: vertical;
+  border: 1px solid var(--color-line);
+  border-radius: 6px;
+  padding: 10px;
+  line-height: 1.55;
+  outline: none;
+}
+
+.document-textarea {
+  min-height: 320px;
+  width: 100%;
+  resize: vertical;
+  border: 1px solid var(--color-line);
+  border-radius: 6px;
+  padding: 10px;
+  line-height: 1.6;
+  outline: none;
+}
+
+.document-meta {
+  display: grid;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.document-meta div {
+  display: grid;
+  grid-template-columns: 130px minmax(0, 1fr);
+  gap: 10px;
+}
+
+.document-meta dt {
+  color: var(--color-ink-3);
+  font-weight: 650;
+}
+
+.document-meta dd {
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.debug-toggle {
+  display: inline-flex;
+  min-height: 34px;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--color-line);
+  border-radius: 6px;
+  background: var(--color-surface);
+  padding: 0 10px;
+  font-size: 13px;
+}
+
+.debug-pre {
+  margin-top: 8px;
+  max-height: 260px;
+  overflow: auto;
+  border: 1px solid var(--color-line);
+  border-radius: 6px;
+  background: var(--color-code-bg);
+  color: var(--color-code-ink);
+  padding: 10px;
+  font-size: 12px;
+}

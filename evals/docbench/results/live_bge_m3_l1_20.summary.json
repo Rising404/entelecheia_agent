@@ -1,0 +1,195 @@
+{
+  "schema_version": "entelecheia-docbench-live-l1-summary-v1",
+  "recorded_at": "2026-08-31",
+  "scope": {
+    "benchmark": "DocBench",
+    "run_id": "bge-m3-live-20-20260831-r2",
+    "case_count": 20,
+    "result_kind": "live_l1_scored_stage",
+    "selection_sha256": "c0836b7f0136443ce4ff98576aa0737925746e643fba671476325285dac6938b",
+    "config_sha256": "8010b098cbffdea8adc264a3b7fd464301f497bda007ac99340099a4ef693206",
+    "answer_generation_executed": true,
+    "judge_executed": true,
+    "answer_score": 0.55,
+    "official_comparable": false,
+    "source_state": "uncommitted_worktree",
+    "initial_execution_ok_case_count": 14,
+    "final_execution_ok_case_count": 18,
+    "remaining_failed_case_count": 2
+  },
+  "selection": {
+    "domain_counts": {
+      "academia": 4,
+      "finance": 4,
+      "government": 4,
+      "laws": 4,
+      "news": 4
+    },
+    "question_type_counts": {
+      "text-only": 9,
+      "unanswerable": 6,
+      "meta-data": 4,
+      "multimodal-f": 1
+    },
+    "distinct_document_count": 20
+  },
+  "models": {
+    "main_and_judge": {
+      "provider": "openai-compatible",
+      "model": "deepseek-chat",
+      "context_window_tokens": 1000000
+    },
+    "encoder": {
+      "id": "BAAI/bge-m3",
+      "revision": "5617a9f61b028005a4858fdac845db406aefb181"
+    },
+    "reranker": {
+      "id": "BAAI/bge-reranker-v2-m3",
+      "revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e"
+    }
+  },
+  "generation": {
+    "status": "complete",
+    "attempted_case_count": 20,
+    "execution_ok_case_count": 18,
+    "lane_ok_case_count": 20,
+    "interaction_ok_case_count": 20,
+    "case_elapsed_total_s": 4264.736,
+    "model_call_count": 209,
+    "tool_call_count": 194,
+    "input_tokens_total": 5506029,
+    "output_tokens_total": 31614,
+    "final_error_counts": {
+      "VERIFICATION_FAILED": 2
+    },
+    "initial_error_counts": {
+      "MODEL_TRANSPORT_FAILURE": 3,
+      "TURN_DEADLINE_EXCEEDED": 1,
+      "VERIFICATION_FAILED": 2
+    }
+  },
+  "retries": [
+    {
+      "error_code_filter": [
+        "MODEL_TRANSPORT_FAILURE"
+      ],
+      "selected_case_count": 3,
+      "recovered_case_count": 3
+    },
+    {
+      "error_code_filter": [
+        "TURN_DEADLINE_EXCEEDED"
+      ],
+      "selected_case_count": 1,
+      "recovered_case_count": 1
+    }
+  ],
+  "scoring": {
+    "protocol": "docbench_prompt_compatible",
+    "official_comparable": false,
+    "status": "complete",
+    "case_count": 20,
+    "correct_count": 11,
+    "score": 0.55,
+    "judge_error_count": 0,
+    "delivered_case_count": 18,
+    "delivered_correct_count": 10,
+    "delivered_accuracy": 0.5555555555555556,
+    "failed_case_judge_scores": {
+      "docbench:156:4": 0,
+      "docbench:170:3": 1
+    },
+    "by_domain": {
+      "academia": {
+        "correct": 3,
+        "total": 4
+      },
+      "finance": {
+        "correct": 0,
+        "total": 4
+      },
+      "government": {
+        "correct": 4,
+        "total": 4
+      },
+      "laws": {
+        "correct": 2,
+        "total": 4
+      },
+      "news": {
+        "correct": 2,
+        "total": 4
+      }
+    },
+    "by_type": {
+      "text": {
+        "correct": 6,
+        "total": 9
+      },
+      "unanswerable": {
+        "correct": 4,
+        "total": 6
+      },
+      "metadata": {
+        "correct": 1,
+        "total": 4
+      },
+      "multimodal": {
+        "correct": 0,
+        "total": 1
+      }
+    }
+  },
+  "retrieval": {
+    "profile": "bge_m3",
+    "failure_policy": "strict",
+    "device": "cpu",
+    "use_fp16": false,
+    "local_files_only": true,
+    "preflight_ready": true,
+    "encoder_asset_ready": true,
+    "reranker_asset_ready": true,
+    "sqlite_vec_ready": true,
+    "active_generation_ready_case_count": 7,
+    "active_generation_unavailable_case_count": 13,
+    "active_generation_unavailable_reason_counts": {
+      "workspace_authority_revoked": 7,
+      "retrieval_method_unavailable": 6
+    },
+    "active_bge_query_used_case_count": 5,
+    "active_generation_ready_without_retrieval_query_case_count": 2,
+    "partial_bge_index_artifacts_case_count": 12,
+    "inactive_partial_indexes_used_for_query": false,
+    "all_three_methods_ready_case_count": 7,
+    "mixed_path_score": true
+  },
+  "network": {
+    "main_model_called": true,
+    "judge_called": true,
+    "web_tool_called": false,
+    "document_visual_tools_called": true,
+    "hugging_face_network_enabled": false
+  },
+  "cases": [
+    {"case_id": "docbench:5:1", "execution_ok": true, "score": 0, "retrieval_status": "degraded", "active_bge_query_used": false},
+    {"case_id": "docbench:9:1", "execution_ok": true, "score": 1, "retrieval_status": "ready", "active_bge_query_used": true},
+    {"case_id": "docbench:15:1", "execution_ok": true, "score": 1, "retrieval_status": "ready", "active_bge_query_used": false},
+    {"case_id": "docbench:19:6", "execution_ok": true, "score": 1, "retrieval_status": "ready", "active_bge_query_used": true},
+    {"case_id": "docbench:54:6", "execution_ok": true, "score": 0, "retrieval_status": "degraded", "active_bge_query_used": false},
+    {"case_id": "docbench:72:0", "execution_ok": true, "score": 0, "retrieval_status": "degraded", "active_bge_query_used": false},
+    {"case_id": "docbench:79:4", "execution_ok": true, "score": 0, "retrieval_status": "degraded", "active_bge_query_used": false},
+    {"case_id": "docbench:87:14", "execution_ok": true, "score": 0, "retrieval_status": "degraded", "active_bge_query_used": false},
+    {"case_id": "docbench:96:0", "execution_ok": true, "score": 1, "retrieval_status": "ready", "active_bge_query_used": true},
+    {"case_id": "docbench:97:0", "execution_ok": true, "score": 1, "retrieval_status": "ready", "active_bge_query_used": true},
+    {"case_id": "docbench:110:3", "execution_ok": true, "score": 1, "retrieval_status": "degraded", "active_bge_query_used": false},
+    {"case_id": "docbench:123:0", "execution_ok": true, "score": 1, "retrieval_status": "ready", "active_bge_query_used": false},
+    {"case_id": "docbench:143:0", "execution_ok": true, "score": 1, "retrieval_status": "degraded", "active_bge_query_used": false},
+    {"case_id": "docbench:156:4", "execution_ok": false, "error_code": "VERIFICATION_FAILED", "score": 0, "retrieval_status": "degraded", "active_bge_query_used": false},
+    {"case_id": "docbench:157:2", "execution_ok": true, "score": 0, "retrieval_status": "degraded", "active_bge_query_used": false},
+    {"case_id": "docbench:170:3", "execution_ok": false, "error_code": "VERIFICATION_FAILED", "score": 1, "retrieval_status": "degraded", "active_bge_query_used": false},
+    {"case_id": "docbench:190:0", "execution_ok": true, "score": 0, "retrieval_status": "degraded", "active_bge_query_used": false},
+    {"case_id": "docbench:191:2", "execution_ok": true, "score": 0, "retrieval_status": "degraded", "active_bge_query_used": false},
+    {"case_id": "docbench:219:3", "execution_ok": true, "score": 1, "retrieval_status": "ready", "active_bge_query_used": true},
+    {"case_id": "docbench:220:2", "execution_ok": true, "score": 1, "retrieval_status": "degraded", "active_bge_query_used": false}
+  ]
+}

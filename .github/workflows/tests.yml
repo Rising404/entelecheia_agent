@@ -1,0 +1,85 @@
+name: Lint and tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: ruff
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out the candidate tree
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # 只装 lint 工具本身：ruff 是静态检查，不需要项目依赖，也不需要可导入的包。
+      # 版本由 pyproject 的 dev extra 钉死，这里必须与之一致。
+      - name: Install the pinned linter
+        run: python3 -m pip install --disable-pip-version-check "ruff==0.16.6"
+
+      - name: Check the configured rule set
+        run: python3 -m ruff check --output-format=github .
+
+  tests:
+    name: pytest
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out the candidate tree
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # Python 版本的唯一来源是 runtime-versions.conf，与 bootstrap 脚本共用同一个值；
+      # 不在本文件里第二次硬编码版本号。
+      - name: Read the pinned Python version
+        id: pinned
+        run: |
+          set -euo pipefail
+          version=$(sed -n 's/^PERSONAGRAPH_PYTHON_VERSION=\(.*\)/\1/p' runtime-versions.conf)
+          if [[ -z "${version}" ]]; then
+            echo "runtime-versions.conf declares no PERSONAGRAPH_PYTHON_VERSION" >&2
+            exit 1
+          fi
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+
+      - name: Set up the pinned Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: ${{ steps.pinned.outputs.version }}
+
+      # 失败关闭：即使 setup-python 将来改变了不可用版本时的行为，也不接受静默降级。
+      - name: Require the interpreter to be exactly the pinned version
+        run: |
+          set -euo pipefail
+          actual=$(python3 -c 'import sys; print("%d.%d.%d" % sys.version_info[:3])')
+          expected="${{ steps.pinned.outputs.version }}"
+          echo "interpreter=${actual} pinned=${expected}"
+          if [[ "${actual}" != "${expected}" ]]; then
+            echo "Interpreter ${actual} does not match pinned ${expected}" >&2
+            exit 1
+          fi
+
+      # 只装基础依赖。不装 embeddings extra：CI 不下载 torch/FlagEmbedding，也不预取任何
+      # 模型权重。依赖真实模型的测试必须自行 skip，而不是让 CI 拉几 GB 快照。
+      - name: Install the base dependency set
+        run: |
+          set -euo pipefail
+          python3 -m pip install --disable-pip-version-check --upgrade pip
+          python3 -m pip install --disable-pip-version-check -e .
+
+      - name: Run the test suite
+        env:
+          # 运行时严格离线：任何测试都不得在 CI 上访问模型 provider 或 Hugging Face。
+          HF_HUB_OFFLINE: "1"
+          TRANSFORMERS_OFFLINE: "1"
+        run: python3 -m pytest -q --tb=short -rf

@@ -1,0 +1,130 @@
+{
+  "schema_version": "docbench-derived-selection-v1",
+  "selection_algorithm": "ordered-base-case-exclusion-v1",
+  "base_manifest": {
+    "path": "stage_20_v1.json",
+    "sha256": "c0836b7f0136443ce4ff98576aa0737925746e643fba671476325285dac6938b"
+  },
+  "excluded_case_ids": [
+    "docbench:9:1",
+    "docbench:19:6",
+    "docbench:72:0",
+    "docbench:87:14",
+    "docbench:97:0",
+    "docbench:123:0",
+    "docbench:143:0",
+    "docbench:157:2",
+    "docbench:219:3",
+    "docbench:220:2"
+  ],
+  "case_count": 10,
+  "domain_counts": {
+    "academia": 2,
+    "finance": 2,
+    "government": 2,
+    "laws": 2,
+    "news": 2
+  },
+  "cases": [
+    {
+      "case_id": "docbench:5:1",
+      "doc_id": 5,
+      "domain": "academia",
+      "pdf_filename": "C18-1117.pdf",
+      "pdf_sha256": "38e0b823933ec054986366247775738e3d4be090c4b3af87e04e0dcdf8bf0e9a",
+      "qa_sha256": "a3889a337d83900c1a5a7d8d5f1b5760231bb477aa219d866b740deb8727445d",
+      "question_index": 1,
+      "question_type": "unanswerable"
+    },
+    {
+      "case_id": "docbench:15:1",
+      "doc_id": 15,
+      "domain": "academia",
+      "pdf_filename": "P18-1125.pdf",
+      "pdf_sha256": "3ba4d053607b39409b66b70d9827dc49b3da1eb4b59b56948c8f12399cace272",
+      "qa_sha256": "033f877fe35a6f49ddb72b583162eebce5260ca5873763ee0fec706cb25b1ee5",
+      "question_index": 1,
+      "question_type": "meta-data"
+    },
+    {
+      "case_id": "docbench:54:6",
+      "doc_id": 54,
+      "domain": "finance",
+      "pdf_filename": "NYSE_NVS_2021.pdf",
+      "pdf_sha256": "eec24608e75b1f8c0568aacf2040ea2e011016d8f2cee4c51474745057559ef1",
+      "qa_sha256": "c319add1f6733a6a36476390292f8f17ccbd5f285ec6dc493c9bc9884fc75240",
+      "question_index": 6,
+      "question_type": "meta-data"
+    },
+    {
+      "case_id": "docbench:79:4",
+      "doc_id": 79,
+      "domain": "finance",
+      "pdf_filename": "NASDAQ_COST_2022.pdf",
+      "pdf_sha256": "833a9a96dce97de3efc403c32c66242ed44e7bc7cc81b6f5c6f74cbea6405625",
+      "qa_sha256": "8ebbfb7c71a8714ecf8d8e74eeae80cbe27f9dda48f5c9c7c4bafb080ace4338",
+      "question_index": 4,
+      "question_type": "multimodal-f"
+    },
+    {
+      "case_id": "docbench:96:0",
+      "doc_id": 96,
+      "domain": "government",
+      "pdf_filename": "FBS_EB_29July2022_Public.pdf",
+      "pdf_sha256": "a67c692427dc7e1a89319216ad96eb594bc9e54aac6691973355b1e0f486dbe6",
+      "qa_sha256": "76197044df316141d6f420e8be127110f8573fdd169ebdd8580cd517708b47e4",
+      "question_index": 0,
+      "question_type": "text-only"
+    },
+    {
+      "case_id": "docbench:110:3",
+      "doc_id": 110,
+      "domain": "government",
+      "pdf_filename": "Country_Reports_on_Terrorism_2020.pdf",
+      "pdf_sha256": "c8f6f8f93342e5c1b671b588f035d2de4471d657b91c5bd7a6d91d0f55e53096",
+      "qa_sha256": "0a03a78e794254e43cd008bb53c08974c8e369de0ea1d4b95c460c6e5996b354",
+      "question_index": 3,
+      "question_type": "unanswerable"
+    },
+    {
+      "case_id": "docbench:156:4",
+      "doc_id": 156,
+      "domain": "laws",
+      "pdf_filename": "2019713402.pdf",
+      "pdf_sha256": "a6c1689777006a04d37bc88fec6299e350830038818a1b53b72eca916bfcef87",
+      "qa_sha256": "6caa81e03afb867eecde100b5917c91b3d6281f07a85e2e4ec0b3a1f00729c39",
+      "question_index": 4,
+      "question_type": "unanswerable"
+    },
+    {
+      "case_id": "docbench:170:3",
+      "doc_id": 170,
+      "domain": "laws",
+      "pdf_filename": "2021687414.pdf",
+      "pdf_sha256": "a323b4a9bbd5235973a208e87a8fb9d15d7e3ad643d92b01e7fac6b254460086",
+      "qa_sha256": "264f6fba4ca96ecfef7d356921e22565e219b11c22e3a8c2761c2d7f63f8054c",
+      "question_index": 3,
+      "question_type": "text-only"
+    },
+    {
+      "case_id": "docbench:190:0",
+      "doc_id": 190,
+      "domain": "news",
+      "pdf_filename": "20230306.pdf",
+      "pdf_sha256": "4a94a776b9666c4a70a82982fc8da3ec7c2bce554856dec669c11935a7595029",
+      "qa_sha256": "90cf739513b8cc031bda8cd36ab4ec2c5c11e12be023ca4bcc419bed7ed22f41",
+      "question_index": 0,
+      "question_type": "text-only"
+    },
+    {
+      "case_id": "docbench:191:2",
+      "doc_id": 191,
+      "domain": "news",
+      "pdf_filename": "20221013.pdf",
+      "pdf_sha256": "2df1ae0adf950b9dafac4d58cbc569b0e54c82763a9de514504cc0311cf79263",
+      "qa_sha256": "27a397eaf631a74144cf3ba250fc258d182aa28db3614c17ce019bb7627e2380",
+      "question_index": 2,
+      "question_type": "meta-data"
+    }
+  ]
+}

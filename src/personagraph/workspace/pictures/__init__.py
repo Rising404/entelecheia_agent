@@ -1,0 +1,63 @@
+"""统一图片身份的稳定公共合同与准入 API。"""
+
+from .admission import (
+    PictureAdmissionError,
+    PictureAdmissionForeignKeysRequired,
+    PictureAdmissionTransactionRequired,
+    PictureNotFound,
+    PictureRegistrationConflict,
+    ensure_picture_in_transaction,
+    ensure_picture_unit_in_transaction,
+)
+from .contracts import (
+    PictureDocumentSurfaceKind,
+    PictureRecord,
+    PictureSourceKind,
+    PictureSourceLocator,
+    PictureUnitKind,
+    PictureUnitLocator,
+    PictureUnitRecord,
+    RegisteredPicture,
+    RegisteredPictureUnit,
+)
+from .storage.repository import (
+    get_current_picture_for_file,
+    get_picture,
+    get_picture_for_source,
+    get_picture_unit,
+    get_picture_unit_for_locator,
+    list_picture_units,
+    picture_binding_is_current,
+    picture_is_current,
+    picture_unit_binding_is_current,
+    picture_unit_is_current,
+)
+
+__all__ = [
+    "PictureAdmissionError",
+    "PictureAdmissionForeignKeysRequired",
+    "PictureAdmissionTransactionRequired",
+    "PictureDocumentSurfaceKind",
+    "PictureNotFound",
+    "PictureRecord",
+    "PictureRegistrationConflict",
+    "PictureSourceKind",
+    "PictureSourceLocator",
+    "PictureUnitKind",
+    "PictureUnitLocator",
+    "PictureUnitRecord",
+    "RegisteredPicture",
+    "RegisteredPictureUnit",
+    "ensure_picture_in_transaction",
+    "ensure_picture_unit_in_transaction",
+    "get_current_picture_for_file",
+    "get_picture",
+    "get_picture_for_source",
+    "get_picture_unit",
+    "get_picture_unit_for_locator",
+    "list_picture_units",
+    "picture_binding_is_current",
+    "picture_is_current",
+    "picture_unit_binding_is_current",
+    "picture_unit_is_current",
+]

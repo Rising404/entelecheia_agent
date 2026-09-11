@@ -1,0 +1,52 @@
+"""Durable control-plane facade for the global Tool Catalog."""
+
+from .records import (
+    BOOTSTRAP_MANIFEST_SCHEMA,
+    CATALOG_DATABASE_SCHEMA_VERSION,
+    CATALOG_REVISION_SCHEMA,
+    DEFAULT_PROFILE_SCHEMA,
+    DEFAULT_TOOL_CATALOG_DATABASE_PATH,
+    CatalogAuditEvent,
+    CatalogBootstrapResult,
+    CatalogCorruptionError,
+    CatalogEntrySnapshot,
+    CatalogPersistenceError,
+    CatalogRevisionSnapshot,
+    CatalogSchemaError,
+    DefaultCatalogResolutionState,
+    DefaultProfileAvailability,
+    DefaultProfileItem,
+    DefaultProfileSelection,
+    DefaultProfileSnapshot,
+    EmergencyRevocation,
+    EmergencyRevocationSelector,
+    EmergencyRevocationTarget,
+    ToolCatalogSeed,
+)
+from .repository import ToolCatalogRepository
+
+
+__all__ = [
+    "BOOTSTRAP_MANIFEST_SCHEMA",
+    "CATALOG_DATABASE_SCHEMA_VERSION",
+    "CATALOG_REVISION_SCHEMA",
+    "DEFAULT_PROFILE_SCHEMA",
+    "DEFAULT_TOOL_CATALOG_DATABASE_PATH",
+    "CatalogAuditEvent",
+    "CatalogBootstrapResult",
+    "CatalogCorruptionError",
+    "CatalogEntrySnapshot",
+    "CatalogPersistenceError",
+    "CatalogRevisionSnapshot",
+    "CatalogSchemaError",
+    "DefaultCatalogResolutionState",
+    "DefaultProfileAvailability",
+    "DefaultProfileItem",
+    "DefaultProfileSelection",
+    "DefaultProfileSnapshot",
+    "EmergencyRevocation",
+    "EmergencyRevocationSelector",
+    "EmergencyRevocationTarget",
+    "ToolCatalogRepository",
+    "ToolCatalogSeed",
+]

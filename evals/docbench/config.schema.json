@@ -1,0 +1,244 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://entelecheia.local/schemas/docbench-l1-eval-v1.json",
+  "title": "Entelecheia DocBench L1 evaluation configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "lane",
+    "providers",
+    "retrieval",
+    "dataset",
+    "run",
+    "prompt",
+    "scoring"
+  ],
+  "properties": {
+    "schema_version": {"const": "docbench-l1-eval-v1"},
+    "lane": {"const": "L1"},
+    "providers": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["main", "vision"],
+      "properties": {
+        "main": {"$ref": "#/$defs/mainProvider"},
+        "vision": {"$ref": "#/$defs/visionProvider"}
+      }
+    },
+    "retrieval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "profile",
+        "failure_policy",
+        "required_methods",
+        "encoder",
+        "reranker",
+        "local_files_only",
+        "device",
+        "use_fp16"
+      ],
+      "properties": {
+        "profile": {"const": "bge_m3"},
+        "failure_policy": {"const": "strict"},
+        "required_methods": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 3,
+          "prefixItems": [
+            {"const": "dense"},
+            {"const": "learned_sparse"},
+            {"const": "bm25"}
+          ],
+          "items": false
+        },
+        "encoder": {"$ref": "#/$defs/pinnedBgeM3Encoder"},
+        "reranker": {"$ref": "#/$defs/pinnedBgeV2M3Reranker"},
+        "local_files_only": {"const": true},
+        "device": {
+          "type": "string",
+          "pattern": "^(auto|cpu|mps|cuda(?::[0-9]+)?)$"
+        },
+        "use_fp16": {"type": "boolean"}
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {"device": {"const": "auto"}},
+            "required": ["device"]
+          },
+          "then": {
+            "properties": {"use_fp16": {"const": false}}
+          }
+        }
+      ]
+    },
+    "dataset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["data_root", "selection"],
+      "properties": {
+        "data_root": {"$ref": "#/$defs/path"},
+        "selection": {"$ref": "#/$defs/path"}
+      }
+    },
+    "run": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "runtime_features",
+        "output_root",
+        "per_case_timeout_s",
+        "max_workers"
+      ],
+      "properties": {
+        "runtime_features": {"$ref": "#/$defs/path"},
+        "output_root": {"$ref": "#/$defs/path"},
+        "per_case_timeout_s": {"type": "integer", "minimum": 1},
+        "max_workers": {"type": "integer", "minimum": 1}
+      }
+    },
+    "prompt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["preamble"],
+      "properties": {
+        "preamble": {"type": "string", "minLength": 1}
+      }
+    },
+    "scoring": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "prompt", "prompt_sha256", "judge"],
+      "properties": {
+        "mode": {"const": "docbench_prompt_compatible"},
+        "prompt": {"$ref": "#/$defs/path"},
+        "prompt_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "judge": {"$ref": "#/$defs/judge"}
+      }
+    }
+  },
+  "$defs": {
+    "pinnedBgeM3Encoder": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["model_id", "revision"],
+      "properties": {
+        "model_id": {"const": "BAAI/bge-m3"},
+        "revision": {
+          "const": "5617a9f61b028005a4858fdac845db406aefb181"
+        }
+      }
+    },
+    "pinnedBgeV2M3Reranker": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "model_id", "revision"],
+      "properties": {
+        "mode": {"const": "bge_v2_m3"},
+        "model_id": {"const": "BAAI/bge-reranker-v2-m3"},
+        "revision": {
+          "const": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e"
+        }
+      }
+    },
+    "path": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": ".*\\S.*"
+    },
+    "environmentVariable": {
+      "type": "string",
+      "pattern": "^[A-Z_][A-Z0-9_]*$"
+    },
+    "installationSource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source"],
+      "properties": {
+        "source": {"const": "installation"}
+      }
+    },
+    "mainEndpoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "provider",
+        "request_dialect",
+        "base_url",
+        "model",
+        "api_key_env"
+      ],
+      "properties": {
+        "provider": {
+          "enum": ["openai-compatible", "anthropic-compatible"]
+        },
+        "request_dialect": {
+          "enum": ["auto", "deepseek", "openai", "anthropic", "generic"]
+        },
+        "base_url": {"type": "string", "format": "uri"},
+        "model": {"type": "string", "minLength": 1},
+        "api_key_env": {"$ref": "#/$defs/environmentVariable"}
+      }
+    },
+    "visionEndpoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider", "base_url", "model", "api_key_env"],
+      "properties": {
+        "provider": {"type": "string", "minLength": 1},
+        "base_url": {"type": "string", "format": "uri"},
+        "model": {"type": "string", "minLength": 1},
+        "api_key_env": {"$ref": "#/$defs/environmentVariable"}
+      }
+    },
+    "mainProvider": {
+      "oneOf": [
+        {"$ref": "#/$defs/installationSource"},
+        {"$ref": "#/$defs/mainEndpoint"}
+      ]
+    },
+    "visionProvider": {
+      "oneOf": [
+        {"$ref": "#/$defs/installationSource"},
+        {"$ref": "#/$defs/visionEndpoint"}
+      ]
+    },
+    "mainJudge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source"],
+      "properties": {
+        "source": {"const": "main"}
+      }
+    },
+    "deepseekJudgeEndpoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "provider",
+        "request_dialect",
+        "base_url",
+        "model",
+        "api_key_env"
+      ],
+      "properties": {
+        "provider": {"const": "openai-compatible"},
+        "request_dialect": {"const": "deepseek"},
+        "base_url": {"type": "string", "format": "uri"},
+        "model": {"type": "string", "minLength": 1},
+        "api_key_env": {"$ref": "#/$defs/environmentVariable"}
+      }
+    },
+    "judge": {
+      "oneOf": [
+        {"$ref": "#/$defs/mainJudge"},
+        {"$ref": "#/$defs/deepseekJudgeEndpoint"}
+      ]
+    }
+  }
+}

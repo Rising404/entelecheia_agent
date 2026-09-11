@@ -1,0 +1,11 @@
+features:
+  # DocBench L1 在线探针使用的 benchmark 作用域策略快照。
+  l1_semantic_verification_mode: always
+  user_interaction_mode: closed_world
+  # 整轮兜底 25 分钟；外层单题另留 5 分钟供启动、附件准备和结果导出。
+  turn_wall_clock_budget_s: 1500
+  # Prompt 约束不是能力边界；封闭世界 L1 快照不注册、也无法调度 Web 工具。
+  l1_external_web_tools_enabled: false
+  file_retrieval_write_enabled: true
+  file_retrieval_read_enabled: true
+  l1_retrieval_tools_enabled: true

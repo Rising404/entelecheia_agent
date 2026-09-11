@@ -1,0 +1,51 @@
+#!/bin/sh
+set -eu
+
+repository_root=$(git rev-parse --show-toplevel)
+checker="$repository_root/scripts/check_repository_privacy.py"
+checked=0
+privacy_exit_code=0
+
+while read -r local_ref local_sha remote_ref remote_sha; do
+  checked=1
+  case "$local_sha" in
+    0000000000000000000000000000000000000000)
+      continue
+      ;;
+  esac
+
+  # Branches, lightweight tags, and annotated tags must ultimately resolve to
+  # a commit tree.  Reject refs to blobs/trees instead of silently accepting an
+  # empty `git rev-list` result.
+  if ! local_commit=$(git rev-parse --verify "$local_sha^{commit}" 2>/dev/null); then
+    echo "repository privacy check failed: pushed object does not resolve to a commit" >&2
+    privacy_exit_code=1
+    continue
+  fi
+
+  case "$remote_sha" in
+    0000000000000000000000000000000000000000)
+      # The destination has no target ref.  Scan every commit reachable from
+      # the local tip: excluding commits merely because another configured
+      # remote has them could leak a private history to a new public remote.
+      revisions=$(git rev-list "$local_commit")
+      ;;
+    *)
+      # Inspect every tree newly introduced by this update, including trees
+      # hidden between a private intermediate commit and a later clean tip.
+      revisions=$(git rev-list "$remote_sha..$local_commit")
+      ;;
+  esac
+
+  for revision in $revisions; do
+    python3 "$checker" --tree "$revision" || privacy_exit_code=$?
+  done
+done
+
+# A direct/manual hook invocation has no pre-push input.  Keep it useful and
+# fail closed by checking the current committed tree.
+if [ "$checked" -eq 0 ]; then
+  python3 "$checker" --tree HEAD || privacy_exit_code=$?
+fi
+
+exit "$privacy_exit_code"

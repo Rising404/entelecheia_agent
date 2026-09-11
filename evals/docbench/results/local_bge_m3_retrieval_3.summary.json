@@ -1,0 +1,124 @@
+{
+  "schema_version": "entelecheia-docbench-local-retrieval-summary-v1",
+  "recorded_at": "2026-08-30",
+  "scope": {
+    "benchmark": "DocBench",
+    "case_count": 3,
+    "result_kind": "retrieval_only",
+    "mode": "retrieval_only",
+    "answer_generation_executed": false,
+    "end_to_end_answer_score": null,
+    "official_comparable": false,
+    "source_state": "uncommitted_worktree",
+    "reproducer_available": false
+  },
+  "models": {
+    "encoder": {
+      "id": "BAAI/bge-m3",
+      "revision": "5617a9f61b028005a4858fdac845db406aefb181"
+    },
+    "reranker": {
+      "id": "BAAI/bge-reranker-v2-m3",
+      "revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e"
+    }
+  },
+  "execution": {
+    "profile": "bge_m3",
+    "failure_policy": "strict",
+    "methods": [
+      "dense",
+      "learned_sparse",
+      "bm25"
+    ],
+    "device": "cpu",
+    "use_fp16": false,
+    "hf_hub_offline": true,
+    "transformers_offline": true,
+    "socket_connect_blocked": true,
+    "network_attempt_count": 0
+  },
+  "ingest": {
+    "durable_job_count": 3,
+    "applied_count": 3,
+    "active_count": 3,
+    "retryable_failure_count": 0,
+    "terminal_failure_count": 0
+  },
+  "generation": {
+    "id": "rdv_000e1a1a0b05b0a41140878518caa7ee",
+    "fingerprint": "retrieval-generation-spec-v1:000e1a1a0b05b0a41140878518caa7ee6980a78abdfec6bcd0e626e1532b702a",
+    "role": "active",
+    "state": "ready",
+    "unit_count": 37,
+    "method_coverage": {
+      "dense": {
+        "manifest_ready": 37,
+        "physical_representation_present": 37
+      },
+      "learned_sparse": {
+        "manifest_ready": 37,
+        "physical_representation_present": 37
+      },
+      "bm25": {
+        "manifest_ready": 37,
+        "physical_representation_present": 37
+      }
+    }
+  },
+  "cases": [
+    {
+      "case_id": "docbench:97:0",
+      "question_type": "text-only",
+      "unit_count": 6,
+      "retrieval_status": "partial",
+      "methods_used": {
+        "dense": 6,
+        "learned_sparse": 5,
+        "bm25": 5
+      },
+      "reranker_scored": 6,
+      "evidence_annotation_present": true,
+      "evidence_exact_normalized_match_ranks": [
+        5
+      ],
+      "physical_page_count": 11,
+      "page_inventory_status": "complete"
+    },
+    {
+      "case_id": "docbench:104:1",
+      "question_type": "text-only",
+      "unit_count": 16,
+      "retrieval_status": "partial",
+      "methods_used": {
+        "dense": 16,
+        "learned_sparse": 14,
+        "bm25": 14
+      },
+      "reranker_scored": 16,
+      "evidence_annotation_present": true,
+      "evidence_exact_normalized_match_ranks": [
+        1,
+        2
+      ],
+      "physical_page_count": 19,
+      "page_inventory_status": "complete"
+    },
+    {
+      "case_id": "docbench:145:0",
+      "question_type": "meta-data",
+      "unit_count": 15,
+      "retrieval_status": "partial",
+      "methods_used": {
+        "dense": 15,
+        "learned_sparse": 11,
+        "bm25": 12
+      },
+      "reranker_scored": 15,
+      "evidence_annotation_present": false,
+      "evidence_exact_normalized_match_ranks": [],
+      "physical_page_count": 9,
+      "page_inventory_status": "complete",
+      "reference_answer_matches_page_authority": true
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "id": "msg_fixture_mixed",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+    {"type": "text", "text": "我先检查目录。"},
+    {
+      "type": "tool_use",
+      "id": "toolu_fixture_2",
+      "name": "file_list",
+      "input": {"path": "."}
+    }
+  ],
+  "stop_reason": "tool_use",
+  "usage": {"input_tokens": 12, "output_tokens": 10}
+}

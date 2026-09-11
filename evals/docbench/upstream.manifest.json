@@ -1,0 +1,39 @@
+{
+  "schema_version": "eval-upstream-manifest-v1",
+  "benchmark_id": "docbench",
+  "upstream": {
+    "repo_url": "https://github.com/Anni-Zou/DocBench",
+    "pinned_commit": "774227ecd6299606c25ecabfbee9df12f924fa28",
+    "pinned_commit_utc": "2024-09-29T05:21:46Z",
+    "paper_url": "https://arxiv.org/abs/2407.10701",
+    "local_checkout": "bench://source/upstream_checkout"
+  },
+  "license_review": {
+    "reviewed_on": "2026-08-29",
+    "code_license": null,
+    "code_license_finding": "no_license_file",
+    "code_redistribution_allowed": false,
+    "notes": [
+      "The GitHub repository declares no license and ships no LICENSE/COPYING/NOTICE file. Absent an explicit grant, the code is all-rights-reserved: viewing and forking on GitHub is covered by GitHub's Terms of Service, but vendoring the files into this repository would be redistribution without permission.",
+      "The 'License: CC BY 4.0' badge on the arXiv HTML page covers the paper submission, not the code or the dataset. Do not treat it as a code or data grant.",
+      "The 229 benchmark PDFs are third-party copyrighted works (arXiv papers, New York Times front pages, corporate annual reports, US government reports) collected by the authors and distributed via Google Drive. They must never enter this repository.",
+      "Consequence: authorized upstream assets stay under the external DocBench source root, outside the product state and source checkout. This manifest pins the revision and hashes so a run stays reproducible without redistributing anything."
+    ]
+  },
+  "expected_sha256": {
+    "evaluate.py": "35ec28115c0936bf7eabf4456b75e4687cf3a1ceb506c0b7022b08f19efc76ec",
+    "evaluation_prompt.txt": "784a6d6cf4f8151765b169c633f46e62d12dcd77f8941172e72edbf8b30f9bde",
+    "utils.py": "5e3be6d5e0ef5f510119224af258735a1238c71a238ec2edb025c2f0a4f852fd",
+    "download.py": "bbf614c8747ca285e30f7fe9b50a9438fefbf912616f97cb560c1ef8929f0d3f",
+    "download.sh": "7418c288766678fc5f9ff4e48c1092b8a36c66003b9f1c62166e11313a147254",
+    "run.py": "4018399ca34a4bc4cbee3d8b1d05596564e753a11691e3aad4c50c9994f743e1",
+    "secret_key.py": "588dc06f538ae181fd1d9195f0e9c6d8e2fe776912005609ea9e161684f96eb4",
+    "README.md": "34f6ce9d7a542c2430670facf94bf6bdcc30e11b702c1ee535063b47e9eae9be"
+  },
+  "official_judge": {
+    "model": "gpt-4-0125-preview",
+    "base_url": "https://api.openai.com/v1",
+    "hardcoded_in": "utils.py:get_gpt_response_openai",
+    "note": "Judge model and endpoint are hardcoded upstream. Substituting either produces a number that is not comparable to published DocBench scores; such runs must be reported as unofficial."
+  }
+}
