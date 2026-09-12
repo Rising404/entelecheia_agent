@@ -236,11 +236,16 @@ def test_inflight_query_cannot_publish_cache_after_another_call_requires_cpu_reb
 
 
 def test_gpu_load_failure_does_not_reload_or_change_device(encoder_asset, monkeypatch):
+    # Exercise the vendor's load failure independently of optional-package preflight.
+    monkeypatch.setattr(
+        BgeM3Encoder, "_local_model_path", lambda _self: Path(encoder_asset.identifier),
+    )
     encoder = BgeM3Encoder(asset=encoder_asset, device="mps", use_fp16=False)
     fingerprint = encoder.fingerprint()
     constructor_devices = []
 
     def failing_constructor(_path, **kwargs):
+        assert Path(_path) == Path(encoder_asset.identifier)
         constructor_devices.append(kwargs["devices"])
         raise RuntimeError("MPS backend out of memory")
 

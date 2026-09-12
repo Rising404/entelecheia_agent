@@ -23,13 +23,21 @@ def test_error_outcome_failed_retryable():
     assert outcome["retry"]["action"] == "retry_turn"
 
 
+def test_api_error_export_keeps_the_service_error_identity() -> None:
+    from personagraph.api import ApiError
+    from personagraph.api.service.errors import ApiError as ServiceApiError
+
+    assert ApiError is ServiceApiError
+
+
 def test_outcome_module_does_not_load_legacy_turn_or_graph_on_import() -> None:
     completed = subprocess.run(
         [
             sys.executable,
             "-c",
             "import json, sys; import personagraph.api.runtime_outcome; "
-            "blocked = {'personagraph.runtime.turn', 'personagraph.graph', 'langgraph'}; "
+            "blocked = {'personagraph.runtime.turn', 'personagraph.graph', 'langgraph', "
+            "'personagraph.api.service', 'personagraph.model_io.gateway'}; "
             "print(json.dumps(sorted(blocked & set(sys.modules))))",
         ],
         check=False,

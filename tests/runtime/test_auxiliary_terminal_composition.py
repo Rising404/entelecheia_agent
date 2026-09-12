@@ -7,6 +7,8 @@ from types import SimpleNamespace
 
 import pytest
 
+from tests.helpers.auxiliary_project import auxiliary_project_authority  # noqa: F401
+
 from personagraph.l2.auxiliary_graph import (
     TaskGraphSemanticLineageProjection,
     TaskGraphSemanticVerificationDisposition,
@@ -669,23 +671,22 @@ def test_positive_terminal_composition_atomically_consumes_delivery_trigger() ->
         base_node_id=root_id,
         child_id=child_id,
     )
-    window = store.get_turn_execution_window(first_command.session_id)
-    assert window is not None
-    completed = run_task_graph_work_runs(
-        TaskGraphWorkRunRequest(
-            session_id=first_command.session_id,
-            turn_id=first_command.source_turn_id,
-            task_id=first_command.task_id,
-            expected_window_revision=int(window["state_version"]),
-        ),
-        monotonic_clock=iter(range(1, 500)).__next__,
-    )
-    assert completed.status == "completed"
+    # Candidate review is part of the root's delivery gate. Run execution and
+    # settlement together; an already completed Task cannot be reviewed later.
     trigger = _settle_task_revision_trigger(
         prefix="runtime-trigger-terminal",
         session_id=first_command.session_id,
         turn_id=first_command.source_turn_id,
         task_id=first_command.task_id,
+    )
+    settled_base = task_graph_store.get_insession_task_details(
+        first_command.session_id, first_command.task_id
+    )
+    assert settled_base is not None
+    assert settled_base.status.value == "active"
+    assert any(
+        node["insession_task_node_id"] == child_id and node["status"] == "completed"
+        for node in settled_base.nodes
     )
     proposal_payload = _revision_proposal().model_dump(mode="json")
     proposal_payload["root"]["nodes"][0]["objective"] = (

@@ -54,6 +54,7 @@ from tests.runtime.test_task_node_model_authority import _attempt_binding
 from tests.runtime.test_task_delivery_validation_provider import (
     _request as _task_delivery_request,
 )
+from tests.helpers.prepared_model_provider import as_prepared_test_provider
 
 
 def _tier_binding(tier: ModelTier, *, model: str) -> ModelTierBinding:
@@ -164,7 +165,7 @@ def test_durable_request_scopes_the_same_binding_into_every_provider_attempt() -
     request_auxiliary_graph_architect(
         request,
         invocation_turn_id="turn_architect_invocation_01",
-        provider=provider,
+        provider=as_prepared_test_provider(provider),
         emit=lambda _event: None,
         durable_call=authority,
     )
@@ -335,6 +336,7 @@ def test_recovery_rejects_model_binding_drift_before_provider_io(
     physical = first.begin_physical_attempt(
         turn_id="turn_architect_invocation_01",
         max_physical_attempts=6,
+        output_repair_enabled=True,
     )
     first.settle_physical_attempt(
         turn_id="turn_architect_invocation_01",

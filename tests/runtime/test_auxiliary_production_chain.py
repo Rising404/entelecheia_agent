@@ -5,7 +5,12 @@ import json
 
 import pytest
 
-from personagraph.workspace.documents.admission import ingest_document_path
+from tests.helpers.auxiliary_project import (
+    auxiliary_project_authority,  # noqa: F401
+    authorized_auxiliary_documents,
+)
+
+from tests.documents._authority import ingest_registered_document_fixture
 from personagraph.input_processing.documents import readers
 from personagraph.workspace.documents import application as docstore
 from personagraph.model_io.gateway import ModelResult
@@ -67,6 +72,7 @@ def _virtual_planning_sources_are_physically_current(
 ) -> None:
     """合成的挂载链路夹具使用虚构私有路径。"""
 
+    monkeypatch.setenv(readers.ENGINE_ENV_VAR, readers.NATIVE_ENGINE)
     monkeypatch.setattr(
         docstore,
         "check_mounted_document_freshness",
@@ -781,7 +787,7 @@ def test_mounted_document_evidence_crosses_the_full_chain_to_delivery() -> None:
         "Synthetic PDF evidence: Project Birch reached 84 percent accuracy "
         "and its deadline is October 15, 2031."
     )
-    _ingest_planning_document(
+    ingested_document = _ingest_planning_document(
         session_id=session_id,
         path="/private/synthetic/project-birch.pdf",
         title="Synthetic Project Birch Report",
@@ -799,7 +805,16 @@ def test_mounted_document_evidence_crosses_the_full_chain_to_delivery() -> None:
             max_auxiliary_effect_steps=8,
         ),
         ports=AuxiliaryProductionChainPorts(
-            auxiliary=AuxiliaryApplicationPorts(model_ledger_store=store, emit=emit),
+            auxiliary=AuxiliaryApplicationPorts(
+                task_document_scope=authorized_auxiliary_documents(
+                    session_id=session_id,
+                    turn_id=turn_id,
+                    task_id=task_id,
+                    document_ids=(str(ingested_document["doc_id"]),),
+                ),
+                model_ledger_store=store,
+                emit=emit,
+            ),
             delivery=AuxiliaryTaskDeliveryPorts(model_ledger_store=store, emit=emit),
         ),
     )
@@ -850,11 +865,9 @@ def test_real_pdf_reader_and_docstore_feed_the_verified_delivery_chain(
     )
     monkeypatch.setenv(readers.ENGINE_ENV_VAR, readers.NATIVE_ENGINE)
 
-    ingested = ingest_document_path(
+    ingested = ingest_registered_document_fixture(
         str(pdf_path),
         session_id=session_id,
-        with_summary=False,
-        document_store=docstore,
     )
 
     assert ingested["ok"] is True
@@ -871,7 +884,16 @@ def test_real_pdf_reader_and_docstore_feed_the_verified_delivery_chain(
             max_auxiliary_effect_steps=8,
         ),
         ports=AuxiliaryProductionChainPorts(
-            auxiliary=AuxiliaryApplicationPorts(model_ledger_store=store, emit=emit),
+            auxiliary=AuxiliaryApplicationPorts(
+                task_document_scope=authorized_auxiliary_documents(
+                    session_id=session_id,
+                    turn_id=turn_id,
+                    task_id=task_id,
+                    document_ids=(str(ingested["doc_id"]),),
+                ),
+                model_ledger_store=store,
+                emit=emit,
+            ),
             delivery=AuxiliaryTaskDeliveryPorts(model_ledger_store=store, emit=emit),
         ),
     )
@@ -911,11 +933,9 @@ def test_real_office_reader_and_docstore_feed_the_verified_delivery_chain(
         )
         presentation.save(str(path))
 
-    ingested = ingest_document_path(
+    ingested = ingest_registered_document_fixture(
         str(path),
         session_id=session_id,
-        with_summary=False,
-        document_store=docstore,
     )
 
     assert ingested["ok"] is True
@@ -933,7 +953,16 @@ def test_real_office_reader_and_docstore_feed_the_verified_delivery_chain(
             max_auxiliary_effect_steps=8,
         ),
         ports=AuxiliaryProductionChainPorts(
-            auxiliary=AuxiliaryApplicationPorts(model_ledger_store=store, emit=emit),
+            auxiliary=AuxiliaryApplicationPorts(
+                task_document_scope=authorized_auxiliary_documents(
+                    session_id=session_id,
+                    turn_id=turn_id,
+                    task_id=task_id,
+                    document_ids=(str(ingested["doc_id"]),),
+                ),
+                model_ledger_store=store,
+                emit=emit,
+            ),
             delivery=AuxiliaryTaskDeliveryPorts(model_ledger_store=store, emit=emit),
         ),
     )
@@ -954,7 +983,7 @@ def test_real_image_visual_observation_reaches_verified_delivery(
     image_suffix: str,
 ) -> None:
     session_id, turn_id, task_id = _seed_task()
-    _ingest_visual_source(
+    ingested_document = _ingest_visual_source(
         tmp_path / f"synthetic-chart{image_suffix}",
         session_id=session_id,
     )
@@ -978,6 +1007,12 @@ def test_real_image_visual_observation_reaches_verified_delivery(
         ),
         ports=AuxiliaryProductionChainPorts(
             auxiliary=AuxiliaryApplicationPorts(
+                task_document_scope=authorized_auxiliary_documents(
+                    session_id=session_id,
+                    turn_id=turn_id,
+                    task_id=task_id,
+                    document_ids=(str(ingested_document["doc_id"]),),
+                ),
                 model_ledger_store=store,
                 emit=emit,
                 resource_read_port=read_port,

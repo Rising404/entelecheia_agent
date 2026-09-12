@@ -1047,7 +1047,7 @@ def test_uncertain_external_visual_response_is_never_automatically_resent(
         ),
     )
     assert first.status.value == "waiting_external"
-    assert first.reason_code == "visual_completion_unconfirmed"
+    assert first.reason_code == "vision_adapter_exception"
     assert len(initial_adapter.seen) == 1
     with sqlite3.connect(ledger_path) as connection:
         assert connection.execute(
@@ -1071,7 +1071,7 @@ def test_uncertain_external_visual_response_is_never_automatically_resent(
         ),
     )
     assert second.status.value == "waiting_external"
-    assert second.reason_code == "visual_completion_unconfirmed"
+    assert second.reason_code == "vision_adapter_exception"
     assert recovery_adapter.seen == []
 
 

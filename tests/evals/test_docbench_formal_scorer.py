@@ -9,7 +9,6 @@ from pathlib import Path
 import httpx
 import pytest
 
-from evals.docbench.reproduce_or_run_script.config import docbench_root
 from evals.docbench.reproduce_or_run_script.scorer import (
     DocBenchScoringError,
     JudgeConfig,
@@ -27,7 +26,22 @@ from personagraph.model_io.api_quota_queue import derive_quota_scope_hash
 from personagraph.model_io.endpoint_profiles import ModelProfileQuota
 
 
-PROMPT_PATH = docbench_root() / "source/evaluation_prompt.txt"
+# Synthetic contract input, not a copy of the upstream evaluation prompt.
+SYNTHETIC_PROMPT = (
+    "Synthetic evaluator fixture. Score an empty system answer as 0.\n"
+    "Question: {{question}}\n"
+    "System Answer: {{sys_ans}}\n"
+    "Reference Answer: {{ref_ans}}\n"
+    "Reference Text: {{ref_text}}\n"
+)
+SYNTHETIC_PROMPT_SHA256 = hashlib.sha256(SYNTHETIC_PROMPT.encode()).hexdigest()
+
+
+@pytest.fixture
+def synthetic_prompt_path(tmp_path: Path) -> Path:
+    path = tmp_path / "synthetic-evaluation-prompt.txt"
+    path.write_text(SYNTHETIC_PROMPT, encoding="utf-8")
+    return path
 
 
 def _frozen_cases() -> list[dict[str, object]]:
@@ -100,8 +114,12 @@ def test_judge_config_requires_deepseek_dialect() -> None:
         )
 
 
-def test_loads_exact_pinned_prompt_and_fills_four_placeholders_once() -> None:
-    template, digest = load_official_prompt(PROMPT_PATH)
+def test_loads_exact_pinned_prompt_and_fills_four_placeholders_once(
+    synthetic_prompt_path: Path,
+) -> None:
+    template, digest = load_official_prompt(
+        synthetic_prompt_path, expected_sha256=SYNTHETIC_PROMPT_SHA256
+    )
     judge_input = build_judge_inputs(
         run_results=[
             {
@@ -114,13 +132,51 @@ def test_loads_exact_pinned_prompt_and_fills_four_placeholders_once() -> None:
 
     rendered = render_official_prompt(template, judge_input)
 
-    assert digest == OFFICIAL_PROMPT_SHA256
+    assert digest == SYNTHETIC_PROMPT_SHA256
+    assert template == SYNTHETIC_PROMPT
     assert "Question: What is the reported accuracy?" in rendered
     assert "Reference Answer: 65%" in rendered
     assert "Reference Text: The reported accuracy is 65%." in rendered
     assert "literal {{ref_ans}} must not be recursively filled" in rendered
     assert "{{question}}" not in rendered
     assert "{{sys_ans}}" not in rendered
+
+
+def test_default_official_pin_rejects_a_valid_synthetic_prompt_before_judge_io(
+    tmp_path: Path,
+    synthetic_prompt_path: Path,
+) -> None:
+    assert OFFICIAL_PROMPT_SHA256 == (
+        "784a6d6cf4f8151765b169c633f46e62d12dcd77f8941172e72edbf8b30f9bde"
+    )
+    with pytest.raises(DocBenchScoringError, match=OFFICIAL_PROMPT_SHA256):
+        load_official_prompt(synthetic_prompt_path)
+
+    def handler(_request: httpx.Request) -> httpx.Response:
+        pytest.fail("prompt drift must be rejected before judge I/O")
+
+    with _client(handler) as client:
+        with pytest.raises(DocBenchScoringError, match=OFFICIAL_PROMPT_SHA256):
+            score_run(
+                run_results=_run_results(),
+                frozen_cases=_frozen_cases(),
+                output_dir=tmp_path / "score",
+                prompt_path=synthetic_prompt_path,
+                judge=_judge(),
+                allow_live=True,
+                client=client,
+            )
+
+
+def test_explicit_prompt_pin_rejects_changed_bytes(
+    synthetic_prompt_path: Path,
+) -> None:
+    synthetic_prompt_path.write_text(SYNTHETIC_PROMPT + "\n", encoding="utf-8")
+
+    with pytest.raises(DocBenchScoringError, match="sha256 mismatch"):
+        load_official_prompt(
+            synthetic_prompt_path, expected_sha256=SYNTHETIC_PROMPT_SHA256
+        )
 
 
 def test_prompt_hash_or_placeholder_drift_is_rejected(tmp_path: Path) -> None:
@@ -226,6 +282,7 @@ def test_score_run_requires_live_authorization_before_reading_inputs(
 
 def test_score_run_calls_openai_compatible_endpoint_and_saves_audit_evidence(
     tmp_path: Path,
+    synthetic_prompt_path: Path,
 ) -> None:
     requests: list[httpx.Request] = []
     responses = iter(("Correctness: 1", "0"))
@@ -248,7 +305,8 @@ def test_score_run_calls_openai_compatible_endpoint_and_saves_audit_evidence(
             run_results=_run_results(),
             frozen_cases=_frozen_cases(),
             output_dir=tmp_path / "score",
-            prompt_path=PROMPT_PATH,
+            prompt_path=synthetic_prompt_path,
+            expected_prompt_sha256=SYNTHETIC_PROMPT_SHA256,
             judge=_judge(),
             allow_live=True,
             client=client,
@@ -271,7 +329,7 @@ def test_score_run_calls_openai_compatible_endpoint_and_saves_audit_evidence(
 
     assert summary["scoring_protocol"] == "docbench_prompt_compatible"
     assert summary["official_comparable"] is False
-    assert summary["prompt_sha256"] == OFFICIAL_PROMPT_SHA256
+    assert summary["prompt_sha256"] == SYNTHETIC_PROMPT_SHA256
     assert summary["score"] == 0.5
     assert summary["correct_count"] == 1
     assert summary["judge"]["request_dialect"] == "deepseek"
@@ -302,7 +360,10 @@ def test_score_run_calls_openai_compatible_endpoint_and_saves_audit_evidence(
     assert "test-secret-never-persist" not in all_artifacts
 
 
-def test_score_run_uses_the_shared_quota_database(tmp_path: Path) -> None:
+def test_score_run_uses_the_shared_quota_database(
+    tmp_path: Path,
+    synthetic_prompt_path: Path,
+) -> None:
     database = tmp_path / "run/model_api_quota.sqlite3"
     judge = JudgeConfig(
         provider="deepseek",
@@ -336,7 +397,8 @@ def test_score_run_uses_the_shared_quota_database(tmp_path: Path) -> None:
             run_results=[_run_results()["cases"][1]],
             frozen_cases=[_frozen_cases()[0]],
             output_dir=tmp_path / "score",
-            prompt_path=PROMPT_PATH,
+            prompt_path=synthetic_prompt_path,
+            expected_prompt_sha256=SYNTHETIC_PROMPT_SHA256,
             judge=judge,
             allow_live=True,
             client=client,
@@ -356,6 +418,7 @@ def test_score_run_uses_the_shared_quota_database(tmp_path: Path) -> None:
 
 def test_score_run_scores_blank_answer_zero_without_calling_judge(
     tmp_path: Path,
+    synthetic_prompt_path: Path,
 ) -> None:
     def handler(_request: httpx.Request) -> httpx.Response:
         pytest.fail("the pinned DocBench prompt defines blank answers as score 0")
@@ -370,7 +433,8 @@ def test_score_run_scores_blank_answer_zero_without_calling_judge(
             ],
             frozen_cases=[_frozen_cases()[0]],
             output_dir=tmp_path / "score",
-            prompt_path=PROMPT_PATH,
+            prompt_path=synthetic_prompt_path,
+            expected_prompt_sha256=SYNTHETIC_PROMPT_SHA256,
             judge=_judge(),
             allow_live=True,
             client=client,
@@ -389,7 +453,10 @@ def test_score_run_scores_blank_answer_zero_without_calling_judge(
     assert case["judge_response_raw"] is None
 
 
-def test_resume_reuses_success_and_retries_error(tmp_path: Path) -> None:
+def test_resume_reuses_success_and_retries_error(
+    tmp_path: Path,
+    synthetic_prompt_path: Path,
+) -> None:
     first_call_count = 0
 
     def first_handler(request: httpx.Request) -> httpx.Response:
@@ -407,7 +474,8 @@ def test_resume_reuses_success_and_retries_error(tmp_path: Path) -> None:
             run_results=_run_results(),
             frozen_cases=_frozen_cases(),
             output_dir=output_dir,
-            prompt_path=PROMPT_PATH,
+            prompt_path=synthetic_prompt_path,
+            expected_prompt_sha256=SYNTHETIC_PROMPT_SHA256,
             judge=_judge(),
             allow_live=True,
             client=client,
@@ -435,7 +503,8 @@ def test_resume_reuses_success_and_retries_error(tmp_path: Path) -> None:
             run_results=_run_results(),
             frozen_cases=_frozen_cases(),
             output_dir=output_dir,
-            prompt_path=PROMPT_PATH,
+            prompt_path=synthetic_prompt_path,
+            expected_prompt_sha256=SYNTHETIC_PROMPT_SHA256,
             judge=_judge(),
             allow_live=True,
             client=client,
@@ -457,6 +526,7 @@ def test_resume_reuses_success_and_retries_error(tmp_path: Path) -> None:
 
 def test_resume_preserves_a_legacy_error_checkpoint_as_attempt_history(
     tmp_path: Path,
+    synthetic_prompt_path: Path,
 ) -> None:
     output_dir = tmp_path / "score"
     one_result = [_run_results()["cases"][1]]
@@ -471,7 +541,8 @@ def test_resume_preserves_a_legacy_error_checkpoint_as_attempt_history(
             run_results=one_result,
             frozen_cases=one_case,
             output_dir=output_dir,
-            prompt_path=PROMPT_PATH,
+            prompt_path=synthetic_prompt_path,
+            expected_prompt_sha256=SYNTHETIC_PROMPT_SHA256,
             judge=_judge(retry_policy=no_retry),
             allow_live=True,
             client=client,
@@ -495,7 +566,8 @@ def test_resume_preserves_a_legacy_error_checkpoint_as_attempt_history(
             run_results=one_result,
             frozen_cases=one_case,
             output_dir=output_dir,
-            prompt_path=PROMPT_PATH,
+            prompt_path=synthetic_prompt_path,
+            expected_prompt_sha256=SYNTHETIC_PROMPT_SHA256,
             judge=_judge(retry_policy=no_retry),
             allow_live=True,
             client=client,
@@ -511,6 +583,7 @@ def test_resume_preserves_a_legacy_error_checkpoint_as_attempt_history(
 
 def test_resume_rejects_model_provenance_mix_without_network(
     tmp_path: Path,
+    synthetic_prompt_path: Path,
 ) -> None:
     calls = 0
 
@@ -530,7 +603,8 @@ def test_resume_rejects_model_provenance_mix_without_network(
             run_results=one_result,
             frozen_cases=one_case,
             output_dir=output_dir,
-            prompt_path=PROMPT_PATH,
+            prompt_path=synthetic_prompt_path,
+            expected_prompt_sha256=SYNTHETIC_PROMPT_SHA256,
             judge=_judge(),
             allow_live=True,
             client=client,
@@ -543,7 +617,8 @@ def test_resume_rejects_model_provenance_mix_without_network(
                 run_results=one_result,
                 frozen_cases=one_case,
                 output_dir=output_dir,
-                prompt_path=PROMPT_PATH,
+                prompt_path=synthetic_prompt_path,
+                expected_prompt_sha256=SYNTHETIC_PROMPT_SHA256,
                 judge=_judge(model="deepseek-reasoner"),
                 allow_live=True,
                 client=client,
@@ -553,6 +628,7 @@ def test_resume_rejects_model_provenance_mix_without_network(
 
 def test_http_error_is_atomically_recorded_with_raw_response(
     tmp_path: Path,
+    synthetic_prompt_path: Path,
 ) -> None:
     def handler(request: httpx.Request) -> httpx.Response:
         return httpx.Response(429, json={"error": {"message": "rate limited"}})
@@ -562,7 +638,8 @@ def test_http_error_is_atomically_recorded_with_raw_response(
             run_results=[_run_results()["cases"][1]],
             frozen_cases=[_frozen_cases()[0]],
             output_dir=tmp_path / "score",
-            prompt_path=PROMPT_PATH,
+            prompt_path=synthetic_prompt_path,
+            expected_prompt_sha256=SYNTHETIC_PROMPT_SHA256,
             judge=_judge(
                 retry_policy=JudgeRetryPolicy(
                     max_attempts=1,
@@ -586,6 +663,7 @@ def test_http_error_is_atomically_recorded_with_raw_response(
 
 def test_transient_429_uses_retry_after_seconds_and_audits_every_attempt(
     tmp_path: Path,
+    synthetic_prompt_path: Path,
 ) -> None:
     calls = 0
     sleeps: list[float] = []
@@ -609,7 +687,8 @@ def test_transient_429_uses_retry_after_seconds_and_audits_every_attempt(
             run_results=[_run_results()["cases"][1]],
             frozen_cases=[_frozen_cases()[0]],
             output_dir=tmp_path / "score",
-            prompt_path=PROMPT_PATH,
+            prompt_path=synthetic_prompt_path,
+            expected_prompt_sha256=SYNTHETIC_PROMPT_SHA256,
             judge=_judge(
                 retry_policy=JudgeRetryPolicy(
                     max_attempts=3,
@@ -652,7 +731,10 @@ def test_transient_429_uses_retry_after_seconds_and_audits_every_attempt(
     }
 
 
-def test_retry_after_http_date_is_respected(tmp_path: Path) -> None:
+def test_retry_after_http_date_is_respected(
+    tmp_path: Path,
+    synthetic_prompt_path: Path,
+) -> None:
     now = datetime(2026, 8, 29, 12, 0, tzinfo=timezone.utc)
     retry_at = now + timedelta(seconds=7)
     calls = 0
@@ -677,7 +759,8 @@ def test_retry_after_http_date_is_respected(tmp_path: Path) -> None:
             run_results=[_run_results()["cases"][1]],
             frozen_cases=[_frozen_cases()[0]],
             output_dir=tmp_path / "score",
-            prompt_path=PROMPT_PATH,
+            prompt_path=synthetic_prompt_path,
+            expected_prompt_sha256=SYNTHETIC_PROMPT_SHA256,
             judge=_judge(
                 retry_policy=JudgeRetryPolicy(
                     max_attempts=2,
@@ -700,6 +783,7 @@ def test_retry_after_http_date_is_respected(tmp_path: Path) -> None:
 
 def test_network_and_5xx_failures_use_finite_exponential_fallback(
     tmp_path: Path,
+    synthetic_prompt_path: Path,
 ) -> None:
     calls = 0
     sleeps: list[float] = []
@@ -721,7 +805,8 @@ def test_network_and_5xx_failures_use_finite_exponential_fallback(
             run_results=[_run_results()["cases"][1]],
             frozen_cases=[_frozen_cases()[0]],
             output_dir=tmp_path / "score",
-            prompt_path=PROMPT_PATH,
+            prompt_path=synthetic_prompt_path,
+            expected_prompt_sha256=SYNTHETIC_PROMPT_SHA256,
             judge=_judge(
                 retry_policy=JudgeRetryPolicy(
                     max_attempts=3,
@@ -747,7 +832,10 @@ def test_network_and_5xx_failures_use_finite_exponential_fallback(
     ]
 
 
-def test_transient_retries_stop_at_the_configured_limit(tmp_path: Path) -> None:
+def test_transient_retries_stop_at_the_configured_limit(
+    tmp_path: Path,
+    synthetic_prompt_path: Path,
+) -> None:
     calls = 0
     sleeps: list[float] = []
 
@@ -761,7 +849,8 @@ def test_transient_retries_stop_at_the_configured_limit(tmp_path: Path) -> None:
             run_results=[_run_results()["cases"][1]],
             frozen_cases=[_frozen_cases()[0]],
             output_dir=tmp_path / "score",
-            prompt_path=PROMPT_PATH,
+            prompt_path=synthetic_prompt_path,
+            expected_prompt_sha256=SYNTHETIC_PROMPT_SHA256,
             judge=_judge(
                 retry_policy=JudgeRetryPolicy(
                     max_attempts=3,
@@ -785,6 +874,7 @@ def test_transient_retries_stop_at_the_configured_limit(tmp_path: Path) -> None:
 
 def test_inter_case_pacing_applies_only_between_new_judge_cases(
     tmp_path: Path,
+    synthetic_prompt_path: Path,
 ) -> None:
     sleeps: list[float] = []
 
@@ -799,7 +889,8 @@ def test_inter_case_pacing_applies_only_between_new_judge_cases(
             run_results=_run_results(),
             frozen_cases=_frozen_cases(),
             output_dir=tmp_path / "score",
-            prompt_path=PROMPT_PATH,
+            prompt_path=synthetic_prompt_path,
+            expected_prompt_sha256=SYNTHETIC_PROMPT_SHA256,
             judge=_judge(
                 retry_policy=JudgeRetryPolicy(
                     inter_case_delay_s=1.25,

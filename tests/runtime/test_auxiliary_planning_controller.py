@@ -3,8 +3,13 @@ from __future__ import annotations
 from dataclasses import replace
 import hashlib
 import json
+from pathlib import Path
 
 import pytest
+
+from tests.helpers.auxiliary_project import auxiliary_project_authority  # noqa: F401
+
+from tests.helpers.prepared_model_provider import as_prepared_test_provider
 
 from personagraph.input_processing.documents import (
     ChunkSpan,
@@ -12,7 +17,6 @@ from personagraph.input_processing.documents import (
     DocumentLocator,
     ElementKind,
 )
-from personagraph.input_processing.files import SourceFingerprint
 from personagraph.l2.task_graph.task_matching import (
     InSessionTaskMatchesProposal,
 )
@@ -243,17 +247,16 @@ def _ingest_planning_document(
         kind=ElementKind.PARAGRAPH,
         source_pages=(1,),
     )
-    return docstore.ingest(
-        path,
+    from personagraph.workspace.storage.context import require_current
+    from tests.documents._authority import ProjectDocumentAuthority
+
+    authority = ProjectDocumentAuthority(require_current())
+    return authority.ingest(
+        Path(path).name,
         title,
         "application/octet-stream",
         [{"content": content, "loc": chunk.loc}],
         session_id=session_id,
-        source_fingerprint=SourceFingerprint(
-            sha256=source_sha256,
-            size_bytes=len(content.encode("utf-8")),
-            mtime_ns=7,
-        ),
         processor_fingerprint="initial-planning-reader@test",
         document_chunks=(chunk,),
         chunker_fingerprint="initial-planning-chunker@test",
@@ -279,7 +282,7 @@ def test_initial_planning_commits_revision_two_and_never_replans_it(
         session_id=session_id,
         turn_id=turn_id,
         insession_task_id=task_id,
-        provider=provider,
+        provider=as_prepared_test_provider(provider),
         ledger_store=store,
         emit=lambda _event: None,
     )
@@ -307,8 +310,10 @@ def test_initial_planning_commits_revision_two_and_never_replans_it(
         session_id=session_id,
         turn_id=turn_id,
         insession_task_id=task_id,
-        provider=lambda *_args, **_kwargs: pytest.fail(
-            "completed initial planning reached Provider"
+        provider=as_prepared_test_provider(
+            lambda *_args, **_kwargs: pytest.fail(
+                "completed initial planning reached Provider"
+            )
         ),
         ledger_store=store,
         emit=lambda _event: None,
@@ -354,7 +359,7 @@ def test_initial_planning_canonicalizes_model_initial_label_for_bootstrap() -> N
         session_id=session_id,
         turn_id=turn_id,
         insession_task_id=task_id,
-        provider=provider,
+        provider=as_prepared_test_provider(provider),
         ledger_store=store,
         emit=lambda _event: None,
     )
@@ -367,7 +372,7 @@ def test_initial_planning_canonicalizes_model_initial_label_for_bootstrap() -> N
     )
 
 
-def test_initial_planning_materializes_one_host_node_per_frozen_document() -> None:
+def test_initial_planning_materializes_one_host_node_per_frozen_document(tmp_path) -> None:
     session_id, turn_id, task_id = _seed_task()
     private_pdf = "/private/customer/secret-paper.pdf"
     private_png = "/private/customer/secret-chart.png"
@@ -461,6 +466,8 @@ def test_initial_planning_materializes_one_host_node_per_frozen_document() -> No
     private_values = (
         private_pdf,
         private_png,
+        str(tmp_path / Path(private_pdf).name),
+        str(tmp_path / Path(private_png).name),
         "Secret Paper",
         "Secret Chart",
         str(pdf["doc_id"]),
@@ -514,7 +521,7 @@ def test_terminal_projection_rejects_document_that_became_stale(
         )
 
 
-def test_planned_document_nodes_execute_into_verified_dependency_artifacts() -> None:
+def test_planned_document_nodes_execute_into_verified_dependency_artifacts(tmp_path) -> None:
     session_id, turn_id, task_id = _seed_task()
     first_text = "PDF finding: the method improves grounded analysis."
     second_text = "PNG finding: the chart reports a ten point gain."
@@ -598,6 +605,7 @@ def test_planned_document_nodes_execute_into_verified_dependency_artifacts() -> 
     assert first_text in serialized
     assert second_text in serialized
     assert "/private/evidence" not in serialized
+    assert str(tmp_path) not in serialized
 
 
 def test_revision_commit_response_loss_recovers_without_second_model_call(
@@ -636,7 +644,7 @@ def test_revision_commit_response_loss_recovers_without_second_model_call(
             session_id=session_id,
             turn_id=turn_id,
             insession_task_id=task_id,
-            provider=provider,
+            provider=as_prepared_test_provider(provider),
             ledger_store=store,
             emit=lambda _event: None,
         )
@@ -661,8 +669,10 @@ def test_revision_commit_response_loss_recovers_without_second_model_call(
         session_id=session_id,
         turn_id=turn_id,
         insession_task_id=task_id,
-        provider=lambda *_args, **_kwargs: pytest.fail(
-            "response-loss recovery reached Provider"
+        provider=as_prepared_test_provider(
+            lambda *_args, **_kwargs: pytest.fail(
+                "response-loss recovery reached Provider"
+            )
         ),
         ledger_store=store,
         emit=lambda _event: None,
@@ -718,7 +728,7 @@ def test_initial_architect_replays_succeeded_call_across_turn_after_precommit_lo
             session_id=session_id,
             turn_id=source_turn_id,
             insession_task_id=task_id,
-            provider=count_provider,
+            provider=as_prepared_test_provider(count_provider),
             ledger_store=store,
             emit=lambda _event: None,
         )
@@ -738,8 +748,10 @@ def test_initial_architect_replays_succeeded_call_across_turn_after_precommit_lo
         session_id=session_id,
         turn_id=continuation_turn_id,
         insession_task_id=task_id,
-        provider=lambda *_args, **_kwargs: pytest.fail(
-            "settled initial Architect call reached Provider after handoff"
+        provider=as_prepared_test_provider(
+            lambda *_args, **_kwargs: pytest.fail(
+                "settled initial Architect call reached Provider after handoff"
+            )
         ),
         ledger_store=store,
         emit=lambda _event: None,
@@ -818,8 +830,10 @@ def test_initial_architect_retryable_attempt_uses_same_logical_call_on_later_tur
             session_id=session_id,
             turn_id=source_turn_id,
             insession_task_id=task_id,
-            provider=lambda *_args, **_kwargs: pytest.fail(
-                "synthetic initial retry setup reached Provider"
+            provider=as_prepared_test_provider(
+                lambda *_args, **_kwargs: pytest.fail(
+                    "synthetic initial retry setup reached Provider"
+                )
             ),
             ledger_store=store,
             emit=lambda _event: None,
@@ -848,7 +862,7 @@ def test_initial_architect_retryable_attempt_uses_same_logical_call_on_later_tur
         session_id=session_id,
         turn_id=continuation_turn_id,
         insession_task_id=task_id,
-        provider=count_provider,
+        provider=as_prepared_test_provider(count_provider),
         ledger_store=store,
         emit=lambda _event: None,
     )
@@ -918,8 +932,10 @@ def test_initial_architect_pending_or_uncertain_waits_after_turn_handoff(
             session_id=session_id,
             turn_id=source_turn_id,
             insession_task_id=task_id,
-            provider=lambda *_args, **_kwargs: pytest.fail(
-                "synthetic initial unresolved setup reached Provider"
+            provider=as_prepared_test_provider(
+                lambda *_args, **_kwargs: pytest.fail(
+                    "synthetic initial unresolved setup reached Provider"
+                )
             ),
             ledger_store=store,
             emit=lambda _event: None,
@@ -940,8 +956,10 @@ def test_initial_architect_pending_or_uncertain_waits_after_turn_handoff(
             session_id=session_id,
             turn_id=continuation_turn_id,
             insession_task_id=task_id,
-            provider=lambda *_args, **_kwargs: pytest.fail(
-                f"{outcome} initial Architect call was blindly resent"
+            provider=as_prepared_test_provider(
+                lambda *_args, **_kwargs: pytest.fail(
+                    f"{outcome} initial Architect call was blindly resent"
+                )
             ),
             ledger_store=store,
             emit=lambda _event: None,
@@ -965,8 +983,10 @@ def test_initial_architect_rejects_read_only_continuation_lane_before_effect(
             session_id=session_id,
             turn_id=continuation_turn_id,
             insession_task_id=task_id,
-            provider=lambda *_args, **_kwargs: pytest.fail(
-                "read-only initial planning lane reached Provider"
+            provider=as_prepared_test_provider(
+                lambda *_args, **_kwargs: pytest.fail(
+                    "read-only initial planning lane reached Provider"
+                )
             ),
             ledger_store=store,
             emit=lambda _event: None,
@@ -1018,8 +1038,10 @@ def test_foreign_revision_two_without_completion_is_not_already_planned(
             session_id=session_id,
             turn_id=turn_id,
             insession_task_id=task_id,
-            provider=lambda *_args, **_kwargs: pytest.fail(
-                "foreign revision two reached Provider"
+            provider=as_prepared_test_provider(
+                lambda *_args, **_kwargs: pytest.fail(
+                    "foreign revision two reached Provider"
+                )
             ),
             ledger_store=store,
             emit=lambda _event: None,
@@ -1077,8 +1099,10 @@ def test_tampered_completion_receipt_cannot_authorize_already_planned(
             session_id=session_id,
             turn_id=turn_id,
             insession_task_id=task_id,
-            provider=lambda *_args, **_kwargs: pytest.fail(
-                "tampered completion reached Provider"
+            provider=as_prepared_test_provider(
+                lambda *_args, **_kwargs: pytest.fail(
+                    "tampered completion reached Provider"
+                )
             ),
             ledger_store=store,
             emit=lambda _event: None,
@@ -1125,7 +1149,7 @@ def test_initial_planning_returns_terminal_failure_without_dispatchable_revision
         session_id=session_id,
         turn_id=turn_id,
         insession_task_id=task_id,
-        provider=provider,
+        provider=as_prepared_test_provider(provider),
         ledger_store=store,
         emit=lambda _event: None,
     )
@@ -1164,8 +1188,10 @@ def test_mounted_authority_drift_rejects_before_provider_dispatch(
             session_id=session_id,
             turn_id=turn_id,
             insession_task_id=task_id,
-            provider=lambda *_args, **_kwargs: pytest.fail(
-                "drifted authority reached Provider"
+            provider=as_prepared_test_provider(
+                lambda *_args, **_kwargs: pytest.fail(
+                    "drifted authority reached Provider"
+                )
             ),
             ledger_store=store,
             emit=lambda _event: None,

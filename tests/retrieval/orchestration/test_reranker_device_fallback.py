@@ -373,14 +373,18 @@ def test_gpu_batch_timing_includes_device_synchronization(monkeypatch):
 
 
 def test_async_gpu_error_in_post_hook_escapes_vendor_runtime_retry(monkeypatch, tmp_path):
-    import torch
-
     instances = []
     swallowed = []
 
-    class Native(torch.nn.Module):
-        def forward(self, input_ids):
-            return torch.ones((input_ids.shape[0], 1))
+    class Native(HookedForward):
+        # Torch dispatches pre/forward/post hooks inside _call_impl. Keep that
+        # boundary so a post-hook failure tests the guard without importing Torch.
+        def __call__(self, *, input_ids):
+            return self._call_impl(input_ids=input_ids)
+
+        def _call_impl(self, *, input_ids):
+            self.run(input_ids.shape[0])
+            return [1.0] * input_ids.shape[0]
 
     class Scorer:
         def __init__(self, _path, **kwargs):
@@ -392,11 +396,11 @@ def test_async_gpu_error_in_post_hook_escapes_vendor_runtime_retry(monkeypatch, 
             # 模拟供应商吞 RuntimeError 的首批探测，但测试本身不能无限循环。
             for _ in range(3):
                 try:
-                    output = self.model(input_ids=torch.ones((len(pairs), 12)))
+                    output = self.model(input_ids=SimpleNamespace(shape=(len(pairs), 12)))
                 except RuntimeError:
                     swallowed.append(self.device)
                 else:
-                    return output.view(-1).tolist()
+                    return output
             raise AssertionError("vendor swallowed the asynchronous device failure")
 
     def synchronize(device):
@@ -416,6 +420,7 @@ def test_async_gpu_error_in_post_hook_escapes_vendor_runtime_retry(monkeypatch, 
 
     assert swallowed == []
     assert [model.device for model in instances] == ["mps", "cpu"]
-    assert all(not model.model._forward_hooks for model in instances)
-    assert all(not model.model._forward_pre_hooks for model in instances)
+    assert all(not model.model.post_hooks for model in instances)
+    assert all(not model.model.pre_hooks for model in instances)
+    assert all("_call_impl" not in vars(model.model) for model in instances)
     assert execution.snapshot()["metrics"]["reranker_cpu_fallback_count"] == 1

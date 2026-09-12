@@ -7,6 +7,8 @@ from functools import partial
 
 import pytest
 
+from tests.helpers.prepared_model_provider import as_prepared_test_provider
+
 from personagraph.l2.auxiliary_execution.adapters.model_authority import (
     create_auxiliary_semantic_reviewer_model_call_authority,
 )
@@ -37,7 +39,7 @@ def test_production_semantic_provider_and_authority_settle_with_exact_replay() -
 
     first = run_auxiliary_semantic_verification(
         request,
-        provider=provider,
+        provider=as_prepared_test_provider(provider),
         model_call_authority_factory=(
             partial(create_auxiliary_semantic_reviewer_model_call_authority, ledger_store=store)
         ),
@@ -45,8 +47,10 @@ def test_production_semantic_provider_and_authority_settle_with_exact_replay() -
     )
     replayed = run_auxiliary_semantic_verification(
         request,
-        provider=lambda *_args, **_kwargs: pytest.fail(
-            "semantic settlement replay reached Provider"
+        provider=as_prepared_test_provider(
+            lambda *_args, **_kwargs: pytest.fail(
+                "semantic settlement replay reached Provider"
+            )
         ),
         model_call_authority_factory=(
             partial(create_auxiliary_semantic_reviewer_model_call_authority, ledger_store=store)

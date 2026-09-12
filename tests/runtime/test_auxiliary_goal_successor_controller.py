@@ -5,6 +5,10 @@ import json
 
 import pytest
 
+from tests.helpers.auxiliary_project import auxiliary_project_authority  # noqa: F401
+
+from tests.helpers.prepared_model_provider import as_prepared_test_provider
+
 from personagraph.model_io.gateway import ModelResult
 from personagraph.l2.auxiliary_execution import (
     application as auxiliary_application,
@@ -236,7 +240,7 @@ def test_authenticated_receipt_bootstraps_fresh_goal_then_model_plans_and_replay
         request,
         ledger_store=store,
         emit=lambda _event: None,
-        provider=provider,
+        provider=as_prepared_test_provider(provider),
     )
 
     assert planned.status is AuxiliaryGoalSuccessorPlanningStatus.PLANNED
@@ -270,8 +274,10 @@ def test_authenticated_receipt_bootstraps_fresh_goal_then_model_plans_and_replay
         request,
         ledger_store=store,
         emit=lambda _event: None,
-        provider=lambda *_args, **_kwargs: pytest.fail(
-            "completed successor planning reached Provider"
+        provider=as_prepared_test_provider(
+            lambda *_args, **_kwargs: pytest.fail(
+                "completed successor planning reached Provider"
+            )
         ),
     )
     assert (
@@ -322,7 +328,7 @@ def test_successor_replays_succeeded_architect_across_turn_after_precommit_loss(
             ),
             ledger_store=store,
             emit=lambda _event: None,
-            provider=count_provider,
+            provider=as_prepared_test_provider(count_provider),
         )
     assert provider_calls == 1
 
@@ -346,8 +352,10 @@ def test_successor_replays_succeeded_architect_across_turn_after_precommit_loss(
         ),
         ledger_store=store,
         emit=lambda _event: None,
-        provider=lambda *_args, **_kwargs: pytest.fail(
-            "settled successor Architect call reached Provider after handoff"
+        provider=as_prepared_test_provider(
+            lambda *_args, **_kwargs: pytest.fail(
+                "settled successor Architect call reached Provider after handoff"
+            )
         ),
     )
 
@@ -419,8 +427,10 @@ def test_successor_retryable_architect_attempt_uses_same_logical_call_on_later_t
             ),
             ledger_store=store,
             emit=lambda _event: None,
-            provider=lambda *_args, **_kwargs: pytest.fail(
-                "synthetic retry setup reached Provider"
+            provider=as_prepared_test_provider(
+                lambda *_args, **_kwargs: pytest.fail(
+                    "synthetic retry setup reached Provider"
+                )
             ),
         )
 
@@ -452,7 +462,7 @@ def test_successor_retryable_architect_attempt_uses_same_logical_call_on_later_t
         ),
         ledger_store=store,
         emit=lambda _event: None,
-        provider=count_provider,
+        provider=as_prepared_test_provider(count_provider),
     )
 
     assert recovered.status is AuxiliaryGoalSuccessorPlanningStatus.PLANNED
@@ -524,8 +534,10 @@ def test_successor_pending_or_uncertain_architect_waits_external_after_turn_hand
             ),
             ledger_store=store,
             emit=lambda _event: None,
-            provider=lambda *_args, **_kwargs: pytest.fail(
-                "synthetic unreconciled setup reached Provider"
+            provider=as_prepared_test_provider(
+                lambda *_args, **_kwargs: pytest.fail(
+                    "synthetic unreconciled setup reached Provider"
+                )
             ),
         )
     continuation_turn_id = _accept_continuation_turn(
@@ -550,8 +562,10 @@ def test_successor_pending_or_uncertain_architect_waits_external_after_turn_hand
             ),
             ledger_store=store,
             emit=lambda _event: None,
-            provider=lambda *_args, **_kwargs: pytest.fail(
-                f"{outcome} successor call was blindly resent"
+            provider=as_prepared_test_provider(
+                lambda *_args, **_kwargs: pytest.fail(
+                    f"{outcome} successor call was blindly resent"
+                )
             ),
         )
 
@@ -580,8 +594,10 @@ def test_successor_rejects_self_consistent_but_unstored_supersede_receipt() -> N
             ),
             ledger_store=store,
             emit=lambda _event: None,
-            provider=lambda *_args, **_kwargs: pytest.fail(
-                "forged receipt reached Provider"
+            provider=as_prepared_test_provider(
+                lambda *_args, **_kwargs: pytest.fail(
+                    "forged receipt reached Provider"
+                )
             ),
         )
 
@@ -607,7 +623,7 @@ def test_application_detects_pending_target_change_receipt_and_runs_successor() 
         ports=AuxiliaryApplicationPorts(
             model_ledger_store=store,
             emit=lambda _event: None,
-            planning_provider=physical,
+            planning_provider=as_prepared_test_provider(physical),
         ),
     )
 
@@ -659,7 +675,7 @@ def test_pending_target_change_receipt_starts_successor_on_later_turn_without_re
         ports=AuxiliaryApplicationPorts(
             model_ledger_store=store,
             emit=lambda _event: None,
-            planning_provider=count_provider,
+            planning_provider=as_prepared_test_provider(count_provider),
         ),
     )
 
@@ -700,7 +716,7 @@ def test_application_consumes_guarded_lane_target_change_without_manual_receipt(
         ports=AuxiliaryApplicationPorts(
             model_ledger_store=store,
             emit=lambda _event: None,
-            planning_provider=build_auxiliary_architect_structured_provider(),
+            planning_provider=as_prepared_test_provider(build_auxiliary_architect_structured_provider()),
         ),
     )
 
@@ -725,8 +741,10 @@ def test_application_consumes_guarded_lane_target_change_without_manual_receipt(
         ports=AuxiliaryApplicationPorts(
             model_ledger_store=store,
             emit=lambda _event: None,
-            planning_provider=lambda *_args, **_kwargs: pytest.fail(
-                "replayed target change reached the Architect Provider"
+            planning_provider=as_prepared_test_provider(
+                lambda *_args, **_kwargs: pytest.fail(
+                    "replayed target change reached the Architect Provider"
+                )
             ),
         ),
     )
@@ -773,7 +791,7 @@ def test_application_never_infers_target_change_from_ordinary_existing_root(
         ports=AuxiliaryApplicationPorts(
             model_ledger_store=store,
             emit=lambda _event: None,
-            planning_provider=build_auxiliary_architect_structured_provider(),
+            planning_provider=as_prepared_test_provider(build_auxiliary_architect_structured_provider()),
         ),
     )
 
@@ -891,7 +909,7 @@ def test_application_follows_explicit_base_drift_supersede_route_into_successor(
         ports=AuxiliaryApplicationPorts(
             model_ledger_store=store,
             emit=lambda _event: None,
-            planning_provider=provider,
+            planning_provider=as_prepared_test_provider(provider),
         ),
     )
 
@@ -928,7 +946,7 @@ def test_application_supersedes_persisted_plan_on_base_drift_before_frontier(
         ports=AuxiliaryApplicationPorts(
             model_ledger_store=store,
             emit=lambda _event: None,
-            planning_provider=provider,
+            planning_provider=as_prepared_test_provider(provider),
         ),
     )
     assert initial.status is AuxiliaryApplicationStatus.STEP_LIMIT_REACHED
@@ -963,7 +981,7 @@ def test_application_supersedes_persisted_plan_on_base_drift_before_frontier(
         ports=AuxiliaryApplicationPorts(
             model_ledger_store=store,
             emit=lambda _event: None,
-            planning_provider=successor_provider,
+            planning_provider=as_prepared_test_provider(successor_provider),
         ),
     )
 

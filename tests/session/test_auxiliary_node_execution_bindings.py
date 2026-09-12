@@ -19,13 +19,13 @@ def _relative_modules(path: Path) -> set[str]:
     }
 
 
-def _imported_names(path: Path, module: str) -> set[str]:
+def _imported_names(path: Path, module: str, *, level: int = 1) -> set[str]:
     tree = ast.parse(path.read_text(encoding="utf-8"))
     return {
         alias.name
         for node in ast.walk(tree)
         if isinstance(node, ast.ImportFrom)
-        and node.level == 1
+        and node.level == level
         and node.module == module
         for alias in node.names
     }
@@ -39,7 +39,8 @@ def test_verification_consumers_import_the_narrow_binding_owner() -> None:
     }
     assert binding_names <= _imported_names(
         Path(work_execution.__file__),
-        "auxiliary_node_execution_bindings",
+        "auxiliary_graph.auxiliary_node_execution_bindings",
+        level=2,
     )
     assert {
         "_auxiliary_record_from_row",

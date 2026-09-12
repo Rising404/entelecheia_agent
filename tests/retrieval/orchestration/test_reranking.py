@@ -182,7 +182,7 @@ def test_stable_reranker_unavailable_reason_survives_orchestration():
     assert result.outcomes[0].reason_code == "bge_reranker_model_unavailable:OSError"
 
 
-def test_bge_adapter_is_lazy_bounded_and_rejects_unaligned_scores(monkeypatch):
+def test_bge_adapter_is_lazy_bounded_and_rejects_unaligned_scores(monkeypatch, tmp_path):
     constructed: list[dict[str, object]] = []
 
     class FakeFlagReranker:
@@ -198,7 +198,13 @@ def test_bge_adapter_is_lazy_bounded_and_rejects_unaligned_scores(monkeypatch):
         "FlagEmbedding",
         SimpleNamespace(FlagReranker=FakeFlagReranker),
     )
-    reranker = BgeM3Reranker(batch_size=4, query_max_length=128, max_length=768)
+    monkeypatch.setattr(BgeM3Reranker, "_local_model_path", lambda _self: tmp_path)
+    reranker = BgeM3Reranker(
+        asset=LocalModelAssetRef.path(tmp_path, canonical_identity="test:lazy-reranker"),
+        batch_size=4,
+        query_max_length=128,
+        max_length=768,
+    )
     assert constructed == []
 
     with pytest.raises(RerankerUnavailable, match="unaligned"):
@@ -206,7 +212,7 @@ def test_bge_adapter_is_lazy_bounded_and_rejects_unaligned_scores(monkeypatch):
 
     assert len(constructed) == 1
     loaded = constructed[0]
-    assert Path(str(loaded.pop("model_name"))).is_dir()
+    assert Path(str(loaded.pop("model_name"))) == tmp_path
     assert loaded == {
         "use_fp16": False,
         "devices": "cpu",

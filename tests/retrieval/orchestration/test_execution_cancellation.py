@@ -268,7 +268,8 @@ def test_bge_forward_timings_and_pair_alignment_preserve_the_existing_scorer():
     assert execution.snapshot()["metrics"]["reranker_scored_pairs"] == 3
 
 
-def test_cancelled_cold_load_stops_before_scoring_and_is_not_reloaded(monkeypatch):
+def test_cancelled_cold_load_stops_before_scoring_and_is_not_reloaded(monkeypatch, tmp_path):
+    from personagraph.retrieval.indexing.model_assets import LocalModelAssetRef
     from personagraph.retrieval.orchestration.reranking import BgeM3Reranker
 
     now = [0.0]
@@ -277,6 +278,7 @@ def test_cancelled_cold_load_stops_before_scoring_and_is_not_reloaded(monkeypatc
     loads = []
 
     def load(*args, **kwargs):
+        assert args == (str(tmp_path),)
         loads.append(1)
         now[0] = 2.0
         control.cancelled.set()
@@ -285,7 +287,11 @@ def test_cancelled_cold_load_stops_before_scoring_and_is_not_reloaded(monkeypatc
     monkeypatch.setitem(
         sys.modules, "FlagEmbedding", SimpleNamespace(FlagReranker=load)
     )
-    reranker = BgeM3Reranker(batch_size=2)
+    monkeypatch.setattr(BgeM3Reranker, "_local_model_path", lambda _self: tmp_path)
+    reranker = BgeM3Reranker(
+        asset=LocalModelAssetRef.path(tmp_path, canonical_identity="test:cancelled-load"),
+        batch_size=2,
+    )
     execution = RetrievalExecution(control, clock=lambda: now[0])
     with execution_scope(execution), pytest.raises(RetrievalCancelled):
         reranker.score((("q", "a"),))

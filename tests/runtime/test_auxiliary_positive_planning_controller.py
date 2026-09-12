@@ -4,6 +4,8 @@ import json
 
 import pytest
 
+from tests.helpers.prepared_model_provider import as_prepared_test_provider
+
 
 from personagraph.l2.task_graph import (
     TaskDeliveryValidationDimension,
@@ -241,7 +243,7 @@ def test_delivery_revise_trigger_drives_application_through_taskgraph_revision_t
             model_ledger_store=store,
             emit=lambda _event: None,
             task_candidate_validation_provider=(
-                _revision_required_task_candidate_validator
+                as_prepared_test_provider(_revision_required_task_candidate_validator)
             ),
         ),
     )
@@ -393,8 +395,8 @@ def test_delivery_revise_trigger_drives_application_through_taskgraph_revision_t
         ports=AuxiliaryApplicationPorts(
             model_ledger_store=store,
             emit=lambda _event: None,
-            planning_provider=architect_provider,
-            attempt_provider=attempt_provider,
+            planning_provider=as_prepared_test_provider(architect_provider),
+            attempt_provider=as_prepared_test_provider(attempt_provider),
         ),
     )
 
@@ -465,7 +467,7 @@ def test_positive_planner_model_sees_trigger_objective_and_exact_base_then_repla
         request,
         ledger_store=store,
         emit=lambda _event: None,
-        provider=provider,
+        provider=as_prepared_test_provider(provider),
     )
 
     assert planned.status is AuxiliaryPositivePlanningStatus.PLANNED
@@ -493,8 +495,10 @@ def test_positive_planner_model_sees_trigger_objective_and_exact_base_then_repla
         request,
         ledger_store=store,
         emit=lambda _event: None,
-        provider=lambda *_args, **_kwargs: pytest.fail(
-            "completed positive planning reached Provider"
+        provider=as_prepared_test_provider(
+            lambda *_args, **_kwargs: pytest.fail(
+                "completed positive planning reached Provider"
+            )
         ),
     )
     assert (
@@ -534,8 +538,10 @@ def test_positive_planner_model_sees_trigger_objective_and_exact_base_then_repla
         request,
         ledger_store=store,
         emit=lambda _event: None,
-        provider=lambda *_args, **_kwargs: pytest.fail(
-            "commit-ready positive plan reached Provider"
+        provider=as_prepared_test_provider(
+            lambda *_args, **_kwargs: pytest.fail(
+                "commit-ready positive plan reached Provider"
+            )
         ),
     )
     assert (
@@ -588,7 +594,7 @@ def test_application_prioritizes_active_taskgraph_trigger_over_initial_completio
         ports=AuxiliaryApplicationPorts(
             model_ledger_store=store,
             emit=lambda _event: None,
-            planning_provider=provider,
+            planning_provider=as_prepared_test_provider(provider),
         ),
     )
 
@@ -620,7 +626,7 @@ def test_positive_plan_committed_before_turn_handoff_replays_then_executes(
             model_ledger_store=store,
             emit=lambda _event: None,
             task_candidate_validation_provider=(
-                _revision_required_task_candidate_validator
+                as_prepared_test_provider(_revision_required_task_candidate_validator)
             ),
         ),
     )
@@ -647,7 +653,7 @@ def test_positive_plan_committed_before_turn_handoff_replays_then_executes(
         ports=AuxiliaryApplicationPorts(
             model_ledger_store=store,
             emit=lambda _event: None,
-            planning_provider=count_architect,
+            planning_provider=as_prepared_test_provider(count_architect),
         ),
     )
     assert planned.status is AuxiliaryApplicationStatus.STEP_LIMIT_REACHED
@@ -678,11 +684,13 @@ def test_positive_plan_committed_before_turn_handoff_replays_then_executes(
         ports=AuxiliaryApplicationPorts(
             model_ledger_store=store,
             emit=lambda _event: None,
-            planning_provider=lambda *_args, **_kwargs: pytest.fail(
-                "committed positive Architect plan reached Provider after handoff"
+            planning_provider=as_prepared_test_provider(
+                lambda *_args, **_kwargs: pytest.fail(
+                    "committed positive Architect plan reached Provider after handoff"
+                )
             ),
-            attempt_provider=build_attempt_structured_provider(profile),
-            verification_provider=build_verification_structured_provider(profile),
+            attempt_provider=as_prepared_test_provider(build_attempt_structured_provider(profile)),
+            verification_provider=as_prepared_test_provider(build_verification_structured_provider(profile)),
         ),
     )
 
@@ -754,7 +762,7 @@ def test_positive_planner_replays_settled_model_across_turn_after_precommit_resp
             request,
             ledger_store=store,
             emit=lambda _event: None,
-            provider=provider,
+            provider=as_prepared_test_provider(provider),
         )
     bootstrap = auxiliary_graph_store.get_auxiliary_graph_for_task(
         session_id=session_id,
@@ -786,8 +794,10 @@ def test_positive_planner_replays_settled_model_across_turn_after_precommit_resp
         ),
         ledger_store=store,
         emit=lambda _event: None,
-        provider=lambda *_args, **_kwargs: pytest.fail(
-            "settled Architect model call reached Provider again"
+        provider=as_prepared_test_provider(
+            lambda *_args, **_kwargs: pytest.fail(
+                "settled Architect model call reached Provider again"
+            )
         ),
     )
 
@@ -831,8 +841,10 @@ def test_positive_planner_rejects_wrong_base_before_provider(
             ),
             ledger_store=store,
             emit=lambda _event: None,
-            provider=lambda *_args, **_kwargs: pytest.fail(
-                "wrong base reached Provider"
+            provider=as_prepared_test_provider(
+                lambda *_args, **_kwargs: pytest.fail(
+                    "wrong base reached Provider"
+                )
             ),
         )
 
@@ -875,8 +887,10 @@ def test_positive_planner_rejects_self_consistent_but_inactive_trigger(
             ),
             ledger_store=store,
             emit=lambda _event: None,
-            provider=lambda *_args, **_kwargs: pytest.fail(
-                "forged trigger reached Provider"
+            provider=as_prepared_test_provider(
+                lambda *_args, **_kwargs: pytest.fail(
+                    "forged trigger reached Provider"
+                )
             ),
         )
 
@@ -912,8 +926,10 @@ def test_positive_planner_rejects_non_running_invocation_before_provider(
             ),
             ledger_store=store,
             emit=lambda _event: None,
-            provider=lambda *_args, **_kwargs: pytest.fail(
-                "non-running invocation reached Provider"
+            provider=as_prepared_test_provider(
+                lambda *_args, **_kwargs: pytest.fail(
+                    "non-running invocation reached Provider"
+                )
             ),
         )
 
@@ -955,7 +971,9 @@ def test_positive_planner_rejects_durable_lane_without_execution_request(
             ),
             ledger_store=store,
             emit=lambda _event: None,
-            provider=lambda *_args, **_kwargs: pytest.fail(
-                "non-executing durable lane reached Provider"
+            provider=as_prepared_test_provider(
+                lambda *_args, **_kwargs: pytest.fail(
+                    "non-executing durable lane reached Provider"
+                )
             ),
         )

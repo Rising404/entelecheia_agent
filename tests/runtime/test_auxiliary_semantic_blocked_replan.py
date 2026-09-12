@@ -3,6 +3,12 @@ from __future__ import annotations
 import hashlib
 import json
 
+from tests.helpers.auxiliary_project import (
+    auxiliary_project_authority,  # noqa: F401
+    authorized_auxiliary_documents,
+)
+from tests.helpers.prepared_model_provider import as_prepared_test_provider
+
 from personagraph.l2.auxiliary_graph import (
     AuxiliaryReplanTriggerReason,
     PlanningAuthorityClass,
@@ -157,11 +163,11 @@ def test_terminal_semantic_information_blocked_replans_to_durable_user_gate(
     monkeypatch,
 ) -> None:
     monkeypatch.setattr(
-        "personagraph.workspace.documents.check_mounted_document_freshness",
+        "personagraph.workspace.documents.application.check_mounted_document_freshness",
         _virtual_mounted_freshness,
     )
     session_id, turn_id, task_id = _seed_task()
-    _ingest_planning_document(
+    ingested_document = _ingest_planning_document(
         session_id=session_id,
         path="/private/evidence/incomplete-paper.pdf",
         title="Incomplete Paper",
@@ -214,11 +220,17 @@ def test_terminal_semantic_information_blocked_replans_to_durable_user_gate(
             max_effect_steps=16,
         ),
         ports=AuxiliaryApplicationPorts(
+            task_document_scope=authorized_auxiliary_documents(
+                session_id=session_id,
+                turn_id=turn_id,
+                task_id=task_id,
+                document_ids=(str(ingested_document["doc_id"]),),
+            ),
             model_ledger_store=store,
             emit=lambda _event: None,
-            planning_provider=planning_provider,
-            attempt_provider=attempt_provider,
-            semantic_provider=semantic_provider,
+            planning_provider=as_prepared_test_provider(planning_provider),
+            attempt_provider=as_prepared_test_provider(attempt_provider),
+            semantic_provider=as_prepared_test_provider(semantic_provider),
             semantic_model_call_authority_factory=semantic_authority_factory,
             resource_read_port=_PartialInformationReadPort(),
         ),
@@ -299,11 +311,11 @@ def test_terminal_semantic_missing_authority_cannot_become_textual_user_gate(
     monkeypatch,
 ) -> None:
     monkeypatch.setattr(
-        "personagraph.workspace.documents.check_mounted_document_freshness",
+        "personagraph.workspace.documents.application.check_mounted_document_freshness",
         _virtual_mounted_freshness,
     )
     session_id, turn_id, task_id = _seed_task()
-    _ingest_planning_document(
+    ingested_document = _ingest_planning_document(
         session_id=session_id,
         path="/private/evidence/authority-bound-paper.pdf",
         title="Authority-bound Paper",
@@ -322,9 +334,15 @@ def test_terminal_semantic_missing_authority_cannot_become_textual_user_gate(
             max_effect_steps=16,
         ),
         ports=AuxiliaryApplicationPorts(
+            task_document_scope=authorized_auxiliary_documents(
+                session_id=session_id,
+                turn_id=turn_id,
+                task_id=task_id,
+                document_ids=(str(ingested_document["doc_id"]),),
+            ),
             model_ledger_store=store,
             emit=lambda _event: None,
-            semantic_provider=semantic_provider,
+            semantic_provider=as_prepared_test_provider(semantic_provider),
             semantic_model_call_authority_factory=semantic_authority_factory,
             resource_read_port=_PartialInformationReadPort(),
         ),

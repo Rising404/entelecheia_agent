@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 from collections.abc import Callable
+from functools import partial
 from types import SimpleNamespace
 from typing import Any, TypeVar
 
@@ -2081,7 +2082,7 @@ def test_verification_success_before_commit_replays_typed_result_on_next_turn(
         emit=lambda _event: None,
         id_plan=id_plan,
         model_call_authority_factory=(
-            create_task_node_work_run_model_call_authority
+            partial(create_task_node_work_run_model_call_authority, ledger_store=store)
         ),
         monotonic_clock=_advancing_clock(),
     )
@@ -2148,7 +2149,7 @@ def test_verification_success_before_commit_replays_typed_result_on_next_turn(
         emit=lambda _event: None,
         id_plan=id_plan,
         model_call_authority_factory=(
-            create_task_node_work_run_model_call_authority
+            partial(create_task_node_work_run_model_call_authority, ledger_store=store)
         ),
         monotonic_clock=_advancing_clock(),
     )
@@ -2610,7 +2611,7 @@ def test_generic_task_node_retry_continues_same_logical_call_on_new_turn(
         id_plan=id_plan,
         deadline=StopAfterOnePhysicalAttempt(),  # type: ignore[arg-type]
         model_call_authority_factory=(
-            create_task_node_work_run_model_call_authority
+            partial(create_task_node_work_run_model_call_authority, ledger_store=store)
         ),
         monotonic_clock=_advancing_clock(),
     )
@@ -2723,7 +2724,7 @@ def test_generic_task_node_retry_continues_same_logical_call_on_new_turn(
         emit=lambda _event: None,
         id_plan=id_plan,
         model_call_authority_factory=(
-            create_task_node_work_run_model_call_authority
+            partial(create_task_node_work_run_model_call_authority, ledger_store=store)
         ),
         monotonic_clock=_advancing_clock(),
     )

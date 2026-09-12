@@ -999,11 +999,11 @@ def test_entry_new_turn_resumes_persisted_active_graph_without_demo_script(
 def test_entry_cross_turn_resumes_active_n_plus_one_trigger_end_to_end(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    from tests.session.test_task_delivery_validation_persistence import (
-        _settled_candidate,
+    from tests.helpers.current_auxiliary_delivery import (
+        settle_current_auxiliary_candidate,
     )
 
-    session_id, _turn_id, task_id, delivery_result = _settled_candidate(
+    session_id, _turn_id, task_id, delivery_result = settle_current_auxiliary_candidate(
         monkeypatch,
         route="replan_task_graph",
     )

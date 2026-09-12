@@ -6,6 +6,8 @@ from types import SimpleNamespace
 
 import pytest
 
+from tests.helpers.prepared_model_provider import as_prepared_test_provider
+
 from personagraph.l2.auxiliary_graph import (
     AuxiliaryGraphRevisionReason,
     PlanningAuthorityAnchor,
@@ -117,7 +119,7 @@ def test_non_pass_settlement_replans_exact_n_to_n_plus_one_and_replays() -> None
 
     replanned = run_auxiliary_replanning(
         request,
-        provider=provider,
+        provider=as_prepared_test_provider(provider),
         ledger_store=store,
         emit=lambda _event: None,
     )
@@ -166,8 +168,10 @@ def test_non_pass_settlement_replans_exact_n_to_n_plus_one_and_replays() -> None
 
     replayed = run_auxiliary_replanning(
         request,
-        provider=lambda *_args, **_kwargs: pytest.fail(
-            "an applied replan reached the Architect Provider"
+        provider=as_prepared_test_provider(
+            lambda *_args, **_kwargs: pytest.fail(
+                "an applied replan reached the Architect Provider"
+            )
         ),
         ledger_store=store,
         emit=lambda _event: None,
@@ -472,7 +476,7 @@ def test_model_result_replays_after_failure_before_revision_commit(
     with pytest.raises(RuntimeError, match="response loss"):
         run_auxiliary_replanning(
             request,
-            provider=provider,
+            provider=as_prepared_test_provider(provider),
             ledger_store=store,
             emit=lambda _event: None,
         )
@@ -492,7 +496,7 @@ def test_model_result_replays_after_failure_before_revision_commit(
 
     recovered = run_auxiliary_replanning(
         request,
-        provider=provider,
+        provider=as_prepared_test_provider(provider),
         ledger_store=store,
         emit=lambda _event: None,
     )
@@ -531,7 +535,7 @@ def test_revision_commit_response_loss_consumes_active_trigger_without_provider(
     with pytest.raises(RuntimeError, match="response loss"):
         run_auxiliary_replanning(
             request,
-            provider=provider,
+            provider=as_prepared_test_provider(provider),
             ledger_store=store,
             emit=lambda _event: None,
         )
@@ -550,8 +554,10 @@ def test_revision_commit_response_loss_consumes_active_trigger_without_provider(
 
     recovered = run_auxiliary_replanning(
         request,
-        provider=lambda *_args, **_kwargs: pytest.fail(
-            "post-commit recovery reached the Architect Provider"
+        provider=as_prepared_test_provider(
+            lambda *_args, **_kwargs: pytest.fail(
+                "post-commit recovery reached the Architect Provider"
+            )
         ),
         ledger_store=store,
         emit=lambda _event: None,
@@ -589,7 +595,7 @@ def test_replan_limit_stops_before_trigger_or_provider(
     )
     limited = run_auxiliary_replanning(
         _request(session_id, turn_id, task_id, settlement, maximum=1),
-        provider=provider,
+        provider=as_prepared_test_provider(provider),
         ledger_store=store,
         emit=lambda _event: None,
     )
@@ -628,7 +634,7 @@ def test_cross_task_settlement_fails_closed_before_provider() -> None:
     with pytest.raises(AuxiliaryReplanningError, match="settlement"):
         run_auxiliary_replanning(
             _request(session_id, turn_id, task_id, other_settlement),
-            provider=provider,
+            provider=as_prepared_test_provider(provider),
             ledger_store=store,
             emit=lambda _event: None,
         )

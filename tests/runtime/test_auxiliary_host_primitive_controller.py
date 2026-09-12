@@ -99,7 +99,7 @@ def _resource_factory(
     return factory, contexts
 
 
-def test_fresh_resource_primitive_reserves_seals_and_advances_frontier() -> None:
+def test_fresh_resource_primitive_reserves_seals_and_advances_frontier(tmp_path) -> None:
     session_id, turn_id, task_id, frontier = _seed_current_host_node()
     request = _controller_request(session_id, turn_id, frontier)
     factory, contexts = _resource_factory(
@@ -108,7 +108,8 @@ def test_fresh_resource_primitive_reserves_seals_and_advances_frontier() -> None
         source_sha256="a" * 64,
     )
 
-    completed = _run(request, factory)
+    with bound_project_document_authority(tmp_path):
+        completed = _run(request, factory)
 
     assert completed.status == "completed"
     assert completed.primitive_kind is PlanningContextPrimitiveKind.RESOURCE_PERCEPTION

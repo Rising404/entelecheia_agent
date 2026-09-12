@@ -669,12 +669,38 @@ def test_managed_attachment_freeze_isolated_by_exact_task_scope(
         )
 
 
-def test_sensitive_attachment_name_is_a_typed_gap_before_document_commit(
+def test_authorized_attachment_name_does_not_imply_a_private_host_path(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     monkeypatch.setenv(readers.ENGINE_ENV_VAR, readers.NATIVE_ENGINE)
     session_id, turn_id, attachment_id = _accepted_turn_with_upload(
         filename="board-secret.pdf"
+    )
+
+    result = mount_turn_document_attachments(session_id=session_id, turn_id=turn_id)
+
+    assert [mount.attachment_id for mount in result.mounts] == [attachment_id]
+    assert len(docstore.mounted_docs(session_id)) == 1
+
+
+@pytest.mark.parametrize("private_path", ["API_TOKEN_PATH", "LOCAL_CONFIG_DIR", "STATE_DIR"])
+def test_private_host_attachment_is_a_typed_gap_before_document_commit(
+    monkeypatch: pytest.MonkeyPatch,
+    private_path: str,
+) -> None:
+    from personagraph.configuration import paths
+
+    monkeypatch.setenv(readers.ENGINE_ENV_VAR, readers.NATIVE_ENGINE)
+    session_id, turn_id, attachment_id = _accepted_turn_with_upload(
+        filename="ordinary.pdf"
+    )
+    record = store.list_turn_attachments(session_id, turn_id)[0]
+    assert _PROJECT_ROOT is not None
+    attachment_path = _PROJECT_ROOT / str(record["stored_rel_path"])
+    monkeypatch.setattr(
+        paths,
+        private_path,
+        attachment_path if private_path == "API_TOKEN_PATH" else attachment_path.parent,
     )
 
     with pytest.raises(AttachmentDocumentAuthorityError) as caught:

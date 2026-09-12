@@ -201,11 +201,14 @@ def test_migrated_auxiliary_controller_owners_are_physically_retired() -> None:
     assert (
         _CANONICAL_ROOT / "verification/task_graph_semantic.py"
     ).is_file()
+    assert not (_CANONICAL_ROOT / "work_run/retrieval_runtime.py").exists()
+    assert not (_CANONICAL_ROOT / "work_run/retrieval_composition.py").exists()
     assert (
-        _CANONICAL_ROOT / "work_run/retrieval_runtime.py"
+        _REPOSITORY_ROOT
+        / "src/personagraph/l2/task_execution/tool_bridge/mounted_document_adapter.py"
     ).is_file()
     assert (
-        _CANONICAL_ROOT / "work_run/retrieval_composition.py"
+        _REPOSITORY_ROOT / "src/personagraph/tools/documents/mounted_document_catalog.py"
     ).is_file()
     assert (_CANONICAL_ROOT / "work_run/controller.py").is_file()
     assert (_CANONICAL_ROOT / "application.py").is_file()

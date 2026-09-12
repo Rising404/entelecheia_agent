@@ -9,12 +9,23 @@ from personagraph.retrieval.lifecycle.generation import (
     document_paper_generation_spec,
 )
 from personagraph.retrieval.indexing.methods import BgeM3Encoder
+from personagraph.retrieval.indexing import model_assets
 from personagraph.retrieval.indexing.model_assets import (
     BGE_M3_HYBRID_MANIFEST,
     LocalModelAssetError,
     LocalModelAssetRef,
     preflight_local_model_asset,
 )
+
+
+@pytest.fixture
+def available_model_runtime(monkeypatch):
+    """Asset-integrity tests do not load the optional inference packages."""
+    monkeypatch.setattr(
+        model_assets,
+        "_module_available",
+        lambda name: name in BGE_M3_HYBRID_MANIFEST.required_modules,
+    )
 
 
 def test_bge_encoder_fails_closed_for_learned_sparse_when_projection_assets_are_incomplete(tmp_path):
@@ -107,7 +118,9 @@ def test_bge_generation_identity_binds_runtime_implementation_versions(
     assert str(tmp_path) not in first_fingerprint
 
 
-def test_model_preflight_rejects_an_index_whose_weight_shard_is_missing(tmp_path):
+def test_model_preflight_rejects_an_index_whose_weight_shard_is_missing(
+    tmp_path, available_model_runtime,
+):
     model_path = tmp_path / "bge-m3"
     model_path.mkdir()
     for name in (
@@ -136,7 +149,9 @@ def test_model_preflight_rejects_an_index_whose_weight_shard_is_missing(tmp_path
     )
 
 
-def test_model_preflight_accepts_a_complete_indexed_weight_set(tmp_path):
+def test_model_preflight_accepts_a_complete_indexed_weight_set(
+    tmp_path, available_model_runtime,
+):
     model_path = tmp_path / "bge-m3"
     model_path.mkdir()
     for name in (
@@ -204,7 +219,9 @@ def test_managed_local_weight_change_rotates_encoder_and_generation_identity(tmp
     assert str(tmp_path) not in first_encoder.fingerprint()
 
 
-def test_managed_local_asset_change_after_preflight_fails_closed(tmp_path):
+def test_managed_local_asset_change_after_preflight_fails_closed(
+    tmp_path, available_model_runtime,
+):
     model_path = tmp_path / "bge-m3"
     model_path.mkdir()
     for name in (

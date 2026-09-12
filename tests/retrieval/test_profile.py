@@ -352,6 +352,7 @@ def test_chunking_identity_binds_the_encoder_tokenizer_and_shared_limits():
 def test_chunking_profile_only_requires_the_encoder_tokenizer(
     tmp_path,
     monkeypatch,
+    available_optional_runtime,
 ):
     encoder = _complete_model(tmp_path / "encoder", hybrid=True)
     missing_reranker = LocalModelAssetRef.path(
