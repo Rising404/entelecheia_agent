@@ -23,8 +23,20 @@
   ],
   "files": {
     "README.md": {
-      "sha256": "7a51dc950e5144499aa8bcb1bddaa83380aad103b8e349e9197b2b97fac4b59d",
-      "bytes": 1851
+      "sha256": "a5e5a67cbe5e10e873863af4d4d6d6c8df8d1637b04190db5b609876f48ae4a7",
+      "bytes": 2021
+    },
+    "analysis/EVALUATION_REVIEW.md": {
+      "sha256": "481de7d5d0c09947e735b1bc72eb62fc4f74969b70c7fa8f602f929188e86ad9",
+      "bytes": 17742
+    },
+    "analysis/FAILURE_ATTRIBUTION.md": {
+      "sha256": "5e2ded407ed18a492375bf401e6420e7fca7f7dfe7e4de3f1c656b0b48b624d7",
+      "bytes": 25517
+    },
+    "analysis/README.md": {
+      "sha256": "1a424265947ff72523b1ec8d3d7d6e9081dfbf3582a333f705cb9d704e67c75b",
+      "bytes": 6308
     },
     "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-1-1/result.json": {
       "sha256": "4d0e8878f560f7a6ab0c15404c20d24eee99845f30f551be7d6bf559f4b0a7d2",

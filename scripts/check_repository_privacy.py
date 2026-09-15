@@ -55,6 +55,11 @@ LOCAL_CONFIG_ROOT = ("configs", "local")
 LOCAL_CONFIG_EXCEPTIONS = frozenset({("configs", "local", "README.md")})
 REVIEWED_EVALUATION_MARKDOWN_PATHS = frozenset(
     {
+        ("evals", "docbench", "previous_results", "showcase_125", "analysis", "README.md"),
+        ("evals", "docbench", "previous_results", "showcase_125", "analysis", "EVALUATION_REVIEW.md"),
+        ("evals", "docbench", "previous_results", "showcase_125", "analysis", "FAILURE_ATTRIBUTION.md"),
+        # Previously published paths remain readable when scanning Git history.
+        # The current .gitignore no longer permits adding files at these paths.
         ("evals", "docbench", "previous_results", "analysis", "README.md"),
         ("evals", "docbench", "previous_results", "analysis", "EVALUATION_REVIEW.md"),
         ("evals", "docbench", "previous_results", "analysis", "FAILURE_ATTRIBUTION.md"),
@@ -63,11 +68,18 @@ REVIEWED_EVALUATION_MARKDOWN_PATHS = frozenset(
 
 # User-approved, field-cleaned execution evidence. A directory name or a newly
 # authored manifest never grants approval: the reviewed manifest bytes are pinned.
+# Earlier approved publications remain valid immutable snapshots in Git history.
 REVIEWED_EVIDENCE_MANIFESTS = {
     "evals/docbench/previous_results/showcase_125/publication_manifest.json":
-        "79220bee19eae42aaed0be4f28deef4e4ec419bbd3c0ab645215c99ce7040722",
+        (
+            "79220bee19eae42aaed0be4f28deef4e4ec419bbd3c0ab645215c99ce7040722",
+            "be81604d889d3a396d00cdd5d6def02d964d23acf5554eddc283bc9569c74a16",
+        ),
     "evals/docbench/previous_results/gate_off_highland235b_123/publication_manifest.json":
-        "cce5bce79d9c5187d874911cb9fc2aee2c16d5c68ccfb85bfd4e69294f006db7",
+        (
+            "cce5bce79d9c5187d874911cb9fc2aee2c16d5c68ccfb85bfd4e69294f006db7",
+            "3ff2d0f0675f63c6da11acaadf573ae74912217a13cc19de35fe4b0b68aa5294",
+        ),
 }
 
 FORBIDDEN_SUFFIXES = (
@@ -1313,12 +1325,13 @@ def _reviewed_evidence_entries(
 ) -> tuple[dict[str, tuple[str, int]], list[Violation]]:
     entries: dict[str, tuple[str, int]] = {}
     violations = []
-    for path, expected in REVIEWED_EVIDENCE_MANIFESTS.items():
+    for path, approved_hashes in REVIEWED_EVIDENCE_MANIFESTS.items():
         if path not in paths:
             continue
         try:
             raw = read(path)
-            if hashlib.sha256(raw).hexdigest() != expected:
+            expected = hashlib.sha256(raw).hexdigest()
+            if expected not in approved_hashes:
                 raise ValueError("manifest is not the reviewed snapshot")
             manifest = json.loads(raw, object_pairs_hook=_unique_json_object)
             if manifest["kind"] != "reviewed_public_evidence":

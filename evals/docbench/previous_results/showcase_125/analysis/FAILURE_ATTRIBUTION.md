@@ -381,10 +381,10 @@ CC 还建议回答跟随问题语言、把 una-web 单列或排除。语言相�
 可作为降低评分噪声的对照；排除题目必须另报新分母，不能修改这份固定 125 题档案。
 DSH 或裸模型比较需要同题同预算的新运行，目前不能据此评价孰优孰劣。
 
-具体代码检查应从现行 [L1](../../../../src/personagraph/runtime/l1)、
-[文档工具](../../../../src/personagraph/tools/documents)、
-[历史工具](../../../../src/personagraph/tools/tool_history)、
-[视觉处理](../../../../src/personagraph/input_processing/vision)、
-[检索](../../../../src/personagraph/retrieval) 和
-[交付后处理](../../../../src/personagraph/runtime/post_commit) 的职责入口开始。
+具体代码检查应从现行 [L1](../../../../../src/personagraph/runtime/l1)、
+[文档工具](../../../../../src/personagraph/tools/documents)、
+[历史工具](../../../../../src/personagraph/tools/tool_history)、
+[视觉处理](../../../../../src/personagraph/input_processing/vision)、
+[检索](../../../../../src/personagraph/retrieval) 和
+[交付后处理](../../../../../src/personagraph/runtime/post_commit) 的职责入口开始。
 这些是当前源码导航，不是冻结行号引用；实施前仍需对照来源身份核实问题是否还存在。

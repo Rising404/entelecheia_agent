@@ -10,7 +10,7 @@
   3 道评审分歧、两套争议集合，以及 125 题 CC 评分表。
 - [链路失败归因](FAILURE_ATTRIBUTION.md)：拒绝层次、引用与回读、文档覆盖、视觉完整性、
   笔记、检索、传输与交付后处理；区分确证、评审意见和未验证的调整建议。
-- [已有结果与方法说明](../README.md)、[内容剥离统计](../showcase_125.summary.json)：
+- [已有结果与方法说明](../../README.md)、[内容剥离统计](../../showcase_125.summary.json)：
   原始裁判、存档 Codex/CC 覆盖层、运行身份、用量与完整性哈希。
 
 ## 合并规则
@@ -59,7 +59,7 @@
 | `gate_and_delivery.md` | Codex 引用、验证与交付分册 | `12c623fff69ad0e1f3dc70f674a20007d2e340115852796f7fa70581486ff29a` |
 | `retrieval_and_vision.md` | Codex 读取、检索与视觉分册 | `55d67e74710ed30acb034948f61f670915e6c1003de1bafdf44926826144c14f` |
 | `transport_and_lifecycle.md` | Codex 传输和生命周期分册 | `7f37620df57aaf38f5a7aa5a63ca5d6405da34e4723bf8e935adee15bf945d54` |
-| [当前公开统计投影](../showcase_125.summary.json) | 原位补齐 CC 归档层；原执行与 DS/Codex 列不变 | `95eae68d97854e1a13df5d1fff8d68c608292492f98fa8a329f26919c920ca90` |
+| [当前公开统计投影](../../showcase_125.summary.json) | 原位补齐 CC 归档层；原执行与 DS/Codex 列不变 | `95eae68d97854e1a13df5d1fff8d68c608292492f98fa8a329f26919c920ca90` |
 | `showcase_125.summary.json`（更新前导出） | Git 历史中的 pending 投影，不是当前文件哈希 | `2e25675eb999d397e2e7db6795a3b9036e25b1e0b2c0d3e7cf91df01ffecba18` |
 
 隐私门禁只在 `--tree` 提交历史扫描中接纳精确公开路径与上述旧哈希相符的已审阅快照，

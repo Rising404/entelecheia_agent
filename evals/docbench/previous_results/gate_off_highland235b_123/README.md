@@ -1,5 +1,9 @@
 # 逐题公开证据 / Public per-case evidence
 
+本目录仅对应关闭语义验证门并改用 Highland 235B VLM 的 123 题实验。
+双方事后复核、badcase 分析和证据边界见 [reviews/README.md](reviews/README.md)：
+原裁判 97/123，Codex 文档校准 103/123，CC 106/123，三套评分不相互覆盖。
+
 这是原始档案的公开投影，不是原样副本、模型重跑或重新评分。
 
 - `runs/<batch>/cases/<case>/result.json`：回答、状态、统计及轨迹引用。

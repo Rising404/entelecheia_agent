@@ -1,5 +1,8 @@
 # 逐题公开证据 / Public per-case evidence
 
+本目录仅对应旧 125 题首跑及 3+5 补跑；这轮的评分复核和链路分析见
+[analysis/README.md](analysis/README.md)。新实验评审不放在这里。
+
 这是原始档案的公开投影，不是原样副本、模型重跑或重新评分。
 
 - `runs/<batch>/cases/<case>/result.json`：回答、状态、统计及轨迹引用。

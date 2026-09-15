@@ -96,9 +96,14 @@ def test_public_documentation_links_only_to_available_checkout_surfaces() -> Non
         "evals/docbench/configs/README.md",
         "evals/docbench/results/README.md",
         "evals/docbench/previous_results/README.md",
-        "evals/docbench/previous_results/analysis/README.md",
-        "evals/docbench/previous_results/analysis/EVALUATION_REVIEW.md",
-        "evals/docbench/previous_results/analysis/FAILURE_ATTRIBUTION.md",
+        "evals/docbench/previous_results/showcase_125/analysis/README.md",
+        "evals/docbench/previous_results/showcase_125/analysis/EVALUATION_REVIEW.md",
+        "evals/docbench/previous_results/showcase_125/analysis/FAILURE_ATTRIBUTION.md",
+        "evals/docbench/previous_results/showcase_125/README.md",
+        "evals/docbench/previous_results/gate_off_highland235b_123/README.md",
+        "evals/docbench/previous_results/gate_off_highland235b_123/reviews/README.md",
+        "evals/docbench/previous_results/gate_off_highland235b_123/reviews/codex/REVIEW.md",
+        "evals/docbench/previous_results/gate_off_highland235b_123/reviews/claude/REVIEW.md",
     )
     for relative_path in documents:
         document = ROOT / relative_path

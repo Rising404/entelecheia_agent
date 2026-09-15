@@ -1,0 +1,4689 @@
+{
+  "format": "docbench-score-review",
+  "run_id": "l1-gate-off-highland235b-123-20260914-a",
+  "review_date": "2026-09-15",
+  "reviewer": "Claude（claude-opus-5）",
+  "review_status": "provisional_nonblind",
+  "independent_human_gold": false,
+  "official_comparable": false,
+  "raw_scores_modified": false,
+  "new_api_calls": 0,
+  "scope": "阅读全部 123 题的题目、参考答案与回答；本轮回原文核对 3 题（108:2、128:2、165:0），查轨迹 6 题（17:8、32:1、63:2、156:4、165:0、190:2）；另统计全部 123 题轨迹中的文件 ID 抄错。与 09-11 复核相同题目的原文事实沿用当时的核对结果（evidence_checked=prior_pdf）。复核时可见 Codex 本轮复核结论。",
+  "policy": "以文档内容为准；核心问项正确判 1，附加解释错误另记；参考与文档冲突时以文档为准；总页数按 PDF 物理页；“第几页”题在参考只给一种页码时按参考口径；找到关键信息但最终结论为无法回答判 0。与 09-11 复核标准相同。",
+  "aggregates": {
+    "overall": {
+      "count": 123,
+      "original_judge_correct": 97,
+      "claude_review_correct": 106,
+      "codex_document_grounded_correct": 103
+    },
+    "text": {
+      "count": 50,
+      "original_judge_correct": 46,
+      "claude_review_correct": 47,
+      "codex_document_grounded_correct": 47
+    },
+    "academia": {
+      "count": 23,
+      "original_judge_correct": 21,
+      "claude_review_correct": 21,
+      "codex_document_grounded_correct": 21
+    },
+    "multimodal": {
+      "count": 25,
+      "original_judge_correct": 19,
+      "claude_review_correct": 22,
+      "codex_document_grounded_correct": 20
+    },
+    "metadata": {
+      "count": 25,
+      "original_judge_correct": 17,
+      "claude_review_correct": 17,
+      "codex_document_grounded_correct": 17
+    },
+    "unanswerable": {
+      "count": 23,
+      "original_judge_correct": 15,
+      "claude_review_correct": 20,
+      "codex_document_grounded_correct": 19
+    },
+    "finance": {
+      "count": 25,
+      "original_judge_correct": 17,
+      "claude_review_correct": 23,
+      "codex_document_grounded_correct": 21
+    },
+    "government": {
+      "count": 25,
+      "original_judge_correct": 20,
+      "claude_review_correct": 21,
+      "codex_document_grounded_correct": 21
+    },
+    "laws": {
+      "count": 25,
+      "original_judge_correct": 18,
+      "claude_review_correct": 20,
+      "codex_document_grounded_correct": 19
+    },
+    "news": {
+      "count": 25,
+      "original_judge_correct": 21,
+      "claude_review_correct": 21,
+      "codex_document_grounded_correct": 21
+    }
+  },
+  "comparison_same_123": {
+    "previous_first_pass": {
+      "deepseek": 91,
+      "codex": 99,
+      "claude": 100
+    },
+    "previous_retry_merged": {
+      "deepseek": 96,
+      "codex": 104,
+      "claude": 105
+    },
+    "this_run": {
+      "deepseek": 97,
+      "codex": 103,
+      "claude": 106
+    }
+  },
+  "debatable_case_ids": [
+    "docbench:111:1",
+    "docbench:128:2",
+    "docbench:144:3",
+    "docbench:165:0",
+    "docbench:221:0",
+    "docbench:222:0",
+    "docbench:53:3",
+    "docbench:66:3",
+    "docbench:80:5"
+  ],
+  "disagreements_with_codex": [
+    "docbench:66:3",
+    "docbench:80:5",
+    "docbench:144:3"
+  ],
+  "id_mistype_summary": {
+    "tool_calls_with_attachment_id": 703,
+    "mistyped_calls": 105,
+    "cases_with_mistype": 51,
+    "previous_run_first_pass": {
+      "tool_calls_with_attachment_id": 684,
+      "mistyped_calls": 0
+    }
+  },
+  "categories": {
+    "file_id_mistype_access_failure": "文件 ID 抄错导致读不到文件",
+    "unsupported_inference_delivered": "无依据推断被直接交付",
+    "fabrication_and_core_omission": "编造内容并漏掉核心",
+    "counting": "计数、页数、词数",
+    "vision_error": "视觉结果错误",
+    "found_key_info_but_refused": "找到关键信息却结论为无法回答",
+    "convention_or_summary": "口径或摘要错误"
+  },
+  "cases": [
+    {
+      "case_id": "docbench:1:1",
+      "domain": "academia",
+      "question_type": "text",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "14475c5e18381cbbc80056f8105d4ab4cc91c201b603e6dd734bcdb28599d7ca",
+      "telemetry": {
+        "l1_attempts": 4,
+        "analyze_pdf_page_calls": 1,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 45052,
+        "elapsed_s": 95.599
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-1-1/result.json",
+        "result_sha256": "90d3858e3126de3a008865c01ce6f4a1193295a5d4401dff1a2f43121200e9c2",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-1-1/trajectory.json",
+        "trajectory_sha256": "b64372d76bc54a67eb660239a8cf4d1dfc39a493b9d0f56616785fa264dba286",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-1-1.json"
+      }
+    },
+    {
+      "case_id": "docbench:2:0",
+      "domain": "academia",
+      "question_type": "multimodal",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "a827e8495df5f3ae86e4041d27c031190049ab1e241162c0c95d2db9ca21b627",
+      "telemetry": {
+        "l1_attempts": 8,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 3,
+        "input_tokens": 100011,
+        "elapsed_s": 138.294
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-2-0/result.json",
+        "result_sha256": "ed4bda1a88714008b059f044d3791810aa86776b5e1b17d11ef5471736b51873",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-2-0/trajectory.json",
+        "trajectory_sha256": "405391af7d3931a26499bb354fdd6bb2304180f05353d4f3ae0cb59e31457829",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-2-0.json"
+      }
+    },
+    {
+      "case_id": "docbench:4:0",
+      "domain": "academia",
+      "question_type": "text",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "d0fa5489005cf21f88e45ceb4d61050dd1ab8f859ed22fbd8e58da0691dc24e1",
+      "telemetry": {
+        "l1_attempts": 4,
+        "analyze_pdf_page_calls": 1,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 47676,
+        "elapsed_s": 88.004
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-4-0/result.json",
+        "result_sha256": "8bbe7746ec857c6a435db7915441a3e0da3ec1130129bea91b750e14309d8e14",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-4-0/trajectory.json",
+        "trajectory_sha256": "4c792bcbdf8e5a368d78f5068deb743c4150a24d39d56720394697c1501dd353",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-4-0.json"
+      }
+    },
+    {
+      "case_id": "docbench:6:0",
+      "domain": "academia",
+      "question_type": "text",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "40ccbc26da69f52b60e53b92c29e3c948815de90e324ae66567829b0daf72d75",
+      "telemetry": {
+        "l1_attempts": 3,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 42743,
+        "elapsed_s": 112.523
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-6-0/result.json",
+        "result_sha256": "9f0d6616906c4b2724f1970ecd7068ea46336f39a077500f63efdd1ba417e0ec",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-6-0/trajectory.json",
+        "trajectory_sha256": "a5f7a74b9868fb7e6865f0ffa591fa17feac68a9b77ca0fa6970013a8d445a8f",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-6-0.json"
+      }
+    },
+    {
+      "case_id": "docbench:7:2",
+      "domain": "academia",
+      "question_type": "multimodal",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "ba8949820189205230b3cb88f797b695f8a38a36b1db42b24698a94e6afd1868",
+      "telemetry": {
+        "l1_attempts": 3,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 41747,
+        "elapsed_s": 151.587
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-7-2/result.json",
+        "result_sha256": "ec03573f711e3daf842af332f8f566ca7f9ea10e3d91818158f9816d5254c872",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-7-2/trajectory.json",
+        "trajectory_sha256": "11393d1f254ba074f91499feb09309ca64fd7ab51c52095e6a5b879ec9eda9a7",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-7-2.json"
+      }
+    },
+    {
+      "case_id": "docbench:10:3",
+      "domain": "academia",
+      "question_type": "multimodal",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "bff636cacf46a9d6ca136f529067c20fec61e9c5a0b32dc2f1bfb1eb1740a676",
+      "telemetry": {
+        "l1_attempts": 10,
+        "analyze_pdf_page_calls": 3,
+        "id_mistyped_tool_calls": 2,
+        "input_tokens": 122863,
+        "elapsed_s": 232.26
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-10-3/result.json",
+        "result_sha256": "072e79d175e9ad8dbcf78db5d9857b2be5cc007f6314ab33fd04ca675504169d",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-10-3/trajectory.json",
+        "trajectory_sha256": "822c35c23bc430451cc3be852fe2a7780bd7e464455b377cd824798f8198a44f",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-10-3.json"
+      }
+    },
+    {
+      "case_id": "docbench:11:4",
+      "domain": "academia",
+      "question_type": "metadata",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "c2b84febbd74d69e10735160ba85101a888729b2febef3a4b607a5ebbe98a826",
+      "telemetry": {
+        "l1_attempts": 5,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 1,
+        "input_tokens": 57595,
+        "elapsed_s": 87.966
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-11-4/result.json",
+        "result_sha256": "ce71afc799696c9b335453119dbe948417fad3e0fdbe488d5beeab29283b0e6c",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-11-4/trajectory.json",
+        "trajectory_sha256": "0409e73eb7ff055d280300a7d7f944b976aafbe7b35c28118c43f75fbeac99c1",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-11-4.json"
+      }
+    },
+    {
+      "case_id": "docbench:13:3",
+      "domain": "academia",
+      "question_type": "multimodal",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "ed48baa51a52f157607d8b9bf6ce0d538395276baa4441ceb74bacd8cda131a3",
+      "telemetry": {
+        "l1_attempts": 5,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 65669,
+        "elapsed_s": 111.729
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-13-3/result.json",
+        "result_sha256": "88976d2013f5d32d379a3334ac8dbfe63129244bece8382727990a22e8c520a6",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-13-3/trajectory.json",
+        "trajectory_sha256": "392b8ebfed778fad8982be764939f99a2db41f659c6fab41394dd99e1821aa48",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-13-3.json"
+      }
+    },
+    {
+      "case_id": "docbench:17:8",
+      "domain": "academia",
+      "question_type": "unanswerable",
+      "original_judge_score": 0,
+      "claude_review_score": 0,
+      "codex_document_grounded_score": 0,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 0,
+        "claude_retry_merged": 0,
+        "codex_confirmed_review": 0,
+        "deepseek_first_pass": 0,
+        "deepseek_retry_merged": 0
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": "vision_error",
+      "failure_category_zh": "视觉结果错误",
+      "evidence_checked": "trajectory",
+      "note": "235B 视觉观察原话为“Table 5 中 HUMAN 行明确列出 Question concept split 的 Accuracy 为 38.4”；实际 HUMAN 行只有随机划分的 88.9，38.4 属于 BIDAF++。read_pdf_text 返回 page_needs_vision 后未读文字层。",
+      "reply_sha256": "6924c3441aa3fd7e96e21e340a264827ebd65f26426aa039beccb16de559b891",
+      "telemetry": {
+        "l1_attempts": 9,
+        "analyze_pdf_page_calls": 4,
+        "id_mistyped_tool_calls": 1,
+        "input_tokens": 119310,
+        "elapsed_s": 363.09
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-17-8/result.json",
+        "result_sha256": "15732bc2e1ea583b799bed4cd8d8cf5953223907c5c6799a65adc82bfd823357",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-17-8/trajectory.json",
+        "trajectory_sha256": "cd8df99a12ebce233fde11977a3e620d5b72893a4dad5262e2929c71391524db",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-17-8.json"
+      }
+    },
+    {
+      "case_id": "docbench:19:4",
+      "domain": "academia",
+      "question_type": "multimodal",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "08e0c99dc957e01be15c815e044bb0ed4e1119ef36c986261971a21f327e5284",
+      "telemetry": {
+        "l1_attempts": 3,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 40807,
+        "elapsed_s": 97.078
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-19-4/result.json",
+        "result_sha256": "6cd043e1af984a471669ae077326da47f9d9efe4808848b0226e03ecf6cfce57",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-19-4/trajectory.json",
+        "trajectory_sha256": "801cd244a67ba0e81ab72dc9ee68022aa8cee270cab5a8d98e42970050156396",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-19-4.json"
+      }
+    },
+    {
+      "case_id": "docbench:20:4",
+      "domain": "academia",
+      "question_type": "multimodal",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "3039c39b4b634af5fbf4118b085ff849a4da9284c18adef421f59f1e35ac1b2a",
+      "telemetry": {
+        "l1_attempts": 6,
+        "analyze_pdf_page_calls": 2,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 78688,
+        "elapsed_s": 151.919
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-20-4/result.json",
+        "result_sha256": "9c5c822df37c8e6689b71f9bffca0eb19aa7bd39866e189aaae182f84e2ce508",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-20-4/trajectory.json",
+        "trajectory_sha256": "70e1af7e1c74d17f0a5cf0c9d5cc5784b40d6305cff07c9af51e8d541e4ea8ac",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-20-4.json"
+      }
+    },
+    {
+      "case_id": "docbench:21:0",
+      "domain": "academia",
+      "question_type": "text",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "241390d96b68971d2e55b2cca6b48a262f44bd44f9bd05e1a3785fa39dd26bfc",
+      "telemetry": {
+        "l1_attempts": 3,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 41720,
+        "elapsed_s": 120.312
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-21-0/result.json",
+        "result_sha256": "9340a09741ee0b4696ffad7b8e65e23842a8cfb2998af4c35139a3260c86a7b1",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-21-0/trajectory.json",
+        "trajectory_sha256": "36dc30358edc91b3f3efa5c02de7e2e9f7a3bd0b161fd55db5982d5dad67f2b4",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-21-0.json"
+      }
+    },
+    {
+      "case_id": "docbench:23:3",
+      "domain": "academia",
+      "question_type": "metadata",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "7ddf4c6f8b65f0e187270e60323006a8659e4ffeace6758a8b613cfb8eae3837",
+      "telemetry": {
+        "l1_attempts": 4,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 1,
+        "input_tokens": 52460,
+        "elapsed_s": 115.26
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-23-3/result.json",
+        "result_sha256": "2a1cbe7a0d26e85c78a54e4c290c05b2d698e95a50ba522d465aca81c9b740fe",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-23-3/trajectory.json",
+        "trajectory_sha256": "01931ea94cf23c62f047f931d800aaed5eec1d3e57eda41ee75b263718fcb051",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-23-3.json"
+      }
+    },
+    {
+      "case_id": "docbench:29:0",
+      "domain": "academia",
+      "question_type": "text",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "12284386f0f497a5d150ba71f9121831fdd712180c430ab2c967c2bcf8bfc2bb",
+      "telemetry": {
+        "l1_attempts": 4,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 52074,
+        "elapsed_s": 127.346
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-29-0/result.json",
+        "result_sha256": "00cba71414e9924c0ceeed56a60728868e76a3d5da1f8ff35ea55f2804473b43",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-29-0/trajectory.json",
+        "trajectory_sha256": "c1c8e16e92d1886c90c540f40ef6228bfe9f93744f223de6f157820cd354b202",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-29-0.json"
+      }
+    },
+    {
+      "case_id": "docbench:30:2",
+      "domain": "academia",
+      "question_type": "multimodal",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "741e7a8ef7fc56af0cd2f2ae8c6dbbf99cfecdc7be461917f3a205683138c3c7",
+      "telemetry": {
+        "l1_attempts": 10,
+        "analyze_pdf_page_calls": 6,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 141765,
+        "elapsed_s": 325.911
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-30-2/result.json",
+        "result_sha256": "2cdde1532e5f3df29a9395937965931898b5d17193bbd43f7ed42c43fbf78e80",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-30-2/trajectory.json",
+        "trajectory_sha256": "fffddd261d4c9965682b9f50fc8838a47a4b8ccd49860697d5e0bd1ade13e182",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-30-2.json"
+      }
+    },
+    {
+      "case_id": "docbench:31:2",
+      "domain": "academia",
+      "question_type": "unanswerable",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "a97ab1c4c4a2c02e694098f1e1ccf1a74437e83c65199a6bfa6e6d40f9da78fb",
+      "telemetry": {
+        "l1_attempts": 6,
+        "analyze_pdf_page_calls": 1,
+        "id_mistyped_tool_calls": 2,
+        "input_tokens": 75450,
+        "elapsed_s": 84.338
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-31-2/result.json",
+        "result_sha256": "cde1c33bfbf1d47bb0b3c281ab5a0a4e8c396c8f8a6d1e8f231103ee41765e8b",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-31-2/trajectory.json",
+        "trajectory_sha256": "2d94731be668fc604969015dabeada521a1b02310861a7f227957c6ae0e3978c",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-31-2.json"
+      }
+    },
+    {
+      "case_id": "docbench:32:1",
+      "domain": "academia",
+      "question_type": "multimodal",
+      "original_judge_score": 0,
+      "claude_review_score": 0,
+      "codex_document_grounded_score": 0,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 0,
+        "claude_retry_merged": 0,
+        "codex_confirmed_review": 0,
+        "deepseek_first_pass": 0,
+        "deepseek_retry_merged": 0
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": "vision_error",
+      "failure_category_zh": "视觉结果错误",
+      "evidence_checked": "trajectory",
+      "note": "视觉按指令逐条读取第 8 页三张图，输出在 Figure 6 标题处截断，未包含 Figure 6 的曲线；主模型据 4.4 节笼统回答“端到端训练”，未指出 SL + IL 1000 + end-to-end RL。",
+      "reply_sha256": "67c82838cca176e0798c942af1911c1d9846bfd59a8f2dc249418c7e22630be9",
+      "telemetry": {
+        "l1_attempts": 22,
+        "analyze_pdf_page_calls": 2,
+        "id_mistyped_tool_calls": 2,
+        "input_tokens": 296731,
+        "elapsed_s": 311.961
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-32-1/result.json",
+        "result_sha256": "be006d687dfd8e5a3615d00ad4b0e207daa8748b30ab38c7721787721fcd5b19",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-32-1/trajectory.json",
+        "trajectory_sha256": "77cb58a04c061c44a06c39565bdf87dcede2eecfc3b77b116d29891aad4d4524",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-32-1.json"
+      }
+    },
+    {
+      "case_id": "docbench:35:3",
+      "domain": "academia",
+      "question_type": "metadata",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 0,
+        "claude_retry_merged": 0,
+        "codex_confirmed_review": 0,
+        "deepseek_first_pass": 0,
+        "deepseek_retry_merged": 0
+      },
+      "change_vs_previous_merged": "up",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "摘要写出核心动机：同义词替换候选有限，可换成 characters、movies、stories、songs 等非同义词。上一轮漏掉。",
+      "reply_sha256": "b6c0ade08c480ebf7d024e2f37e42db2c3a9d312b5ba31daf6b9b48fc1e67f3d",
+      "telemetry": {
+        "l1_attempts": 9,
+        "analyze_pdf_page_calls": 2,
+        "id_mistyped_tool_calls": 1,
+        "input_tokens": 111788,
+        "elapsed_s": 166.921
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-35-3/result.json",
+        "result_sha256": "cfcf3f3b9d46ecb11f9d72a5f6e952998bcc906b8030bdcf8529589241bcdf58",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-35-3/trajectory.json",
+        "trajectory_sha256": "a5009cee30b0ac4bd1970b83ab9c6c73360465cfee8d11dc0b7e58edd0d68a4b",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-35-3.json"
+      }
+    },
+    {
+      "case_id": "docbench:36:2",
+      "domain": "academia",
+      "question_type": "multimodal",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "2bee5b5fe199cf86bea103d726a27a1d0557bacd6c7ff1a4aa604cbeca968001",
+      "telemetry": {
+        "l1_attempts": 10,
+        "analyze_pdf_page_calls": 6,
+        "id_mistyped_tool_calls": 4,
+        "input_tokens": 146194,
+        "elapsed_s": 303.702
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-36-2/result.json",
+        "result_sha256": "d0fbd1c091b812017b3712e491df9044b870f00d9b80206e5234e25caee9c428",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-36-2/trajectory.json",
+        "trajectory_sha256": "696534c9a2bc30d9e230d2c28f458f66e998b9ea1381e757d72a226ffb437011",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-36-2.json"
+      }
+    },
+    {
+      "case_id": "docbench:38:4",
+      "domain": "academia",
+      "question_type": "multimodal",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "1e1b968d98e9b5da9ada9202de92ee161dcc3b1f85d564eca8e2206886d87069",
+      "telemetry": {
+        "l1_attempts": 10,
+        "analyze_pdf_page_calls": 1,
+        "id_mistyped_tool_calls": 3,
+        "input_tokens": 125959,
+        "elapsed_s": 219.904
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-38-4/result.json",
+        "result_sha256": "bde58f64f8e7d4b26b028d6e7672d1f26450b1436cd68efeecdfb07ed708eecf",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-38-4/trajectory.json",
+        "trajectory_sha256": "45846c6152280053aed313d648ba1d4fb658fc8c4d21a0a5785e06fbf8120ac8",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-38-4.json"
+      }
+    },
+    {
+      "case_id": "docbench:39:9",
+      "domain": "academia",
+      "question_type": "unanswerable",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "8c061b5a235ee897afa440a8a48a4b1f94e2e4673dcad11d1e66534d53ea06ed",
+      "telemetry": {
+        "l1_attempts": 10,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 2,
+        "input_tokens": 164676,
+        "elapsed_s": 216.856
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-39-9/result.json",
+        "result_sha256": "3394735a33fc6d050a1f8ff6bce44a6e280a702a49ed51394e9ac982599a2e51",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-39-9/trajectory.json",
+        "trajectory_sha256": "80bb784839e9a488340a9b8ff5e8abbef2be04a0087e514c5d72bab064be73d0",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-39-9.json"
+      }
+    },
+    {
+      "case_id": "docbench:40:0",
+      "domain": "academia",
+      "question_type": "multimodal",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 0,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 0,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "答 DAE 正确。附加解释把“DAE 的 style space 与 content space 分离”当成题问的不同 style 分离，另记质量问题。上一轮被验证门拦截。",
+      "reply_sha256": "37d1599700ae24dd0884823b43a59114b1e94a561baa87c881a1d02906c1ed9d",
+      "telemetry": {
+        "l1_attempts": 13,
+        "analyze_pdf_page_calls": 5,
+        "id_mistyped_tool_calls": 5,
+        "input_tokens": 161366,
+        "elapsed_s": 272.747
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-40-0/result.json",
+        "result_sha256": "f65024a4195d81237542b581400b4c3db0aa27aecc7fd4d429922eb85b7efcf8",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-40-0/trajectory.json",
+        "trajectory_sha256": "05345ec703c19aede8cf387cb91218ae186fdbc9808c7bf35f558e109ea0b74f",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-40-0.json"
+      }
+    },
+    {
+      "case_id": "docbench:42:5",
+      "domain": "academia",
+      "question_type": "multimodal",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 0,
+        "deepseek_retry_merged": 0
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "f2bedbac4af348ec530c1b509872241ab260fded4e345aa4a9a0a0c3b359e6e5",
+      "telemetry": {
+        "l1_attempts": 3,
+        "analyze_pdf_page_calls": 1,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 42357,
+        "elapsed_s": 170.49
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-42-5/result.json",
+        "result_sha256": "495c9296c9ff5df5ab40044e2609be37d44135c7fbcf29ad397986152dfd4a27",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-42-5/trajectory.json",
+        "trajectory_sha256": "c1b5cc8dbddd7835000af28a1c4c0849a1404cb75bc443dcf676e1934b2fb93c",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-42-5.json"
+      }
+    },
+    {
+      "case_id": "docbench:50:1",
+      "domain": "finance",
+      "question_type": "text",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "1ea42eb30b2752228a97ff402c5c92710773a7ed7218e0362992ca0ae2ad26ad",
+      "telemetry": {
+        "l1_attempts": 3,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 81376,
+        "elapsed_s": 148.854
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-50-1/result.json",
+        "result_sha256": "ea96885da9b91134fe3755a920b211c48e53f146e5fda687c585556a486a612a",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-50-1/trajectory.json",
+        "trajectory_sha256": "ade6107cec2c126af6bc0c6954ee5c6c9a7643a3f60c1c7b6ec82b06ab3333b0",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-50-1.json"
+      }
+    },
+    {
+      "case_id": "docbench:51:3",
+      "domain": "finance",
+      "question_type": "multimodal",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "600e86ab731a891deb0b5c2c355420915c93c7cb3b14f683605d0002406aabce",
+      "telemetry": {
+        "l1_attempts": 7,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 1,
+        "input_tokens": 90549,
+        "elapsed_s": 165.055
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-51-3/result.json",
+        "result_sha256": "d9cd99c5b3e0e8afe92f32e1649881904d37ac3d3927947f91c49a8516f6268d",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-51-3/trajectory.json",
+        "trajectory_sha256": "61876fc709b1537658f52dbb81634b48bd35eeb5e464c0946747b1ddb6adbef5",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-51-3.json"
+      }
+    },
+    {
+      "case_id": "docbench:53:3",
+      "domain": "finance",
+      "question_type": "multimodal",
+      "original_judge_score": 0,
+      "claude_review_score": 0,
+      "codex_document_grounded_score": 0,
+      "agrees_with_codex": true,
+      "debatable": true,
+      "previous_run": {
+        "claude_first_pass": 0,
+        "claude_retry_merged": 0,
+        "codex_confirmed_review": 0,
+        "deepseek_first_pass": 0,
+        "deepseek_retry_merged": 0
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": "convention_or_summary",
+      "failure_category_zh": "口径或摘要错误",
+      "evidence_checked": "prior_pdf",
+      "note": "p66 Finance income 4、Total income 48；题问 total finance income，参考 48 可成立，回答单项 4。与上一轮相同。",
+      "reply_sha256": "4e1614d4f5b9941b1b1b79a0b09229a99fe458e6835683103f83610dff71ade9",
+      "telemetry": {
+        "l1_attempts": 5,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 65833,
+        "elapsed_s": 654.173
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-53-3/result.json",
+        "result_sha256": "2da6344f867e1f64f9faf0c5ea563ae0c59184202733ffd1a7397e3134ac8984",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-53-3/trajectory.json",
+        "trajectory_sha256": "8e2ac09ce137e18a0894a98e7db24284bdd1329521e410ef7361f5ba11ae9889",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-53-3.json"
+      }
+    },
+    {
+      "case_id": "docbench:54:4",
+      "domain": "finance",
+      "question_type": "multimodal",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "f4bf9c6b6b183046f85084a2f40ddf0f69389dec36531ccc935b013170401833",
+      "telemetry": {
+        "l1_attempts": 7,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 2,
+        "input_tokens": 134590,
+        "elapsed_s": 515.16
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-54-4/result.json",
+        "result_sha256": "3882fe6da2cf60e3504da484edd965bc33863b09d5974eff720f5c0409011f6c",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-54-4/trajectory.json",
+        "trajectory_sha256": "d463d245a1161f466213cd6150992b13e579c94584ca1620e475de77aaa6094d",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-54-4.json"
+      }
+    },
+    {
+      "case_id": "docbench:55:2",
+      "domain": "finance",
+      "question_type": "multimodal",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "09cbb8ff417c675f3ed4a9dd55359a9e73e738f32bb639d05c4c42f7719f54b9",
+      "telemetry": {
+        "l1_attempts": 4,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 54758,
+        "elapsed_s": 344.961
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-55-2/result.json",
+        "result_sha256": "318f1ac640c96ed84f62cc454beb0b5440fb6f5b76057ac816e5f52f51218de3",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-55-2/trajectory.json",
+        "trajectory_sha256": "0da0818211c8c95aa7e124c7abf6aa8b814b5c4e672f92c57b1b1162e81d11b2",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-55-2.json"
+      }
+    },
+    {
+      "case_id": "docbench:60:2",
+      "domain": "finance",
+      "question_type": "text",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "e1d0dfa5d775ccd2d549ae085cba562873a50a335fb63db9ad8dd295f1e67a53",
+      "telemetry": {
+        "l1_attempts": 4,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 50818,
+        "elapsed_s": 273.629
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-60-2/result.json",
+        "result_sha256": "b70a3bab5273aaf80a8b2d129ec95947c4c32d33d57289a232875ac4da0582e8",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-60-2/trajectory.json",
+        "trajectory_sha256": "8e8fd8bbf964a176aa3c9feb3d46a3d693d726f2b7cf56a7ec27e954408076ef",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-60-2.json"
+      }
+    },
+    {
+      "case_id": "docbench:61:6",
+      "domain": "finance",
+      "question_type": "multimodal",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "ce042350df2f1f94754857e3f0daf9407f0d42e8e13a0f617159f758e3410731",
+      "telemetry": {
+        "l1_attempts": 3,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 46979,
+        "elapsed_s": 518.705
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-61-6/result.json",
+        "result_sha256": "406525583ba8abf7a5dd847926f9e1cbae1e2602b2e835af870e529c405030f2",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-61-6/trajectory.json",
+        "trajectory_sha256": "6876e9141de68c034c1f15787cff59a8145b80b874891f012dc511ff08ae4d52",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-61-6.json"
+      }
+    },
+    {
+      "case_id": "docbench:63:2",
+      "domain": "finance",
+      "question_type": "text",
+      "original_judge_score": 0,
+      "claude_review_score": 0,
+      "codex_document_grounded_score": 0,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "down",
+      "failure_category": "file_id_mistype_access_failure",
+      "failure_category_zh": "文件 ID 抄错导致读不到文件",
+      "evidence_checked": "trajectory",
+      "note": "模型把 file_id 前半段（att_e6433bb71b2a4f1）与 file_version_id 后半段（1a88d846de31b1a56）拼成错误路径，5 次工具调用均返回 file_source_unavailable，最终交付读取失败说明。上一轮答对。",
+      "reply_sha256": "e606fc96c373fb2489dde6b91b8b7c2746c892bd28f173b29c3f198c56337b1e",
+      "telemetry": {
+        "l1_attempts": 6,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 5,
+        "input_tokens": 68052,
+        "elapsed_s": 92.962
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-63-2/result.json",
+        "result_sha256": "698e70f7bd606ebe1db23244640c6b00297b8a1dcf8a5f4108f642a26ea85b9c",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-63-2/trajectory.json",
+        "trajectory_sha256": "d9c7c027ed859ff2f0f54d9af52088a1d2b8ae76dfd968fbe44e45dae78362ec",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-63-2.json"
+      }
+    },
+    {
+      "case_id": "docbench:64:1",
+      "domain": "finance",
+      "question_type": "multimodal",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "6d5deb0a2392b0b02a9c5b6f4779a7e5ed86a0d1549d5628196f77d235c9ec72",
+      "telemetry": {
+        "l1_attempts": 8,
+        "analyze_pdf_page_calls": 2,
+        "id_mistyped_tool_calls": 2,
+        "input_tokens": 93637,
+        "elapsed_s": 761.964
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-64-1/result.json",
+        "result_sha256": "8529d9b1971339dc33904321baa18eeab0e05d6acbf6d465f5acfa88689d3623",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-64-1/trajectory.json",
+        "trajectory_sha256": "a1bbe6a28f03c265af481115b5e1d7c7423194921d3e83c1d527a109355d7f76",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-64-1.json"
+      }
+    },
+    {
+      "case_id": "docbench:66:3",
+      "domain": "finance",
+      "question_type": "multimodal",
+      "original_judge_score": 0,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 0,
+      "agrees_with_codex": false,
+      "debatable": true,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "答 35%（five out of 14），引用原文 p217 原话；参考 36% 取自图表，文档内部舍入不一致。按文档判 1，可争议。Codex 判 0（source_conflict）。",
+      "reply_sha256": "7790d52cb43bd38a399d95e3e993ea2d518d8fed2a86e37e2c4e1a037dceb0e1",
+      "telemetry": {
+        "l1_attempts": 8,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 2,
+        "input_tokens": 106311,
+        "elapsed_s": 942.3
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-66-3/result.json",
+        "result_sha256": "eece406a37a888fab7099d2dbc9ed2f559985a5100bcc725786277e3f3590151",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-66-3/trajectory.json",
+        "trajectory_sha256": "37c0bedf7af6463f7b8aac1e765611dbe9beaac46bea9dfaf5fbf1b72dcd2bf7",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-66-3.json"
+      }
+    },
+    {
+      "case_id": "docbench:67:4",
+      "domain": "finance",
+      "question_type": "multimodal",
+      "original_judge_score": 0,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 0,
+        "claude_retry_merged": 0,
+        "codex_confirmed_review": 0,
+        "deepseek_first_pass": 0,
+        "deepseek_retry_merged": 0
+      },
+      "change_vs_previous_merged": "up",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "答 Institutional Securities $25,948M，与参考一字不差；裁判判 0 为误判（参考 evidence 文本误写 Wealth Management，可能干扰裁判，无法证明因果）。上一轮按收入类型答错。",
+      "reply_sha256": "d96685ba93124972fa98bae05c670fad13ac972bbb11ede80b96203a4bc4e86c",
+      "telemetry": {
+        "l1_attempts": 3,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 89637,
+        "elapsed_s": 381.855
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-67-4/result.json",
+        "result_sha256": "7167b8250b4b9e6e7c85f773a7092a6733a875d628be0dee47906e4ccf9e4ad3",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-67-4/trajectory.json",
+        "trajectory_sha256": "89daa9ca48d0d39e523a83b97304ba731b3c4e5ef1854a017edcf90840d0b2d2",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-67-4.json"
+      }
+    },
+    {
+      "case_id": "docbench:68:8",
+      "domain": "finance",
+      "question_type": "unanswerable",
+      "original_judge_score": 0,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 0,
+        "deepseek_retry_merged": 0
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "正确说明附件为诺和诺德年报、不含埃克森美孚信息；裁判判 0 为误判。",
+      "reply_sha256": "a113764e2e096d7d2aff249de6e7b58e4f72467e683fad127d65aaa7d2da9b8d",
+      "telemetry": {
+        "l1_attempts": 4,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 55501,
+        "elapsed_s": 316.752
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-68-8/result.json",
+        "result_sha256": "7655200fd92924a50903b718e725f369f4017cd477ae9a2087eb5c175992a682",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-68-8/trajectory.json",
+        "trajectory_sha256": "90d458329c9840b11a5571d07dd0ea90f62c2e51f23a2c57141db0844e16b335",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-68-8.json"
+      }
+    },
+    {
+      "case_id": "docbench:69:4",
+      "domain": "finance",
+      "question_type": "metadata",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 0,
+        "claude_retry_merged": 0,
+        "codex_confirmed_review": 0,
+        "deepseek_first_pass": 0,
+        "deepseek_retry_merged": 0
+      },
+      "change_vs_previous_merged": "up",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "prior_pdf",
+      "note": "答物理页 226，正确。上一轮按印刷页码答 220。",
+      "reply_sha256": "c9e5adbdabeaf32ab10ef6076674f583c4c7dae1d846b9f4c0e65a4148885b93",
+      "telemetry": {
+        "l1_attempts": 5,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 1,
+        "input_tokens": 57442,
+        "elapsed_s": 356.483
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-69-4/result.json",
+        "result_sha256": "698a83c2f15776b321bbc5d742b8b5eebf9e9be71ea3f6e86b7d28fa7e295f74",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-69-4/trajectory.json",
+        "trajectory_sha256": "a285040041bc8fda9287429d804dfcce010660eecc67e0c515f09ad0c4abe6bc",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-69-4.json"
+      }
+    },
+    {
+      "case_id": "docbench:73:4",
+      "domain": "finance",
+      "question_type": "metadata",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "cb03fa81db1f5b1cadab24a11730b3a2d7cbbb0f1ef9612b9e3444f9c568077d",
+      "telemetry": {
+        "l1_attempts": 9,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 1,
+        "input_tokens": 105916,
+        "elapsed_s": 156.097
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-73-4/result.json",
+        "result_sha256": "7e3eb22a43e4d5d7e8dbef698c627fc0585eb31bc3cb977015e814853eeeb649",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-73-4/trajectory.json",
+        "trajectory_sha256": "a2a5af0f9d558f971b76c89725b17be0207459ac00f8a3ccd74337475a0a49c4",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-73-4.json"
+      }
+    },
+    {
+      "case_id": "docbench:75:0",
+      "domain": "finance",
+      "question_type": "text",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "ba3ed673a5ceadbaaff33100456e671da7a5e8fe0c5d282a8256faf055a8cb07",
+      "telemetry": {
+        "l1_attempts": 3,
+        "analyze_pdf_page_calls": 1,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 43688,
+        "elapsed_s": 246.173
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-75-0/result.json",
+        "result_sha256": "5f915cf1aa15c490dca3ab4ebd0c004b70784fe4ea1a16ac375944d3893bf85d",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-75-0/trajectory.json",
+        "trajectory_sha256": "68668b944cb6a168347a4a366b6bf4ab30dcd8ab2c1180d91fcf5e7480d8f334",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-75-0.json"
+      }
+    },
+    {
+      "case_id": "docbench:76:4",
+      "domain": "finance",
+      "question_type": "unanswerable",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "010c5eea6189adfafae2aae205f66e52e3378b09c27c4d6e11efb977ab6aea16",
+      "telemetry": {
+        "l1_attempts": 3,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 44043,
+        "elapsed_s": 244.218
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-76-4/result.json",
+        "result_sha256": "bb1355b0ca4ad3e71e3867ddfd399e4f172384036f4969a1d58157e7892eb815",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-76-4/trajectory.json",
+        "trajectory_sha256": "295497e7bf871f6e0aff78991d8d6c55925936c425e5647cc4200ef2e1e19517",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-76-4.json"
+      }
+    },
+    {
+      "case_id": "docbench:78:6",
+      "domain": "finance",
+      "question_type": "unanswerable",
+      "original_judge_score": 0,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 0,
+        "deepseek_retry_merged": 0
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "正确说明附件为雪佛龙年报、不含麦当劳信息；裁判判 0 为误判。",
+      "reply_sha256": "6cc5c75c338cb9452ba8ad223d4d9adc897b2ee0decc144b5672a713b89dd774",
+      "telemetry": {
+        "l1_attempts": 3,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 59024,
+        "elapsed_s": 303.911
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-78-6/result.json",
+        "result_sha256": "0e2db1dc9602277938c7f12aa9ea46bf163acd6db3efedd4ad1bc44939ba5f2f",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-78-6/trajectory.json",
+        "trajectory_sha256": "dcc7676410a94d05de461908080e5d53a2488576ba61760b2618a91d56a05027",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-78-6.json"
+      }
+    },
+    {
+      "case_id": "docbench:80:5",
+      "domain": "finance",
+      "question_type": "multimodal",
+      "original_judge_score": 0,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 0,
+      "agrees_with_codex": false,
+      "debatable": true,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 0,
+        "deepseek_first_pass": 0,
+        "deepseek_retry_merged": 0
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "prior_pdf",
+      "note": "答 Next +4.4%，并明确说明 Heated Tobacco Units 是产品类别而非品牌；原文 p38 将“按品牌的卷烟出货量”与“加热烟弹出货量”分列。可争议。Codex 判 0。",
+      "reply_sha256": "6139d12c7d2845a2797c7c01cfdd17d520129f463a25d455dd35a0127ec1ec50",
+      "telemetry": {
+        "l1_attempts": 8,
+        "analyze_pdf_page_calls": 1,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 118825,
+        "elapsed_s": 450.127
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-80-5/result.json",
+        "result_sha256": "079e9db750aef64d2adc385871581b9e4aa6c4e16c94548d8722b43fd6b2b966",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-80-5/trajectory.json",
+        "trajectory_sha256": "9529efc7e9ae7da14de2a0df41a035d1b1d188583ba1d89e7f7927b4a76d0723",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-80-5.json"
+      }
+    },
+    {
+      "case_id": "docbench:81:2",
+      "domain": "finance",
+      "question_type": "text",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "9a6bf8c1e8ea617cf8c71038db2703f905c5cc53b16b0da2fb9092a3dd6e06cd",
+      "telemetry": {
+        "l1_attempts": 4,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 56680,
+        "elapsed_s": 620.777
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-81-2/result.json",
+        "result_sha256": "9e6fc9c5bb9f403182fbededf66996264e0fa99c55de2f1a95af7e212dfad335",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-81-2/trajectory.json",
+        "trajectory_sha256": "34f6431b241a1ce0e3f0125ce18f68c7ed76a1f67d03853ef777e61f32e7cf01",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-81-2.json"
+      }
+    },
+    {
+      "case_id": "docbench:82:3",
+      "domain": "finance",
+      "question_type": "multimodal",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "c53fb3abd689bcf66d7a1adf00aa6d3e9395499b5078bb2ac87d5a27c619e54b",
+      "telemetry": {
+        "l1_attempts": 3,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 42539,
+        "elapsed_s": 365.357
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-82-3/result.json",
+        "result_sha256": "5a3963c1f292ceff3ceda61961db7f6594578124d4b1914ea834c1f52e36aa23",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-82-3/trajectory.json",
+        "trajectory_sha256": "582642ad93fab65c098eba38c5a089d7140c48bc5e5843fac653a112b0ed51d7",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-82-3.json"
+      }
+    },
+    {
+      "case_id": "docbench:83:3",
+      "domain": "finance",
+      "question_type": "text",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "b3114a7cd887c465e715d528371db56bd3e9e8929ce09fd62e305ce359f5d40e",
+      "telemetry": {
+        "l1_attempts": 4,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 55508,
+        "elapsed_s": 682.896
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-83-3/result.json",
+        "result_sha256": "eb3f4c283bd981703592f996434e330144645ef492d6ddc6ec714f49798d47ec",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-83-3/trajectory.json",
+        "trajectory_sha256": "33e5bf17f1089031b16e50233c42da440deadb8274ea7eb8e722a5d1435f23f1",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-83-3.json"
+      }
+    },
+    {
+      "case_id": "docbench:85:0",
+      "domain": "finance",
+      "question_type": "text",
+      "original_judge_score": 0,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 0,
+        "deepseek_retry_merged": 0
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "prior_pdf",
+      "note": "答出席 4 次；参考 44 由 Held 4 / Attended 4 两列拼接而成。裁判判 0。",
+      "reply_sha256": "32286b31b5e8cb986dfab9623cfebe3fc95b3e6daaed9e15ef9c9e3fafc5a1e6",
+      "telemetry": {
+        "l1_attempts": 15,
+        "analyze_pdf_page_calls": 1,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 193983,
+        "elapsed_s": 259.882
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-85-0/result.json",
+        "result_sha256": "71f70c441fb2530a2e19bfbd85bd36e0e714a85bd8cba110f7720b05330abcd7",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-85-0/trajectory.json",
+        "trajectory_sha256": "37cca8a383cbda10d8baba0a034bb7979a21d509c75b4c736a8a9641b966f22b",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-85-0.json"
+      }
+    },
+    {
+      "case_id": "docbench:86:8",
+      "domain": "finance",
+      "question_type": "metadata",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "03aeb242fcc55dcbb4152d340c038d8a3f806e0ba6b395508f8a7ee677ec9311",
+      "telemetry": {
+        "l1_attempts": 4,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 45318,
+        "elapsed_s": 177.519
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-86-8/result.json",
+        "result_sha256": "556a81468505ac99ac19408110fa3cc9268ea83dee5589711b97e8d5da993490",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-86-8/trajectory.json",
+        "trajectory_sha256": "8f4c47e17aecd2592563b617541932ea0e3263f767e1faa8509d657340f36746",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-86-8.json"
+      }
+    },
+    {
+      "case_id": "docbench:87:9",
+      "domain": "finance",
+      "question_type": "multimodal",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "2f8a90cedf1549a80cc431e50f5761e13d7aa4bebc02798a598474ccaff58d2d",
+      "telemetry": {
+        "l1_attempts": 4,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 1,
+        "input_tokens": 55013,
+        "elapsed_s": 214.807
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-87-9/result.json",
+        "result_sha256": "3715b8023f045e12e17d4c224c6122051d0baf28d0704998c2374a51da70423d",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-87-9/trajectory.json",
+        "trajectory_sha256": "d58a4b6830ccf1a97f1cd59abec6db8da45fe212993de69cd5e878ce002c76f9",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-87-9.json"
+      }
+    },
+    {
+      "case_id": "docbench:88:9",
+      "domain": "finance",
+      "question_type": "multimodal",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "a1a9f1a7538b1acd99a798f88015ca2006f7aa3d2aeb4f6efac2581d9ec83816",
+      "telemetry": {
+        "l1_attempts": 5,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 137835,
+        "elapsed_s": 386.616
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-88-9/result.json",
+        "result_sha256": "3d1c6a49f870a95ad2f6e82b45703700363855d1df0dd22bb714fe08ef42f1be",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-88-9/trajectory.json",
+        "trajectory_sha256": "31ac74d4c040cb01cf8ce5639ec6b138b45945d746465e4bcb4d51c015291457",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-88-9.json"
+      }
+    },
+    {
+      "case_id": "docbench:92:1",
+      "domain": "government",
+      "question_type": "text",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "2b40e08daba4bb38153ff657e38680d521d387e41e8b4cf0ebc0d24e4b169db7",
+      "telemetry": {
+        "l1_attempts": 4,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 52191,
+        "elapsed_s": 151.649
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-92-1/result.json",
+        "result_sha256": "5d9c316152d999104fc8907c2a07cd3204056dcf5f1388d23970d7c56adf87dd",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-92-1/trajectory.json",
+        "trajectory_sha256": "edd0ff7adaae01c7d3537000f0fdbf2dad6a0372b0131c88b3a7f0b4c27cd9ae",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-92-1.json"
+      }
+    },
+    {
+      "case_id": "docbench:93:3",
+      "domain": "government",
+      "question_type": "text",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "1f4790352448e77a96626cef4caa68d4baeb6aef523d1bd4ae67336f8d23dac8",
+      "telemetry": {
+        "l1_attempts": 3,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 44277,
+        "elapsed_s": 357.328
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-93-3/result.json",
+        "result_sha256": "099ff870068b4a99a46b1af8e9adaf41396816d5a09ecb19aa96736f6c3269b8",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-93-3/trajectory.json",
+        "trajectory_sha256": "077a0b43ddf2f6bb6e58eedbd703e7f433a741de05de7590fcc5c2b9d434bbcf",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-93-3.json"
+      }
+    },
+    {
+      "case_id": "docbench:94:0",
+      "domain": "government",
+      "question_type": "text",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "0eb30d5d083f4c8ea05b71fc9541fb38a0cc17cb6a3206f1722cf8084fb55747",
+      "telemetry": {
+        "l1_attempts": 5,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 1,
+        "input_tokens": 65076,
+        "elapsed_s": 170.743
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-94-0/result.json",
+        "result_sha256": "b837134c6f54d073d46a92d8e9aa4db04668db6ba798d59abad4353611bf9349",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-94-0/trajectory.json",
+        "trajectory_sha256": "a016f3773a0ec0b2b2c6b76406314a5417b8e22aaaf2f8804644c3c6f7b434de",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-94-0.json"
+      }
+    },
+    {
+      "case_id": "docbench:103:1",
+      "domain": "government",
+      "question_type": "text",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "8cc63631787f27628ca535af413661263e1f5c9e65e1d9751305a08499273fb2",
+      "telemetry": {
+        "l1_attempts": 3,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 35612,
+        "elapsed_s": 88.018
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-103-1/result.json",
+        "result_sha256": "3a378a64a2367395ceb46aa67c5b7f9c9211bef36cc3309d5fd2f492c62d0407",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-103-1/trajectory.json",
+        "trajectory_sha256": "c65f6c8ada88266e74ea04986190c2b754e87bbb47b58321407532f942f3b5e9",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-103-1.json"
+      }
+    },
+    {
+      "case_id": "docbench:104:0",
+      "domain": "government",
+      "question_type": "text",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "a0a8bb99421c6b818a91825e1c7ccd3ce42601d8d14912289afd691b7e8cdb44",
+      "telemetry": {
+        "l1_attempts": 3,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 42077,
+        "elapsed_s": 137.933
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-104-0/result.json",
+        "result_sha256": "2fc4f95adebf0562ecfbecf574eb3e6ce2342f2aab3259fe3bafbc7fbf94f1fb",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-104-0/trajectory.json",
+        "trajectory_sha256": "1aae2770e4048ce34bb1404fe68d1306a6a6e0e4c45c00034ba28d47261ff535",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-104-0.json"
+      }
+    },
+    {
+      "case_id": "docbench:105:2",
+      "domain": "government",
+      "question_type": "text",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "2aff7fe18abbe9feee33f716571610600b25e8c89d48806f855ae6b099221691",
+      "telemetry": {
+        "l1_attempts": 3,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 37913,
+        "elapsed_s": 87.959
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-105-2/result.json",
+        "result_sha256": "3ae031a6ea884974ad58bb67445a0388af95ce1bc2900b4d793ba22874d1aaab",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-105-2/trajectory.json",
+        "trajectory_sha256": "0efd49515815bc1b61792a40a7400e004e508e5e71aecbf9f28547f142f585b3",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-105-2.json"
+      }
+    },
+    {
+      "case_id": "docbench:106:0",
+      "domain": "government",
+      "question_type": "text",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "b9dd0807f712b93dc9f564b51ad809d374ec8fddb9fee7f4efcad491f63932aa",
+      "telemetry": {
+        "l1_attempts": 3,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 42625,
+        "elapsed_s": 297.392
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-106-0/result.json",
+        "result_sha256": "da712820e0e7a8b04d5d2ff2c55d6548fc8a05bb32e5366a3b134f91b5f956db",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-106-0/trajectory.json",
+        "trajectory_sha256": "66b23ef4ba2d935669c1e6425b2ae578eb9f808bf60b401aebc45e1b38812554",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-106-0.json"
+      }
+    },
+    {
+      "case_id": "docbench:108:2",
+      "domain": "government",
+      "question_type": "unanswerable",
+      "original_judge_score": 0,
+      "claude_review_score": 0,
+      "codex_document_grounded_score": 0,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "down",
+      "failure_category": "unsupported_inference_delivered",
+      "failure_category_zh": "无依据推断被直接交付",
+      "evidence_checked": "pdf",
+      "note": "原文无 institutional knowledge；只在不同位置分别写到人才可能流失（p29 风险考量）和改进知识管理（p28）。模型把两处拼接为“确认存在对机构知识流失的担忧”并交付。上一轮回答“没有明确表达”。",
+      "reply_sha256": "5a2e194044c2b397c34447e678035081e9faa7a3a8ad80fe5c1a0281262f1b69",
+      "telemetry": {
+        "l1_attempts": 4,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 55323,
+        "elapsed_s": 155.536
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-108-2/result.json",
+        "result_sha256": "767ed097fbd9b2c2d8c50bd3070a6067c25fb5add4b434f9f20efa551f63f617",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-108-2/trajectory.json",
+        "trajectory_sha256": "0626d9db8c93a8e34ca8392608c897bf0246871657df174edd5bbc2b97533a6a",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-108-2.json"
+      }
+    },
+    {
+      "case_id": "docbench:109:3",
+      "domain": "government",
+      "question_type": "text",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "判 1：列出的后果与参考部分重合，缺“对经济、安全、自然资源和公共健康的灾难性损害”，另记质量问题。",
+      "reply_sha256": "bcf864d8342fca5e2bea738d104940fc0c14ead2a2a9ac24af1aa1877a021b99",
+      "telemetry": {
+        "l1_attempts": 3,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 46806,
+        "elapsed_s": 141.933
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-109-3/result.json",
+        "result_sha256": "12c42dababe91e0119e0504e13cca738d0267d424eff1214b7e36dd357562b64",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-109-3/trajectory.json",
+        "trajectory_sha256": "a138743555a6db14df8c2ade6546b486fdd6fe00aa286cd19714ef10f760914e",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-109-3.json"
+      }
+    },
+    {
+      "case_id": "docbench:110:2",
+      "domain": "government",
+      "question_type": "metadata",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "e950c733ed15d682766f07feaf7d579e072021a1c02fd245e13a06591e5acc3e",
+      "telemetry": {
+        "l1_attempts": 6,
+        "analyze_pdf_page_calls": 1,
+        "id_mistyped_tool_calls": 2,
+        "input_tokens": 79698,
+        "elapsed_s": 467.404
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-110-2/result.json",
+        "result_sha256": "87a7fc4d2188f5948f394310a452ff106a2d966a870fe30115c9b8da834a9ada",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-110-2/trajectory.json",
+        "trajectory_sha256": "427196baad52a0733ebaa65f663adb9c4620b2327ef50084c90a6bf50ef5c649",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-110-2.json"
+      }
+    },
+    {
+      "case_id": "docbench:111:1",
+      "domain": "government",
+      "question_type": "metadata",
+      "original_judge_score": 0,
+      "claude_review_score": 0,
+      "codex_document_grounded_score": 0,
+      "agrees_with_codex": true,
+      "debatable": true,
+      "previous_run": {
+        "claude_first_pass": 0,
+        "claude_retry_merged": 0,
+        "codex_confirmed_review": 0,
+        "deepseek_first_pass": 0,
+        "deepseek_retry_merged": 0
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": "counting",
+      "failure_category_zh": "计数、页数、词数",
+      "evidence_checked": "prior_pdf",
+      "note": "物理 20 页 = 参考；回答按“Page 18 of 18”答 18。与上一轮相同。",
+      "reply_sha256": "e904cdf2793a589d5ff854d9e4b7e74fe37cf8f44fbd803d09a583c73defe437",
+      "telemetry": {
+        "l1_attempts": 6,
+        "analyze_pdf_page_calls": 2,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 69653,
+        "elapsed_s": 144.388
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-111-1/result.json",
+        "result_sha256": "62b6df367cc526390aa0f23627d3ba6a7d5e8c72e943122725c8a3a0283e07d1",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-111-1/trajectory.json",
+        "trajectory_sha256": "14e091b059906b4352b95e5acfde76563de320a5b6e939453007f0ad7198e67b",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-111-1.json"
+      }
+    },
+    {
+      "case_id": "docbench:112:2",
+      "domain": "government",
+      "question_type": "unanswerable",
+      "original_judge_score": 0,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 0,
+        "deepseek_retry_merged": 0
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "正确说明 ISN 战略文件无 NER 信息；裁判判 0 为误判。",
+      "reply_sha256": "39eae095b4c06d982d1075b4d82c7f3fd0260bf8ba492b049a031122b9a202ba",
+      "telemetry": {
+        "l1_attempts": 4,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 61374,
+        "elapsed_s": 161.683
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-112-2/result.json",
+        "result_sha256": "a24a0b568df261f6970e3456648cb55bd9ab798f6fba14fb5f4ecea3e5e0d483",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-112-2/trajectory.json",
+        "trajectory_sha256": "952976d51318418c34142ce266f8ac7d2e011824079d0a180592b9253746591e",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-112-2.json"
+      }
+    },
+    {
+      "case_id": "docbench:113:4",
+      "domain": "government",
+      "question_type": "text",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "8dbc975a37d4291c9e785665a9019a0f1861b7175fe21d96d694e7c49a5545f2",
+      "telemetry": {
+        "l1_attempts": 3,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 41063,
+        "elapsed_s": 138.115
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-113-4/result.json",
+        "result_sha256": "c1ba123e456262f167bed06fa6dfdd6147c406b289bf8614ac9d9d0d457e10f7",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-113-4/trajectory.json",
+        "trajectory_sha256": "4a9000c432866992dd6690d10f741d4a08269c0fdc1c49cc65281b0694febe92",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-113-4.json"
+      }
+    },
+    {
+      "case_id": "docbench:114:2",
+      "domain": "government",
+      "question_type": "metadata",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "09ea5b02476d897423b0c1f8d09101ab9ba40392590b5fe4c866a365ebc7a043",
+      "telemetry": {
+        "l1_attempts": 6,
+        "analyze_pdf_page_calls": 2,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 81522,
+        "elapsed_s": 434.423
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-114-2/result.json",
+        "result_sha256": "c440cbbc5c900069413b3e4ea1c8c204b0e278316a53bca0e32880697ca0649b",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-114-2/trajectory.json",
+        "trajectory_sha256": "0dc098626d30c86035c0964ff9e97f9cb6f7593752b52c3212fa8ab125d302a5",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-114-2.json"
+      }
+    },
+    {
+      "case_id": "docbench:117:0",
+      "domain": "government",
+      "question_type": "metadata",
+      "original_judge_score": 0,
+      "claude_review_score": 0,
+      "codex_document_grounded_score": 0,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 0,
+        "claude_retry_merged": 0,
+        "codex_confirmed_review": 0,
+        "deepseek_first_pass": 0,
+        "deepseek_retry_merged": 0
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": "counting",
+      "failure_category_zh": "计数、页数、词数",
+      "evidence_checked": "prior_pdf",
+      "note": "pypdf 全文 HIV 101 次、PEPFAR 97 次；回答称 PEPFAR“粗略统计超过 200 次”、HIV“约 100 余次”，频次为估计且错误。",
+      "reply_sha256": "e44e34cf77f33d43b0d96b49e8bebadf380702862ffc171e9c8162d07e3f47c5",
+      "telemetry": {
+        "l1_attempts": 17,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 4,
+        "input_tokens": 227007,
+        "elapsed_s": 282.649
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-117-0/result.json",
+        "result_sha256": "8edd74212e6e0a4c188ec717dc92e86e9843fcc363552c39359835b932d9d590",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-117-0/trajectory.json",
+        "trajectory_sha256": "d6422d05381a1fe5075c8c24cfd213df3eca7ebff5b82af227387d3b35636caa",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-117-0.json"
+      }
+    },
+    {
+      "case_id": "docbench:118:1",
+      "domain": "government",
+      "question_type": "metadata",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "322f7eec4f2e8672c0af1a3af3737a98b8ad461f869f073af5a3a99de8e3acea",
+      "telemetry": {
+        "l1_attempts": 6,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 69788,
+        "elapsed_s": 88.807
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-118-1/result.json",
+        "result_sha256": "ff4aed069716c7941ebf7077550277fe54119790d6ae39ecd76f8c97456770b3",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-118-1/trajectory.json",
+        "trajectory_sha256": "f67a715f5e5abaa2db2948b43ba88b06b4ee6088f0b16df5fad85e68840e612b",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-118-1.json"
+      }
+    },
+    {
+      "case_id": "docbench:119:2",
+      "domain": "government",
+      "question_type": "unanswerable",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "951a96101a2c7739c93a7b5814238373800f6e15273480af7983efcc4ce1377e",
+      "telemetry": {
+        "l1_attempts": 21,
+        "analyze_pdf_page_calls": 12,
+        "id_mistyped_tool_calls": 4,
+        "input_tokens": 284013,
+        "elapsed_s": 503.378
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-119-2/result.json",
+        "result_sha256": "c257aaf9ac7910d947e0a8a8e234e1aececc3ab477796c1c6b1dcb8e02c2294c",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-119-2/trajectory.json",
+        "trajectory_sha256": "00f2edc616152f7ca806601cf4896083b159c66cfa1d54c3c77801427a910bbd",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-119-2.json"
+      }
+    },
+    {
+      "case_id": "docbench:120:4",
+      "domain": "government",
+      "question_type": "unanswerable",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "判 1：结论为未找到批准日期。但只检查了第 1–45 与 329–330 页，另记质量问题。",
+      "reply_sha256": "68d36f27b3468ddd20b1bba012dfb4d4dd1cc70c55f3b9cea4060f4eda3cdd83",
+      "telemetry": {
+        "l1_attempts": 24,
+        "analyze_pdf_page_calls": 20,
+        "id_mistyped_tool_calls": 2,
+        "input_tokens": 339656,
+        "elapsed_s": 1297.006
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-120-4/result.json",
+        "result_sha256": "ca3b1a874911b13a62e582f10bc268b57d30c39b595ccf990a21012e71764b6a",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-120-4/trajectory.json",
+        "trajectory_sha256": "23c78c8f31f51d4b0abefa3a60d8ebe8e03b0f149bde7381aded702c8c53cff3",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-120-4.json"
+      }
+    },
+    {
+      "case_id": "docbench:122:3",
+      "domain": "government",
+      "question_type": "text",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "3aad2b963bc9aea9463e0af5fe07bc318ad324c650dd2ebba824715f16812031",
+      "telemetry": {
+        "l1_attempts": 8,
+        "analyze_pdf_page_calls": 4,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 100491,
+        "elapsed_s": 236.449
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-122-3/result.json",
+        "result_sha256": "3f6c671c721049d41cff24593191d2b92a24fa03ec93d0ace7db18abdb94031d",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-122-3/trajectory.json",
+        "trajectory_sha256": "6ea39c1c94f430acf4d9ad227c85c23b32b0d6cac06e2607250f15fde0713d90",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-122-3.json"
+      }
+    },
+    {
+      "case_id": "docbench:123:0",
+      "domain": "government",
+      "question_type": "text",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "61e46ba1002a05f1ea0d371de561995935cf1114027973933c62815e2023d839",
+      "telemetry": {
+        "l1_attempts": 5,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 1,
+        "input_tokens": 62561,
+        "elapsed_s": 127.483
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-123-0/result.json",
+        "result_sha256": "aa55b0cff7779d8000709b1c08a8f5a3f85cb6c39078b80e29e1cb17899a9ff4",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-123-0/trajectory.json",
+        "trajectory_sha256": "f76a5096dd38e825c0122ff8c8139cf8e1306ea9b5d830309964ed3b6a0dafe7",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-123-0.json"
+      }
+    },
+    {
+      "case_id": "docbench:124:2",
+      "domain": "government",
+      "question_type": "unanswerable",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "1691d2535e56b929d23313a50b4470d1d505690c91e1da4eabcad169e35d6e49",
+      "telemetry": {
+        "l1_attempts": 17,
+        "analyze_pdf_page_calls": 13,
+        "id_mistyped_tool_calls": 1,
+        "input_tokens": 223733,
+        "elapsed_s": 648.928
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-124-2/result.json",
+        "result_sha256": "61be4e5caa8e13286f1fdbea10c40ef12459470facfc5a0e44d7aa99da5ac858",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-124-2/trajectory.json",
+        "trajectory_sha256": "a3e4cedcd26e98fec5b6d8f129a8a44adac50430f48356ee63eae048a8e96a43",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-124-2.json"
+      }
+    },
+    {
+      "case_id": "docbench:125:1",
+      "domain": "government",
+      "question_type": "metadata",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "48f9042e78f2b3ae8a8b35f215d65220d5ff8be89d58d580ec0c0099dc6c5e80",
+      "telemetry": {
+        "l1_attempts": 5,
+        "analyze_pdf_page_calls": 1,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 62345,
+        "elapsed_s": 132.154
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-125-1/result.json",
+        "result_sha256": "d10bda6dbc771d4ac1b5126cae34d4017e61777665b63cd4ab67c10a788983b9",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-125-1/trajectory.json",
+        "trajectory_sha256": "04adad1e1e478f94e9da3355d14da0788f5245e1fa94ff501e010062023ba0ad",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-125-1.json"
+      }
+    },
+    {
+      "case_id": "docbench:128:2",
+      "domain": "government",
+      "question_type": "metadata",
+      "original_judge_score": 0,
+      "claude_review_score": 0,
+      "codex_document_grounded_score": 0,
+      "agrees_with_codex": true,
+      "debatable": true,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "down",
+      "failure_category": "convention_or_summary",
+      "failure_category_zh": "口径或摘要错误",
+      "evidence_checked": "pdf",
+      "note": "物理第 7 页页脚印 Page 5 of 18，目录也写 5；参考 Page 5，回答只给物理页 7。上一轮两种页码都给出。",
+      "reply_sha256": "de245774ae90697eb1cef98cd0937504179e0428ce2ea56fc6206e02258b7203",
+      "telemetry": {
+        "l1_attempts": 11,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 1,
+        "input_tokens": 136585,
+        "elapsed_s": 203.383
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-128-2/result.json",
+        "result_sha256": "e852eccd2af30057997b7156f686e72948dac5215c1ba2e3bd311f5f2cd3cad2",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-128-2/trajectory.json",
+        "trajectory_sha256": "74055b14b429efd4bb338c5ca6d45307a7ca14244b11df7b908eb632b9466175",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-128-2.json"
+      }
+    },
+    {
+      "case_id": "docbench:129:0",
+      "domain": "government",
+      "question_type": "text",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 0,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 0,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "答 26 人正确。上一轮首跑 TOOL_COMPLETION_UNCONFIRMED。",
+      "reply_sha256": "f36d432a29efd5da9cc5b07b250e3fbb74f418873899262a7552985dbc9d3687",
+      "telemetry": {
+        "l1_attempts": 3,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 44210,
+        "elapsed_s": 274.807
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-129-0/result.json",
+        "result_sha256": "f5035ef625c9db575571f62c12bf18a66e803c0e1e670603d34e5d2b31b05cc1",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-129-0/trajectory.json",
+        "trajectory_sha256": "5c1e40fcbd566e4d1cafc31bac66ac2652273f050013f7050226c9609ef16dcd",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-129-0.json"
+      }
+    },
+    {
+      "case_id": "docbench:132:2",
+      "domain": "government",
+      "question_type": "text",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "dffa84b03264eb584da8e9200c3b00d94468c42ff8de54279159f8ec3addbd5c",
+      "telemetry": {
+        "l1_attempts": 3,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 40346,
+        "elapsed_s": 115.401
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-132-2/result.json",
+        "result_sha256": "803e4346dae100b5c12a5b45e90f50a0544f413fedc4174a0fd324592949dfff",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-132-2/trajectory.json",
+        "trajectory_sha256": "ea39d240cd803487456ac42040af69e098942b8f36dee3411efb22c51cc34e00",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-132-2.json"
+      }
+    },
+    {
+      "case_id": "docbench:137:1",
+      "domain": "laws",
+      "question_type": "text",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "cd0f8e43e39c05a5ca1eaa231475b25fec1c17402c8bc8b94f004cda6adc64a3",
+      "telemetry": {
+        "l1_attempts": 4,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 56023,
+        "elapsed_s": 334.528
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-137-1/result.json",
+        "result_sha256": "7e66a100d866d2d09080c64e3f220d5d55a48a978135eaeb622d951127629cbb",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-137-1/trajectory.json",
+        "trajectory_sha256": "5b9f15f85f5996635f61d01e56a5a740deeab842f905dd0274c86220543f7b4c",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-137-1.json"
+      }
+    },
+    {
+      "case_id": "docbench:140:0",
+      "domain": "laws",
+      "question_type": "text",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 0,
+        "claude_retry_merged": 0,
+        "codex_confirmed_review": 0,
+        "deepseek_first_pass": 0,
+        "deepseek_retry_merged": 0
+      },
+      "change_vs_previous_merged": "up",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "prior_pdf",
+      "note": "直接引用 p5 原句答 No。上一轮称全文未提澳大利亚。",
+      "reply_sha256": "5c848c76ead723e0561793beb69c315a1b20e8a8ee881c179d2624683fecc6d0",
+      "telemetry": {
+        "l1_attempts": 6,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 2,
+        "input_tokens": 76369,
+        "elapsed_s": 120.976
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-140-0/result.json",
+        "result_sha256": "192e33f981f82dba5952828390cd27614670e7f67585f6aa6645543634de1964",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-140-0/trajectory.json",
+        "trajectory_sha256": "99bace97e3ad4b944521792711d37029e9eeb590d4e1dcbd64871be63cda88b3",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-140-0.json"
+      }
+    },
+    {
+      "case_id": "docbench:144:3",
+      "domain": "laws",
+      "question_type": "unanswerable",
+      "original_judge_score": 0,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 0,
+      "agrees_with_codex": false,
+      "debatable": true,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "答封面印的 October 2023。封面日期即报告日期，判 1；可争议。Codex 判 0。两轮回答相同，上一轮 Codex 沿用裁判 1 分。",
+      "reply_sha256": "d4e999b8677d45df88da0f7ea24a84767aca4961e83bb42e1637a1b640bf38c7",
+      "telemetry": {
+        "l1_attempts": 24,
+        "analyze_pdf_page_calls": 8,
+        "id_mistyped_tool_calls": 1,
+        "input_tokens": 366947,
+        "elapsed_s": 662.313
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-144-3/result.json",
+        "result_sha256": "1318a2266395bd7d48f4e274642e8d06c23e345660230b58ef1ed36f30d0951b",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-144-3/trajectory.json",
+        "trajectory_sha256": "84e574e171609bdd55f4e9ec20cf359d71de98c7042d9bd715dae840d39695aa",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-144-3.json"
+      }
+    },
+    {
+      "case_id": "docbench:148:2",
+      "domain": "laws",
+      "question_type": "metadata",
+      "original_judge_score": 0,
+      "claude_review_score": 0,
+      "codex_document_grounded_score": 0,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 0,
+        "claude_retry_merged": 0,
+        "codex_confirmed_review": 0,
+        "deepseek_first_pass": 0,
+        "deepseek_retry_merged": 0
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": "counting",
+      "failure_category_zh": "计数、页数、词数",
+      "evidence_checked": "prior_pdf",
+      "note": "pypdf 空白分词 1,783，与参考完全一致；回答“约 5,200 个单词”。",
+      "reply_sha256": "9aa5cee0ec5d0a5b50057a9a46391fa9e6696eb11868554ca64800eb00179462",
+      "telemetry": {
+        "l1_attempts": 14,
+        "analyze_pdf_page_calls": 4,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 199920,
+        "elapsed_s": 350.391
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-148-2/result.json",
+        "result_sha256": "594bc1adfcd3e66ec3403ff52cbe6fc959099e55da52a882655a0f64c55162b0",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-148-2/trajectory.json",
+        "trajectory_sha256": "a3fc2a4481bc4690a8ce63013811071a26fd04d06c9d6dbb48768a6225e80abb",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-148-2.json"
+      }
+    },
+    {
+      "case_id": "docbench:149:0",
+      "domain": "laws",
+      "question_type": "text",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "fa04f02c3da83bdbaba3d2dc04c6d140395a959a41e19b02f6a0b62ea860880c",
+      "telemetry": {
+        "l1_attempts": 3,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 44512,
+        "elapsed_s": 179.875
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-149-0/result.json",
+        "result_sha256": "13b5e0aa6d688e18e2b722095e2f79522092fd05475d1c310aadf31ff32368f1",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-149-0/trajectory.json",
+        "trajectory_sha256": "d78f252d4fb0d20e7502fbb25b070835975f12dd4c64940e2603987fcc3a8b3c",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-149-0.json"
+      }
+    },
+    {
+      "case_id": "docbench:151:3",
+      "domain": "laws",
+      "question_type": "metadata",
+      "original_judge_score": 0,
+      "claude_review_score": 0,
+      "codex_document_grounded_score": 0,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 0,
+        "claude_retry_merged": 0,
+        "codex_confirmed_review": 0,
+        "deepseek_first_pass": 0,
+        "deepseek_retry_merged": 0
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": "counting",
+      "failure_category_zh": "计数、页数、词数",
+      "evidence_checked": "prior_pdf",
+      "note": "参考 23；回答 7 次。解析文本不完整，上一轮是拒答，本轮直接交付不完整计数。",
+      "reply_sha256": "3fd08cd800d3ad6c16b9d1b1af4f76adfa92a791156225fc7c72779b9914c274",
+      "telemetry": {
+        "l1_attempts": 4,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 45648,
+        "elapsed_s": 227.543
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-151-3/result.json",
+        "result_sha256": "9a6b5da63f62d8a596090516f42dc01bc960d0cc5f0b9402c8d383e17dcf3fd7",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-151-3/trajectory.json",
+        "trajectory_sha256": "7a5bd952104a71e7777fab7b929fe22da8107ca8d99094290cdacd845780a98b",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-151-3.json"
+      }
+    },
+    {
+      "case_id": "docbench:152:1",
+      "domain": "laws",
+      "question_type": "unanswerable",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "9c19f9a0cd21dbd070aa90002d9fbe6632c0fdbafa2ea73042ec983e7f5a078f",
+      "telemetry": {
+        "l1_attempts": 3,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 40378,
+        "elapsed_s": 138.968
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-152-1/result.json",
+        "result_sha256": "c612d40c1c5ca66bcb46c621fab7d62d8bc7351ac40e1d643c7d9c189dbeccd5",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-152-1/trajectory.json",
+        "trajectory_sha256": "6b505d373593acfb4a74422a7141210f7b2db9003b085be6aaf9577312486502",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-152-1.json"
+      }
+    },
+    {
+      "case_id": "docbench:153:2",
+      "domain": "laws",
+      "question_type": "unanswerable",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 0,
+        "claude_retry_merged": 0,
+        "codex_confirmed_review": 0,
+        "deepseek_first_pass": 0,
+        "deepseek_retry_merged": 0
+      },
+      "change_vs_previous_merged": "up",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "prior_pdf",
+      "note": "正确说明没有 Appendix（逐页检查 90 页，8 次视觉、370 秒）。上一轮编造“第 68 页”。",
+      "reply_sha256": "300d27db27749d81f2aa738816a1c05ac2d363462862544cb546c592c49f18c4",
+      "telemetry": {
+        "l1_attempts": 16,
+        "analyze_pdf_page_calls": 8,
+        "id_mistyped_tool_calls": 4,
+        "input_tokens": 209718,
+        "elapsed_s": 370.402
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-153-2/result.json",
+        "result_sha256": "22cf8d494f2e37581c2c338d62f13143fb08d63c12cb4cc0eafe519269c693ca",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-153-2/trajectory.json",
+        "trajectory_sha256": "a17e707bc997474a1c38ba3f6bd3a15c3db605e6a729a1e499382328a85fbb18",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-153-2.json"
+      }
+    },
+    {
+      "case_id": "docbench:156:4",
+      "domain": "laws",
+      "question_type": "unanswerable",
+      "original_judge_score": 0,
+      "claude_review_score": 0,
+      "codex_document_grounded_score": 0,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "down",
+      "failure_category": "file_id_mistype_access_failure",
+      "failure_category_zh": "文件 ID 抄错导致读不到文件",
+      "evidence_checked": "trajectory",
+      "note": "23 次工具调用中 6 次 file_id 抄错（file_not_found / file_access_unavailable），另有参数超限；25 次 L1 attempt、663 秒后以“无法获取第 200 个脚注”结束，未给出“文档只有 110 条脚注”。上一轮答对。",
+      "reply_sha256": "2d0cae3f81602a354429b9a0849005416251d326c04dc1f58f6f69bba0ad567d",
+      "telemetry": {
+        "l1_attempts": 25,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 6,
+        "input_tokens": 480613,
+        "elapsed_s": 662.788
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-156-4/result.json",
+        "result_sha256": "e702a5ebb503483d779b365c829867c4da9a2ab02a4f21059ccb67ffbcb7491f",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-156-4/trajectory.json",
+        "trajectory_sha256": "752a6d099d6f6e9e75b1e416430d9fdd6d21355ff3d876701be36febe7c95515",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-156-4.json"
+      }
+    },
+    {
+      "case_id": "docbench:157:5",
+      "domain": "laws",
+      "question_type": "unanswerable",
+      "original_judge_score": 0,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 0,
+        "deepseek_retry_merged": 0
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "正确说明文档未涉及 Emergencies Act 援引次数；裁判判 0 为误判。",
+      "reply_sha256": "e6229e3fb40f01274f11dae428084e20ef7dacdd8fedcbc6e5e7387890e5d5af",
+      "telemetry": {
+        "l1_attempts": 3,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 78948,
+        "elapsed_s": 185.969
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-157-5/result.json",
+        "result_sha256": "18e9a82c1193e413dc60885cad7c4a2ef61d059c2a5d3a6bd3081562718ea29e",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-157-5/trajectory.json",
+        "trajectory_sha256": "afd2f0300b58a4386ce68a17e60c1acb307561f3b0c0e7412450ae51291a4c33",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-157-5.json"
+      }
+    },
+    {
+      "case_id": "docbench:158:1",
+      "domain": "laws",
+      "question_type": "text",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 0,
+        "deepseek_retry_merged": 0
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "d081bc78ad582bda642e4d027b67f9e0ab5a1e83fd73b9fb39f02d04408718b1",
+      "telemetry": {
+        "l1_attempts": 3,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 77198,
+        "elapsed_s": 221.884
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-158-1/result.json",
+        "result_sha256": "f78665df1c8cd6b326dd9220028bb4fb7758b3fbf14a83c684f9ae2b31714b0a",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-158-1/trajectory.json",
+        "trajectory_sha256": "78a11b0137097b9cbffeec658a735fd3e82b1f56c51638ac6724bd02a6096017",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-158-1.json"
+      }
+    },
+    {
+      "case_id": "docbench:159:3",
+      "domain": "laws",
+      "question_type": "metadata",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "8d56abef3000200cc238c7b56544f93a4df86817fdead8c0d40e6046795a66ff",
+      "telemetry": {
+        "l1_attempts": 4,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 48790,
+        "elapsed_s": 80.138
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-159-3/result.json",
+        "result_sha256": "cca473f41e216c2fd78e7f288848a28454b8966e9e34ef00ff2dbbde53573a91",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-159-3/trajectory.json",
+        "trajectory_sha256": "b611a1426b70301baa196a3458530627c0431ffb7a20e6ccb0be49b3db35903d",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-159-3.json"
+      }
+    },
+    {
+      "case_id": "docbench:160:2",
+      "domain": "laws",
+      "question_type": "metadata",
+      "original_judge_score": 0,
+      "claude_review_score": 0,
+      "codex_document_grounded_score": 0,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 0,
+        "claude_retry_merged": 0,
+        "codex_confirmed_review": 0,
+        "deepseek_first_pass": 0,
+        "deepseek_retry_merged": 0
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": "counting",
+      "failure_category_zh": "计数、页数、词数",
+      "evidence_checked": "prior_pdf",
+      "note": "参考 35,321（pypdf 36,161）；回答只读了第 1–34 页，给出 47,500–95,000 的估计区间。",
+      "reply_sha256": "7817325beaae3559e5cbc7731a2c0a1862eb62acd7ddbd80924b10e70dada296",
+      "telemetry": {
+        "l1_attempts": 24,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 3,
+        "input_tokens": 340539,
+        "elapsed_s": 397.786
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-160-2/result.json",
+        "result_sha256": "09927181c15c04f49d0cb5b750ae7b72bdd6d5a07748b9db8d19502e97e70f26",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-160-2/trajectory.json",
+        "trajectory_sha256": "8441c216b0e3b199acdfce2d40cc19b10d43325f3b7b36ec489779c58621c311",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-160-2.json"
+      }
+    },
+    {
+      "case_id": "docbench:161:0",
+      "domain": "laws",
+      "question_type": "text",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "7a8640e863a5090a87743ed3098b3e7cc947c34100479ff7c7f75c5e56f8aa4c",
+      "telemetry": {
+        "l1_attempts": 3,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 44735,
+        "elapsed_s": 196.211
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-161-0/result.json",
+        "result_sha256": "ff2528d62a68f598fd48ae88175af1b955a1a6164496ec602e74612832eb9ff6",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-161-0/trajectory.json",
+        "trajectory_sha256": "08d81d1c18f25892321c00a305c80446615fdebcc19048db451ae9059fe9b5e0",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-161-0.json"
+      }
+    },
+    {
+      "case_id": "docbench:164:1",
+      "domain": "laws",
+      "question_type": "text",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "5533f15039a102c551d710d87a4bd604b078bc086d051d7816cfac5dd7ed2c5b",
+      "telemetry": {
+        "l1_attempts": 4,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 1,
+        "input_tokens": 50146,
+        "elapsed_s": 140.621
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-164-1/result.json",
+        "result_sha256": "0ba9b09d9ccd783622dcc42d3df001ff1ae4c7e3f66f2a7c2af3da0d47cd74dc",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-164-1/trajectory.json",
+        "trajectory_sha256": "f1bcb11d65a96de6461ce6df15c4b398d4db0ae24b88294c24aeb7a1fc2bc8a6",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-164-1.json"
+      }
+    },
+    {
+      "case_id": "docbench:165:0",
+      "domain": "laws",
+      "question_type": "text",
+      "original_judge_score": 1,
+      "claude_review_score": 0,
+      "codex_document_grounded_score": 0,
+      "agrees_with_codex": true,
+      "debatable": true,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "down",
+      "failure_category": "fabrication_and_core_omission",
+      "failure_category_zh": "编造内容并漏掉核心",
+      "evidence_checked": "pdf",
+      "note": "原文 p7 伯利兹条目引用 Defamation Act 2022 §18，备注栏写明 Replaced the Libel and Defamation Act。回答称“报告未提供条款细节”“评论列为空”，并编造“刑法中仍保留亵渎条款”，漏掉取代旧法这一核心变化。裁判判 1。上一轮答对。",
+      "reply_sha256": "9cbf8eefeed108734843d66a985449dceaa1cad000c04b7e46a7dd0533ccb1cb",
+      "telemetry": {
+        "l1_attempts": 7,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 1,
+        "input_tokens": 91794,
+        "elapsed_s": 198.737
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-165-0/result.json",
+        "result_sha256": "e0203a9d2406d302151c9348546f85aa01b8164f6fd48f193852e6078e157acb",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-165-0/trajectory.json",
+        "trajectory_sha256": "09ca72692ec45c787ca9d762013f110c34fb238779604a7f8548e82867dfc914",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-165-0.json"
+      }
+    },
+    {
+      "case_id": "docbench:166:2",
+      "domain": "laws",
+      "question_type": "text",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "2e6e970cd4b42a54db01d6abd4e5997b466b8cf1c517dbe6ea6e7f186e298cb1",
+      "telemetry": {
+        "l1_attempts": 4,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 61440,
+        "elapsed_s": 144.498
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-166-2/result.json",
+        "result_sha256": "4be1434b16ffb9d10889dd597522652641f4e4fdcf0ead5abc771e4e9f64c2b9",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-166-2/trajectory.json",
+        "trajectory_sha256": "f95fe11d03e6b0b9c607062084f511ea83ebb4db38abe3b065c3f178a9fef1b9",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-166-2.json"
+      }
+    },
+    {
+      "case_id": "docbench:167:0",
+      "domain": "laws",
+      "question_type": "text",
+      "original_judge_score": 0,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 0,
+        "deepseek_retry_merged": 0
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "prior_pdf",
+      "note": "有条件允许：p56 写明 2019 年第 13 号法律允许外国人在阿布扎比投资区取得全部物业权利；参考 No 未计入修订。裁判判 0。",
+      "reply_sha256": "17e94d401b58e96a254ccb6295106473b87022140e7a58a49fd2564a3b8b329b",
+      "telemetry": {
+        "l1_attempts": 5,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 1,
+        "input_tokens": 63163,
+        "elapsed_s": 234.069
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-167-0/result.json",
+        "result_sha256": "0022dbe50a0fcc3c03023a62d5f0cbcd83dca34bb2e3aa46239e832d4c78cdd8",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-167-0/trajectory.json",
+        "trajectory_sha256": "70db77e44708da52ce3bc16d8f8eef1b2144e2fc2cfb466e91b35cd8d0797c0f",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-167-0.json"
+      }
+    },
+    {
+      "case_id": "docbench:168:3",
+      "domain": "laws",
+      "question_type": "unanswerable",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "db9bd8f0325c1950ce1242d57163f8c70122ebf04a4f2feec210033509eca6ce",
+      "telemetry": {
+        "l1_attempts": 4,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 45367,
+        "elapsed_s": 110.897
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-168-3/result.json",
+        "result_sha256": "9ace87d6c44f4ae71ed2e73dabb71adca14c0d86029d7665bc7d86644f4fb0a0",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-168-3/trajectory.json",
+        "trajectory_sha256": "2c18d1b4fff061096fd2644df288651cfc17f4ca40177d0b2d1b2e55b756e396",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-168-3.json"
+      }
+    },
+    {
+      "case_id": "docbench:169:2",
+      "domain": "laws",
+      "question_type": "metadata",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "c9d105cad1dfb9233d905a663bdf02f1dfdb4d744bb65092a1a8030fd2db8651",
+      "telemetry": {
+        "l1_attempts": 3,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 34233,
+        "elapsed_s": 73.214
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-169-2/result.json",
+        "result_sha256": "319b08ca4bd531b01a6347938fd8c949dcfbe5cd8d8f4276fef28cc61497b3f9",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-169-2/trajectory.json",
+        "trajectory_sha256": "2098c87e89f6f1211d9b068162fe60bab151af73f0f2ee84fd25e8cdd2c3b611",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-169-2.json"
+      }
+    },
+    {
+      "case_id": "docbench:170:3",
+      "domain": "laws",
+      "question_type": "text",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "aca34e655685ef9ef4bf3a3096321e8244f368b60ec48be6783252477c70a53f",
+      "telemetry": {
+        "l1_attempts": 4,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 1,
+        "input_tokens": 95471,
+        "elapsed_s": 326.575
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-170-3/result.json",
+        "result_sha256": "1e9c8281133b4edd66190df1e7ef57a52b592d81b47f320d4527e6dda47af909",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-170-3/trajectory.json",
+        "trajectory_sha256": "8476b574ea3909694d648d2ce61f674685c5d108186c30cd6c99640deeacbb6e",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-170-3.json"
+      }
+    },
+    {
+      "case_id": "docbench:171:5",
+      "domain": "laws",
+      "question_type": "metadata",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "5482a9d96bd3a279d4aeb563864204c22d700d6d9fff32e0f960b1ccd116a46f",
+      "telemetry": {
+        "l1_attempts": 4,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 53776,
+        "elapsed_s": 161.385
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-171-5/result.json",
+        "result_sha256": "593c4c42ec4fa82f94df82d8fe2f6781585abac1849309bd8b14970359c907aa",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-171-5/trajectory.json",
+        "trajectory_sha256": "41c5c4566d5143417c90ae79ab5c33dfd5b54f1fb3d9586b0cc4e90e067144c4",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-171-5.json"
+      }
+    },
+    {
+      "case_id": "docbench:174:3",
+      "domain": "laws",
+      "question_type": "metadata",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "087f9346f855c0d856463950ccb0d9e8e627f23dc48802c6023d6642a11b1e74",
+      "telemetry": {
+        "l1_attempts": 3,
+        "analyze_pdf_page_calls": 1,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 34187,
+        "elapsed_s": 127.721
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-174-3/result.json",
+        "result_sha256": "e689e0d41448a3afcd34dda3d288de2c56c618747a0ed71dcf4860a866d208fe",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-174-3/trajectory.json",
+        "trajectory_sha256": "40082566865ea1ae67d17f0f7f50a559c7101ebcee210371ed78e43027363de9",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-174-3.json"
+      }
+    },
+    {
+      "case_id": "docbench:176:1",
+      "domain": "laws",
+      "question_type": "text",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "c54d259f23c9b34a4e1935f88626283331986c1a2d2814e1fffe13c4d062d82b",
+      "telemetry": {
+        "l1_attempts": 5,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 1,
+        "input_tokens": 76653,
+        "elapsed_s": 232.472
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-176-1/result.json",
+        "result_sha256": "b43cc3c35db0d6d31a8d913b34332c44469a6beb972a835d23e7ac0fcbcfe579",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-176-1/trajectory.json",
+        "trajectory_sha256": "57a6b0e9b2dac851a21662de2b62c05439ddbe7381da756661098871b1211bfd",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-176-1.json"
+      }
+    },
+    {
+      "case_id": "docbench:178:1",
+      "domain": "laws",
+      "question_type": "text",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 0,
+        "deepseek_first_pass": 0,
+        "deepseek_retry_merged": 0
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "prior_pdf",
+      "note": "只答通函核心要求（按强度分级获得强度等级），上一轮附加内容的错配本轮没有出现。",
+      "reply_sha256": "746f50522ce97f88304b37bb4759358992cb435049f3dc0deaca79fbe762de03",
+      "telemetry": {
+        "l1_attempts": 4,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 80433,
+        "elapsed_s": 201.665
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-178-1/result.json",
+        "result_sha256": "b575f8034c0342d10fa6724f32d96b9ff2f3931649f1dcc968d8409d5dd82305",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-178-1/trajectory.json",
+        "trajectory_sha256": "ed99bddcf0dcc86f3769bda387208cf664ef7614eb61a77279e6e10f45bda6c0",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-178-1.json"
+      }
+    },
+    {
+      "case_id": "docbench:179:5",
+      "domain": "news",
+      "question_type": "text",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "0947375af8ad5ce9c217666fce7d4d3bcdc162cf9d6ac6096451eca1bf6c66f3",
+      "telemetry": {
+        "l1_attempts": 4,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 50567,
+        "elapsed_s": 104.602
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-179-5/result.json",
+        "result_sha256": "db4bef8c0a77fb52ecb919dcf4e7a893e04efaae3ce13c12e6f400e71d8a3db7",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-179-5/trajectory.json",
+        "trajectory_sha256": "c0f5c53a2cfad5a215a9c8d0da647c3a29848aa1a7cd133abfa86be2113c267c",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-179-5.json"
+      }
+    },
+    {
+      "case_id": "docbench:183:0",
+      "domain": "news",
+      "question_type": "text",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 0,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 0,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "3 次 L1 attempt、116 秒、未调用视觉，直接引用原文答 Yes。上一轮验证门拒绝 7 个正确候选，40 次 attempt 后未交付。",
+      "reply_sha256": "ee212425392ac077454f1c42470241b07a9d0b5adbe7ea7ef21c9b6f6cdecc3b",
+      "telemetry": {
+        "l1_attempts": 3,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 38537,
+        "elapsed_s": 116.127
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-183-0/result.json",
+        "result_sha256": "a8a16e2530f41faffbdf242d7e16d941beffe97728e761986ccfc357992e6d50",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-183-0/trajectory.json",
+        "trajectory_sha256": "35e5f0351672b907c92a27774b599033bccd96978a1f5ba552f43da78ebde961",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-183-0.json"
+      }
+    },
+    {
+      "case_id": "docbench:187:0",
+      "domain": "news",
+      "question_type": "text",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "c9c5f1e807c088a5724df31b8e63ffd90801c3d10a2008bda28e21bbc3623077",
+      "telemetry": {
+        "l1_attempts": 4,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 48496,
+        "elapsed_s": 126.266
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-187-0/result.json",
+        "result_sha256": "817192b989e5481072b0ccb58a12d028dfee9c9c00f255f2c7209e0606b712d5",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-187-0/trajectory.json",
+        "trajectory_sha256": "c3164d44eb89705509610644106e96aa1237b9d2c1602dd2ab31295ee011c53a",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-187-0.json"
+      }
+    },
+    {
+      "case_id": "docbench:189:2",
+      "domain": "news",
+      "question_type": "text",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "c19f59d903d64dcc32ab98e5ecf9a10567c9ba99a84d16f1df1c5965161971d6",
+      "telemetry": {
+        "l1_attempts": 4,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 1,
+        "input_tokens": 50472,
+        "elapsed_s": 126.155
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-189-2/result.json",
+        "result_sha256": "a01b61e646f33b73a856ccd65e24b2c40de71f66fd741ebfa465ecda818a589b",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-189-2/trajectory.json",
+        "trajectory_sha256": "85cd136018d9efb9e3de16028b6a5c7533d76c52c72fe0d9d20cd919b39e6683",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-189-2.json"
+      }
+    },
+    {
+      "case_id": "docbench:190:2",
+      "domain": "news",
+      "question_type": "multimodal",
+      "original_judge_score": 0,
+      "claude_review_score": 0,
+      "codex_document_grounded_score": 0,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 0,
+        "claude_retry_merged": 0,
+        "codex_confirmed_review": 0,
+        "deepseek_first_pass": 0,
+        "deepseek_retry_merged": 0
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": "vision_error",
+      "failure_category_zh": "视觉结果错误",
+      "evidence_checked": "trajectory",
+      "note": "照片共 5 名士兵（含驾驶舱口 1 人，09-11 已抽原图核对）；235B 视觉观察原话为 I can clearly count four soldiers，是视觉模型本身数错。",
+      "reply_sha256": "4a01add5f8ec5fe660710bc6aeaf6a4ba1270984d31752cfda66ac988e0b04d4",
+      "telemetry": {
+        "l1_attempts": 19,
+        "analyze_pdf_page_calls": 1,
+        "id_mistyped_tool_calls": 2,
+        "input_tokens": 252568,
+        "elapsed_s": 252.289
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-190-2/result.json",
+        "result_sha256": "f34f3490bf76eae97957847159ce3b7ac339d32c8783f3ef5137a288e667d3b1",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-190-2/trajectory.json",
+        "trajectory_sha256": "0d67db8d2aefbf30f152e075b2ab422c0b5a569a180b0f06bf35450b9add2184",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-190-2.json"
+      }
+    },
+    {
+      "case_id": "docbench:191:1",
+      "domain": "news",
+      "question_type": "text",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "85073e5f0043adaf1bfef2b226cbdc1738ce528ac950cd0f43ff09906d1fc050",
+      "telemetry": {
+        "l1_attempts": 3,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 39109,
+        "elapsed_s": 117.885
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-191-1/result.json",
+        "result_sha256": "765fc4bd6dd9801ba444686ff4f493f8b317f7aa786d39e5c0a18b8c0bb281c3",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-191-1/trajectory.json",
+        "trajectory_sha256": "0cb4dd033dad6bdfd7bdebdc6eef1ee4c9bf8a57e536612a2010a44e81263ce9",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-191-1.json"
+      }
+    },
+    {
+      "case_id": "docbench:192:4",
+      "domain": "news",
+      "question_type": "text",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "aef857895c7f5fa975499e858b60623960a3d05cf7103718f5cbe4113a9ea436",
+      "telemetry": {
+        "l1_attempts": 3,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 38444,
+        "elapsed_s": 106.34
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-192-4/result.json",
+        "result_sha256": "b71046c0916693fb701cad8132411c01af31024e8992308eb4745a3fa3c36d50",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-192-4/trajectory.json",
+        "trajectory_sha256": "01a2aa8c560df083c2475402d97d9ac488841e04966382d3fe39e22e5bcc649d",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-192-4.json"
+      }
+    },
+    {
+      "case_id": "docbench:193:1",
+      "domain": "news",
+      "question_type": "text",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "127cdc109b8fbb7fa4d3db7f7a00fdd8d226da4a25a130ff22d7d40b917c088b",
+      "telemetry": {
+        "l1_attempts": 26,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 1,
+        "input_tokens": 438244,
+        "elapsed_s": 701.094
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-193-1/result.json",
+        "result_sha256": "8f3ffc4d45b6c183421048f5a28934c75ea96eefe5b45a80728cb7d5ff7b86a7",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-193-1/trajectory.json",
+        "trajectory_sha256": "2475f86f4c47500c87237736e4c45dc6899641458ab5e57e83d75d9206dd5c97",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-193-1.json"
+      }
+    },
+    {
+      "case_id": "docbench:194:1",
+      "domain": "news",
+      "question_type": "text",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "04c33062b08ad1c312e3eb44e93a93a5dae46d0247b5046616cf37f3fc53bb37",
+      "telemetry": {
+        "l1_attempts": 8,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 2,
+        "input_tokens": 107382,
+        "elapsed_s": 188.455
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-194-1/result.json",
+        "result_sha256": "df47e4d1519007b0dd7d31c0c0d571156769e81d45660c3df804ce8383e1da7a",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-194-1/trajectory.json",
+        "trajectory_sha256": "f341e7cffa94659104ada88cfdb718f7ea35c063baf6ee9228b21601a1f62cdc",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-194-1.json"
+      }
+    },
+    {
+      "case_id": "docbench:198:4",
+      "domain": "news",
+      "question_type": "text",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "c13b0da4c079ebb203f40afe3a17ab84fb83cfcd10fdcea0c98baf2e8de2814e",
+      "telemetry": {
+        "l1_attempts": 4,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 50284,
+        "elapsed_s": 132.74
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-198-4/result.json",
+        "result_sha256": "e02a46e1a7bd2c8cdef220164ada7d39f5c5891954ad5e5162027107c5d0a943",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-198-4/trajectory.json",
+        "trajectory_sha256": "2a54ae180cf01c9ff8cb543b90a07360bbb4371e810f8dc55dd0812c819e28f2",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-198-4.json"
+      }
+    },
+    {
+      "case_id": "docbench:199:8",
+      "domain": "news",
+      "question_type": "text",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 0,
+        "claude_retry_merged": 0,
+        "codex_confirmed_review": 0,
+        "deepseek_first_pass": 0,
+        "deepseek_retry_merged": 0
+      },
+      "change_vs_previous_merged": "up",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "答 No，并引用 would do nothing but talk。上一轮答“无法确认”。",
+      "reply_sha256": "e7f96a87c3a2446cd0929db3e335f2ec391925852731eddc0c74ac9869ae1af4",
+      "telemetry": {
+        "l1_attempts": 5,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 72995,
+        "elapsed_s": 140.167
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-199-8/result.json",
+        "result_sha256": "390290f76f71ed28a859b53f5c4de7975f377855cc119bd8d395df4fbc84e02d",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-199-8/trajectory.json",
+        "trajectory_sha256": "63dc14e4517d5b6e6887b1de395b74ba8d62b8f0888f6d38b86351050204238c",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-199-8.json"
+      }
+    },
+    {
+      "case_id": "docbench:202:2",
+      "domain": "news",
+      "question_type": "text",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "b5190d3899e765aa1c8c2f125a3bfcb665f5eb5022f715ef93f5c648809832a7",
+      "telemetry": {
+        "l1_attempts": 3,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 38080,
+        "elapsed_s": 82.357
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-202-2/result.json",
+        "result_sha256": "d2d5e8b98dbc537320e799e77fb11607a59181fb31e43a0b53df42b633ca378e",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-202-2/trajectory.json",
+        "trajectory_sha256": "6d2893dd088e5b4948a5940a71f67ce0ddf58d1fd486f0a3cb143a2063a85234",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-202-2.json"
+      }
+    },
+    {
+      "case_id": "docbench:203:1",
+      "domain": "news",
+      "question_type": "text",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 0,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 0,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "答 Kherson 正确。上一轮首跑 MODEL_TRANSPORT_FAILURE。",
+      "reply_sha256": "65d84f06321cfa62b390a9c8f768a0a8afe231d5e2238b400b91e0232d84bb4b",
+      "telemetry": {
+        "l1_attempts": 3,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 38453,
+        "elapsed_s": 102.662
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-203-1/result.json",
+        "result_sha256": "3c1a2912cd3e5b1383492869a7450c252897ee963756210a1672da009a560c7c",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-203-1/trajectory.json",
+        "trajectory_sha256": "233f8504f47773f01e2355abd2eb4e91a3a8c2458d341c14b5619add6bb9079d",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-203-1.json"
+      }
+    },
+    {
+      "case_id": "docbench:206:0",
+      "domain": "news",
+      "question_type": "text",
+      "original_judge_score": 0,
+      "claude_review_score": 0,
+      "codex_document_grounded_score": 0,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 0,
+        "claude_retry_merged": 0,
+        "codex_confirmed_review": 0,
+        "deepseek_first_pass": 0,
+        "deepseek_retry_merged": 0
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": "found_key_info_but_refused",
+      "failure_category_zh": "找到关键信息却结论为无法回答",
+      "evidence_checked": "none",
+      "note": "回答已引用副标题 Three critics revisit the film and its aftershocks，但把问题理解为要作者姓名，结论为无法回答“谁”。24 次 attempt、426 秒。",
+      "reply_sha256": "7f289eaa95a9142fc458a4758057a3913155917b352b26f308e672819308f440",
+      "telemetry": {
+        "l1_attempts": 24,
+        "analyze_pdf_page_calls": 3,
+        "id_mistyped_tool_calls": 5,
+        "input_tokens": 347894,
+        "elapsed_s": 425.777
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-206-0/result.json",
+        "result_sha256": "6c432d3911bc34a34edbbaa61c9e3fd35df74c8165ca92989124c17ccce06c95",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-206-0/trajectory.json",
+        "trajectory_sha256": "7d862594648591eea359503c401dee79bb9cd7d0d03a8c61e9e6a38c76589134",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-206-0.json"
+      }
+    },
+    {
+      "case_id": "docbench:207:2",
+      "domain": "news",
+      "question_type": "unanswerable",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 0,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 0,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "正确说明未提及。上一轮首跑 MODEL_TRANSPORT_FAILURE。",
+      "reply_sha256": "095eaea931b0ea7028c5608e87d96db2a2e6c8d26bf0b2135f54d81fb193139d",
+      "telemetry": {
+        "l1_attempts": 7,
+        "analyze_pdf_page_calls": 2,
+        "id_mistyped_tool_calls": 2,
+        "input_tokens": 87405,
+        "elapsed_s": 169.575
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-207-2/result.json",
+        "result_sha256": "cb8442ef6dea4eac7b5b311a23df9a1694e0b42f33c97ca835c89868cfea90d9",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-207-2/trajectory.json",
+        "trajectory_sha256": "22b5dfa8fc6cffb05415bd312d84626ebf738ae2b60902f88bc06fa11e2470a9",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-207-2.json"
+      }
+    },
+    {
+      "case_id": "docbench:208:1",
+      "domain": "news",
+      "question_type": "metadata",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "e3a41f923df8b33da7cc693c5c7bbdd9f84008a2eebc2845255c03ba95ffb633",
+      "telemetry": {
+        "l1_attempts": 8,
+        "analyze_pdf_page_calls": 2,
+        "id_mistyped_tool_calls": 2,
+        "input_tokens": 104079,
+        "elapsed_s": 191.767
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-208-1/result.json",
+        "result_sha256": "3bd567ca7d1ce5723385f544f77693b03e348b18759da08c6378385cb2fecc12",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-208-1/trajectory.json",
+        "trajectory_sha256": "38bb7dba4f38ecd65e1cc4183c99e3afba0c8b3d2960c46310495d8df6a31260",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-208-1.json"
+      }
+    },
+    {
+      "case_id": "docbench:211:1",
+      "domain": "news",
+      "question_type": "metadata",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "3bab571f84d54e61bcb68c080639f3171f42be2167fd1697d788f3bc184af219",
+      "telemetry": {
+        "l1_attempts": 11,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 2,
+        "input_tokens": 140151,
+        "elapsed_s": 205.54
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-211-1/result.json",
+        "result_sha256": "0e8b8376f1ecb1559976ab072267163f1907dfac861bc511e2baf9d9302d282b",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-211-1/trajectory.json",
+        "trajectory_sha256": "cdc83842759c72518b2d3ee8e0fe25928aae4edc5a7c61377af92b3842458b80",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-211-1.json"
+      }
+    },
+    {
+      "case_id": "docbench:212:2",
+      "domain": "news",
+      "question_type": "unanswerable",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "3c67fc90819c935601e0f77adb5c3ad8b247cab99686a453a0f3c910ca1ad1fa",
+      "telemetry": {
+        "l1_attempts": 14,
+        "analyze_pdf_page_calls": 4,
+        "id_mistyped_tool_calls": 1,
+        "input_tokens": 188784,
+        "elapsed_s": 307.084
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-212-2/result.json",
+        "result_sha256": "ed4e158714e06fbc98012a728b45294c98e9f54b7efcebd2116cd50aa394f67c",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-212-2/trajectory.json",
+        "trajectory_sha256": "57947fc9ad9fe134d374690e0d9e6462589463281edc026ba2f4de2a367465d9",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-212-2.json"
+      }
+    },
+    {
+      "case_id": "docbench:214:4",
+      "domain": "news",
+      "question_type": "unanswerable",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "b1aff68692606af3571b7726e4554d41e09a7087f78ddf4908c4d7abb081f611",
+      "telemetry": {
+        "l1_attempts": 23,
+        "analyze_pdf_page_calls": 1,
+        "id_mistyped_tool_calls": 3,
+        "input_tokens": 331562,
+        "elapsed_s": 373.005
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-214-4/result.json",
+        "result_sha256": "bc60a2f1367ae0d81bca885e2c38865c6f6ddd0061cdbd608b3017520e6ef3c5",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-214-4/trajectory.json",
+        "trajectory_sha256": "452b18f0cddff4f3d54ea1b10c2808753253ce4cded30c73167e216c32b67040",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-214-4.json"
+      }
+    },
+    {
+      "case_id": "docbench:217:2",
+      "domain": "news",
+      "question_type": "unanswerable",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "2cc8642b629732c0144787e76ace119ac42ecce3daf76539ac88a79cbe6a28b5",
+      "telemetry": {
+        "l1_attempts": 4,
+        "analyze_pdf_page_calls": 2,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 45498,
+        "elapsed_s": 115.844
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-217-2/result.json",
+        "result_sha256": "007baf7116627484a3670f65067fd52813f2d1bc73d0adf0650667752aa54eb7",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-217-2/trajectory.json",
+        "trajectory_sha256": "25fae6bbe56b80a745a8749885c278e09b23dfbd216ede10764467c9811233a0",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-217-2.json"
+      }
+    },
+    {
+      "case_id": "docbench:219:3",
+      "domain": "news",
+      "question_type": "unanswerable",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "",
+      "reply_sha256": "b0a06259e15f7a30cf02a40844034ffa69551972fb654d858609b322c8b9fb48",
+      "telemetry": {
+        "l1_attempts": 3,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 39345,
+        "elapsed_s": 118.587
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-219-3/result.json",
+        "result_sha256": "000752cd37530b33df18c4639c838015c727c4ca0a456a47164d3b81a4297e31",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-219-3/trajectory.json",
+        "trajectory_sha256": "1eec077129852a74dc5aa1992b3276f859632912034acf591848a9f7215e4724",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-219-3.json"
+      }
+    },
+    {
+      "case_id": "docbench:220:1",
+      "domain": "news",
+      "question_type": "metadata",
+      "original_judge_score": 0,
+      "claude_review_score": 0,
+      "codex_document_grounded_score": 0,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 0,
+        "claude_retry_merged": 0,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": "found_key_info_but_refused",
+      "failure_category_zh": "找到关键信息却结论为无法回答",
+      "evidence_checked": "none",
+      "note": "回答识别出 Sunday, January 15, 2023，却把问题理解为报纸是否平日发行，结论为无法确认；参考 No。与上一轮相同。",
+      "reply_sha256": "ded2bb2ba9947c269671da7cac9873daaf373ac629d0462af1cfc92fac160dbe",
+      "telemetry": {
+        "l1_attempts": 16,
+        "analyze_pdf_page_calls": 0,
+        "id_mistyped_tool_calls": 1,
+        "input_tokens": 255761,
+        "elapsed_s": 369.081
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-220-1/result.json",
+        "result_sha256": "62b631af34eeef8ef1cd7494d3fd7fd4654019420e702cbd371eb3c8ed0b20a3",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-220-1/trajectory.json",
+        "trajectory_sha256": "b82e7d4b73a9bd61f35d365ab7e688122e5ac369101f60aae2d1acb6cc131e67",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-220-1.json"
+      }
+    },
+    {
+      "case_id": "docbench:221:0",
+      "domain": "news",
+      "question_type": "metadata",
+      "original_judge_score": 0,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": true,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "回答说明详细报道在 A6，附件只含头版；给出了 A6。可争议。裁判判 0。",
+      "reply_sha256": "386bb29e36ec79139e557707ba9bcaad78fcc42ef0b95a9f8e5f46d36a8ccb13",
+      "telemetry": {
+        "l1_attempts": 6,
+        "analyze_pdf_page_calls": 3,
+        "id_mistyped_tool_calls": 0,
+        "input_tokens": 71651,
+        "elapsed_s": 274.9
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-221-0/result.json",
+        "result_sha256": "2bea763c1f8ab80aa3658151bd2db9f89804fa111e5e659afdfe278532639ab7",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-221-0/trajectory.json",
+        "trajectory_sha256": "c9f5d0cb61ee77d7a8fc247e1b21f2f6afaa87ab4f7d46e152501dda1deffcbc",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-221-0.json"
+      }
+    },
+    {
+      "case_id": "docbench:222:0",
+      "domain": "news",
+      "question_type": "metadata",
+      "original_judge_score": 1,
+      "claude_review_score": 0,
+      "codex_document_grounded_score": 0,
+      "agrees_with_codex": true,
+      "debatable": true,
+      "previous_run": {
+        "claude_first_pass": 0,
+        "claude_retry_merged": 0,
+        "codex_confirmed_review": 0,
+        "deepseek_first_pass": 0,
+        "deepseek_retry_merged": 0
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": "convention_or_summary",
+      "failure_category_zh": "口径或摘要错误",
+      "evidence_checked": "none",
+      "note": "头版 9 条要闻只覆盖 4 条（英国热浪、BA.5、曼钦与全球税收协议、堕胎权与黑人选民），并把相邻两栏标题拼成错误关系“堕胎之争可能破坏全球税收协议”。裁判判 1。",
+      "reply_sha256": "14c9212dae0ac0b621b9e3032b2aa8443edadc569d79fef2e22553e22858886d",
+      "telemetry": {
+        "l1_attempts": 13,
+        "analyze_pdf_page_calls": 2,
+        "id_mistyped_tool_calls": 1,
+        "input_tokens": 179004,
+        "elapsed_s": 292.643
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-222-0/result.json",
+        "result_sha256": "a5c58bfa2af0ff53b90757a5a88a722313de516805376e90fc5a22eefeb91e9e",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-222-0/trajectory.json",
+        "trajectory_sha256": "ec443d896a32992c26b90307ed79315008304a3205b24a3af56a5486cc705eec",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-222-0.json"
+      }
+    },
+    {
+      "case_id": "docbench:224:2",
+      "domain": "news",
+      "question_type": "unanswerable",
+      "original_judge_score": 1,
+      "claude_review_score": 1,
+      "codex_document_grounded_score": 1,
+      "agrees_with_codex": true,
+      "debatable": false,
+      "previous_run": {
+        "claude_first_pass": 1,
+        "claude_retry_merged": 1,
+        "codex_confirmed_review": 1,
+        "deepseek_first_pass": 1,
+        "deepseek_retry_merged": 1
+      },
+      "change_vs_previous_merged": "same",
+      "failure_category": null,
+      "failure_category_zh": null,
+      "evidence_checked": "none",
+      "note": "正确说明头版无 Club Q 报道；上一轮答案对但理由错误，本轮理由也正确。",
+      "reply_sha256": "38e7ecc2ff64a5e65b911e7dcbe0a9a41b85ae28ea42b47a2c2f7c476a0cb032",
+      "telemetry": {
+        "l1_attempts": 10,
+        "analyze_pdf_page_calls": 5,
+        "id_mistyped_tool_calls": 3,
+        "input_tokens": 127991,
+        "elapsed_s": 245.101
+      },
+      "public_evidence": {
+        "result_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-224-2/result.json",
+        "result_sha256": "6f19aa8f9002bc774da4f72a36df7ac6467ad3ed849faf25376a536de04c62e6",
+        "trajectory_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-224-2/trajectory.json",
+        "trajectory_sha256": "dff68d4a251be664a0e04a578fe0abefbf5345d5f18f309d4a34c00cd560ba23",
+        "scoring_path": "../../runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-224-2.json"
+      }
+    }
+  ],
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "reviews/claude/case_reviews.json",
+    "source_sha256": "c19f96bb2b866262d950540323538f20d25aea9081bdfdcf1a60c5cbb36db4b8",
+    "source_bytes": 111615,
+    "original_scores_and_review_opinions_preserved": true,
+    "original_hash_fields_refer_to_private_sources": true,
+    "public_evidence_paths_relative_to_this_file": true,
+    "editorial_notes_path": "../README.md"
+  }
+}

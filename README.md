@@ -78,9 +78,10 @@ Windows 限制不只是缺少命令：当前文件操作使用尚无 Windows 替
 
 补跑后不是一次干净首跑，也不是 133 道独立题。该集合用于开发，非严格未见测试集；抽样与裁判配置不等同于官方榜单。历史被测源码快照与当前公开代码不同，不能用旧成绩证明后续修改有效。
 
-公开材料包括[逐项统计、回答及执行证据](evals/docbench/previous_results/README.md)、[模型复核分歧](evals/docbench/previous_results/analysis/EVALUATION_REVIEW.md)和[链路失败归因](evals/docbench/previous_results/analysis/FAILURE_ATTRIBUTION.md)。复核不是独立人工金标，不用最高复核分覆盖原始裁判分。
+公开材料包括[逐项统计、回答及执行证据](evals/docbench/previous_results/README.md)、[模型复核分歧](evals/docbench/previous_results/showcase_125/analysis/EVALUATION_REVIEW.md)和[链路失败归因](evals/docbench/previous_results/showcase_125/analysis/FAILURE_ATTRIBUTION.md)。复核不是独立人工金标，不用最高复核分覆盖原始裁判分。
+关闭语义验证门、改用 235B VLM 的后续 123 题实验另见[本轮双方评审与 badcase 分析](evals/docbench/previous_results/gate_off_highland235b_123/reviews/README.md)，不与旧实验分析混放。
 
-失败分析涵盖格式/语义拒绝、旧结果回读、视觉结果完整性、长尾超时和回答后的收尾问题。目前没有与 DSH、裸模型或 BM25-only 的同配置对照，也没有验证门/记忆模块的消融实验。
+失败分析涵盖格式/语义拒绝、旧结果回读、视觉结果完整性、长尾超时和回答后的收尾问题。目前没有与 DSH、裸模型或 BM25-only 的同配置对照，也没有严格单变量的验证门/记忆模块消融实验。
 
 ### 如何自己核查
 

@@ -182,17 +182,14 @@ evals/**/previous_results/**
 !evals/**/previous_results/README.md
 !evals/**/previous_results/*.summary.json
 !evals/**/previous_results/*.baseline.json
-# 仅三个经过审阅的历史分析文档可公开。
-!/evals/docbench/previous_results/analysis/
-/evals/docbench/previous_results/analysis/*
-!/evals/docbench/previous_results/analysis/README.md
-!/evals/docbench/previous_results/analysis/EVALUATION_REVIEW.md
-!/evals/docbench/previous_results/analysis/FAILURE_ATTRIBUTION.md
 # 逐题公开投影：仅本次两组归档、指定文件类型；隐私门禁另核验精确清单及 SHA-256。
 !/evals/docbench/previous_results/showcase_125/
 !/evals/docbench/previous_results/showcase_125/**/
 !/evals/docbench/previous_results/showcase_125/README.md
 !/evals/docbench/previous_results/showcase_125/publication_manifest.json
+!/evals/docbench/previous_results/showcase_125/analysis/README.md
+!/evals/docbench/previous_results/showcase_125/analysis/EVALUATION_REVIEW.md
+!/evals/docbench/previous_results/showcase_125/analysis/FAILURE_ATTRIBUTION.md
 !/evals/docbench/previous_results/showcase_125/runs/*/run_manifest.json
 !/evals/docbench/previous_results/showcase_125/runs/*/cases/*/result.json
 !/evals/docbench/previous_results/showcase_125/runs/*/cases/*/trajectory.json
@@ -202,6 +199,11 @@ evals/**/previous_results/**
 !/evals/docbench/previous_results/gate_off_highland235b_123/**/
 !/evals/docbench/previous_results/gate_off_highland235b_123/README.md
 !/evals/docbench/previous_results/gate_off_highland235b_123/publication_manifest.json
+!/evals/docbench/previous_results/gate_off_highland235b_123/reviews/README.md
+!/evals/docbench/previous_results/gate_off_highland235b_123/reviews/codex/REVIEW.md
+!/evals/docbench/previous_results/gate_off_highland235b_123/reviews/codex/case_reviews.json
+!/evals/docbench/previous_results/gate_off_highland235b_123/reviews/claude/REVIEW.md
+!/evals/docbench/previous_results/gate_off_highland235b_123/reviews/claude/case_reviews.json
 !/evals/docbench/previous_results/gate_off_highland235b_123/runs/*/run_manifest.json
 !/evals/docbench/previous_results/gate_off_highland235b_123/runs/*/cases/*/result.json
 !/evals/docbench/previous_results/gate_off_highland235b_123/runs/*/cases/*/trajectory.json

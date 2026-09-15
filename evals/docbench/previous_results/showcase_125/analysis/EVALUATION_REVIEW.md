@@ -16,7 +16,7 @@
 两套复核是模型辅助的事后评分意见，不是人类金标、官方榜单或新的系统运行。
 不能挑选每题最高的评审分数合成一个更高成绩；CC 比 Codex 高 1 分也不是 agent 能力提高。
 
-[公开统计](../showcase_125.summary.json) 现已分列 DeepSeek、Codex 和 CC 的逐题评分，
+[公开统计](../../showcase_125.summary.json) 现已分列 DeepSeek、Codex 和 CC 的逐题评分，
 CC 状态为 `archived_provisional`。原位补齐复核层会更新整份公开投影的哈希，
 不改变原始运行、裁判分数或 Codex 列；更新前 pending 投影仅保留为历史身份。
 新旧哈希见 [来源索引](README.md#来源身份)，CC 字段的可读对应表见第 8 节。
@@ -166,7 +166,7 @@ P90 519.846 秒，最长 1,501.125 秒。133 次执行累计 33,884.363 秒；
 
 三批记录主模型 input 15,586,043、output 270,447，合计 15,856,490 token；
 不含独立视觉、裁判或缺失 usage 的潜在计费。失败诊断不能作为第二份成功响应重复累加。
-完整分批表与统计边界保持在 [结果说明](../README.md#执行状态耗时与-token)。
+完整分批表与统计边界保持在 [结果说明](../../README.md#执行状态耗时与-token)。
 
 所有三批存档 `baseline_eligible=false`，不因为存在复核高分就改成正式基线验收通过。
 没有同条件的 BM25-only、裸模型、DSH 或 gate 开关对照，不能据此归功于某个模块。
@@ -197,7 +197,7 @@ P90 519.846 秒，最长 1,501.125 秒。133 次执行累计 33,884.363 秒；
 `de04415ef7871877e16ab6d0ce5cbf74deba9a13c497723a10b69af21bbe5820`。
 只投影 ID、0/1 标签和两个声明标记；不复制其自由文本说明、路径、原题或答案。
 
-下面 125 个唯一 ID 及四个 CC 字段与 [公开 JSON](../showcase_125.summary.json) 完全一致，
+下面 125 个唯一 ID 及四个 CC 字段与 [公开 JSON](../../showcase_125.summary.json) 完全一致，
 分别对应 `cc_archived_first_score`、`cc_archived_selected_score`、`cc_debatable` 和
 `cc_source_checked_reported`。
 两列求和分别为 100 和 105；只有 5 个 0→1，其余 120 个标签相同。

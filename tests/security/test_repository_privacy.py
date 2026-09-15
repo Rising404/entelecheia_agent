@@ -24,9 +24,9 @@ CHECKER = REPOSITORY_ROOT / "scripts" / "check_repository_privacy.py"
 PUBLIC_EVALUATION = "evals/docbench/previous_results/showcase_125.summary.json"
 HISTORICAL_EVALUATION_PATH = "evals/docbench/results/showcase_125.summary.json"
 REVIEWED_ANALYSIS_FILES = (
-    "evals/docbench/previous_results/analysis/README.md",
-    "evals/docbench/previous_results/analysis/EVALUATION_REVIEW.md",
-    "evals/docbench/previous_results/analysis/FAILURE_ATTRIBUTION.md",
+    "evals/docbench/previous_results/showcase_125/analysis/README.md",
+    "evals/docbench/previous_results/showcase_125/analysis/EVALUATION_REVIEW.md",
+    "evals/docbench/previous_results/showcase_125/analysis/FAILURE_ATTRIBUTION.md",
 )
 PRIVATE_ANALYSIS_FILES = (
     "evals/docbench/results/analysis/raw.md",
@@ -34,8 +34,8 @@ PRIVATE_ANALYSIS_FILES = (
     "evals/docbench/results/analysis/nested/README.md",
     "evals/docbench/results/analysis/raw.summary.json",
     "evals/another_benchmark/results/analysis/README.md",
-    "evals/docbench/previous_results/analysis/raw.md",
-    "evals/docbench/previous_results/analysis/claude_review_scores.json",
+    "evals/docbench/previous_results/showcase_125/analysis/raw.md",
+    "evals/docbench/previous_results/showcase_125/analysis/claude_review_scores.json",
     "evals/docbench/previous_results/private_runs/showcase_125/README.md",
     "evals/docbench/previous_results/private_runs/showcase_125/cases/example/result.json",
 )

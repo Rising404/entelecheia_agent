@@ -107,7 +107,7 @@ def test_privacy_requires_reviewed_manifest_and_exact_complete_file_set(monkeypa
     manifest = encode({"kind": "reviewed_public_evidence", "files": {
         "runs/example/cases/docbench-1-0/result.json": {"sha256": digest(raw), "bytes": len(raw)},
     }})
-    monkeypatch.setattr(privacy, "REVIEWED_EVIDENCE_MANIFESTS", {manifest_path: digest(manifest)})
+    monkeypatch.setattr(privacy, "REVIEWED_EVIDENCE_MANIFESTS", {manifest_path: (digest(manifest),)})
     files = {path: raw, manifest_path: manifest}
     assert privacy.inspect_snapshot(files, files.__getitem__) == []
     assert privacy.inspect_snapshot([path], files.__getitem__)
@@ -134,7 +134,7 @@ def test_reviewed_evidence_still_receives_secret_and_structured_checks(
     manifest = encode({"kind": "reviewed_public_evidence", "files": {
         "result.json": {"sha256": digest(raw), "bytes": len(raw)},
     }})
-    monkeypatch.setattr(privacy, "REVIEWED_EVIDENCE_MANIFESTS", {manifest_path: digest(manifest)})
+    monkeypatch.setattr(privacy, "REVIEWED_EVIDENCE_MANIFESTS", {manifest_path: (digest(manifest),)})
     monkeypatch.setattr(privacy, "MAX_TEXT_SCAN_BYTES", 64)
     files = {path: raw, manifest_path: manifest}
     assert any(expected_reason in v.reason for v in privacy.inspect_snapshot(files, files.__getitem__))
@@ -154,7 +154,7 @@ def test_reviewed_evidence_is_read_from_git_index_and_tree_not_worktree(
     manifest = encode({"kind": "reviewed_public_evidence", "files": {
         "result.json": {"sha256": digest(raw), "bytes": len(raw)},
     }})
-    monkeypatch.setattr(privacy, "REVIEWED_EVIDENCE_MANIFESTS", {manifest_path: digest(manifest)})
+    monkeypatch.setattr(privacy, "REVIEWED_EVIDENCE_MANIFESTS", {manifest_path: (digest(manifest),)})
     (tmp_path / root).mkdir(parents=True)
     (tmp_path / path).write_bytes(raw)
     (tmp_path / manifest_path).write_bytes(manifest)
@@ -168,3 +168,68 @@ def test_reviewed_evidence_is_read_from_git_index_and_tree_not_worktree(
         assert privacy.inspect_snapshot(paths, read) == []
     paths, read = privacy.worktree_snapshot(tmp_path)
     assert privacy.inspect_snapshot(paths, read)
+
+
+def test_reviewed_publication_hashes_allow_only_explicitly_approved_snapshots(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    root = "evals/docbench/previous_results/synthetic"
+    path = root + "/result.json"
+    manifest_path = root + "/publication_manifest.json"
+    snapshots = []
+    for answer in ("First approved answer", "Second approved answer", "Unreviewed answer"):
+        raw = encode({"case_id": "docbench:1:0", "reply": answer})
+        manifest = encode({"kind": "reviewed_public_evidence", "files": {
+            "result.json": {"sha256": digest(raw), "bytes": len(raw)},
+        }})
+        snapshots.append({path: raw, manifest_path: manifest})
+    monkeypatch.setattr(privacy, "REVIEWED_EVIDENCE_MANIFESTS", {
+        manifest_path: tuple(digest(s[manifest_path]) for s in snapshots[:2]),
+    })
+    for snapshot in snapshots[:2]:
+        assert not privacy.inspect_snapshot(snapshot, snapshot.__getitem__, committed_history=True)
+    assert privacy.inspect_snapshot(snapshots[2], snapshots[2].__getitem__, committed_history=True)
+
+
+def test_archived_reviews_reconcile_with_public_answers_and_judge_without_merging_scores() -> None:
+    root = Path(__file__).resolve().parents[2] / "evals/docbench/previous_results/gate_off_highland235b_123"
+    reviews = {}
+    for who, field, expected in (
+        ("codex", "document_grounded_review_score", 103),
+        ("claude", "claude_review_score", 106),
+    ):
+        path = root / "reviews" / who / "case_reviews.json"
+        review = json.loads(path.read_bytes())
+        cases = {c["case_id"]: c for c in review["cases"]}
+        assert len(cases) == len(review["cases"]) == 123
+        assert sum(c[field] for c in cases.values()) == expected
+        assert sum(c["original_judge_score"] for c in cases.values()) == 97
+        assert review["independent_human_gold"] is False
+        assert review["official_comparable"] is False
+        assert review["publication"]["original_scores_and_review_opinions_preserved"] is True
+        for cid, case in cases.items():
+            assert "question" not in case and "reference_answer" not in case
+            evidence = case["public_evidence"]
+            paths = {k: (path.parent / evidence[k]).resolve()
+                     for k in ("result_path", "trajectory_path", "scoring_path")}
+            assert all(p.is_relative_to(root) and p.is_file() for p in paths.values())
+            raw = paths["result_path"].read_bytes()
+            result = json.loads(raw)
+            score = json.loads(paths["scoring_path"].read_bytes())
+            assert cid == result["case_id"] == score["case_id"]
+            assert score["score"] == case["original_judge_score"]
+            assert digest(raw) == evidence["result_sha256"]
+            assert digest(paths["trajectory_path"].read_bytes()) == evidence["trajectory_sha256"]
+            assert digest(result["reply"].encode()) == case.get("answer_sha256", case.get("reply_sha256"))
+            if "result_sha256" in case:
+                assert case["result_sha256"] == result["publication"]["source_sha256"]
+        reviews[who] = cases
+    codex, claude = reviews["codex"], reviews["claude"]
+    assert codex.keys() == claude.keys()
+    assert sum(c["reference_aligned_review_score"] for c in codex.values()) == 101
+    assert {cid for cid in codex if codex[cid]["document_grounded_review_score"] != claude[cid]["claude_review_score"]} == {
+        "docbench:66:3", "docbench:80:5", "docbench:144:3",
+    }
+    assert {cid for cid, c in claude.items() if not c["agrees_with_codex"]} == {
+        "docbench:66:3", "docbench:80:5", "docbench:144:3",
+    }
