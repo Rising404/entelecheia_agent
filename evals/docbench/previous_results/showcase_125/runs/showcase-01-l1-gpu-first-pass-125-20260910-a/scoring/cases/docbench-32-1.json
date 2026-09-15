@@ -1,0 +1,135 @@
+{
+  "schema_version": "docbench-compatible-case-score-v1",
+  "scoring_protocol": "docbench_prompt_compatible",
+  "official_comparable": false,
+  "case_id": "docbench:32:1",
+  "doc_id": "32",
+  "question_index": 1,
+  "domain": "academia",
+  "question_type": "multimodal",
+  "system_answer": "根据 Figure 6（Interactive learning curves on task success rate with different RL training settings），在 10,000 次交互对话学习会话后，SL Baseline 和 SL + end-to-end RL 均达到了约 0.65 的最高任务成功率，而 SL + policy-only RL 仅达到约 0.55。由于 SL + IL 1000 + policy-only RL 曲线的终点值在视觉观察中被截断，无法确定其最终值是否可能更高。基于已有完整数据，SL Baseline 和 SL + end-to-end RL 并列取得了随时间推移的最高任务成功率。",
+  "prompt_sha256": "784a6d6cf4f8151765b169c633f46e62d12dcd77f8941172e72edbf8b30f9bde",
+  "filled_prompt_sha256": "bba67fb83d400b011bb9eed78926676ce87be11fb175044cbaf4d88c000e17ce",
+  "judge_provider": "openai-compatible",
+  "judge_base_url": "https://models.sjtu.edu.cn/api/v1",
+  "judge_model": "deepseek-chat",
+  "judge_request_dialect": "deepseek",
+  "judge_retry_policy": {
+    "max_attempts": 6,
+    "fallback_backoff_s": [
+      2.0,
+      4.0,
+      8.0,
+      16.0,
+      30.0
+    ],
+    "inter_case_delay_s": 1.0,
+    "retryable_http_statuses": [
+      408,
+      429,
+      "5xx"
+    ],
+    "retryable_transport_errors": [
+      "httpx.TransportError"
+    ]
+  },
+  "judge_http_status": 200,
+  "judge_response_raw": {
+    "id": "chatcmpl-be5191d3-0360-4ca6-8c41-d7be0f0a98d6",
+    "created": 1789065269,
+    "model": "deepseek-chat",
+    "object": "chat.completion",
+    "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "0",
+          "role": "assistant",
+          "provider_specific_fields": {
+            "reasoning": null,
+            "refusal": null
+          }
+        },
+        "provider_specific_fields": {
+          "stop_reason": null,
+          "routed_experts": null,
+          "token_ids": null
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 2,
+      "prompt_tokens": 475,
+      "total_tokens": 477,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      }
+    }
+  },
+  "judge_response_text": "0",
+  "judge_attempts": [
+    {
+      "attempt_number": 1,
+      "attempted_at": "2026-09-10T18:34:29.258367+00:00",
+      "wait_before_attempt_s": 1.0,
+      "http_status": 200,
+      "response_raw": {
+        "id": "chatcmpl-be5191d3-0360-4ca6-8c41-d7be0f0a98d6",
+        "created": 1789065269,
+        "model": "deepseek-chat",
+        "object": "chat.completion",
+        "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "0",
+              "role": "assistant",
+              "provider_specific_fields": {
+                "reasoning": null,
+                "refusal": null
+              }
+            },
+            "provider_specific_fields": {
+              "stop_reason": null,
+              "routed_experts": null,
+              "token_ids": null
+            }
+          }
+        ],
+        "usage": {
+          "completion_tokens": 2,
+          "prompt_tokens": 475,
+          "total_tokens": 477,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          }
+        }
+      },
+      "status": "completed",
+      "error": null,
+      "retryable": false,
+      "retry_reason": null,
+      "retry_after_header": null,
+      "wait_before_next_attempt_s": null,
+      "wait_source": null
+    }
+  ],
+  "judge_attempt_count": 1,
+  "score_source": "judge",
+  "score": 0,
+  "error": null,
+  "scored_at": "2026-09-10T18:34:28.249242+00:00",
+  "status": "completed",
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-32-1-37bac6c6e5be.json",
+    "source_sha256": "c69983042624543fe99b7c5f076026e84a3129332effba2d644f678303c1fa85",
+    "source_bytes": 4402,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

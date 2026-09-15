@@ -1,0 +1,129 @@
+{
+  "schema_version": "docbench-compatible-case-score-v1",
+  "scoring_protocol": "docbench_prompt_compatible",
+  "official_comparable": false,
+  "case_id": "docbench:132:2",
+  "doc_id": "132",
+  "question_index": 2,
+  "domain": "government",
+  "question_type": "text",
+  "system_answer": "**答案：否，ECA 并不旨在完全消除交换项目中的负面体验。**\n\n根据文件原文（Bureau Objective 1.2 Risk Considerations），明确写道：\n\n> **“Although ECA cannot eliminate the possibility of negative exchange program experiences, ECA helps to confront a world of rising nationalism and receding democracies by increasing understanding of shared democratic values.”**\n\n（尽管 ECA 无法消除负面交换项目体验的可能性，但 ECA 通过增进对共同民主价值观的理解，帮助应对民族主义抬头和民主倒退的世界。）\n\n该表述直接表明，ECA 承认负面体验的可能性无法被完全消除，其目标并非彻底杜绝负面经历，而是通过增进理解来应对更广泛的全球挑战。因此，ECA 并不以“完全消除负面体验”为目标。",
+  "prompt_sha256": "784a6d6cf4f8151765b169c633f46e62d12dcd77f8941172e72edbf8b30f9bde",
+  "filled_prompt_sha256": "fcdb6971d7b4d794dd49f000a1398a6eae57cafb2fc5e20552a9a6c6cef868b8",
+  "judge_provider": "openai-compatible",
+  "judge_base_url": "https://models.sjtu.edu.cn/api/v1",
+  "judge_model": "deepseek-chat",
+  "judge_request_dialect": "deepseek",
+  "judge_retry_policy": {
+    "max_attempts": 6,
+    "fallback_backoff_s": [
+      2.0,
+      4.0,
+      8.0,
+      16.0,
+      30.0
+    ],
+    "inter_case_delay_s": 1.0,
+    "retryable_http_statuses": [
+      408,
+      429,
+      "5xx"
+    ],
+    "retryable_transport_errors": [
+      "httpx.TransportError"
+    ]
+  },
+  "judge_http_status": 200,
+  "judge_response_raw": {
+    "id": "chatcmpl-7d765a02-257a-4ead-bfe9-a2fbec8b4c64",
+    "created": 1789436029,
+    "model": "deepseek-chat",
+    "object": "chat.completion",
+    "system_fingerprint": "vllm-0.26.0-tp8-ep-17a845fb",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "Correctness: 1",
+          "role": "assistant",
+          "provider_specific_fields": {
+            "reasoning": null,
+            "refusal": null
+          }
+        },
+        "provider_specific_fields": {
+          "routed_experts": null,
+          "token_ids": null,
+          "stop_reason": null
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 6,
+      "prompt_tokens": 476,
+      "total_tokens": 482
+    }
+  },
+  "judge_response_text": "Correctness: 1",
+  "judge_attempts": [
+    {
+      "attempt_number": 1,
+      "attempted_at": "2026-09-15T01:33:47.414551+00:00",
+      "wait_before_attempt_s": 1.0,
+      "http_status": 200,
+      "response_raw": {
+        "id": "chatcmpl-7d765a02-257a-4ead-bfe9-a2fbec8b4c64",
+        "created": 1789436029,
+        "model": "deepseek-chat",
+        "object": "chat.completion",
+        "system_fingerprint": "vllm-0.26.0-tp8-ep-17a845fb",
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "Correctness: 1",
+              "role": "assistant",
+              "provider_specific_fields": {
+                "reasoning": null,
+                "refusal": null
+              }
+            },
+            "provider_specific_fields": {
+              "routed_experts": null,
+              "token_ids": null,
+              "stop_reason": null
+            }
+          }
+        ],
+        "usage": {
+          "completion_tokens": 6,
+          "prompt_tokens": 476,
+          "total_tokens": 482
+        }
+      },
+      "status": "completed",
+      "error": null,
+      "retryable": false,
+      "retry_reason": null,
+      "retry_after_header": null,
+      "wait_before_next_attempt_s": null,
+      "wait_source": null
+    }
+  ],
+  "judge_attempt_count": 1,
+  "score_source": "judge",
+  "score": 1,
+  "error": null,
+  "scored_at": "2026-09-15T01:33:46.404687+00:00",
+  "status": "completed",
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-132-2-94a3d4c72e31.json",
+    "source_sha256": "347834afeb18aee21ed5ad970743390a4287156bbd8a46e64b542980063a8f30",
+    "source_bytes": 4495,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

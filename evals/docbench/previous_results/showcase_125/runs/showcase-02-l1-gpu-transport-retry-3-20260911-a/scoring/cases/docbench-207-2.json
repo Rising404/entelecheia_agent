@@ -1,0 +1,135 @@
+{
+  "schema_version": "docbench-compatible-case-score-v1",
+  "scoring_protocol": "docbench_prompt_compatible",
+  "official_comparable": false,
+  "case_id": "docbench:207:2",
+  "doc_id": "207",
+  "question_index": 2,
+  "domain": "news",
+  "question_type": "unanswerable",
+  "system_answer": "根据附件PDF（2024年2月22日《纽约时报》头版）的内容，该文件仅包含报纸头版，涉及贫困、犯罪、移民、国际新闻等话题，没有任何关于混合办公（hybrid work）或办公人员支出变化的文章、图表或数据。因此，无法从该文档中确定哪个城市预计会出现办公人员支出的最大降幅。",
+  "prompt_sha256": "784a6d6cf4f8151765b169c633f46e62d12dcd77f8941172e72edbf8b30f9bde",
+  "filled_prompt_sha256": "1b9cb16360848ddf858d20b34cc69db0519b664945827df467175fb3cf49c42c",
+  "judge_provider": "openai-compatible",
+  "judge_base_url": "https://models.sjtu.edu.cn/api/v1",
+  "judge_model": "deepseek-chat",
+  "judge_request_dialect": "deepseek",
+  "judge_retry_policy": {
+    "max_attempts": 6,
+    "fallback_backoff_s": [
+      2.0,
+      4.0,
+      8.0,
+      16.0,
+      30.0
+    ],
+    "inter_case_delay_s": 1.0,
+    "retryable_http_statuses": [
+      408,
+      429,
+      "5xx"
+    ],
+    "retryable_transport_errors": [
+      "httpx.TransportError"
+    ]
+  },
+  "judge_http_status": 200,
+  "judge_response_raw": {
+    "id": "chatcmpl-3562c370-cee1-4a52-9f17-59a1c1fe90c5",
+    "created": 1789093894,
+    "model": "deepseek-chat",
+    "object": "chat.completion",
+    "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "Correctness: 1",
+          "role": "assistant",
+          "provider_specific_fields": {
+            "reasoning": null,
+            "refusal": null
+          }
+        },
+        "provider_specific_fields": {
+          "stop_reason": null,
+          "routed_experts": null,
+          "token_ids": null
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 6,
+      "prompt_tokens": 373,
+      "total_tokens": 379,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      }
+    }
+  },
+  "judge_response_text": "Correctness: 1",
+  "judge_attempts": [
+    {
+      "attempt_number": 1,
+      "attempted_at": "2026-09-11T02:31:34.834558+00:00",
+      "wait_before_attempt_s": 1.0,
+      "http_status": 200,
+      "response_raw": {
+        "id": "chatcmpl-3562c370-cee1-4a52-9f17-59a1c1fe90c5",
+        "created": 1789093894,
+        "model": "deepseek-chat",
+        "object": "chat.completion",
+        "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "Correctness: 1",
+              "role": "assistant",
+              "provider_specific_fields": {
+                "reasoning": null,
+                "refusal": null
+              }
+            },
+            "provider_specific_fields": {
+              "stop_reason": null,
+              "routed_experts": null,
+              "token_ids": null
+            }
+          }
+        ],
+        "usage": {
+          "completion_tokens": 6,
+          "prompt_tokens": 373,
+          "total_tokens": 379,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          }
+        }
+      },
+      "status": "completed",
+      "error": null,
+      "retryable": false,
+      "retry_reason": null,
+      "retry_after_header": null,
+      "wait_before_next_attempt_s": null,
+      "wait_source": null
+    }
+  ],
+  "judge_attempt_count": 1,
+  "score_source": "judge",
+  "score": 1,
+  "error": null,
+  "scored_at": "2026-09-11T02:31:33.826501+00:00",
+  "status": "completed",
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/showcase-02-l1-gpu-transport-retry-3-20260911-a/scoring/cases/docbench-207-2-d44e54f5cc3c.json",
+    "source_sha256": "1d60a1037ba2e9932dccab84e2d66eb33033fb903306364628913b2d69027184",
+    "source_bytes": 4008,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

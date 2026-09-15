@@ -1,0 +1,129 @@
+{
+  "schema_version": "docbench-compatible-case-score-v1",
+  "scoring_protocol": "docbench_prompt_compatible",
+  "official_comparable": false,
+  "case_id": "docbench:170:3",
+  "doc_id": "170",
+  "question_index": 3,
+  "domain": "laws",
+  "question_type": "text",
+  "system_answer": "根据S. Rajaratnam国际研究学院（新加坡南洋理工大学）研究人员的观点，一带一路倡议（BRI）通过以下方式应对其面临的批评：\n\n在2019年4月举办的第二届一带一路国际合作高峰论坛上，中国承认了对BRI的批评，并承诺以多种方式对其进行改革。研究人员指出，如果这些承诺得到落实，并且与合作伙伴国家的合作增加，可能会出现'BRI 2.0'，从而为各方带来双赢的局面。\n\n具体而言，中国国家主席习近平强调，中国将使BRI在财务和环境上更具可持续性，包括发布《BRI债务可持续性框架》以及启动绿色基础设施项目、进行绿色投资和提供绿色融资。此外，联合公报还强调了建设'高质量、可靠、有韧性和可持续的基础设施'以及从国家和国际金融机构获得更多元化、可持续融资支持的必要性。",
+  "prompt_sha256": "784a6d6cf4f8151765b169c633f46e62d12dcd77f8941172e72edbf8b30f9bde",
+  "filled_prompt_sha256": "cf3a5e04320d0a65e7ce7a7f0c31e6e6c4012cb0b4fd51a841b063e02eb3d8c2",
+  "judge_provider": "openai-compatible",
+  "judge_base_url": "https://models.sjtu.edu.cn/api/v1",
+  "judge_model": "deepseek-chat",
+  "judge_request_dialect": "deepseek",
+  "judge_retry_policy": {
+    "max_attempts": 6,
+    "fallback_backoff_s": [
+      2.0,
+      4.0,
+      8.0,
+      16.0,
+      30.0
+    ],
+    "inter_case_delay_s": 1.0,
+    "retryable_http_statuses": [
+      408,
+      429,
+      "5xx"
+    ],
+    "retryable_transport_errors": [
+      "httpx.TransportError"
+    ]
+  },
+  "judge_http_status": 200,
+  "judge_response_raw": {
+    "id": "chatcmpl-2ac91733-88b3-4b62-bad5-2060cca44f27",
+    "created": 1789436151,
+    "model": "deepseek-chat",
+    "object": "chat.completion",
+    "system_fingerprint": "vllm-0.26.0-tp8-ep-17a845fb",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "Correctness: 1",
+          "role": "assistant",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning": null
+          }
+        },
+        "provider_specific_fields": {
+          "token_ids": null,
+          "stop_reason": null,
+          "routed_experts": null
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 6,
+      "prompt_tokens": 602,
+      "total_tokens": 608
+    }
+  },
+  "judge_response_text": "Correctness: 1",
+  "judge_attempts": [
+    {
+      "attempt_number": 1,
+      "attempted_at": "2026-09-15T01:35:49.729706+00:00",
+      "wait_before_attempt_s": 1.0,
+      "http_status": 200,
+      "response_raw": {
+        "id": "chatcmpl-2ac91733-88b3-4b62-bad5-2060cca44f27",
+        "created": 1789436151,
+        "model": "deepseek-chat",
+        "object": "chat.completion",
+        "system_fingerprint": "vllm-0.26.0-tp8-ep-17a845fb",
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "Correctness: 1",
+              "role": "assistant",
+              "provider_specific_fields": {
+                "refusal": null,
+                "reasoning": null
+              }
+            },
+            "provider_specific_fields": {
+              "token_ids": null,
+              "stop_reason": null,
+              "routed_experts": null
+            }
+          }
+        ],
+        "usage": {
+          "completion_tokens": 6,
+          "prompt_tokens": 602,
+          "total_tokens": 608
+        }
+      },
+      "status": "completed",
+      "error": null,
+      "retryable": false,
+      "retry_reason": null,
+      "retry_after_header": null,
+      "wait_before_next_attempt_s": null,
+      "wait_source": null
+    }
+  ],
+  "judge_attempt_count": 1,
+  "score_source": "judge",
+  "score": 1,
+  "error": null,
+  "scored_at": "2026-09-15T01:35:48.719300+00:00",
+  "status": "completed",
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-170-3-fbddaaa9d82a.json",
+    "source_sha256": "0cf6d01f3421a4accdf8b4ea6aaf1da058869677b948ec38fcf0894d0994b86e",
+    "source_bytes": 5044,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

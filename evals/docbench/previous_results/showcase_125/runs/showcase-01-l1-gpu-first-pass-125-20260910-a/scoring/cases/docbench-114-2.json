@@ -1,0 +1,135 @@
+{
+  "schema_version": "docbench-compatible-case-score-v1",
+  "scoring_protocol": "docbench_prompt_compatible",
+  "official_comparable": false,
+  "case_id": "docbench:114:2",
+  "doc_id": "114",
+  "question_index": 2,
+  "domain": "government",
+  "question_type": "metadata",
+  "system_answer": "The chart titled \"Figure 4. U.S. Department of State Organization Chart\" appears on **page 11** of the report. This is confirmed by the List of Figures in Appendix C (page 184), which lists \"Figure 4. U.S. Department of State Organization Chart, page 11,\" and by the chart content itself found on page 13 of the PDF (which corresponds to the report's page 11).",
+  "prompt_sha256": "784a6d6cf4f8151765b169c633f46e62d12dcd77f8941172e72edbf8b30f9bde",
+  "filled_prompt_sha256": "9a1ebd10f23b9fe2d0ef36d2004ca7b66c4b9a91f89b054daa11dee18106d501",
+  "judge_provider": "openai-compatible",
+  "judge_base_url": "https://models.sjtu.edu.cn/api/v1",
+  "judge_model": "deepseek-chat",
+  "judge_request_dialect": "deepseek",
+  "judge_retry_policy": {
+    "max_attempts": 6,
+    "fallback_backoff_s": [
+      2.0,
+      4.0,
+      8.0,
+      16.0,
+      30.0
+    ],
+    "inter_case_delay_s": 1.0,
+    "retryable_http_statuses": [
+      408,
+      429,
+      "5xx"
+    ],
+    "retryable_transport_errors": [
+      "httpx.TransportError"
+    ]
+  },
+  "judge_http_status": 200,
+  "judge_response_raw": {
+    "id": "chatcmpl-d5136c3a-d765-4bc6-897a-d6d6daac4aac",
+    "created": 1789065562,
+    "model": "deepseek-chat",
+    "object": "chat.completion",
+    "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "1",
+          "role": "assistant",
+          "provider_specific_fields": {
+            "reasoning": null,
+            "refusal": null
+          }
+        },
+        "provider_specific_fields": {
+          "stop_reason": null,
+          "routed_experts": null,
+          "token_ids": null
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 2,
+      "prompt_tokens": 382,
+      "total_tokens": 384,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      }
+    }
+  },
+  "judge_response_text": "1",
+  "judge_attempts": [
+    {
+      "attempt_number": 1,
+      "attempted_at": "2026-09-10T18:39:21.127395+00:00",
+      "wait_before_attempt_s": 1.0,
+      "http_status": 200,
+      "response_raw": {
+        "id": "chatcmpl-d5136c3a-d765-4bc6-897a-d6d6daac4aac",
+        "created": 1789065562,
+        "model": "deepseek-chat",
+        "object": "chat.completion",
+        "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "1",
+              "role": "assistant",
+              "provider_specific_fields": {
+                "reasoning": null,
+                "refusal": null
+              }
+            },
+            "provider_specific_fields": {
+              "stop_reason": null,
+              "routed_experts": null,
+              "token_ids": null
+            }
+          }
+        ],
+        "usage": {
+          "completion_tokens": 2,
+          "prompt_tokens": 382,
+          "total_tokens": 384,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          }
+        }
+      },
+      "status": "completed",
+      "error": null,
+      "retryable": false,
+      "retry_reason": null,
+      "retry_after_header": null,
+      "wait_before_next_attempt_s": null,
+      "wait_source": null
+    }
+  ],
+  "judge_attempt_count": 1,
+  "score_source": "judge",
+  "score": 1,
+  "error": null,
+  "scored_at": "2026-09-10T18:39:20.117137+00:00",
+  "status": "completed",
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-114-2-807a8f89934d.json",
+    "source_sha256": "f08040d63822b2c27cd6e5d009acf5cb1e8e7d3249b5cc3b40b1325f87e4776f",
+    "source_bytes": 3946,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

@@ -1,0 +1,135 @@
+{
+  "schema_version": "docbench-compatible-case-score-v1",
+  "scoring_protocol": "docbench_prompt_compatible",
+  "official_comparable": false,
+  "case_id": "docbench:220:1",
+  "doc_id": "220",
+  "question_index": 1,
+  "domain": "news",
+  "question_type": "metadata",
+  "system_answer": "Based on the attached document, the newspaper shown is a Sunday edition (dated Sunday, January 15, 2023). The document itself does not contain information stating whether the newspaper is released on weekdays. Therefore, based solely on the attached document, I cannot confirm whether the newspaper was released on weekdays.",
+  "prompt_sha256": "784a6d6cf4f8151765b169c633f46e62d12dcd77f8941172e72edbf8b30f9bde",
+  "filled_prompt_sha256": "9d11d4c2f311cf3af68ce651f9fa670d67fc1a2bef8d3fe922da002746b7f5c4",
+  "judge_provider": "openai-compatible",
+  "judge_base_url": "https://models.sjtu.edu.cn/api/v1",
+  "judge_model": "deepseek-chat",
+  "judge_request_dialect": "deepseek",
+  "judge_retry_policy": {
+    "max_attempts": 6,
+    "fallback_backoff_s": [
+      2.0,
+      4.0,
+      8.0,
+      16.0,
+      30.0
+    ],
+    "inter_case_delay_s": 1.0,
+    "retryable_http_statuses": [
+      408,
+      429,
+      "5xx"
+    ],
+    "retryable_transport_errors": [
+      "httpx.TransportError"
+    ]
+  },
+  "judge_http_status": 200,
+  "judge_response_raw": {
+    "id": "chatcmpl-b591c396-ee5b-4893-8553-9224693a8ed1",
+    "created": 1789436290,
+    "model": "deepseek-chat",
+    "object": "chat.completion",
+    "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "Correctness: 0",
+          "role": "assistant",
+          "provider_specific_fields": {
+            "reasoning": null,
+            "refusal": null
+          }
+        },
+        "provider_specific_fields": {
+          "stop_reason": null,
+          "token_ids": null,
+          "routed_experts": null
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 6,
+      "prompt_tokens": 342,
+      "total_tokens": 348,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      }
+    }
+  },
+  "judge_response_text": "Correctness: 0",
+  "judge_attempts": [
+    {
+      "attempt_number": 1,
+      "attempted_at": "2026-09-15T01:38:08.046404+00:00",
+      "wait_before_attempt_s": 1.0,
+      "http_status": 200,
+      "response_raw": {
+        "id": "chatcmpl-b591c396-ee5b-4893-8553-9224693a8ed1",
+        "created": 1789436290,
+        "model": "deepseek-chat",
+        "object": "chat.completion",
+        "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "Correctness: 0",
+              "role": "assistant",
+              "provider_specific_fields": {
+                "reasoning": null,
+                "refusal": null
+              }
+            },
+            "provider_specific_fields": {
+              "stop_reason": null,
+              "token_ids": null,
+              "routed_experts": null
+            }
+          }
+        ],
+        "usage": {
+          "completion_tokens": 6,
+          "prompt_tokens": 342,
+          "total_tokens": 348,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          }
+        }
+      },
+      "status": "completed",
+      "error": null,
+      "retryable": false,
+      "retry_reason": null,
+      "retry_after_header": null,
+      "wait_before_next_attempt_s": null,
+      "wait_source": null
+    }
+  ],
+  "judge_attempt_count": 1,
+  "score_source": "judge",
+  "score": 0,
+  "error": null,
+  "scored_at": "2026-09-15T01:38:07.035996+00:00",
+  "status": "completed",
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-220-1-232bd92a361d.json",
+    "source_sha256": "e628470a8a663d6762dfda3a1b6d28562ef219adb962aa3a3aa6c612cfdd6e51",
+    "source_bytes": 3883,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

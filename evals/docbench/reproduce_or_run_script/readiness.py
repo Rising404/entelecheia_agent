@@ -27,7 +27,6 @@ from personagraph.configuration.features import load_features
 READINESS_SCHEMA_VERSION = "personagraph-docbench-readiness-v1"
 
 _REQUIRED_RUNTIME_FEATURES: dict[str, object] = {
-    "l1_semantic_verification_mode": "always",
     "user_interaction_mode": "closed_world",
     "l1_external_web_tools_enabled": False,
     "file_retrieval_write_enabled": True,
@@ -182,7 +181,12 @@ def _runtime_features_check(config: Any) -> dict[str, object]:
     return {
         "status": "ready",
         "sha256": digest,
-        "effective_policy": dict(_REQUIRED_RUNTIME_FEATURES),
+        # Semantic review is an experimental variable, not the closed-world
+        # boundary. load_features validates its existing off/conditional/always
+        # contract; report the selected value rather than requiring always.
+        "effective_policy": dict(_REQUIRED_RUNTIME_FEATURES) | {
+            "l1_semantic_verification_mode": features["l1_semantic_verification_mode"],
+        },
     }
 
 

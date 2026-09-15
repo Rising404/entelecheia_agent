@@ -1,0 +1,135 @@
+{
+  "schema_version": "docbench-compatible-case-score-v1",
+  "scoring_protocol": "docbench_prompt_compatible",
+  "official_comparable": false,
+  "case_id": "docbench:158:1",
+  "doc_id": "158",
+  "question_index": 1,
+  "domain": "laws",
+  "question_type": "text",
+  "system_answer": "根据附件文件（2021699566.pdf）第33页的内容，印度议会议员在讨论中原则上不能提及待决司法事项，但该规则并非绝对，存在例外情况。具体规定如下：\n\n**1. 基本规则：禁止提及待决司法事项**\n- 议员在发言时不得“提及任何待决司法判决的事实事项”（Rule 352(i) of the Lok Sabha Rules of Procedure）。\n- 议会应避免在议院内讨论待决于法院的事项，以确保法院在审理相关事项时不受审判范围之外言论的影响。某一事项是否属于sub judice（待决司法事项），由议长根据每个案件的事实和情况决定。\n\n**2. 规则延伸至议会委员会**\n- 根据惯例和实践，sub judice规则也延伸至议会委员会，委员会通常不选取法院待决的议题进行审查。\n\n**3. 例外情况**\n- 该规则并非绝对。在议长的指导下，如果讨论的事项具有国家重要性，议会可以偏离该规则。\n- 此外，根据Lok Sabha议事规则第188条，通常不允许提出旨在讨论待决于法定法庭、法定机构（行使司法或准司法职能）或调查委员会/法院事项的动议；但议长可自行裁量，在确信不会损害相关机构对事项的审议时，允许在议院中提出涉及程序、主题或调查阶段的事项。\n\n**总结：** 印度议会议员在讨论中一般不得提及待决司法事项（sub judice规则），但议长有权在特定情况下（如涉及国家重要议题）允许例外。",
+  "prompt_sha256": "784a6d6cf4f8151765b169c633f46e62d12dcd77f8941172e72edbf8b30f9bde",
+  "filled_prompt_sha256": "f8cf77e4cf37b39bbdaffe618a5663c89782112ab30c003c1fc3d79138084868",
+  "judge_provider": "openai-compatible",
+  "judge_base_url": "https://models.sjtu.edu.cn/api/v1",
+  "judge_model": "deepseek-chat",
+  "judge_request_dialect": "deepseek",
+  "judge_retry_policy": {
+    "max_attempts": 6,
+    "fallback_backoff_s": [
+      2.0,
+      4.0,
+      8.0,
+      16.0,
+      30.0
+    ],
+    "inter_case_delay_s": 1.0,
+    "retryable_http_statuses": [
+      408,
+      429,
+      "5xx"
+    ],
+    "retryable_transport_errors": [
+      "httpx.TransportError"
+    ]
+  },
+  "judge_http_status": 200,
+  "judge_response_raw": {
+    "id": "chatcmpl-560bdd99-c1c9-45b8-a985-bb508fd4f15e",
+    "created": 1789065684,
+    "model": "deepseek-chat",
+    "object": "chat.completion",
+    "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "Correctness: 0",
+          "role": "assistant",
+          "provider_specific_fields": {
+            "reasoning": null,
+            "refusal": null
+          }
+        },
+        "provider_specific_fields": {
+          "stop_reason": null,
+          "routed_experts": null,
+          "token_ids": null
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 6,
+      "prompt_tokens": 657,
+      "total_tokens": 663,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      }
+    }
+  },
+  "judge_response_text": "Correctness: 0",
+  "judge_attempts": [
+    {
+      "attempt_number": 1,
+      "attempted_at": "2026-09-10T18:41:24.295305+00:00",
+      "wait_before_attempt_s": 1.0,
+      "http_status": 200,
+      "response_raw": {
+        "id": "chatcmpl-560bdd99-c1c9-45b8-a985-bb508fd4f15e",
+        "created": 1789065684,
+        "model": "deepseek-chat",
+        "object": "chat.completion",
+        "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "Correctness: 0",
+              "role": "assistant",
+              "provider_specific_fields": {
+                "reasoning": null,
+                "refusal": null
+              }
+            },
+            "provider_specific_fields": {
+              "stop_reason": null,
+              "routed_experts": null,
+              "token_ids": null
+            }
+          }
+        ],
+        "usage": {
+          "completion_tokens": 6,
+          "prompt_tokens": 657,
+          "total_tokens": 663,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          }
+        }
+      },
+      "status": "completed",
+      "error": null,
+      "retryable": false,
+      "retry_reason": null,
+      "retry_after_header": null,
+      "wait_before_next_attempt_s": null,
+      "wait_source": null
+    }
+  ],
+  "judge_attempt_count": 1,
+  "score_source": "judge",
+  "score": 0,
+  "error": null,
+  "scored_at": "2026-09-10T18:41:23.285179+00:00",
+  "status": "completed",
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-158-1-c4e8ed0a2166.json",
+    "source_sha256": "71d8f965317b8d54bd47e2587518a7533e13bd24182a6dac0f8f06f359d7394d",
+    "source_bytes": 5323,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

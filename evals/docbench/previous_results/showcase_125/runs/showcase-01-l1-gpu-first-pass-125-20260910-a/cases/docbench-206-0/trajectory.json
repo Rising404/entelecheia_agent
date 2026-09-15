@@ -1,0 +1,37 @@
+{
+  "blobs": {},
+  "format": "personagraph.trajectory",
+  "integrity": {
+    "blob_count": 0,
+    "part_count": 0,
+    "recording_failure_count": 0,
+    "step_count": 1,
+    "truncated_blob_count": 0
+  },
+  "steps": [
+    {
+      "duration_ms": 58232,
+      "kind": "model_call",
+      "metrics": {
+        "attempts": 6
+      },
+      "model_call_id": "model_2116adf3300e4dd09bdfa267e5d3745e",
+      "occurred_at": "2026-09-10T17:54:54.664669+00:00",
+      "outcome": "failed",
+      "parts": [],
+      "purpose": "runtime_entry_classify",
+      "reason_code": "MODEL_CALL_FAILED",
+      "session_id": "b937453c",
+      "step_id": "mcf_d0c27f88e1ff9b2136c0fc95",
+      "turn_id": "turn_a31b911f"
+    }
+  ],
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench:206:0/state/artifacts/trajectory.json",
+    "source_sha256": "3b52c3b8fec1571cb53f706c784d83df5a24a82c10c69e7f276b51723388ba12",
+    "source_bytes": 533,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

@@ -1,0 +1,135 @@
+{
+  "schema_version": "docbench-compatible-case-score-v1",
+  "scoring_protocol": "docbench_prompt_compatible",
+  "official_comparable": false,
+  "case_id": "docbench:140:0",
+  "doc_id": "140",
+  "question_index": 0,
+  "domain": "laws",
+  "question_type": "text",
+  "system_answer": "根据您提供的文档（2023555906.pdf），我无法回答您的问题。该文档是一份题为“Petitioning for Humanitarian Protection From Outside the Country”的各国庇护制度比较报告，内容涉及俄罗斯、沙特阿拉伯、中国、德国、印度、意大利、日本、墨西哥、南非、韩国、土耳其、英国等国家的庇护和人道主义保护程序，但**完全没有提及澳大利亚的Subclass 202（全球特殊人道主义签证）**，也没有任何关于该签证申请地点要求（如境内或境外申请）的信息。\n\n因此，基于该文档，无法判断是否有人在澳大利亚境内时仍能获批202类签证。如需准确答案，建议查阅澳大利亚内政部（Department of Home Affairs）的官方移民法规或签证政策文件。",
+  "prompt_sha256": "784a6d6cf4f8151765b169c633f46e62d12dcd77f8941172e72edbf8b30f9bde",
+  "filled_prompt_sha256": "636e377ecbb8262912094be300db8349473b167b7703b2c30c5c7e84b8b9bd7e",
+  "judge_provider": "openai-compatible",
+  "judge_base_url": "https://models.sjtu.edu.cn/api/v1",
+  "judge_model": "deepseek-chat",
+  "judge_request_dialect": "deepseek",
+  "judge_retry_policy": {
+    "max_attempts": 6,
+    "fallback_backoff_s": [
+      2.0,
+      4.0,
+      8.0,
+      16.0,
+      30.0
+    ],
+    "inter_case_delay_s": 1.0,
+    "retryable_http_statuses": [
+      408,
+      429,
+      "5xx"
+    ],
+    "retryable_transport_errors": [
+      "httpx.TransportError"
+    ]
+  },
+  "judge_http_status": 200,
+  "judge_response_raw": {
+    "id": "chatcmpl-587dd120-0a6f-4543-9f98-0b05d4699f44",
+    "created": 1789065626,
+    "model": "deepseek-chat",
+    "object": "chat.completion",
+    "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "0",
+          "role": "assistant",
+          "provider_specific_fields": {
+            "reasoning": null,
+            "refusal": null
+          }
+        },
+        "provider_specific_fields": {
+          "routed_experts": null,
+          "stop_reason": null,
+          "token_ids": null
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 2,
+      "prompt_tokens": 474,
+      "total_tokens": 476,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      }
+    }
+  },
+  "judge_response_text": "0",
+  "judge_attempts": [
+    {
+      "attempt_number": 1,
+      "attempted_at": "2026-09-10T18:40:26.642632+00:00",
+      "wait_before_attempt_s": 1.0,
+      "http_status": 200,
+      "response_raw": {
+        "id": "chatcmpl-587dd120-0a6f-4543-9f98-0b05d4699f44",
+        "created": 1789065626,
+        "model": "deepseek-chat",
+        "object": "chat.completion",
+        "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "0",
+              "role": "assistant",
+              "provider_specific_fields": {
+                "reasoning": null,
+                "refusal": null
+              }
+            },
+            "provider_specific_fields": {
+              "routed_experts": null,
+              "stop_reason": null,
+              "token_ids": null
+            }
+          }
+        ],
+        "usage": {
+          "completion_tokens": 2,
+          "prompt_tokens": 474,
+          "total_tokens": 476,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          }
+        }
+      },
+      "status": "completed",
+      "error": null,
+      "retryable": false,
+      "retry_reason": null,
+      "retry_after_header": null,
+      "wait_before_next_attempt_s": null,
+      "wait_source": null
+    }
+  ],
+  "judge_attempt_count": 1,
+  "score_source": "judge",
+  "score": 0,
+  "error": null,
+  "scored_at": "2026-09-10T18:40:25.633748+00:00",
+  "status": "completed",
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-140-0-151e3da1357a.json",
+    "source_sha256": "756fe22d761695870e1b89db93818f48338e799c59387fd1f73d4ffc340e08d8",
+    "source_bytes": 4522,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

@@ -1,0 +1,135 @@
+{
+  "schema_version": "docbench-compatible-case-score-v1",
+  "scoring_protocol": "docbench_prompt_compatible",
+  "official_comparable": false,
+  "case_id": "docbench:19:4",
+  "doc_id": "19",
+  "question_index": 4,
+  "domain": "academia",
+  "question_type": "multimodal",
+  "system_answer": "根据论文《Neural Cross-Lingual Named Entity Recognition with Minimal Resources》（D18-1034），模型同时使用词级和字符级嵌入作为输入，主要有以下原因：\n\n1. **捕获子词信息**：字符级神经网络（RNN或CNN）能够捕获子词信息，例如形态变化（morphological variations）和大小写模式（capitalization patterns），这些信息是纯词级嵌入难以直接表达的（第3.1节）。\n\n2. **提升跨语言迁移的准确性**：在跨语言NER中，基于词典的翻译方法可以显式获得目标语言的表面形式（surface forms），从而利用字符级特征提取器。论文指出，能否使用字符级特征对单语场景的高精度至关重要（第1节引言）。\n\n3. **缓解嵌入空间未对齐问题**：当仅使用双语词嵌入（BWE）时，不同语言的嵌入空间难以完美对齐，导致模型泛化能力下降。而通过翻译获得目标语言的字符序列后，模型可以同时利用目标嵌入空间中的精确点和目标语言的原生字符序列，从而提升性能（第4.2.2节）。消融实验表明，访问目标语言字符序列对性能有帮助，尤其对德语等大小写模式与源语言不同的语言效果更明显。\n\n综上，词级嵌入提供语义和上下文信息，字符级嵌入补充形态、大小写等子词细节，两者结合使模型在跨语言NER任务中更鲁棒、更准确。",
+  "prompt_sha256": "784a6d6cf4f8151765b169c633f46e62d12dcd77f8941172e72edbf8b30f9bde",
+  "filled_prompt_sha256": "f688d19aedd0ab04cee577e229b638aefb759488a97f77eb4ee1bf17dda0ab02",
+  "judge_provider": "openai-compatible",
+  "judge_base_url": "https://models.sjtu.edu.cn/api/v1",
+  "judge_model": "deepseek-chat",
+  "judge_request_dialect": "deepseek",
+  "judge_retry_policy": {
+    "max_attempts": 6,
+    "fallback_backoff_s": [
+      2.0,
+      4.0,
+      8.0,
+      16.0,
+      30.0
+    ],
+    "inter_case_delay_s": 1.0,
+    "retryable_http_statuses": [
+      408,
+      429,
+      "5xx"
+    ],
+    "retryable_transport_errors": [
+      "httpx.TransportError"
+    ]
+  },
+  "judge_http_status": 200,
+  "judge_response_raw": {
+    "id": "chatcmpl-6e006828-8ffd-4801-992a-0e62ced30eca",
+    "created": 1789065238,
+    "model": "deepseek-chat",
+    "object": "chat.completion",
+    "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "Correctness: 1",
+          "role": "assistant",
+          "provider_specific_fields": {
+            "reasoning": null,
+            "refusal": null
+          }
+        },
+        "provider_specific_fields": {
+          "routed_experts": null,
+          "stop_reason": null,
+          "token_ids": null
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 6,
+      "prompt_tokens": 662,
+      "total_tokens": 668,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      }
+    }
+  },
+  "judge_response_text": "Correctness: 1",
+  "judge_attempts": [
+    {
+      "attempt_number": 1,
+      "attempted_at": "2026-09-10T18:33:45.716299+00:00",
+      "wait_before_attempt_s": 1.0,
+      "http_status": 200,
+      "response_raw": {
+        "id": "chatcmpl-6e006828-8ffd-4801-992a-0e62ced30eca",
+        "created": 1789065238,
+        "model": "deepseek-chat",
+        "object": "chat.completion",
+        "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "Correctness: 1",
+              "role": "assistant",
+              "provider_specific_fields": {
+                "reasoning": null,
+                "refusal": null
+              }
+            },
+            "provider_specific_fields": {
+              "routed_experts": null,
+              "stop_reason": null,
+              "token_ids": null
+            }
+          }
+        ],
+        "usage": {
+          "completion_tokens": 6,
+          "prompt_tokens": 662,
+          "total_tokens": 668,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          }
+        }
+      },
+      "status": "completed",
+      "error": null,
+      "retryable": false,
+      "retry_reason": null,
+      "retry_after_header": null,
+      "wait_before_next_attempt_s": null,
+      "wait_source": null
+    }
+  ],
+  "judge_attempt_count": 1,
+  "score_source": "judge",
+  "score": 1,
+  "error": null,
+  "scored_at": "2026-09-10T18:33:44.706229+00:00",
+  "status": "completed",
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-19-4-cec5faa10dfc.json",
+    "source_sha256": "2fe44b9b39012566100bb28083b9c6e3aaa6337f6e15c9b3681d02ffd5964778",
+    "source_bytes": 5487,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

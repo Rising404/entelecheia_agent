@@ -1,0 +1,135 @@
+{
+  "schema_version": "docbench-compatible-case-score-v1",
+  "scoring_protocol": "docbench_prompt_compatible",
+  "official_comparable": false,
+  "case_id": "docbench:39:9",
+  "doc_id": "39",
+  "question_index": 9,
+  "domain": "academia",
+  "question_type": "unanswerable",
+  "system_answer": "根据附件论文《MLQA: Evaluating Cross-lingual Extractive Question Answering》（Lewis et al., ACL 2020），**论文中未提供RoBERTa-Large与Multilingual-BERT在跨语言迁移任务（XLT）上的直接性能比较数据**，因此无法从该论文中判断RoBERTa-Large是否优于Multilingual-BERT。\n\n具体证据如下：\n1. 论文在XLT任务（Table 5）中仅报告了XLM和Multilingual-BERT（M-BERT）的结果，未包含RoBERTa-Large。论文正文提到“XLM performs best overall”（第7页5.1节），并指出XLM在跨语言迁移上优于M-BERT。\n2. 论文仅在讨论英文基线时提及“English BERT-large baseline”（第7页5.1节），但该基线是英文单语模型，并非跨语言迁移任务中的Multilingual-BERT。\n3. 全文检索“RoBERTa”返回0匹配，论文未在任何表格或段落中比较RoBERTa-Large与Multilingual-BERT在XLT上的性能。\n\n**结论：该论文没有提供RoBERTa-Large在XLT上是否优于Multilingual-BERT的证据。**",
+  "prompt_sha256": "784a6d6cf4f8151765b169c633f46e62d12dcd77f8941172e72edbf8b30f9bde",
+  "filled_prompt_sha256": "c712c6e6a65661e5d0c866586be4d3185c1035a9073807c20e879da59d4ad07e",
+  "judge_provider": "openai-compatible",
+  "judge_base_url": "https://models.sjtu.edu.cn/api/v1",
+  "judge_model": "deepseek-chat",
+  "judge_request_dialect": "deepseek",
+  "judge_retry_policy": {
+    "max_attempts": 6,
+    "fallback_backoff_s": [
+      2.0,
+      4.0,
+      8.0,
+      16.0,
+      30.0
+    ],
+    "inter_case_delay_s": 1.0,
+    "retryable_http_statuses": [
+      408,
+      429,
+      "5xx"
+    ],
+    "retryable_transport_errors": [
+      "httpx.TransportError"
+    ]
+  },
+  "judge_http_status": 200,
+  "judge_response_raw": {
+    "id": "chatcmpl-9f5fca81-3f79-4b8b-b828-e9cdfc3dfbf5",
+    "created": 1789065318,
+    "model": "deepseek-chat",
+    "object": "chat.completion",
+    "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "1",
+          "role": "assistant",
+          "provider_specific_fields": {
+            "reasoning": null,
+            "refusal": null
+          }
+        },
+        "provider_specific_fields": {
+          "routed_experts": null,
+          "stop_reason": null,
+          "token_ids": null
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 2,
+      "prompt_tokens": 572,
+      "total_tokens": 574,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      }
+    }
+  },
+  "judge_response_text": "1",
+  "judge_attempts": [
+    {
+      "attempt_number": 1,
+      "attempted_at": "2026-09-10T18:35:18.507157+00:00",
+      "wait_before_attempt_s": 1.0,
+      "http_status": 200,
+      "response_raw": {
+        "id": "chatcmpl-9f5fca81-3f79-4b8b-b828-e9cdfc3dfbf5",
+        "created": 1789065318,
+        "model": "deepseek-chat",
+        "object": "chat.completion",
+        "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "1",
+              "role": "assistant",
+              "provider_specific_fields": {
+                "reasoning": null,
+                "refusal": null
+              }
+            },
+            "provider_specific_fields": {
+              "routed_experts": null,
+              "stop_reason": null,
+              "token_ids": null
+            }
+          }
+        ],
+        "usage": {
+          "completion_tokens": 2,
+          "prompt_tokens": 572,
+          "total_tokens": 574,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          }
+        }
+      },
+      "status": "completed",
+      "error": null,
+      "retryable": false,
+      "retry_reason": null,
+      "retry_after_header": null,
+      "wait_before_next_attempt_s": null,
+      "wait_source": null
+    }
+  ],
+  "judge_attempt_count": 1,
+  "score_source": "judge",
+  "score": 1,
+  "error": null,
+  "scored_at": "2026-09-10T18:35:17.503950+00:00",
+  "status": "completed",
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-39-9-6a91f348401c.json",
+    "source_sha256": "7d6c33ceb31115d6768be877dc776a68a3cbead7704d25ec3fe6d2ce962876a6",
+    "source_bytes": 4672,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

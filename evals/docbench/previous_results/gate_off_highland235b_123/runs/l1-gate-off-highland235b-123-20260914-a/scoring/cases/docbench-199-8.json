@@ -1,0 +1,135 @@
+{
+  "schema_version": "docbench-compatible-case-score-v1",
+  "scoring_protocol": "docbench_prompt_compatible",
+  "official_comparable": false,
+  "case_id": "docbench:199:8",
+  "doc_id": "199",
+  "question_index": 8,
+  "domain": "news",
+  "question_type": "text",
+  "system_answer": "Based on the attached document (The New York Times, April 6, 2022), the answer is **no** — the Security Council did not take action to stop the war after Zelensky's speech.\n\nKey evidence from the article \"Video of Charred Bodies Silences Chamber\":\n\n- Zelensky delivered a scathing speech to the U.N. Security Council on Tuesday (April 5, 2022), accusing Russia of atrocities and questioning whether a world body that takes no action to stop a war serves any purpose.\n- The article states that Zelensky \"vented his bitter frustration, knowing that the council — where Russia is one of five permanent members with veto power — would do nothing but talk.\"\n- China refrained from criticizing Russia in the session, saying the Security Council should wait until investigations establish the facts in Ukraine.\n- The article notes that divisions on the war appeared essentially unchanged since Feb. 26, when 11 of 15 Security Council members voted for a resolution condemning Russia's invasion, but Russia vetoed the measure and three others (China, India, UAE) abstained.\n\nIn short, the Security Council took no concrete action to stop the war following Zelensky's speech; it remained paralyzed by Russia's veto power and the lack of consensus.",
+  "prompt_sha256": "784a6d6cf4f8151765b169c633f46e62d12dcd77f8941172e72edbf8b30f9bde",
+  "filled_prompt_sha256": "3b89498db0d0885729575519666fcbcf67af78c4555a013e4c179976ac1d1d5e",
+  "judge_provider": "openai-compatible",
+  "judge_base_url": "https://models.sjtu.edu.cn/api/v1",
+  "judge_model": "deepseek-chat",
+  "judge_request_dialect": "deepseek",
+  "judge_retry_policy": {
+    "max_attempts": 6,
+    "fallback_backoff_s": [
+      2.0,
+      4.0,
+      8.0,
+      16.0,
+      30.0
+    ],
+    "inter_case_delay_s": 1.0,
+    "retryable_http_statuses": [
+      408,
+      429,
+      "5xx"
+    ],
+    "retryable_transport_errors": [
+      "httpx.TransportError"
+    ]
+  },
+  "judge_http_status": 200,
+  "judge_response_raw": {
+    "id": "chatcmpl-64137a8b-68e1-472b-9323-fb462e81b73e",
+    "created": 1789436223,
+    "model": "deepseek-chat",
+    "object": "chat.completion",
+    "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "1",
+          "role": "assistant",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning": null
+          }
+        },
+        "provider_specific_fields": {
+          "token_ids": null,
+          "stop_reason": null,
+          "routed_experts": null
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 2,
+      "prompt_tokens": 563,
+      "total_tokens": 565,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      }
+    }
+  },
+  "judge_response_text": "1",
+  "judge_attempts": [
+    {
+      "attempt_number": 1,
+      "attempted_at": "2026-09-15T01:37:01.049842+00:00",
+      "wait_before_attempt_s": 1.0,
+      "http_status": 200,
+      "response_raw": {
+        "id": "chatcmpl-64137a8b-68e1-472b-9323-fb462e81b73e",
+        "created": 1789436223,
+        "model": "deepseek-chat",
+        "object": "chat.completion",
+        "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "1",
+              "role": "assistant",
+              "provider_specific_fields": {
+                "refusal": null,
+                "reasoning": null
+              }
+            },
+            "provider_specific_fields": {
+              "token_ids": null,
+              "stop_reason": null,
+              "routed_experts": null
+            }
+          }
+        ],
+        "usage": {
+          "completion_tokens": 2,
+          "prompt_tokens": 563,
+          "total_tokens": 565,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          }
+        }
+      },
+      "status": "completed",
+      "error": null,
+      "retryable": false,
+      "retry_reason": null,
+      "retry_after_header": null,
+      "wait_before_next_attempt_s": null,
+      "wait_source": null
+    }
+  ],
+  "judge_attempt_count": 1,
+  "score_source": "judge",
+  "score": 1,
+  "error": null,
+  "scored_at": "2026-09-15T01:37:00.049086+00:00",
+  "status": "completed",
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-199-8-55effd909c53.json",
+    "source_sha256": "de0f75f30efd22319947d5714206f207b86a409aefc3bf68acd359ee6540564c",
+    "source_bytes": 4888,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

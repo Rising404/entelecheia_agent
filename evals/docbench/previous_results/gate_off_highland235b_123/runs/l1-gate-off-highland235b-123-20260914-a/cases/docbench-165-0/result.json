@@ -1,0 +1,502 @@
+{
+  "case_id": "docbench:165:0",
+  "doc_id": 165,
+  "question_index": 0,
+  "domain": "laws",
+  "question_type": "text-only",
+  "level": "L1",
+  "reply": "根据美国国会法律图书馆2023年6月发布的《Blasphemy Laws》报告，伯利兹关于亵渎和诽谤的法律环境发生了以下变化：\n\n**1. 2022年《诽谤法》（Defamation Act 2022）**\n伯利兹于2022年颁布了新的《诽谤法》。该法对诽谤相关法律进行了更新和修订，但报告未提供该法的具体条款细节。\n\n**2. 亵渎相关条款**\n报告指出，伯利兹的《刑法》中仍保留有亵渎相关条款（blasphemy provisions），这些条款规定了对宗教侮辱行为的处罚。但报告未提供这些条款的具体内容或编号。\n\n**总结**\n伯利兹的法律环境变化主要体现在2022年《诽谤法》的颁布，对诽谤法律进行了更新。同时，伯利兹《刑法》中仍保留有亵渎相关条款。报告未详细说明这些变化的具体影响或是否废除了任何旧法。\n\n（注：以上信息来源于文档第7页的伯利兹条目，该条目以表格形式呈现，包含国家、法律、引用和评论四列，但评论列为空。）",
+  "post_commit": {
+    "status": "settled",
+    "turn_id": "turn_b129687f",
+    "window_released": true,
+    "jobs": [
+      {
+        "job_kind": "session_retrieval_index",
+        "status": "applied",
+        "reason_code": null
+      },
+      {
+        "job_kind": "session_summary",
+        "status": "applied",
+        "reason_code": null
+      }
+    ],
+    "timed_out": false
+  },
+  "post_commit_complete": true,
+  "post_commit_elapsed_s": 6.533,
+  "session_id": "f03cc999",
+  "project_id": "project-a2edae6830854df586d0e46a91d157e3",
+  "turn_id": "turn_b129687f",
+  "answer_elapsed_s": 192.031,
+  "status": "completed",
+  "processing_level": "L1",
+  "end_reason": null,
+  "error_code": null,
+  "user_interaction_mode": "closed_world",
+  "pending_user_question_count": 0,
+  "related_insession_task_ids": [],
+  "work_run_ids": [],
+  "model": {
+    "provider": "openai-compatible",
+    "request_dialect": "deepseek",
+    "base_url": "https://models.sjtu.edu.cn/api/v1",
+    "model": "deepseek-chat",
+    "has_key": true,
+    "default_projects_dir": "<local-path>",
+    "default_projects_dir_managed": true,
+    "legacy_office_soffice": {
+      "configured": false,
+      "available": false
+    },
+    "vision_provider": "highland",
+    "vision_base_url": "https://www.highland-api.top",
+    "vision_model": "qwen3-vl-235b-a22b-instruct",
+    "has_vision_key": true
+  },
+  "lane_ok": true,
+  "execution_ok": true,
+  "interaction_ok": true,
+  "chain_complete": true,
+  "elapsed_s": 198.737,
+  "retrieval": {
+    "schema_version": "docbench-retrieval-observability-v1",
+    "status": "ready",
+    "requested_profile": {
+      "mode": "bge_m3",
+      "fingerprint": "document_retrieval_profile@1:mode=bge_m3;methods=dense,learned_sparse,bm25;index_recipe=rag-r1:dense1024+learned_sparse+bm25@1;encoder=hf:BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181;reranker=hf:BAAI/bge-reranker-v2-m3@953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e;device=mps;fp16=false;failure_policy=strict;local_only=true",
+      "failure_policy": "strict",
+      "required_methods": [
+        "dense",
+        "learned_sparse",
+        "bm25"
+      ],
+      "index_recipe": "rag-r1:dense1024+learned_sparse+bm25@1",
+      "encoder_asset_identity": "hf:BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181",
+      "reranker_mode": "bge_v2_m3",
+      "reranker_asset_identity": "hf:BAAI/bge-reranker-v2-m3@953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+      "device": "mps",
+      "use_fp16": false,
+      "local_files_only": true
+    },
+    "effective_profile": {
+      "mode": "bge_m3",
+      "fingerprint": "document_retrieval_profile@1:mode=bge_m3;methods=dense,learned_sparse,bm25;index_recipe=rag-r1:dense1024+learned_sparse+bm25@1;encoder=hf:BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181;reranker=hf:BAAI/bge-reranker-v2-m3@953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e;device=mps;fp16=false;failure_policy=strict;local_only=true",
+      "failure_policy": "strict",
+      "required_methods": [
+        "dense",
+        "learned_sparse",
+        "bm25"
+      ],
+      "index_recipe": "rag-r1:dense1024+learned_sparse+bm25@1",
+      "encoder_asset_identity": "hf:BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181",
+      "reranker_mode": "bge_v2_m3",
+      "reranker_asset_identity": "hf:BAAI/bge-reranker-v2-m3@953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+      "device": "mps",
+      "use_fp16": false,
+      "local_files_only": true
+    },
+    "encoder_fingerprint": "bge_m3:model=hf:BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181;dense=1024;sparse=flagembedding;sparse_projection_assets=available;device=mps;fp16=false;query_max_length=512;passage_max_length=8192;flagembedding=1.4.0;transformers=4.57.6;local_only=true",
+    "reranker_fingerprint": "bge_reranker_v2_m3:model=hf:BAAI/bge-reranker-v2-m3@953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e;device=mps;batch_size=8;query_max_length=256;max_length=1024;fp16=false;flagembedding=1.4.0;transformers=4.57.6;local_only=true",
+    "preflight": {
+      "profile_fingerprint": "document_retrieval_profile@1:mode=bge_m3;methods=dense,learned_sparse,bm25;index_recipe=rag-r1:dense1024+learned_sparse+bm25@1;encoder=hf:BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181;reranker=hf:BAAI/bge-reranker-v2-m3@953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e;device=mps;fp16=false;failure_policy=strict;local_only=true",
+      "ready": true,
+      "reason_codes": [],
+      "device_ready": true,
+      "device_selection": {
+        "requested_device": "mps",
+        "device": "mps",
+        "ready": true,
+        "fallback_reason": null,
+        "probe_reasons": [],
+        "model_verified": false
+      },
+      "sqlite_vec_ready": true,
+      "encoder_asset": {
+        "asset_identity": "hf:BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181",
+        "manifest": "bge_m3_hybrid",
+        "ready": true,
+        "reason_code": "ready",
+        "missing_files": [],
+        "missing_modules": [],
+        "content_sha256": null,
+        "local_files_only": true
+      },
+      "reranker_asset": {
+        "asset_identity": "hf:BAAI/bge-reranker-v2-m3@953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+        "manifest": "bge_reranker_v2_m3",
+        "ready": true,
+        "reason_code": "ready",
+        "missing_files": [],
+        "missing_modules": [],
+        "content_sha256": null,
+        "local_files_only": true
+      },
+      "local_files_only": true
+    },
+    "active_generation": {
+      "id": "rdv_9f93d9d9c149e81ad1ab9f98848a9754",
+      "fingerprint": "retrieval-generation-spec-v2:9f93d9d9c149e81ad1ab9f98848a97548aecc0efa14d346e56e6ec87118f853b",
+      "role": "active",
+      "state": "ready",
+      "expected_fingerprint": "retrieval-generation-spec-v2:9f93d9d9c149e81ad1ab9f98848a97548aecc0efa14d346e56e6ec87118f853b",
+      "matches_runtime": true
+    },
+    "methods": [
+      {
+        "method": "dense",
+        "required": true,
+        "ready": true,
+        "unit_count": 18,
+        "manifest_ready_count": 18,
+        "representation_present_count": 18,
+        "manifest_absent_count": 0,
+        "invalid_unit_count": 0
+      },
+      {
+        "method": "learned_sparse",
+        "required": true,
+        "ready": true,
+        "unit_count": 18,
+        "manifest_ready_count": 18,
+        "representation_present_count": 18,
+        "manifest_absent_count": 0,
+        "invalid_unit_count": 0
+      },
+      {
+        "method": "bm25",
+        "required": true,
+        "ready": true,
+        "unit_count": 18,
+        "manifest_ready_count": 18,
+        "representation_present_count": 18,
+        "manifest_absent_count": 0,
+        "invalid_unit_count": 0
+      }
+    ],
+    "indexing_outbox": {
+      "available": true,
+      "reason_code": null,
+      "attempt_audit_available": true,
+      "attempt_count": 18,
+      "attempt_audit_truncated": false,
+      "status_counts": {
+        "pending": 0,
+        "processing": 0,
+        "applied": 18,
+        "retryable_failed": 0,
+        "terminal_failed": 0
+      },
+      "outcome_counts": {
+        "applied": 18
+      },
+      "failure_counts": {},
+      "batch_count": 1,
+      "worker_instance_count": 1,
+      "terminal_failures": [],
+      "attempt_audits": [
+        {
+          "event_id": "mounted-document-chunk:upsert:128c42555c275b60e3049622b2a3c697",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "bdb4ceeee977b14a",
+          "batch_id": "b6456455b313a6e4",
+          "batch_limit": 20,
+          "batch_size": 18,
+          "batch_ordinal": 5,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-14T23:24:46.502960+00:00"
+        },
+        {
+          "event_id": "mounted-document-chunk:upsert:151f21400cd80884452c415875ec7996",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "bdb4ceeee977b14a",
+          "batch_id": "b6456455b313a6e4",
+          "batch_limit": 20,
+          "batch_size": 18,
+          "batch_ordinal": 1,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-14T23:24:46.502960+00:00"
+        },
+        {
+          "event_id": "mounted-document-chunk:upsert:1ffcf9d1166aa48b827f35d643086b59",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "bdb4ceeee977b14a",
+          "batch_id": "b6456455b313a6e4",
+          "batch_limit": 20,
+          "batch_size": 18,
+          "batch_ordinal": 11,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-14T23:24:46.502960+00:00"
+        },
+        {
+          "event_id": "mounted-document-chunk:upsert:3299a5d35db507589a44c858d0376e11",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "bdb4ceeee977b14a",
+          "batch_id": "b6456455b313a6e4",
+          "batch_limit": 20,
+          "batch_size": 18,
+          "batch_ordinal": 8,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-14T23:24:46.502960+00:00"
+        },
+        {
+          "event_id": "mounted-document-chunk:upsert:4ab4c7f87f0138d9f2ecc54f8f107b20",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "bdb4ceeee977b14a",
+          "batch_id": "b6456455b313a6e4",
+          "batch_limit": 20,
+          "batch_size": 18,
+          "batch_ordinal": 14,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-14T23:24:46.502960+00:00"
+        },
+        {
+          "event_id": "mounted-document-chunk:upsert:4d1bdf00f98a1e2f2646e6d5617124b2",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "bdb4ceeee977b14a",
+          "batch_id": "b6456455b313a6e4",
+          "batch_limit": 20,
+          "batch_size": 18,
+          "batch_ordinal": 7,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-14T23:24:46.502960+00:00"
+        },
+        {
+          "event_id": "mounted-document-chunk:upsert:533637a14b91bf66d14af69e802fea33",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "bdb4ceeee977b14a",
+          "batch_id": "b6456455b313a6e4",
+          "batch_limit": 20,
+          "batch_size": 18,
+          "batch_ordinal": 4,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-14T23:24:46.502960+00:00"
+        },
+        {
+          "event_id": "mounted-document-chunk:upsert:67ac37ce1a5d3e265ca53424a95c1976",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "bdb4ceeee977b14a",
+          "batch_id": "b6456455b313a6e4",
+          "batch_limit": 20,
+          "batch_size": 18,
+          "batch_ordinal": 15,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-14T23:24:46.502960+00:00"
+        },
+        {
+          "event_id": "mounted-document-chunk:upsert:6de27e31d7096b13b34f50693309e2aa",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "bdb4ceeee977b14a",
+          "batch_id": "b6456455b313a6e4",
+          "batch_limit": 20,
+          "batch_size": 18,
+          "batch_ordinal": 2,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-14T23:24:46.502960+00:00"
+        },
+        {
+          "event_id": "mounted-document-chunk:upsert:71df10c8db0572abdad6c7d5728798cc",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "bdb4ceeee977b14a",
+          "batch_id": "b6456455b313a6e4",
+          "batch_limit": 20,
+          "batch_size": 18,
+          "batch_ordinal": 18,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-14T23:24:46.502960+00:00"
+        },
+        {
+          "event_id": "mounted-document-chunk:upsert:722e41de5b1cacdefccb9c3668625ca7",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "bdb4ceeee977b14a",
+          "batch_id": "b6456455b313a6e4",
+          "batch_limit": 20,
+          "batch_size": 18,
+          "batch_ordinal": 12,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-14T23:24:46.502960+00:00"
+        },
+        {
+          "event_id": "mounted-document-chunk:upsert:8fa273a5c6c1e95457bd66244b863da3",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "bdb4ceeee977b14a",
+          "batch_id": "b6456455b313a6e4",
+          "batch_limit": 20,
+          "batch_size": 18,
+          "batch_ordinal": 6,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-14T23:24:46.502960+00:00"
+        },
+        {
+          "event_id": "mounted-document-chunk:upsert:b2411886a2fdf22a0a5b98b02a1e6e62",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "bdb4ceeee977b14a",
+          "batch_id": "b6456455b313a6e4",
+          "batch_limit": 20,
+          "batch_size": 18,
+          "batch_ordinal": 9,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-14T23:24:46.502960+00:00"
+        },
+        {
+          "event_id": "mounted-document-chunk:upsert:c78eb84c400dd13b945adb77b34a9910",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "bdb4ceeee977b14a",
+          "batch_id": "b6456455b313a6e4",
+          "batch_limit": 20,
+          "batch_size": 18,
+          "batch_ordinal": 16,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-14T23:24:46.502960+00:00"
+        },
+        {
+          "event_id": "mounted-document-chunk:upsert:dc833ba18f8c7158bfb756f771f15927",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "bdb4ceeee977b14a",
+          "batch_id": "b6456455b313a6e4",
+          "batch_limit": 20,
+          "batch_size": 18,
+          "batch_ordinal": 3,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-14T23:24:46.502960+00:00"
+        },
+        {
+          "event_id": "mounted-document-chunk:upsert:dff1756957736a8584ce337cf90fb668",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "bdb4ceeee977b14a",
+          "batch_id": "b6456455b313a6e4",
+          "batch_limit": 20,
+          "batch_size": 18,
+          "batch_ordinal": 13,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-14T23:24:46.502960+00:00"
+        },
+        {
+          "event_id": "mounted-document-chunk:upsert:fa7f29c074acb1a78547de807027dbe7",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "bdb4ceeee977b14a",
+          "batch_id": "b6456455b313a6e4",
+          "batch_limit": 20,
+          "batch_size": 18,
+          "batch_ordinal": 17,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-14T23:24:46.502960+00:00"
+        },
+        {
+          "event_id": "mounted-document-chunk:upsert:ff5565946ff9a7e2ab37652a80eaf07d",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "bdb4ceeee977b14a",
+          "batch_id": "b6456455b313a6e4",
+          "batch_limit": 20,
+          "batch_size": 18,
+          "batch_ordinal": 10,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-14T23:24:46.502960+00:00"
+        }
+      ]
+    },
+    "sqlite_vec": {
+      "ready": true,
+      "reason_code": null
+    },
+    "degradation_reasons": []
+  },
+  "worker_exit_code": 0,
+  "worker_stderr_tail": "Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.52, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.\nYou're using a XLMRobertaTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.\nYou're using a XLMRobertaTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.\n",
+  "trajectory": {
+    "status": "complete",
+    "path": "cases/docbench-165-0/trajectory.json",
+    "sha256": "09ca72692ec45c787ca9d762013f110c34fb238779604a7f8548e82867dfc914",
+    "byte_count": 393947,
+    "database_count": 1,
+    "step_count": 14,
+    "part_count": 36,
+    "blob_count": 28,
+    "truncated_blob_count": 0
+  },
+  "telemetry": {
+    "provider_response_count": 8,
+    "rejected_output_count": 0,
+    "terminal_model_request_failure_count": 0,
+    "tool_call_count": 6,
+    "input_tokens_total": 91794,
+    "output_tokens_total": 1735,
+    "cache_read_tokens_total": 0,
+    "max_model_input_tokens": 15951,
+    "provider_response_purposes": {
+      "openai-compatible:deepseek-chat:runtime_entry_classify": 1,
+      "openai-compatible:deepseek-chat:runtime_l1_attempt": 7
+    },
+    "tool_call_purposes": {
+      "prepare_files": 1,
+      "read_pdf_text": 5
+    },
+    "trajectory_database_count": 1,
+    "trajectory_read_failure_count": 0,
+    "trajectory_recording_failure_count": 0,
+    "telemetry_complete": true
+  },
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench:165:0/result.json",
+    "source_sha256": "2af7e21eeda62c0f7a77049a1530bd02392ab9cefb5cc67a10eed7f75780c41e",
+    "source_bytes": 20715,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

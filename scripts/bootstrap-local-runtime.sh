@@ -87,12 +87,17 @@ download_verified() {
 
 python_matches() {
   [ -x "$RUNTIME_DIR/python/bin/python3" ] &&
-    [ "$("$RUNTIME_DIR/python/bin/python3" -c 'import platform; print(platform.python_version())')" = "$PERSONAGRAPH_PYTHON_VERSION" ]
+    [ "$("$RUNTIME_DIR/python/bin/python3" -I -c 'import platform; print(platform.python_version())')" = "$PERSONAGRAPH_PYTHON_VERSION" ]
 }
 
 node_matches() {
   [ -x "$RUNTIME_DIR/node/bin/node" ] &&
-    [ "$("$RUNTIME_DIR/node/bin/node" --version)" = "v$PERSONAGRAPH_NODE_VERSION" ]
+    NODE_OPTIONS= "$RUNTIME_DIR/node/bin/node" -e '
+const fs = require("node:fs");
+const [version, executable] = process.argv.slice(1);
+if (process.version !== version ||
+    fs.realpathSync(process.execPath) !== fs.realpathSync(executable)) process.exit(1);
+' "v$PERSONAGRAPH_NODE_VERSION" "$RUNTIME_DIR/node/bin/node"
 }
 
 mkdir -p "$RUNTIME_DIR"
@@ -125,12 +130,33 @@ if ! node_matches; then
   mv "$TMP_ROOT/node-stage" "$RUNTIME_DIR/node"
 fi
 
-"$RUNTIME_DIR/python/bin/python3" -m venv --upgrade "$ROOT/.venv"
+if ! python_matches || ! node_matches; then
+  echo "project runtime does not match runtime-versions.conf or its executable path" >&2
+  exit 1
+fi
+
+"$RUNTIME_DIR/python/bin/python3" -I -m venv --upgrade "$ROOT/.venv"
 # CPython's same-version --upgrade leaves an existing interpreter symlink untouched.
 # Replace all public venv interpreter links explicitly so no previous provider survives.
 ln -sfn "$RUNTIME_DIR/python/bin/python3" "$ROOT/.venv/bin/python3"
 ln -sfn python3 "$ROOT/.venv/bin/python"
 ln -sfn python3 "$ROOT/.venv/bin/python3.12"
+
+# Check the destination before pip can write packages, including runtime-only setup.
+"$ROOT/.venv/bin/python" -I - "$RUNTIME_DIR/python" "$ROOT/.venv" "$PERSONAGRAPH_PYTHON_VERSION" <<'PY'
+from pathlib import Path
+import platform
+import sys
+import sysconfig
+
+runtime_python, environment_root = (Path(value).resolve() for value in sys.argv[1:3])
+if platform.python_version() != sys.argv[3]:
+    raise SystemExit("Python version does not match runtime-versions.conf")
+if Path(sys.base_prefix).resolve() != runtime_python:
+    raise SystemExit("venv must use this project's Python runtime")
+if not Path(sysconfig.get_path("purelib")).resolve().is_relative_to(environment_root):
+    raise SystemExit("Python packages must stay inside this project's venv")
+PY
 
 if [ "$INSTALL_DEPENDENCIES" -eq 1 ]; then
   # OmegaConf's antlr runtime is source-only. Bootstrap its build backend from
@@ -156,4 +182,4 @@ if [ "$INSTALL_DEPENDENCIES" -eq 1 ]; then
     --dir "$ROOT/frontend" install --frozen-lockfile
 fi
 
-"$ROOT/.venv/bin/python" "$ROOT/scripts/verify-runtime-independence.py"
+echo "Project runtime ready: Python $PERSONAGRAPH_PYTHON_VERSION, Node $PERSONAGRAPH_NODE_VERSION"

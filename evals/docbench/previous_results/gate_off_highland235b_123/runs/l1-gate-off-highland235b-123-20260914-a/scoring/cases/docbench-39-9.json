@@ -1,0 +1,129 @@
+{
+  "schema_version": "docbench-compatible-case-score-v1",
+  "scoring_protocol": "docbench_prompt_compatible",
+  "official_comparable": false,
+  "case_id": "docbench:39:9",
+  "doc_id": "39",
+  "question_index": 9,
+  "domain": "academia",
+  "question_type": "unanswerable",
+  "system_answer": "根据对文档《MLQA: Evaluating Cross-lingual Transferability of Monolingual Representations》(2020.acl-main.653.pdf) 的全面检索和精读，**该文档未包含RoBERTa-Large与Multilingual-BERT在跨语言迁移任务(XLT)上的性能对比数据或结论**。\n\n文档在第4节（Cross-lingual QA Experiments）的Table 5中列出了XLT任务上Multilingual-BERT和XLM的F1/EM分数，但RoBERTa-Large从未出现在该文档的任何实验、表格或讨论中。文档的引言、相关工作、实验设置、附录及参考文献部分均未提及RoBERTa模型。\n\n因此，基于所提供的文档，无法回答RoBERTa-Large是否在XLT任务上优于Multilingual-BERT的问题。",
+  "prompt_sha256": "784a6d6cf4f8151765b169c633f46e62d12dcd77f8941172e72edbf8b30f9bde",
+  "filled_prompt_sha256": "47e26b6e3e1a211fc9b61ec3fa03afd1a068ace8000ab8a2269e1cf34b0a95b9",
+  "judge_provider": "openai-compatible",
+  "judge_base_url": "https://models.sjtu.edu.cn/api/v1",
+  "judge_model": "deepseek-chat",
+  "judge_request_dialect": "deepseek",
+  "judge_retry_policy": {
+    "max_attempts": 6,
+    "fallback_backoff_s": [
+      2.0,
+      4.0,
+      8.0,
+      16.0,
+      30.0
+    ],
+    "inter_case_delay_s": 1.0,
+    "retryable_http_statuses": [
+      408,
+      429,
+      "5xx"
+    ],
+    "retryable_transport_errors": [
+      "httpx.TransportError"
+    ]
+  },
+  "judge_http_status": 200,
+  "judge_response_raw": {
+    "id": "chatcmpl-d606da88-f6ec-412f-b879-ac6b1acc9f6c",
+    "created": 1789435715,
+    "model": "deepseek-chat",
+    "object": "chat.completion",
+    "system_fingerprint": "vllm-0.26.0-tp8-ep-17a845fb",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "Correctness: 1",
+          "role": "assistant",
+          "provider_specific_fields": {
+            "reasoning": null,
+            "refusal": null
+          }
+        },
+        "provider_specific_fields": {
+          "stop_reason": null,
+          "token_ids": null,
+          "routed_experts": null
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 6,
+      "prompt_tokens": 481,
+      "total_tokens": 487
+    }
+  },
+  "judge_response_text": "Correctness: 1",
+  "judge_attempts": [
+    {
+      "attempt_number": 1,
+      "attempted_at": "2026-09-15T01:27:55.544558+00:00",
+      "wait_before_attempt_s": 1.0,
+      "http_status": 200,
+      "response_raw": {
+        "id": "chatcmpl-d606da88-f6ec-412f-b879-ac6b1acc9f6c",
+        "created": 1789435715,
+        "model": "deepseek-chat",
+        "object": "chat.completion",
+        "system_fingerprint": "vllm-0.26.0-tp8-ep-17a845fb",
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "Correctness: 1",
+              "role": "assistant",
+              "provider_specific_fields": {
+                "reasoning": null,
+                "refusal": null
+              }
+            },
+            "provider_specific_fields": {
+              "stop_reason": null,
+              "token_ids": null,
+              "routed_experts": null
+            }
+          }
+        ],
+        "usage": {
+          "completion_tokens": 6,
+          "prompt_tokens": 481,
+          "total_tokens": 487
+        }
+      },
+      "status": "completed",
+      "error": null,
+      "retryable": false,
+      "retry_reason": null,
+      "retry_after_header": null,
+      "wait_before_next_attempt_s": null,
+      "wait_source": null
+    }
+  ],
+  "judge_attempt_count": 1,
+  "score_source": "judge",
+  "score": 1,
+  "error": null,
+  "scored_at": "2026-09-15T01:27:54.534120+00:00",
+  "status": "completed",
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-39-9-6a91f348401c.json",
+    "source_sha256": "af9e864e8a335fa2a434588a6ef50846841f6abddbeae31d61a6458d9f459684",
+    "source_bytes": 4235,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

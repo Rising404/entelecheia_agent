@@ -1,0 +1,135 @@
+{
+  "schema_version": "docbench-compatible-case-score-v1",
+  "scoring_protocol": "docbench_prompt_compatible",
+  "official_comparable": false,
+  "case_id": "docbench:82:3",
+  "doc_id": "82",
+  "question_index": 3,
+  "domain": "finance",
+  "question_type": "multimodal",
+  "system_answer": "根据 Berkshire Hathaway 2021 年年报（NYSE_BRK-A_2021.pdf），**年报中未单独列示全公司（合并）口径的股息收入（dividend income）金额**。\n\n在合并损益表（p47）中，没有“Dividend income”或“Interest and dividend income”这一行项。合并现金流量表（p89）也未单独列示股息收入。\n\n年报中能找到的股息收入数据均属于**保险业务（Insurance—Investment Income）**范畴：\n\n1. **保险业务投资收入中的股息收入**：p54 的保险投资收入表显示，2021 年股息收入为 **$5,060 million**（约 50.6 亿美元）。该表标题明确为“Insurance—Investment Income”，仅涵盖保险业务。\n2. **优先股股息**：p55 提到，股息收入中包括来自 Berkshire Hathaway Energy 优先股投资的 **$121 million**（2021 年），该金额同样在保险业务讨论中，并从公用事业和能源板块的收益中扣除。\n\n因此，年报中**没有提供全公司口径的股息收入总额**。保险业务投资收入中的股息收入为 $5,060 million（2021 年），其中包含 $121 million 的优先股股息。",
+  "prompt_sha256": "784a6d6cf4f8151765b169c633f46e62d12dcd77f8941172e72edbf8b30f9bde",
+  "filled_prompt_sha256": "f8389e2e154ab01aab468432599ed091ec4ec20ab6f2f237ae5cd283411f9d7d",
+  "judge_provider": "openai-compatible",
+  "judge_base_url": "https://models.sjtu.edu.cn/api/v1",
+  "judge_model": "deepseek-chat",
+  "judge_request_dialect": "deepseek",
+  "judge_retry_policy": {
+    "max_attempts": 6,
+    "fallback_backoff_s": [
+      2.0,
+      4.0,
+      8.0,
+      16.0,
+      30.0
+    ],
+    "inter_case_delay_s": 1.0,
+    "retryable_http_statuses": [
+      408,
+      429,
+      "5xx"
+    ],
+    "retryable_transport_errors": [
+      "httpx.TransportError"
+    ]
+  },
+  "judge_http_status": 200,
+  "judge_response_raw": {
+    "id": "chatcmpl-1601c1a5-2492-4a90-b19e-bd905f7c8f4f",
+    "created": 1789065444,
+    "model": "deepseek-chat",
+    "object": "chat.completion",
+    "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "Correctness: 1",
+          "role": "assistant",
+          "provider_specific_fields": {
+            "reasoning": null,
+            "refusal": null
+          }
+        },
+        "provider_specific_fields": {
+          "stop_reason": null,
+          "routed_experts": null,
+          "token_ids": null
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 6,
+      "prompt_tokens": 591,
+      "total_tokens": 597,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      }
+    }
+  },
+  "judge_response_text": "Correctness: 1",
+  "judge_attempts": [
+    {
+      "attempt_number": 1,
+      "attempted_at": "2026-09-10T18:37:24.360474+00:00",
+      "wait_before_attempt_s": 1.0,
+      "http_status": 200,
+      "response_raw": {
+        "id": "chatcmpl-1601c1a5-2492-4a90-b19e-bd905f7c8f4f",
+        "created": 1789065444,
+        "model": "deepseek-chat",
+        "object": "chat.completion",
+        "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "Correctness: 1",
+              "role": "assistant",
+              "provider_specific_fields": {
+                "reasoning": null,
+                "refusal": null
+              }
+            },
+            "provider_specific_fields": {
+              "stop_reason": null,
+              "routed_experts": null,
+              "token_ids": null
+            }
+          }
+        ],
+        "usage": {
+          "completion_tokens": 6,
+          "prompt_tokens": 591,
+          "total_tokens": 597,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          }
+        }
+      },
+      "status": "completed",
+      "error": null,
+      "retryable": false,
+      "retry_reason": null,
+      "retry_after_header": null,
+      "wait_before_next_attempt_s": null,
+      "wait_source": null
+    }
+  ],
+  "judge_attempt_count": 1,
+  "score_source": "judge",
+  "score": 1,
+  "error": null,
+  "scored_at": "2026-09-10T18:37:23.356495+00:00",
+  "status": "completed",
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-82-3-4d0bb2f27855.json",
+    "source_sha256": "1304d29254d67a2217c49adcf86abbd0626298b11f2175a1ef7ad24cbb68b0dc",
+    "source_bytes": 4887,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

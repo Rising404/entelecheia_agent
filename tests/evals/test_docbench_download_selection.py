@@ -7,6 +7,7 @@ import httpx
 import pytest
 
 from evals.docbench.reproduce_or_run_script import download_selection as downloader
+from evals.docbench.reproduce_or_run_script.config import BENCH_EVAL_DIR_ENV
 from evals.docbench.reproduce_or_run_script.download_selection import (
     DEFAULT_FOLDER_URL,
     DOCBENCH_DOCUMENT_COUNT,
@@ -533,6 +534,9 @@ def test_main_catalog_modes_dispatch_without_changing_default_mode(
     tmp_path: Path,
     capsys: pytest.CaptureFixture[str],
 ) -> None:
+    bench_eval_dir = tmp_path / "bench_eval"
+    monkeypatch.setenv(BENCH_EVAL_DIR_ENV, str(bench_eval_dir))
+    source_dir = bench_eval_dir / "docbench/source"
     calls: list[tuple[str, Path]] = []
 
     def fake_catalog(**kwargs):
@@ -570,11 +574,11 @@ def test_main_catalog_modes_dispatch_without_changing_default_mode(
     calls.clear()
 
     assert main(["--qa-catalog-only"]) == 0
-    assert calls == [("catalog", downloader.DEFAULT_QA_CATALOG_MAPPING_PATH)]
+    assert calls == [("catalog", source_dir / "drive_catalog_map.json")]
     calls.clear()
 
     assert main(["--balanced-pdfs-only"]) == 0
-    assert calls == [("balanced", downloader.DEFAULT_QA_CATALOG_MAPPING_PATH)]
+    assert calls == [("balanced", source_dir / "drive_catalog_map.json")]
     summary = json.loads(capsys.readouterr().out.splitlines()[-1])
     assert summary["selection_seed"] == downloader.DEFAULT_BALANCED_SEED
     assert summary["selected_document_count"] == 125
@@ -582,7 +586,8 @@ def test_main_catalog_modes_dispatch_without_changing_default_mode(
     calls.clear()
 
     assert main([]) == 0
-    assert calls == [("selected", downloader.DEFAULT_SELECTED_MAPPING_PATH)]
+    assert calls == [("selected", source_dir / "selected_drive_map.json")]
+    assert not bench_eval_dir.exists()
 
 
 def test_main_catalog_modes_are_mutually_exclusive() -> None:

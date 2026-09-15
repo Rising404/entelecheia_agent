@@ -1,0 +1,135 @@
+{
+  "schema_version": "docbench-compatible-case-score-v1",
+  "scoring_protocol": "docbench_prompt_compatible",
+  "official_comparable": false,
+  "case_id": "docbench:158:1",
+  "doc_id": "158",
+  "question_index": 1,
+  "domain": "laws",
+  "question_type": "text",
+  "system_answer": "根据附件《Parliamentary Right of Inquiry》报告中关于印度的章节，印度议会议员在讨论中原则上不能提及待决司法事项，但存在例外情况。\n\n**一般规则：**\n- 在Lok Sabha（人民院）的议事规则中，第352(i)条明确规定，议员在发言时不得“提及任何待决司法裁决的事实”（refer to any matter of fact on which a judicial decision is pending）。\n- 同样，第188条规定，任何试图讨论待决于法定法庭、准司法机构或调查委员会事项的动议，通常不被允许提出。\n- 报告指出，作为惯例和实践，sub judice规则也延伸至议会委员会，委员会不会审查在法院待决的问题。\n\n**例外情况：**\n- 上述规则并非绝对。在议长（Speaker）的指导下，如果讨论的事项具有国家重要性（a topic of national importance has to be discussed），议会可以偏离该规则。\n- 此外，第188条也规定，如果议长确信讨论不会损害法定法庭或法院对该事项的审议，议长可自行酌情允许在议会中提出该事项。\n- 某一事项是否属于sub judice（待决司法），由议长根据每个案件的事实和情况决定。\n\n**结论：**\n印度议会议员在讨论中一般不得提及待决司法事项，但议长有权在特定情况下（如涉及国家重要事项或不会影响司法公正时）允许此类讨论。",
+  "prompt_sha256": "784a6d6cf4f8151765b169c633f46e62d12dcd77f8941172e72edbf8b30f9bde",
+  "filled_prompt_sha256": "29361f89f876e8a2fb30d981ef52a5782e689352edb3b6c78a1d9a10f78f677e",
+  "judge_provider": "openai-compatible",
+  "judge_base_url": "https://models.sjtu.edu.cn/api/v1",
+  "judge_model": "deepseek-chat",
+  "judge_request_dialect": "deepseek",
+  "judge_retry_policy": {
+    "max_attempts": 6,
+    "fallback_backoff_s": [
+      2.0,
+      4.0,
+      8.0,
+      16.0,
+      30.0
+    ],
+    "inter_case_delay_s": 1.0,
+    "retryable_http_statuses": [
+      408,
+      429,
+      "5xx"
+    ],
+    "retryable_transport_errors": [
+      "httpx.TransportError"
+    ]
+  },
+  "judge_http_status": 200,
+  "judge_response_raw": {
+    "id": "chatcmpl-66c44c06-6b89-4030-a33b-865c8eafc85c",
+    "created": 1789436091,
+    "model": "deepseek-chat",
+    "object": "chat.completion",
+    "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "Correctness: 1",
+          "role": "assistant",
+          "provider_specific_fields": {
+            "reasoning": null,
+            "refusal": null
+          }
+        },
+        "provider_specific_fields": {
+          "stop_reason": null,
+          "token_ids": null,
+          "routed_experts": null
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 6,
+      "prompt_tokens": 627,
+      "total_tokens": 633,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      }
+    }
+  },
+  "judge_response_text": "Correctness: 1",
+  "judge_attempts": [
+    {
+      "attempt_number": 1,
+      "attempted_at": "2026-09-15T01:34:49.729136+00:00",
+      "wait_before_attempt_s": 1.0,
+      "http_status": 200,
+      "response_raw": {
+        "id": "chatcmpl-66c44c06-6b89-4030-a33b-865c8eafc85c",
+        "created": 1789436091,
+        "model": "deepseek-chat",
+        "object": "chat.completion",
+        "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "Correctness: 1",
+              "role": "assistant",
+              "provider_specific_fields": {
+                "reasoning": null,
+                "refusal": null
+              }
+            },
+            "provider_specific_fields": {
+              "stop_reason": null,
+              "token_ids": null,
+              "routed_experts": null
+            }
+          }
+        ],
+        "usage": {
+          "completion_tokens": 6,
+          "prompt_tokens": 627,
+          "total_tokens": 633,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          }
+        }
+      },
+      "status": "completed",
+      "error": null,
+      "retryable": false,
+      "retry_reason": null,
+      "retry_after_header": null,
+      "wait_before_next_attempt_s": null,
+      "wait_source": null
+    }
+  ],
+  "judge_attempt_count": 1,
+  "score_source": "judge",
+  "score": 1,
+  "error": null,
+  "scored_at": "2026-09-15T01:34:48.718649+00:00",
+  "status": "completed",
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-158-1-c4e8ed0a2166.json",
+    "source_sha256": "c816c5f67ab0209223d410f817e0b26059d31d6aa4da183a77320dca62ddaad5",
+    "source_bytes": 5226,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

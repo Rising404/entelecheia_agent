@@ -1,0 +1,1650 @@
+{
+  "kind": "reviewed_public_evidence",
+  "benchmark_id": "docbench",
+  "runs": [
+    {
+      "directory": "showcase-01-l1-gpu-first-pass-125-20260910-a",
+      "run_id": "l1-gpu-deadline25-125-20260910-a",
+      "executions": 125,
+      "judge_correct": 91
+    },
+    {
+      "directory": "showcase-02-l1-gpu-transport-retry-3-20260911-a",
+      "run_id": "l1-gpu-transport-retry-3-20260911-a",
+      "executions": 3,
+      "judge_correct": 2
+    },
+    {
+      "directory": "showcase-03-l1-gpu-execution-retry-5-20260911-a",
+      "run_id": "l1-gpu-execution-retry-5-20260911-a",
+      "executions": 5,
+      "judge_correct": 3
+    }
+  ],
+  "files": {
+    "README.md": {
+      "sha256": "7a51dc950e5144499aa8bcb1bddaa83380aad103b8e349e9197b2b97fac4b59d",
+      "bytes": 1851
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-1-1/result.json": {
+      "sha256": "4d0e8878f560f7a6ab0c15404c20d24eee99845f30f551be7d6bf559f4b0a7d2",
+      "bytes": 24765
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-1-1/trajectory.json": {
+      "sha256": "1a78fb0ce48c20110d7c031e6dbe649ba4770138094a18406e5cce22996bcc69",
+      "bytes": 235494
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-10-3/result.json": {
+      "sha256": "6292bfa0f2b0b87733db49f22b3348eeeaa2eb5b9c11f39ccab68e1bb8ce560f",
+      "bytes": 26478
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-10-3/trajectory.json": {
+      "sha256": "3f728c301c51279dce1b3c7678f05bbc483788bd6ed71a26676302edd94e172a",
+      "bytes": 470044
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-103-1/result.json": {
+      "sha256": "fa0423298a8c0675401891225171912afaae464b7f3c304df392dcdd98f4d115",
+      "bytes": 14043
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-103-1/trajectory.json": {
+      "sha256": "e2bb4250ff9b63b97323cbf402f41f699eef0d8d328df783923a4c27cb4f974f",
+      "bytes": 272886
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-104-0/result.json": {
+      "sha256": "eac2e131b56305519e3588b2543c626a89e5b19646a3de3b291ba5dd5c334c5e",
+      "bytes": 25076
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-104-0/trajectory.json": {
+      "sha256": "64bd7b8f016adeadb79527b44337ae18f089d35d6053f2391a0f58c80bc5fdc3",
+      "bytes": 363938
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-105-2/result.json": {
+      "sha256": "1baaea5fb207ee6049444cdd1baf1f5662272dcb385ab518d5c43a1b00b0c21b",
+      "bytes": 27464
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-105-2/trajectory.json": {
+      "sha256": "c4baa3e705ecf5f2cce398bf96b88f2bb284007461255bc2969c533f5cf5f67a",
+      "bytes": 438854
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-106-0/result.json": {
+      "sha256": "d2356dea3f830942bcbc74579791adeeac599369559635181a64de2b2fd99e7e",
+      "bytes": 235879
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-106-0/trajectory.json": {
+      "sha256": "56ce36bf2b876a2b18d1617425f12a27bb988e00daf48b781966234803d05157",
+      "bytes": 691569
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-108-2/result.json": {
+      "sha256": "6f8f0d902035ff56966596afef2da92a94e7fe80de21f1a029b39e768adc6ffd",
+      "bytes": 29909
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-108-2/trajectory.json": {
+      "sha256": "1f4f2aab67ac13b85dcad6913a1d02fd2f04fce73d3d4c04ed7b0935d6460954",
+      "bytes": 523079
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-109-3/result.json": {
+      "sha256": "f822003425041056086512edc343735093c8d1cc616734ac8c97275f789dbdf4",
+      "bytes": 33192
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-109-3/trajectory.json": {
+      "sha256": "fa61c0cdc0ec9939be850050734c987f36de46aed16254efeeaf1f6dc112c17f",
+      "bytes": 509078
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-11-4/result.json": {
+      "sha256": "5011c349e4a6d6e194b3db00eca1e2b4e158041bc2a8db29b098c3fae24f5817",
+      "bytes": 8389
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-11-4/trajectory.json": {
+      "sha256": "a778d2afa39a40bf537ffb63d564bac2377eb4dd2d465e9aeb3b2b4cb5df55ff",
+      "bytes": 281726
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-110-2/result.json": {
+      "sha256": "04dfc5e0ba60c1957c81a70e1fd157c76182f5f6625b2194a7b29bd20f1bfb08",
+      "bytes": 310403
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-110-2/trajectory.json": {
+      "sha256": "d1019906f840c01ac2d51d210ad26c703c4604870788cb23e3a55fe0fae0afe0",
+      "bytes": 665239
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-111-1/result.json": {
+      "sha256": "3ab1a9937fcf86adfd4fd047f1dc55eb726c4588d53b212a2368b17b3a97cf58",
+      "bytes": 24077
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-111-1/trajectory.json": {
+      "sha256": "5c19a57b043b1a2b20665c014fb3830a8fea4be96cecbaee84a1ed3a5589b76f",
+      "bytes": 366877
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-112-2/result.json": {
+      "sha256": "f55919d03a0ca421941e68261f8d7ce16bd017653c35fcdf3186102fe28b62e9",
+      "bytes": 33936
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-112-2/trajectory.json": {
+      "sha256": "c6f9e4cdbc6a6c7733b4b1bada6e00795b10746a481a610e9de1dfb8e56c83cb",
+      "bytes": 404776
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-113-4/result.json": {
+      "sha256": "179343a2d575a91abbf8b1aee8cca854ac4df333d861b010330e04f857718acd",
+      "bytes": 27621
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-113-4/trajectory.json": {
+      "sha256": "23e516167158ee951d1cb33622fdbb684a4e0472c6a030b28e86e7ec228609cb",
+      "bytes": 451440
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-114-2/result.json": {
+      "sha256": "871d91df9fe5fcbf727fcb1ee13ca1e6a366e7bb739138e5e3dd3894898676dd",
+      "bytes": 297177
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-114-2/trajectory.json": {
+      "sha256": "effeb4c9aae7f91c79eebcedb12cd8d12a2696bda8b13a7ffe20720ab64f854a",
+      "bytes": 760798
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-117-0/result.json": {
+      "sha256": "7c9aae0a5d3daba6554cfae7a5c4e49baafd4ac5c254cb76f58451a82bc8fbe3",
+      "bytes": 35645
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-117-0/trajectory.json": {
+      "sha256": "adf191df4d592b004218f543d1b694aac1596f386cb0960f4088aa2c4ffa50fd",
+      "bytes": 1853643
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-118-1/result.json": {
+      "sha256": "66ffe6f27bf7fa4c3d5316403ee805e637fd73fd31932f1718a198861fa3d6f9",
+      "bytes": 26242
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-118-1/trajectory.json": {
+      "sha256": "1cdd14cdc8bcb2f4b9b42ec0ae748461c5810da41f32d3ee4053a5cccbc173da",
+      "bytes": 553007
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-119-2/result.json": {
+      "sha256": "8111d5dfaf4f2472904741fe0bbdc8faf33ea7e54070ac0df90638036797aaeb",
+      "bytes": 31803
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-119-2/trajectory.json": {
+      "sha256": "8da134a2c9b9b737d989e71667cc10391c092bbcd2731c3437d17e882b3208c8",
+      "bytes": 1078290
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-120-4/result.json": {
+      "sha256": "8aa9545ab57e6913fdf52662d9faaa135b40401c7b24a4b71414524c1e1e1382",
+      "bytes": 332303
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-120-4/trajectory.json": {
+      "sha256": "4ad7a900a1102ebb106b66cc9473b709531b8a8dc2000e70fe40d1e811384b3e",
+      "bytes": 2089046
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-122-3/result.json": {
+      "sha256": "da3cca3f7d6969c3488bdabf96f02f1b478e8be719f0640abbc5ce8863ead720",
+      "bytes": 41933
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-122-3/trajectory.json": {
+      "sha256": "4fed627c7e566e8b9477047b05c0214ecc8cad53751af971278b59d25083053a",
+      "bytes": 589985
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-123-0/result.json": {
+      "sha256": "5719a042e99cc86d68ae9de29ae12c4dd5782cdf572d56cde83f12a372aa20b0",
+      "bytes": 22755
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-123-0/trajectory.json": {
+      "sha256": "f73e54e4414c4bc1cf3e6e3c0fc55b2e3458f968d38fea0ad67e160914cd5a48",
+      "bytes": 447662
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-124-2/result.json": {
+      "sha256": "a0a044a30a3f79050cb98c5db6d73178b4951b1876a628f7158b07508b717f27",
+      "bytes": 36660
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-124-2/trajectory.json": {
+      "sha256": "a089e6f8399e511151a7b95218bf56586f0a68c109cdc7a9d8627223110bfed8",
+      "bytes": 767287
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-125-1/result.json": {
+      "sha256": "b268c50d49ae8101cbbfb75d6fa32841e2db253d687d4fcd38ba6c2bc2b0d214",
+      "bytes": 17777
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-125-1/trajectory.json": {
+      "sha256": "a58d431f89c39d66b505d0da01969089077c253de0170406969e8560b1c8bfd4",
+      "bytes": 271593
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-128-2/result.json": {
+      "sha256": "ec7cd1d489c7f5ebf153d271d56683ff9110314ba372d4255d279ce77588d7ef",
+      "bytes": 26118
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-128-2/trajectory.json": {
+      "sha256": "b44a3e33a75a052ad7b9f714ee04433420dfb7f5b04dce112c8ca50e36e2db58",
+      "bytes": 386006
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-129-0/result.json": {
+      "sha256": "6d19f82440da01bcc8999972534d5d8a720a8e04473ae8830474d5877c1ce651",
+      "bytes": 189019
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-129-0/trajectory.json": {
+      "sha256": "74c5accbed54c2919079e83750f07a9f58e69ef1b2455be181ad365c8dc45049",
+      "bytes": 1508059
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-13-3/result.json": {
+      "sha256": "0c07cb44f49217299b513d9cdd398ae55ff2f79c7452f43672398ada8c4b4a8e",
+      "bytes": 35803
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-13-3/trajectory.json": {
+      "sha256": "25dbb45a17aebefaf005a8991d6118ca97845bb2747fd84de21dad15b347ce3a",
+      "bytes": 530005
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-132-2/result.json": {
+      "sha256": "c9f4239107359bc653f4cf1976614fc645af3f42108ac4843fc2dee22501c3f4",
+      "bytes": 22264
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-132-2/trajectory.json": {
+      "sha256": "9a827568fb5f034f5ebc4313ea4fcb33e772f033646bd723e582c1755e6cdd56",
+      "bytes": 348674
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-137-1/result.json": {
+      "sha256": "f3d58b5d080c590dcc55cd556ddbb233e8f0feff2c51289aca495ce2ebbe9ff2",
+      "bytes": 183328
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-137-1/trajectory.json": {
+      "sha256": "d7d62fe9f6dedd887227de7694d950d8ef121db6662e782179b9a9ea65727a51",
+      "bytes": 711715
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-140-0/result.json": {
+      "sha256": "337b5aca802af09fd6187dd0e92f033078bf781de2b45ebeac8b0abb04a8d5fa",
+      "bytes": 28890
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-140-0/trajectory.json": {
+      "sha256": "053ff65ca971a2d8629cff33cd7a9ed629b78bfbc2820ad5667e9a5a58ab11fe",
+      "bytes": 468285
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-144-3/result.json": {
+      "sha256": "9124c3d73c0adccb30f9183dfb838bcf9adad85b117703dbeafa7f84bd7e11f2",
+      "bytes": 62387
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-144-3/trajectory.json": {
+      "sha256": "2c3c4d60650bf9d9660c45a8b15121425c351c2c8c427ac645f68a5309e5df50",
+      "bytes": 300999
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-148-2/result.json": {
+      "sha256": "b907040894ff7d066a05c98185ca4d10fb16067bab9dbf4199d251becdff3c64",
+      "bytes": 22450
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-148-2/trajectory.json": {
+      "sha256": "99b5268a638b35f24d5b64d01ce5262b0be9624505ad92d311fdc29186fbde06",
+      "bytes": 1668265
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-149-0/result.json": {
+      "sha256": "3c274ca2f4819d9ccb3188d2658b7124d5f7b7fc022dd9921afd4720ecbed3da",
+      "bytes": 48080
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-149-0/trajectory.json": {
+      "sha256": "7227a7d46ae22d78cc19138833b09ff674fc90017cc5d24635721b155966a633",
+      "bytes": 565753
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-151-3/result.json": {
+      "sha256": "e13f7138d42e4b5d7e331ab2ca3c251997f6360968680043a5174f96c6dc5c8d",
+      "bytes": 192208
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-151-3/trajectory.json": {
+      "sha256": "2a8ba7fad51721be6884c9b595a6e83966140701019a2cf733d9b54e99a78cb7",
+      "bytes": 2253195
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-152-1/result.json": {
+      "sha256": "7aee2b079a1f2875b835efc376706387e4fe147f15fdeda3d1083cfd0a5f3169",
+      "bytes": 24371
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-152-1/trajectory.json": {
+      "sha256": "f45d843101c34c8d6c44c66a85e75a8964af3e9c8a118b692783c1495ee62b3f",
+      "bytes": 514408
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-153-2/result.json": {
+      "sha256": "cfeaf21e62432318089f88937da62717f4fce893c971aec54a5053c2e7c19953",
+      "bytes": 80082
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-153-2/trajectory.json": {
+      "sha256": "0a75ab6aa5bbcf31c2f7da616946ee1a7e47e2e4531789f37151236e26bd08ce",
+      "bytes": 765244
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-156-4/result.json": {
+      "sha256": "8ebfed4b98be672be3a85a727f22039e16279f39976e24b20d3a9f378f5cfe56",
+      "bytes": 93890
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-156-4/trajectory.json": {
+      "sha256": "ae1be6e8a14449eb37038f16ba2e02917bf2f40dbf227a910974e3929caa1926",
+      "bytes": 2028930
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-157-5/result.json": {
+      "sha256": "09d4a71576fb7b4a0e7f7ee649a241ce7c4fa61c7b073d20abb33254c5126577",
+      "bytes": 68062
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-157-5/trajectory.json": {
+      "sha256": "0ae7459836f3d4c968c803e6eade8716ec448040b63ff16724ea64bec06ed899",
+      "bytes": 1637904
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-158-1/result.json": {
+      "sha256": "f82d6cb6fa6c1d549cfc0544d85dd1570350fecc3f80db27fa8ad73f136290b5",
+      "bytes": 82286
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-158-1/trajectory.json": {
+      "sha256": "645dec82b80b0af3c5a02bcec70ac205318567c385aaefbd0eb8e61f63ba2fce",
+      "bytes": 721535
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-159-3/result.json": {
+      "sha256": "2eaf935b96e1cb2bb1fcb705925fe51c977e7066006cfc55d5b2e5bc3c8bb07e",
+      "bytes": 25228
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-159-3/trajectory.json": {
+      "sha256": "5bec673b61ccc7ecfc20cd3a134982db957e3ba659d2427e5c4976da2bba712c",
+      "bytes": 324774
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-160-2/result.json": {
+      "sha256": "72854e21c596b05b2e45d8f25372d74a41f6e0eb73dd4be90668c0d9b337157f",
+      "bytes": 97190
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-160-2/trajectory.json": {
+      "sha256": "ab1ef2d167f254a97a8a9f824bc1a3ac9c7703ed46d22a4fa907ab2b142edda0",
+      "bytes": 1705325
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-161-0/result.json": {
+      "sha256": "9a90043cbb2eb2be79b6d3213adcd9d52e9981eaa6e425d53b69844bcaaafe81",
+      "bytes": 67392
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-161-0/trajectory.json": {
+      "sha256": "3b4e302d93601f079d2f91abb4f27baefe8c93f218913c0f7a9a0928bb2149df",
+      "bytes": 656887
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-164-1/result.json": {
+      "sha256": "fa2ad7140785ed221755444ebbb5e9fc6a34efce5fdd6b92bf5a902c253ea75e",
+      "bytes": 24962
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-164-1/trajectory.json": {
+      "sha256": "faff5c9b9c11960a5b5aa9929b8dca6fe02736b3a763589503a74fd031dcc020",
+      "bytes": 277822
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-165-0/result.json": {
+      "sha256": "7985d3ec6f8863f69c057885691578ff5de57b7580fc6d9aec0181cc8279a741",
+      "bytes": 19715
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-165-0/trajectory.json": {
+      "sha256": "3fc7c46ce5b8900a78f7206bb51336d68d94d178e733a662b6ce40f1fc3fb07c",
+      "bytes": 439417
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-166-2/result.json": {
+      "sha256": "8af180ceba1b22498e7b2bf2605185aeac5dbc193cfb679dd29ffa88d634bfed",
+      "bytes": 34525
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-166-2/trajectory.json": {
+      "sha256": "491dbad67d31e6ccaf980cb2abc0daaa29c9e9c70a9c25442db7569056bde611",
+      "bytes": 503085
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-167-0/result.json": {
+      "sha256": "7b15b8c4554798f68b694b91af8f2225a540af06173c42365b73db43ca9fb21d",
+      "bytes": 75856
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-167-0/trajectory.json": {
+      "sha256": "8517013f6de8ad4564a52c4c28fe3a98ce63555293a0708a03a9de64993ac8c8",
+      "bytes": 796358
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-168-3/result.json": {
+      "sha256": "53ea0762b4d61a4903925a7c3dd06e8e1d8a9a715e6bf02206e1d4e21e8cac2c",
+      "bytes": 44658
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-168-3/trajectory.json": {
+      "sha256": "594927d798d9a12dea37fa6f41085d346c9ecd07cd1c741b544579844940c441",
+      "bytes": 212957
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-169-2/result.json": {
+      "sha256": "6dddc685195edf52f9c97da2285e7744853b5d9f53094ef957ef42180d14d3e9",
+      "bytes": 29297
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-169-2/trajectory.json": {
+      "sha256": "3f8be06bf1ddfa86aaf171c5da34395eb0bc4e1b64960240638128e85fc0b49d",
+      "bytes": 276203
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-17-8/result.json": {
+      "sha256": "86bb540a32c9bd877f208eeab37617b46725ac4a6498f7c3be97b26c50d2ac8b",
+      "bytes": 30223
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-17-8/trajectory.json": {
+      "sha256": "7f1a69928516fdc51ef04a4a923defe8413a13c1e8d3966b9c3d466e02963ced",
+      "bytes": 1243253
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-170-3/result.json": {
+      "sha256": "c707f33c93a5ab058f8992f9187d6a829b00c9f8b458fc6749c75e5541cc382f",
+      "bytes": 180567
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-170-3/trajectory.json": {
+      "sha256": "3eab609aa3013ccc5e5d1170e230c3b636e3673fc67c439c6cb919615d90b8d0",
+      "bytes": 968473
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-171-5/result.json": {
+      "sha256": "371ad081546c08508e0ef2179ebcb914963b0d7c8c02062a2d229d7e5aeb108c",
+      "bytes": 61308
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-171-5/trajectory.json": {
+      "sha256": "1e3ad83eee2b4a385a025394281850b1ac0a44bec7005c507b33c83e600ec74d",
+      "bytes": 361207
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-174-3/result.json": {
+      "sha256": "549b86d483e8c02ded36091e4f49d66fd2ac3a83ccf7e4a24873e62a091d45e9",
+      "bytes": 69635
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-174-3/trajectory.json": {
+      "sha256": "a967a830e1a38505c695f78b72d18df1073f08a1c8545a3c45aa08b844ebeb0f",
+      "bytes": 168795
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-176-1/result.json": {
+      "sha256": "c1d525ee2bdb641b122850375c9ae9dd771da57a3718c697c4c5b41d8d7271a2",
+      "bytes": 60187
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-176-1/trajectory.json": {
+      "sha256": "b7c2ef27cbb813ba4e03736dd34ec464f179adf5dc9b97b7faa0d27a2e134f0f",
+      "bytes": 562054
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-178-1/result.json": {
+      "sha256": "c31885880cd3b75c4ec221406f0e64d440e80e5d6a548d35283dcd8726893664",
+      "bytes": 52761
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-178-1/trajectory.json": {
+      "sha256": "e2b6a95f1f5365bcdb0078bbb11586cf4729d3e3d25b287c61262aac19aa632c",
+      "bytes": 560697
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-179-5/result.json": {
+      "sha256": "5f433bf8703e50d93d02e41e5afcc3588e4d31cdacff999223fdfa3d8d04c911",
+      "bytes": 23916
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-179-5/trajectory.json": {
+      "sha256": "1dc2e21a88d5b30540ab1ddbc227741a64fc0627110b7f0179dbd18ff712a8f4",
+      "bytes": 288644
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-183-0/result.json": {
+      "sha256": "ca8ed4656b2da6ae51f526a54e9421f214232cf0e48af64fab4f2ded5f82a3b8",
+      "bytes": 23081
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-183-0/trajectory.json": {
+      "sha256": "bdedfbc914ef6dc9c3d9a9741ffa06e03ea59a08c595a3304b3c88d66a579423",
+      "bytes": 2044929
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-187-0/result.json": {
+      "sha256": "0cc7c5964d30c409c8429e641eb3ae4eb88a6ba7c270e9ee162df142ff88741c",
+      "bytes": 24378
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-187-0/trajectory.json": {
+      "sha256": "d9175a4ebbc5890f9c012254e73f86a50535f27637084ba00592d02ae1246dc0",
+      "bytes": 662179
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-189-2/result.json": {
+      "sha256": "f98df236694967b3fd95869fd457a7a54f6585182c9407b67c5278b8a972f057",
+      "bytes": 24135
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-189-2/trajectory.json": {
+      "sha256": "a038413ab5eb0707243b72381fbc39b72ed19bb9e0cce458c6be717d8624950b",
+      "bytes": 353249
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-19-4/result.json": {
+      "sha256": "c1cd254d7a2b66ff52863901ca4abeecff45f32a73fec73a96905886df361d3d",
+      "bytes": 35677
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-19-4/trajectory.json": {
+      "sha256": "5d5bcf754b437ef54d7b6f289cfa8894a19f8d0365ded8f65701a3db4c50c456",
+      "bytes": 2008736
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-190-2/result.json": {
+      "sha256": "db23223e65f25cde411b0d8ab6e0fec14f67417463e9640ffead59e1f44220aa",
+      "bytes": 26856
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-190-2/trajectory.json": {
+      "sha256": "18889201aa0b23f5e98a8945ac7904a7bace21c83069a0111d00426b68dda37e",
+      "bytes": 418811
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-191-1/result.json": {
+      "sha256": "af6acaa42ab0d8848143e90f6b104a14cff2b15952a410874b4c44951f7ff53a",
+      "bytes": 24597
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-191-1/trajectory.json": {
+      "sha256": "3a33f818772a2f6c6aad5a09266ccd0b8b092690ca28af89f36a8df0fbc7b0eb",
+      "bytes": 432134
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-192-4/result.json": {
+      "sha256": "b261867413c7f0773d3b78990865be37030208861693903e0b9b0a378a3635d6",
+      "bytes": 26056
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-192-4/trajectory.json": {
+      "sha256": "52bec032f4de7426df6aea46da4e3bfe19b48e9e13b3c9e516811c3c3ca8e863",
+      "bytes": 415651
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-193-1/result.json": {
+      "sha256": "94e71e601bd8afa73527030a199135203aa90b456e6968b587cf9db4697c631d",
+      "bytes": 26083
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-193-1/trajectory.json": {
+      "sha256": "4ed59656f5b3e0a87b8b4a44d9da5391a8f4e65abe8db685a763bbda1b29d217",
+      "bytes": 945104
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-194-1/result.json": {
+      "sha256": "ace0a597c45da91d179a013752384a9fcb53ba5881e73ed157e332d9dc9467cb",
+      "bytes": 25215
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-194-1/trajectory.json": {
+      "sha256": "4cb17ea20159cea5c40ba25619e41eade8b07013547fadddb61721e7505c20f6",
+      "bytes": 438670
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-198-4/result.json": {
+      "sha256": "4f7016a2b82f6f187ed764448c63b076f0383fdf6e9a5e701494f7caca5adeed",
+      "bytes": 23610
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-198-4/trajectory.json": {
+      "sha256": "b1be4bbfe39d11ffc12fc3f2feeef01aa31ce32e6a096f7e282ead80a84298c8",
+      "bytes": 272607
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-199-8/result.json": {
+      "sha256": "0ca4965022fc44e287a22eafbcba5f56140832affc7fad6b85dbe67238a7276e",
+      "bytes": 25865
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-199-8/trajectory.json": {
+      "sha256": "e1a31a9fbd0b806ed5a4a055af70dafa34c436dc5544e82167b510681628550c",
+      "bytes": 718456
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-2-0/result.json": {
+      "sha256": "589eb3d79e2134aa14efff1921c070d7e023bdef4489f176907e551ab46ad9d2",
+      "bytes": 24555
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-2-0/trajectory.json": {
+      "sha256": "b22955521a5e0c76a8bfed0e0b78fca7656e15e7f9046bdd13da50f8048ce30f",
+      "bytes": 590277
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-20-4/result.json": {
+      "sha256": "dcd497d349107b9d05022c3197ad5ba5a3f86bc16aa61fb32684d146d6104db9",
+      "bytes": 32446
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-20-4/trajectory.json": {
+      "sha256": "01dd2b2eccc747a77d654d94255fd46791f4d532d22550c983df1314149cf7f6",
+      "bytes": 484202
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-202-2/result.json": {
+      "sha256": "50b6658ff56be10a5184c44baf231cc3c125f9d2f0650c01c2ec356b43ccba21",
+      "bytes": 26450
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-202-2/trajectory.json": {
+      "sha256": "69f294db37566e85af504c592ecc5fc4f1ece58aae7233c4ff0ada3eea6f4741",
+      "bytes": 456355
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-203-1/result.json": {
+      "sha256": "cd9ca002f15fee23ba536ded3f9153e1badd2330cabb0247576b972d01271cd7",
+      "bytes": 22878
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-203-1/trajectory.json": {
+      "sha256": "1bace24594834824bfb3a01258cff7649e3f306d37f645790be0c7a2c26248a6",
+      "bytes": 57830
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-206-0/result.json": {
+      "sha256": "a8c0e295a99883f5f2773c1d79413290ede22f076ce6d3d3a63a8dac7f3a3278",
+      "bytes": 8016
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-206-0/trajectory.json": {
+      "sha256": "f05d60beec7430edc9f591c272c2657c529507131c3e52de45720e11d50fd9e6",
+      "bytes": 1104
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-207-2/result.json": {
+      "sha256": "113c4ecbc4ad7fe3a974c29abaee60e46894b6431f3eca676418a8a4ba53dc52",
+      "bytes": 25732
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-207-2/trajectory.json": {
+      "sha256": "87da52659c7bed01095f8e8b4f3b1d0d39e0c0e0b6783fbf991f4b6cebb9cead",
+      "bytes": 581537
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-208-1/result.json": {
+      "sha256": "9e59961c0c8a0d5bf87ad9c0b91142643ed765eea67a63ec0598f8581cdfc799",
+      "bytes": 25033
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-208-1/trajectory.json": {
+      "sha256": "43fa0c802be35c3cd738ce26982b6940b59d20ac65ae67d524fc07caf419e40c",
+      "bytes": 285113
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-21-0/result.json": {
+      "sha256": "197ddab383c47af48e5306dfd5296ca8b648e2b7a0d7565864ce5e5ac5c2ad58",
+      "bytes": 44394
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-21-0/trajectory.json": {
+      "sha256": "134b88a06cf79c28856fd5f0a95ceaecb10f14b33778ea6421d8f6c4421f6b1d",
+      "bytes": 555375
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-211-1/result.json": {
+      "sha256": "dc37a3e98ac54446a4b666ccc3578bf6ae745cb5fe9a9bf8787dbc18f6bd2b9a",
+      "bytes": 24040
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-211-1/trajectory.json": {
+      "sha256": "5dd1b6a5251b1e559a1ae942b96a8dfcb1d48dee0fced1047ac872cc050d347f",
+      "bytes": 241063
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-212-2/result.json": {
+      "sha256": "b659d9577e5731550751ae5f87665a4965674e68d172db73c05283c9336b8806",
+      "bytes": 24232
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-212-2/trajectory.json": {
+      "sha256": "681652ca09c382dafd287f429026797291deb92adf0e03837c4f84fd7ece3377",
+      "bytes": 570814
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-214-4/result.json": {
+      "sha256": "23994e738e0e768fc83a38279c80560e1df4c8862ead2a3175e539a545e297ef",
+      "bytes": 23995
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-214-4/trajectory.json": {
+      "sha256": "5c128cfcf0cdbc2ba4ba15685a02bc1fbc3730f0d346393d776da502bbdcd977",
+      "bytes": 865673
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-217-2/result.json": {
+      "sha256": "7cb506828000452a023768ead501f0e7a373aa2f1b215df0a2e65cd0eebe067e",
+      "bytes": 20585
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-217-2/trajectory.json": {
+      "sha256": "7befacd7e325493c462210a180e79db2f012c6f3ec6c70b96ce96e1436d6e270",
+      "bytes": 455575
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-219-3/result.json": {
+      "sha256": "ebfbe103c4f59a0cb27d331f290a2b5ce946120ca817f1fd25937a9e2a436950",
+      "bytes": 19262
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-219-3/trajectory.json": {
+      "sha256": "5eb90414d8730fcc64a3e03db8cddaa29eade3ad61aa92a06aa2dc54f45e1ee4",
+      "bytes": 248470
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-220-1/result.json": {
+      "sha256": "7695a889b7702d28037ba1cb8cdd70e8aa0d98b5d1415350e6394a38d52e2696",
+      "bytes": 27258
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-220-1/trajectory.json": {
+      "sha256": "bb2e283e72ed847744f3c369c028ff0717b9b10c334fead6088d9c0410e0423a",
+      "bytes": 930834
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-221-0/result.json": {
+      "sha256": "c81cbba9a8a1ebc6746e9da47877020d3d0fbf42aff22fd56a4133df5d820939",
+      "bytes": 27692
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-221-0/trajectory.json": {
+      "sha256": "887d18be3aea3be0c9ad9a8cd641bdf7f7fde24c05f04f7ce2be35bb707eea4d",
+      "bytes": 516123
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-222-0/result.json": {
+      "sha256": "a39eb748b90e243fab252ac38c214cbdcaec391a32b667f51cebd4949076c1ea",
+      "bytes": 23693
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-222-0/trajectory.json": {
+      "sha256": "a39dbece53a3d20ad8488f69edb6bf5b7d190e884f6e6940c33289f26f7d7890",
+      "bytes": 291159
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-224-2/result.json": {
+      "sha256": "60e5225ac6de90696202e4a40b5b682b3ffae7def4f1a636e7a5e3da4a24c79d",
+      "bytes": 25864
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-224-2/trajectory.json": {
+      "sha256": "0e6d6f8a737533982472f7da58528a0e023e80b2e4e9de56690d1de24522cd22",
+      "bytes": 1494062
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-23-3/result.json": {
+      "sha256": "f63033c7d428776a872651765c68e0d5b778ba197141fd10076bec4bbd6be44e",
+      "bytes": 41839
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-23-3/trajectory.json": {
+      "sha256": "60f0804db7b95e28fb07cd0ba1408a681cc35d4523824299a798ea9158f1351c",
+      "bytes": 813256
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-26-4/result.json": {
+      "sha256": "23b1b48ba6de5ce5605ca87e3756fb5a658d3186e6e3ca8b26e8896dafcd3cec",
+      "bytes": 29647
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-26-4/trajectory.json": {
+      "sha256": "22e9bd1f607f6be3f70104d3355ef4b5cdabe430852f7996ab0dec3900d0d2c3",
+      "bytes": 502782
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-29-0/result.json": {
+      "sha256": "38c544f5ccb2e8feebbf7a715cab37c5b4c963c83e052ef20ce80a9dd404eb00",
+      "bytes": 40898
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-29-0/trajectory.json": {
+      "sha256": "fe8937897f8ca29982f71063e4a780327b12173ee61e226d96211788690b32df",
+      "bytes": 537242
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-30-2/result.json": {
+      "sha256": "37c3c23a53d88eb0fea14f6ce02071f9f0752177184b110865bcdd1f0b8e9df6",
+      "bytes": 13894
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-30-2/trajectory.json": {
+      "sha256": "dbfc4a9cc305704eb37fb63934839491d79880e90452b93caf764013b393fa23",
+      "bytes": 935610
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-31-2/result.json": {
+      "sha256": "c2679f7d165f66944b2703ac14a5470a5df1ded9e62c1757eb20c626471018aa",
+      "bytes": 25607
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-31-2/trajectory.json": {
+      "sha256": "8246adf057434d5118732012e2906b32cb8fcd0083ebab18b199351d44ed2ea4",
+      "bytes": 742523
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-32-1/result.json": {
+      "sha256": "5936684d9f3ee3c43db3941c35c310fbf55c894ea8d35477dba554d19a54502e",
+      "bytes": 32504
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-32-1/trajectory.json": {
+      "sha256": "85bd1fb83326b39db5c06e5b887cc6e559cefe8dce886e84974edc4c997425ab",
+      "bytes": 1713204
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-35-3/result.json": {
+      "sha256": "344b8f22acb20c1e378110dca64e18b3b88d31e311dbfbf53df10ddb69d68f24",
+      "bytes": 25035
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-35-3/trajectory.json": {
+      "sha256": "2a0b13c385f7c572d866a830f61293425f21851a2be8a609657c08ffef292351",
+      "bytes": 300674
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-36-2/result.json": {
+      "sha256": "d97f93923028f90c42ba95c040b9e76f3fac90d64d3ada78ce515886c4adf270",
+      "bytes": 32109
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-36-2/trajectory.json": {
+      "sha256": "4500488b45c54d0137a77f9f524958cda040f4ef27f7beced0dc5cd69a1cbcfb",
+      "bytes": 581847
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-37-4/result.json": {
+      "sha256": "3bb7adcf8044a7736f355769c62328915c29a35a511a4692b41c4db22fef0837",
+      "bytes": 44475
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-37-4/trajectory.json": {
+      "sha256": "e5c849067fe945be881d897a4a733bdf7042b126ae048775d71776ee8ef51670",
+      "bytes": 245816
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-38-4/result.json": {
+      "sha256": "36596bd1bc4e8b4d64806f43eb5366b6a4e6993f44b1f637c10c84ceacd99c97",
+      "bytes": 27582
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-38-4/trajectory.json": {
+      "sha256": "0e3102945f416fefee26c9d3d5046cddc7176f9aa028bc364b88fd60c742bf3b",
+      "bytes": 518107
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-39-9/result.json": {
+      "sha256": "0378ac5c72e06d62086c8c13d49539501bcb68214a5708f2e16466e600a82d48",
+      "bytes": 43252
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-39-9/trajectory.json": {
+      "sha256": "1f6565c4e020a822eaae640989d87c158b3ee07e6caacf7e8a2e497ebe1cccaf",
+      "bytes": 1617008
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-4-0/result.json": {
+      "sha256": "caa5fb4cf980e3ac87ae4717e310ee8e938e6f954776676058571d66aaeffbb6",
+      "bytes": 24597
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-4-0/trajectory.json": {
+      "sha256": "bc94b9f849330f5deff1bc28a3e2bc138f8a451f1e15dcee6d8f30e07ac0bacc",
+      "bytes": 371029
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-40-0/result.json": {
+      "sha256": "a7632cd00640d9c88261379d942863d7f6ff17b8a71ae7fb5a1aa32562a50a26",
+      "bytes": 13632
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-40-0/trajectory.json": {
+      "sha256": "35262f4d0f88b9a617783f995e8dfa9362519a17024ae81f5695eda33120057a",
+      "bytes": 1689323
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-42-5/result.json": {
+      "sha256": "d33560aea6ce3f585beeb69872609e80c4db52ffb181a5bf322bd5b4b8f3d5bb",
+      "bytes": 33056
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-42-5/trajectory.json": {
+      "sha256": "3f68dfdf1d8bea17de8c7b054eec75d3c6d0ab79b00436cd77640cde362c8343",
+      "bytes": 263917
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-50-1/result.json": {
+      "sha256": "8f3c8646fa22fa928a0ab760c946116ff9648034ac2dd6cdd15b8cd1c200bec2",
+      "bytes": 114493
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-50-1/trajectory.json": {
+      "sha256": "032cf4313a54d59ad157fbc692b9f0d4e34d3f0f98a29b77a713c4397e8411d2",
+      "bytes": 675720
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-51-3/result.json": {
+      "sha256": "00d26a102c3fc55f8777e58134766ca43794ad77e914f894485b04205cfc6dee",
+      "bytes": 149903
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-51-3/trajectory.json": {
+      "sha256": "46fe05c788f38e028eea1e4ec837369706704d417f2406c153cea5a7a4f3eb24",
+      "bytes": 922111
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-53-3/result.json": {
+      "sha256": "4c7f3ef53f7a4dd0b187331f0331c8c5c354d36b92b673c82742cf694d9c257d",
+      "bytes": 874310
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-53-3/trajectory.json": {
+      "sha256": "512c4dc52d2f29c168c69d27de956bb73543a2e6fc21f99aedad7fc2cd19373b",
+      "bytes": 755310
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-54-4/result.json": {
+      "sha256": "bc8188aae366a90ccc2e4273e3c73be1de52013ce82025e6b4d2c7f427f5d6d9",
+      "bytes": 317870
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-54-4/trajectory.json": {
+      "sha256": "57ac3e47dbcde6b481364201a4b9c7fc80f9b229ca5794bf57dabcce457a793f",
+      "bytes": 964872
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-55-2/result.json": {
+      "sha256": "46a8861c14da272fccc5017fc2b2b935cbddb64ac6227f5533e3d3c343d86ad7",
+      "bytes": 476181
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-55-2/trajectory.json": {
+      "sha256": "54627e86fbee953a7f5ea313ee8f50ed6e91bccf0a969505dcf6eda34b870e85",
+      "bytes": 716779
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-6-0/result.json": {
+      "sha256": "a0435d13b925029ecf8a36254f1deaff859b1a26d2c37adde6d806fbc9fb776e",
+      "bytes": 40752
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-6-0/trajectory.json": {
+      "sha256": "5ff23016ae0167b12ca96487a1f68b64da4b95a3f9589f8beadc9eee77e3b075",
+      "bytes": 562871
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-60-2/result.json": {
+      "sha256": "2b7d4644ea35bc204d78a7b03d59cfa4d7887d88af09b786105222a36ebae3cc",
+      "bytes": 139495
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-60-2/trajectory.json": {
+      "sha256": "67cdd824fccd8bce781eb9253bf712ff69e3d422ea19e917153b2fd7a44c57e7",
+      "bytes": 746948
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-61-6/result.json": {
+      "sha256": "141d520e0dc3d02e4a13d38d9253e40e62900ac9eb0caba2c0e435d089cae093",
+      "bytes": 391757
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-61-6/trajectory.json": {
+      "sha256": "e3eff027cdeaf3b2ca2c2e01dc0e841b0d9f5ead160e8ece6263cd43028c78e0",
+      "bytes": 1842605
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-63-2/result.json": {
+      "sha256": "0e8cbde803bfa634351829ba340d09af966a407d36ce2a2e4acca7fe088321c8",
+      "bytes": 373927
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-63-2/trajectory.json": {
+      "sha256": "e65ccf460e8e44219a6859a9c7850c05874cdc9c49585b0da0f8f0cab8961036",
+      "bytes": 600519
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-64-1/result.json": {
+      "sha256": "957cdf5a6181a56e5d4d1fee9df5730a5f785275a7cff4c296884c8191bc4609",
+      "bytes": 661004
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-64-1/trajectory.json": {
+      "sha256": "260f8f1460ee41ff6ee55768f7e595ed556ee69e5d9a298b30adb3b3e24e4aa5",
+      "bytes": 732768
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-66-3/result.json": {
+      "sha256": "6268e8ff5c61d30b8ea8bf3ed1453f08194a564da134f5de0b3cce57f08d57b3",
+      "bytes": 866337
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-66-3/trajectory.json": {
+      "sha256": "0bc0ed2b24baff8e8f70ac27190bd0b3b8fc4297d1d98f7a5b20bdd1bece890f",
+      "bytes": 850649
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-67-4/result.json": {
+      "sha256": "e7f4a3b30c279ab2e2875f035aee4754d6c5a2a8c424101bbf4f20b798ec7d4d",
+      "bytes": 239135
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-67-4/trajectory.json": {
+      "sha256": "ed2f025ba50f5198ec8cd4e5603d68a93b2cb6ad453c386392b153da39b81e1e",
+      "bytes": 832236
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-68-8/result.json": {
+      "sha256": "f639a4d4967edf092aec5a366ce1569625b40476d92c9ac894b5b96f0e5303fd",
+      "bytes": 230060
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-68-8/trajectory.json": {
+      "sha256": "c552a5a973d3cefcfee6dfbc6ff69318cefdd15e27e26ccc93f64b0550f42300",
+      "bytes": 721560
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-69-4/result.json": {
+      "sha256": "69d1f88262ab0751780856e67dc392df74a0e9019a4aed5ff011eb318f733892",
+      "bytes": 296502
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-69-4/trajectory.json": {
+      "sha256": "a92f38273337900d2c98a3357110a35e13b81931d42659a4b97f6a7495ddb90c",
+      "bytes": 1922771
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-7-2/result.json": {
+      "sha256": "87deabb0308d9456da2db9d173119cb44a36ea83e31db5d45829d84e6a388890",
+      "bytes": 67561
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-7-2/trajectory.json": {
+      "sha256": "4e12a496dc5cd5db9126de47606795876e5ea68a635188a88fefddc0991ecfc2",
+      "bytes": 1076783
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-73-4/result.json": {
+      "sha256": "f5c1b0f4cbc90f269571230a108a8854144d8209ced2e484795e12979ebf0088",
+      "bytes": 67506
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-73-4/trajectory.json": {
+      "sha256": "9bcd10d9fbf7ff4da72957d183998878279594fa3764b20b1014f1ca952b53d5",
+      "bytes": 895020
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-75-0/result.json": {
+      "sha256": "86d0d74259e820f3e803102f1227455353b6b99a0cb5efc17e3a632c7deab385",
+      "bytes": 94759
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-75-0/trajectory.json": {
+      "sha256": "646b0e8831a5e5d1c076426906c5534c35c5839039b738c489298ea3f7ab0bf5",
+      "bytes": 553788
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-76-4/result.json": {
+      "sha256": "0c916b03ce5bddcc07765f902d076cb5811aebb73b4ef12a454dacc2fc9c694c",
+      "bytes": 159979
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-76-4/trajectory.json": {
+      "sha256": "009143cbc81956dde69e7a420c367ffaa39365436fa60f511c98cf23009b0f28",
+      "bytes": 555756
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-78-6/result.json": {
+      "sha256": "480bec980ff619141e6edb492ae9a9505140b6f0535861fa28f7b4a63c3996c3",
+      "bytes": 147435
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-78-6/trajectory.json": {
+      "sha256": "2d5c10b1a334a1be77d72b56046980e667c11c0f848f3b62726f981023a0a49f",
+      "bytes": 855070
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-80-5/result.json": {
+      "sha256": "5479cb65f5926935a3683ad85fe907ff4d42bccfc2c628a0ba530fa71bc668ed",
+      "bytes": 216712
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-80-5/trajectory.json": {
+      "sha256": "f3ec5bc1d8af28283ab9f3f8d1e11e400d466f52f5484f7f51ef2c69fd2efe89",
+      "bytes": 863425
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-81-2/result.json": {
+      "sha256": "dbbb6ec1fd3caa249f86620dd97c22460878b46f16d074f4e1a80a5b6fed3182",
+      "bytes": 641827
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-81-2/trajectory.json": {
+      "sha256": "8cdc7f3bd1236418637622f99704f565bb2c4bc46b9a838ba1a2c3b532e0f18e",
+      "bytes": 713638
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-82-3/result.json": {
+      "sha256": "370f3a1386314ccefe946f17b8d3886481e241c8b3c25c984adc8562b5380ca1",
+      "bytes": 270478
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-82-3/trajectory.json": {
+      "sha256": "647cba29215ceeefe0922d5cfc7dee56162f2d62d1be15bbaa54da6e74154c40",
+      "bytes": 2876355
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-83-3/result.json": {
+      "sha256": "e1a36b81e27d1306421ad87d5eb738384c7d61cb9d6968d484cf829d0fa2faf5",
+      "bytes": 676688
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-83-3/trajectory.json": {
+      "sha256": "d0982ebe9ec99ffcb77734bc8f95bb76417ef659356da048c1e9ff6dd6baeebf",
+      "bytes": 765776
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-85-0/result.json": {
+      "sha256": "bab2910fead5fe7d31baf95f978fa1d436a3b7ae5e4ff0ee843e35ef30e31fd1",
+      "bytes": 24159
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-85-0/trajectory.json": {
+      "sha256": "46251b8170f9ebfa56db0e796ea07ab7ff8fe94836a843b187a26dd727b23661",
+      "bytes": 423891
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-86-8/result.json": {
+      "sha256": "ee468aaf0514976bf52088fc2733ecb41aeb81ecbc1f1ae8eb49ce5f92816ba0",
+      "bytes": 145764
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-86-8/trajectory.json": {
+      "sha256": "a058c324d63ce9c457c977adcaed56c823c731fe4644071d5b48b2a346b8e4d2",
+      "bytes": 272049
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-87-9/result.json": {
+      "sha256": "1a959ea60c605c63d77747c92a3d48ec834f2a8d9525bd0a930eb374ab13e51f",
+      "bytes": 122257
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-87-9/trajectory.json": {
+      "sha256": "125c066e116973b900dcf1c6c5e9ed85c15de04b31047654c08aa6030a172952",
+      "bytes": 767181
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-88-9/result.json": {
+      "sha256": "fe3e7f1df63a65813d2a25cdfcbdef48f035ca77fbd1758cc4849dff8a3b8360",
+      "bytes": 194732
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-88-9/trajectory.json": {
+      "sha256": "8d6d9675ed832dfb9f8565803d4cd151a359d950fbcf639f81bc7d8c8f0109f9",
+      "bytes": 744803
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-92-1/result.json": {
+      "sha256": "91ecd08192ed2bcb437ab62b7882e3556c54c434d66be563c11bde4c096f0e1d",
+      "bytes": 44336
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-92-1/trajectory.json": {
+      "sha256": "c8e3fa493d5fc7ad7a223be7f27859a55f7b39b3b3b5dd4ead804eb61a641294",
+      "bytes": 434417
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-93-3/result.json": {
+      "sha256": "7c1be4df355f85428b2f6c501a3437afa8b248407750d239a36b4a0f086eae64",
+      "bytes": 231159
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-93-3/trajectory.json": {
+      "sha256": "1e5f961fdf262e8407d5c7dbe708325aaa80c906d766fe672cb3cc693af0c5d0",
+      "bytes": 718488
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-94-0/result.json": {
+      "sha256": "8e35ed6198f256d6911220c679652a6ea6deef365c5ac20ebd56231916e0fe7f",
+      "bytes": 38664
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-94-0/trajectory.json": {
+      "sha256": "39b7db811fc60cd0202a786355d07a83ec4f9f26edabe1cb914b51e2d4cd323c",
+      "bytes": 514450
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/run_manifest.json": {
+      "sha256": "2c995470a86930a91b88147fe81d15021acf474398901229144ef9cbdaed9b60",
+      "bytes": 1878
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-1-1.json": {
+      "sha256": "42e80b8cfc89c2695cae859f82bc608d4af81fb8ab7d2e0a784c3af4a6f76820",
+      "bytes": 4216
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-10-3.json": {
+      "sha256": "67d89ff495ba4c36041759d16b6c4f135ec3b87461b2946589913d0a0163d1a3",
+      "bytes": 4042
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-103-1.json": {
+      "sha256": "a41b3d377608ace5b43b0a5540d1a4939207faec36c17bd4c4e20b30e8071ae0",
+      "bytes": 5277
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-104-0.json": {
+      "sha256": "090765ab67460447860ae026f0d66903d19fb53a93cb136c81a7d39a392ecef9",
+      "bytes": 5219
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-105-2.json": {
+      "sha256": "45cbb084bb84dd6374448f13028280db42da03be480b02394464b68a9f48d636",
+      "bytes": 4239
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-106-0.json": {
+      "sha256": "45b547f9a502d55eb1b198a300de381bbbf111288a5c871035eb951b211c1b43",
+      "bytes": 3952
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-108-2.json": {
+      "sha256": "a53a9af837eec4f2b9642a06fc9b5a42728c4e3d1d143764b344c074149f7912",
+      "bytes": 4988
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-109-3.json": {
+      "sha256": "87b66b1128357b4dface8e9996e656a9a1354350c9018d95e2f170ec46480f19",
+      "bytes": 5093
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-11-4.json": {
+      "sha256": "5d76021e667d260c5a887de2086e4143503a10857d88a04fa00362bcbe9be4e8",
+      "bytes": 3977
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-110-2.json": {
+      "sha256": "354f5c2e97ab2ebf92bf463b8ee8c045f9b09a3ec0341a8ca0750fa5f9b99ae3",
+      "bytes": 4197
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-111-1.json": {
+      "sha256": "e933ad9afddeae18657192894dffd92d24dd5e2f36e8a15d9da0d195489f2084",
+      "bytes": 4000
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-112-2.json": {
+      "sha256": "3994ef0c40f76ffa5b19ee66e8e31f9ced1e71c91fb718430f8a78be39ae9637",
+      "bytes": 4260
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-113-4.json": {
+      "sha256": "7763c234d37cb78e7bbe251b17df4b401cbf0f3fd45cb4e70c17d6574d24742d",
+      "bytes": 4354
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-114-2.json": {
+      "sha256": "17ffbcb6ff3d2f2bfd74410226162b7edb231503c820b0500b4d634a61411dde",
+      "bytes": 4170
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-117-0.json": {
+      "sha256": "a6401802b5dac939bd9fbd2bfce56cffe6aba9fefebe871a80553c6f8cbedb95",
+      "bytes": 3968
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-118-1.json": {
+      "sha256": "6921fb921546ace6c9d144ac7f9f28edb4b9d483b5a71dcc38da8050371ed09b",
+      "bytes": 4013
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-119-2.json": {
+      "sha256": "33fc24e353f316323d14ffd5ce98d8a9cae7e112a799d6534727a9c21213d049",
+      "bytes": 4704
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-120-4.json": {
+      "sha256": "cb4b35838022d8a59272ab952ec41315ca8d18fb8a02e573980f6b758bcd4bdc",
+      "bytes": 4304
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-122-3.json": {
+      "sha256": "01ebda31a751560b074df4f74c47a2f516d27898701bc14f08ec6b7793a85a1e",
+      "bytes": 4205
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-123-0.json": {
+      "sha256": "67419fa11d885676d5900a1426dec7c84edfe09dcad6d9f6c5b32cfe821db02c",
+      "bytes": 4320
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-124-2.json": {
+      "sha256": "b3b233b00c57b935b047ae3963f6681ec0b8b8588492bdaa553e18c67581e22c",
+      "bytes": 4236
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-125-1.json": {
+      "sha256": "70cb8c91101fbc0cbf20e70c981e62562879e679b64ca6452caef97fe1aa7d3c",
+      "bytes": 4076
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-128-2.json": {
+      "sha256": "8bec1c853cd282914df274e4bcaf8f1466fe3f8841d79c06feb6fa0060e8c598",
+      "bytes": 3946
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-129-0.json": {
+      "sha256": "a2ccf7ece2dda64835fef6bb673b5962ef2096299c2f5647b2e1b3a276b6aa2e",
+      "bytes": 1660
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-13-3.json": {
+      "sha256": "e403fa6f3faec64eb24affafe98a907afd387ae31ac9ffb4686d2ab3ff201e2d",
+      "bytes": 3963
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-132-2.json": {
+      "sha256": "03d540c807b85b4aad154086ca1e86747e81bd39bc46d160443fe889001649a3",
+      "bytes": 4678
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-137-1.json": {
+      "sha256": "899f32803dff435a69c2eaeb57172dc749373feb9d452045cb0499eb22c677a7",
+      "bytes": 4756
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-140-0.json": {
+      "sha256": "e6aa00d7e29a2fa72cad1f8d08afaa57fa325fc33aef86715f42ff104c799ab0",
+      "bytes": 4607
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-144-3.json": {
+      "sha256": "872fdb640413183a227eca218c561a7d27d8d70bb33446cdf562e8bf8ee9382c",
+      "bytes": 4167
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-148-2.json": {
+      "sha256": "9ad145af925316b05bdfce543d3decc4b0c53bf6a1fc0f55fffe59d5636485de",
+      "bytes": 3956
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-149-0.json": {
+      "sha256": "932d6e991507fe629a95bb61fe089cb49212c151cb7657b0f9d6debcc3a5d605",
+      "bytes": 5205
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-151-3.json": {
+      "sha256": "ebaec0315488412d4985eb62ef589e873747d88ec2c8bd12460aaecda369ccb7",
+      "bytes": 4463
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-152-1.json": {
+      "sha256": "4953d3b26498b193ef0222e32e7d032c9357bffeb75671cf052839617bceb3d0",
+      "bytes": 4222
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-153-2.json": {
+      "sha256": "0ea022ed4de37e414e67b9470b3048bce0432194710dfbccbd0f95e3508370ce",
+      "bytes": 3856
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-156-4.json": {
+      "sha256": "00463c8c03e842e5952507225f3051e6c2aec2a2ca0fe89b892cf4906d134379",
+      "bytes": 4131
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-157-5.json": {
+      "sha256": "ecc00791a44fb2481d70bb7b488ad67758c164d6f6be36202f080155d00b9e90",
+      "bytes": 4846
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-158-1.json": {
+      "sha256": "648cb83e2052e26d4fe7afa6aca1cfc9469b973588657532677b36ba4b45cd10",
+      "bytes": 5356
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-159-3.json": {
+      "sha256": "b99163547edacd402a5edb5400cf0cee55feae4603efef9bf2d194e23a2547ea",
+      "bytes": 4086
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-160-2.json": {
+      "sha256": "ad86ca7576f955103f64dab98ca55e05d19fa0e7ae137c1b654c1d3cce0512bd",
+      "bytes": 4539
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-161-0.json": {
+      "sha256": "13b9366a1cc1d0b2a4360cd967676a37cdb313cb4ad063dea2abf254b1836cac",
+      "bytes": 4267
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-164-1.json": {
+      "sha256": "a5df8c13866001e5e4398993d0a6d660338a587f39b65f3c111fbe58602df061",
+      "bytes": 4280
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-165-0.json": {
+      "sha256": "537bfbf7cc3ad3415231690ebef44d902065660c883578f7f0a9523a6551e03a",
+      "bytes": 4904
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-166-2.json": {
+      "sha256": "e16c4e0fe0c400395a7438bb59f6777e4438f383d9ef03955785e3598341f420",
+      "bytes": 4273
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-167-0.json": {
+      "sha256": "9d81888dfcd7dfaa97679a4b6619ee6a678acfd82411f46c355438f66b8c14d3",
+      "bytes": 5811
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-168-3.json": {
+      "sha256": "93dddde5292d64a065f59613d0f1c94217314d7abbf843726dafe5818baea91c",
+      "bytes": 3956
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-169-2.json": {
+      "sha256": "a31d8f46d21ab448a6df9ed8e63d6f40adb82864357ec6f924147f778111a07f",
+      "bytes": 3923
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-17-8.json": {
+      "sha256": "3059b7e5d49ee0822bf6a317bd072df698e159cf040e76a8c8708a6c8f3e02ac",
+      "bytes": 4038
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-170-3.json": {
+      "sha256": "41669bae5e874257295c37694495396d72a5fe7e0d3d6884a60664e52c4d3393",
+      "bytes": 5610
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-171-5.json": {
+      "sha256": "87dcb7b65aaf3922aab53fc5a9ecdcde1431289e3753eb7bae4c011dfec0a42b",
+      "bytes": 4218
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-174-3.json": {
+      "sha256": "5f9e26f8f8fbc5951aa2fbf59a1bbef04dc3f7a86b4ab984763b213007d3ee80",
+      "bytes": 4017
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-176-1.json": {
+      "sha256": "ce0e545a71d6dc2cf0d77bd9f4605cad8a8c33329ed8fbff63861c4765519b5b",
+      "bytes": 3979
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-178-1.json": {
+      "sha256": "79416fcd0ac4a3594b76588a259a0695f255c3b95eba327fc17857053ac22a90",
+      "bytes": 5137
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-179-5.json": {
+      "sha256": "0388734b592789743519bfa0576cbab480ec529ba6ce6930657814a0df4b9822",
+      "bytes": 4354
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-183-0.json": {
+      "sha256": "f39a27d5d6962a53075badf7ee39aa59809ddeac76f67d435fbad1bc79777a80",
+      "bytes": 3952
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-187-0.json": {
+      "sha256": "5913ac5be3341962e003c3303410c0dcf631b69185fa4de95cecfa4e2e8c1509",
+      "bytes": 4125
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-189-2.json": {
+      "sha256": "7f150ac00cd08f79a9b02ff680f6e489e4cde24acb5400c652a91bef0b7c4b68",
+      "bytes": 4573
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-19-4.json": {
+      "sha256": "e34c79d3aedc9073fca93eb841ed42efe74ae9c2f5c1e489002b940d562f11b1",
+      "bytes": 5284
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-190-2.json": {
+      "sha256": "5d841bf85c3fce9195502a48397173b15786163607c40f30f46a606baeacda76",
+      "bytes": 3881
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-191-1.json": {
+      "sha256": "68b71b7eb9be9480b12b6882e49fc4f8c1eeb781b66095af58808c9f3ff4b5ee",
+      "bytes": 4185
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-192-4.json": {
+      "sha256": "9a701035f9d29e43b897d4b27255a16dde59f1f6c03cb1465279078c7d975793",
+      "bytes": 3935
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-193-1.json": {
+      "sha256": "a5867e7e81b06036ac6c6841f1d189b66a1167567005d740246fa0529123d43c",
+      "bytes": 4674
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-194-1.json": {
+      "sha256": "9d3910992190d892be9a73741661a1ed7e596ab3a921c7e607e8fcd56ad1bf77",
+      "bytes": 4127
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-198-4.json": {
+      "sha256": "fbc0c8ecbfd9c79eb632efcd601f005b6ae2864eb29b0e0038d1df288e0f18cb",
+      "bytes": 4116
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-199-8.json": {
+      "sha256": "a17e37b7625c85a8874f293f613a2ecb4530e8f01070978a69aa9e991fd88586",
+      "bytes": 4498
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-2-0.json": {
+      "sha256": "e64bf5fafacbeb98e4e1f16c626d976110c434938591b22f801536f23daf4624",
+      "bytes": 3954
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-20-4.json": {
+      "sha256": "306f666002241f89b2675031171b4e8b30ee5ece23cb76084e7ed47eede910cf",
+      "bytes": 3888
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-202-2.json": {
+      "sha256": "29ed06ea10636d5009b05d8f8b60ccea297ad4cb1a691a6624a59b71a56c7b18",
+      "bytes": 4305
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-203-1.json": {
+      "sha256": "f1920a4b4e8751316d2fe4b802ad1387bc8f4efabdc334a1bca642be43d974e0",
+      "bytes": 3970
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-206-0.json": {
+      "sha256": "29affbba1cc6bf76743d5f90ce137b5bab58c15ea4e34da26e937879ce7710b0",
+      "bytes": 1654
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-207-2.json": {
+      "sha256": "bd0f114e4cf4ed2408e681ff45235118828e55465ddb42cf5c7d2715e4ac661b",
+      "bytes": 3978
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-208-1.json": {
+      "sha256": "54bf01eef56c166b61ebb74895e1c2b727d066fcef4011a2748b1c7b6095a1ac",
+      "bytes": 3892
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-21-0.json": {
+      "sha256": "82769c650d43620a9c7248d5eddf6d34b9678173c10ef91e84108fed644a9b6d",
+      "bytes": 6123
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-211-1.json": {
+      "sha256": "3eb840ddbbdc77aa750caca1dec88a6c848b29ec4730864f7daaa0db51892b3d",
+      "bytes": 3996
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-212-2.json": {
+      "sha256": "557cd0eb766b7eee4aad0409083c69a80b5f9c78caa14086b07ac52917e7765e",
+      "bytes": 4287
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-214-4.json": {
+      "sha256": "7bbed53df84566a429fbb808806a81663c68d9cdbab2d7982b7ed2b74e874a01",
+      "bytes": 4156
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-217-2.json": {
+      "sha256": "e0609dec0a9829d1d0317396bf1221582bccd268832a8e105bc128a5dc5eae3a",
+      "bytes": 4244
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-219-3.json": {
+      "sha256": "d5cfd2ff7574f797abcfa7cf78ece419e3edeabf980774ff4219188844c73505",
+      "bytes": 4463
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-220-1.json": {
+      "sha256": "7f8f44f3dc7fc48229b0c4e396fce0dbca2634db249bd3b34a11e33842dc76a5",
+      "bytes": 4246
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-221-0.json": {
+      "sha256": "5c7cf52f96ebd702b5a634d8ca7713605b1c2aa6f34d28b49d81ce95caa5fcc3",
+      "bytes": 3998
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-222-0.json": {
+      "sha256": "d4bdc7f50b555a4fb7d3d028f2b026f3fed90141aa7ac61f09de879c5c8684fc",
+      "bytes": 4672
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-224-2.json": {
+      "sha256": "20b85e02cecbd6ca516fe4b88d4a52283af1cacec24c882aa0c1ec40f37b406c",
+      "bytes": 4208
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-23-3.json": {
+      "sha256": "85335a5fcfb85910fc4f486b052b2c983a34bae866810e3d52134ca6c4f9673b",
+      "bytes": 4010
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-26-4.json": {
+      "sha256": "c5e0770ec96738ba9df1186ab6a88972a9af42d115e75a20f91375229b53f6db",
+      "bytes": 4231
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-29-0.json": {
+      "sha256": "cf418cacdd08eaf490004545292c2c6fe6a59f6c6a9a10edd5731efa1e288f4c",
+      "bytes": 4268
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-30-2.json": {
+      "sha256": "43db764ae8bc1945dbc949efef21d57395cd3c37439b00a499eee3cb8ebd4e9b",
+      "bytes": 4751
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-31-2.json": {
+      "sha256": "d9b1cf4c5160c813b397ef3d6e00d786697a371f17be34224d888518e1e368a6",
+      "bytes": 4489
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-32-1.json": {
+      "sha256": "7e331ad7861506664c3c597fd5663760c0b82223f29aae90fcb4bfcf702eb6e6",
+      "bytes": 4331
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-35-3.json": {
+      "sha256": "0028d5cff6839f332bb28674c192cb22b99bef0b6c84c01fcd6bdedf2bff758f",
+      "bytes": 4425
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-36-2.json": {
+      "sha256": "7a7ac84f8555a7ae25a0ff97d33864b4a1511cd053519015a4d43154b1320c76",
+      "bytes": 3937
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-37-4.json": {
+      "sha256": "4bd898a483c42d64c05ec9a81a782397a04ae77df6c96fefafa532e6d8a7bca1",
+      "bytes": 4271
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-38-4.json": {
+      "sha256": "73554479ddb9c8a8f66c79cef692bf151647955d630b69621574d6fd9c16d378",
+      "bytes": 5939
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-39-9.json": {
+      "sha256": "9af74ac11b2ec60f91d32fc1756ef184bd662576c62468334012fcbc375a44dd",
+      "bytes": 4817
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-4-0.json": {
+      "sha256": "5c78977408cc29da2da643f308d67533c9d3bc635761af071326b7727c118596",
+      "bytes": 4217
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-40-0.json": {
+      "sha256": "553e44a4a4b279bf1d5a5f11ac694b8a48bb0696e8b11e73b49256e0fe33549b",
+      "bytes": 3959
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-42-5.json": {
+      "sha256": "2c17cc001d97d856a1ed485294c61389714cdd88f16317d7c7d2596d0201a3f5",
+      "bytes": 4527
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-50-1.json": {
+      "sha256": "15ea71c02455694ce32eca1bc40019f77d7ddb0e67f37256fc9d214887671c51",
+      "bytes": 4191
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-51-3.json": {
+      "sha256": "5b559a6c536015a1fad30d7071c034fdaf3ab4194603476be4ae5462e5b8a7a9",
+      "bytes": 4029
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-53-3.json": {
+      "sha256": "b05ec8838e6bd8d3d774cd20ffbe2f062129a4897e3ac2d05b3a3fcb7a86c73e",
+      "bytes": 4218
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-54-4.json": {
+      "sha256": "70b034669801445118b14f0c45c916466d7b423c9cd44bc8eca85b5269d242e7",
+      "bytes": 4227
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-55-2.json": {
+      "sha256": "ce49a5a43f27a55b0542c4787637a6125101a92f695c36951c6a859d964822d8",
+      "bytes": 4198
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-6-0.json": {
+      "sha256": "3fd574c096d4e088fe72ee32c3e2fe86707b5519b1806e6c0d5369efecbdccdd",
+      "bytes": 4664
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-60-2.json": {
+      "sha256": "642f75f69dad43ce4f4023b7467827d991cfad47f7d7ff7f5d0e8895aa3ca0b9",
+      "bytes": 4343
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-61-6.json": {
+      "sha256": "6dd080f9510fa93bf90b524488edb8d1750c55913fb3b9e8063049b44506eb68",
+      "bytes": 4402
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-63-2.json": {
+      "sha256": "e8359b916ba8e4f8fb5c86271a2463a1df40a38a91e524d61e6e6039c7a50b83",
+      "bytes": 4247
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-64-1.json": {
+      "sha256": "9cc0944bfe6a56285115bb53c6595bf8e4c783dcb0111d857b2eeeff2ca5f9d8",
+      "bytes": 4174
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-66-3.json": {
+      "sha256": "c71752561b0dfccad8256c3fb36e0bd8bc5e7e68dc9599de8ea3168b791e3cf9",
+      "bytes": 4514
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-67-4.json": {
+      "sha256": "2e265e6129ffaf58b0f6090924ba1785c080a3dc50a3cc177ce8e908619f7c35",
+      "bytes": 4314
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-68-8.json": {
+      "sha256": "74d31409ceeba64e9f3a82303799dc66de86219c7dd9de5f7b06ec3d98b5ec53",
+      "bytes": 4320
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-69-4.json": {
+      "sha256": "d948b8dd9a15abeb24665f297372f46a9ab98608b52b4539e5974754282b3625",
+      "bytes": 3997
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-7-2.json": {
+      "sha256": "aad4db90f59985937911d4d4600c9cc9ef8b2e109a0fc2d81907a86896722049",
+      "bytes": 4896
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-73-4.json": {
+      "sha256": "483c59ce2a84f108ac7d8491d2528f834ef5182b9d8aabe579cd450fba353e32",
+      "bytes": 4302
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-75-0.json": {
+      "sha256": "3d132fb82b3b4bff1988417699bfad2498a4b48b9222348cb53cd742acfdb9c1",
+      "bytes": 4140
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-76-4.json": {
+      "sha256": "21b3dcda63f4ed06d99352a901410f4a3bc264f62e60e719a67d5511eaec0c87",
+      "bytes": 4383
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-78-6.json": {
+      "sha256": "41ecc48c10c2795acd3f17740e93eb737f62720bc3275886713f95438beef943",
+      "bytes": 4423
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-80-5.json": {
+      "sha256": "a95fb249fdb12cfe9572dae8d761f5699f0686b04dbfce1d574063e78fe65c90",
+      "bytes": 4226
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-81-2.json": {
+      "sha256": "f3596f97106668c1da8e32d496a71ce34c7c21a03384882b51e0543784dacdd8",
+      "bytes": 4091
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-82-3.json": {
+      "sha256": "8659507b748a34775191a40926e2cbc26b453879afee8ef45d0104c1926d4dcb",
+      "bytes": 4988
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-83-3.json": {
+      "sha256": "9f4849174d61a77792d2f524531f25333cb472ecede7cbe2b942c4e77eaf046f",
+      "bytes": 4529
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-85-0.json": {
+      "sha256": "94e46d5f3d770e75a8f61dd2e64028017a6a64676377934ad58fc0467744d867",
+      "bytes": 3975
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-86-8.json": {
+      "sha256": "813136ed15a11ade413a7dd3275f290b0f6b8e945ea8831d5c4ce44e6d36f633",
+      "bytes": 3892
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-87-9.json": {
+      "sha256": "7fd4dc635c1675e73f4a98b8016a126430441e5ce677087ac537b54495c1f1fd",
+      "bytes": 3986
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-88-9.json": {
+      "sha256": "0f9370a5aed85cc3cc8a1f2d1bc28f0a673a3868380b0cd10a05a55144680e6f",
+      "bytes": 4448
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-92-1.json": {
+      "sha256": "ccff3d98b905879ab5cc819fec2094ee1a63592ee5dae976768d72eac4d76bf2",
+      "bytes": 4106
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-93-3.json": {
+      "sha256": "219c32208a27417add703755db56d29dba0d1608eb2984bafa29870c13ed2cd9",
+      "bytes": 4395
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-94-0.json": {
+      "sha256": "eff4c1a58f407c607ac1341def1a23f13aa14cd91566e5f01a846e03f89d9566",
+      "bytes": 4189
+    },
+    "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/summary.json": {
+      "sha256": "7f7df9aea4441301b6f5e6922a1612b00d487e855042ffed3bc1c7ca2d20945b",
+      "bytes": 20578
+    },
+    "runs/showcase-02-l1-gpu-transport-retry-3-20260911-a/cases/docbench-203-1/result.json": {
+      "sha256": "c60d60bfae54eeb885ad36a987c58574180638b8bcaa399967fa45c46b65e123",
+      "bytes": 24627
+    },
+    "runs/showcase-02-l1-gpu-transport-retry-3-20260911-a/cases/docbench-203-1/trajectory.json": {
+      "sha256": "2da1c1a63d8e9a1fa6e60fba40e332bf3eafa75a2a87273fab3dd9d4e1e8822d",
+      "bytes": 406464
+    },
+    "runs/showcase-02-l1-gpu-transport-retry-3-20260911-a/cases/docbench-206-0/result.json": {
+      "sha256": "fc6a86b78488ebf80e612aacaf9e753c39929ae3713ce66435c888cbfe151e9e",
+      "bytes": 21250
+    },
+    "runs/showcase-02-l1-gpu-transport-retry-3-20260911-a/cases/docbench-206-0/trajectory.json": {
+      "sha256": "02fe56b3f1614128025e0453b8329e424daa40f5ec6d9ed61fc612e17d75b973",
+      "bytes": 924188
+    },
+    "runs/showcase-02-l1-gpu-transport-retry-3-20260911-a/cases/docbench-207-2/result.json": {
+      "sha256": "d0e27c4358112e76031bdeb8796d2f0cfdc85ae05df304a60c97df3e7be3cadd",
+      "bytes": 25733
+    },
+    "runs/showcase-02-l1-gpu-transport-retry-3-20260911-a/cases/docbench-207-2/trajectory.json": {
+      "sha256": "7812067e0e2f31ac035a2ff65ab8b0d1ccb5c3b6ef4c97bdb410f1fa767212b9",
+      "bytes": 738684
+    },
+    "runs/showcase-02-l1-gpu-transport-retry-3-20260911-a/run_manifest.json": {
+      "sha256": "249bf8bcfad4ddd5245aae5964fc805337b3ca2e9a33226406b1e606bf9cba16",
+      "bytes": 1882
+    },
+    "runs/showcase-02-l1-gpu-transport-retry-3-20260911-a/scoring/cases/docbench-203-1.json": {
+      "sha256": "82a696b098557e422b652168ddc111a512e9ba4ce689e4fe5c1112c335131e37",
+      "bytes": 4173
+    },
+    "runs/showcase-02-l1-gpu-transport-retry-3-20260911-a/scoring/cases/docbench-206-0.json": {
+      "sha256": "3bafae8aa21d6fce1d1bb0f72bd583c11ee72c097f41f2955b3a5adc077632e8",
+      "bytes": 4178
+    },
+    "runs/showcase-02-l1-gpu-transport-retry-3-20260911-a/scoring/cases/docbench-207-2.json": {
+      "sha256": "34d551cc73d50ecdf6ef06a6c44d9f22e8b6d42a44e7d92adfe1c52b807bd29c",
+      "bytes": 4212
+    },
+    "runs/showcase-02-l1-gpu-transport-retry-3-20260911-a/scoring/summary.json": {
+      "sha256": "d84a0c207f4c30cfa17da50d4e55f88ea4e2aab965d0849341adb2e86a39dda9",
+      "bytes": 2837
+    },
+    "runs/showcase-03-l1-gpu-execution-retry-5-20260911-a/cases/docbench-117-0/result.json": {
+      "sha256": "0194ffbf1b7c0135074d14f824559f03ba4237fa3381cc83b95ebc1587150fd8",
+      "bytes": 36854
+    },
+    "runs/showcase-03-l1-gpu-execution-retry-5-20260911-a/cases/docbench-117-0/trajectory.json": {
+      "sha256": "b552692a219000eb61b65af4b4212df3a4eb1406fea134d0d1707c9440171fd4",
+      "bytes": 1086926
+    },
+    "runs/showcase-03-l1-gpu-execution-retry-5-20260911-a/cases/docbench-129-0/result.json": {
+      "sha256": "9de8208fa407f3acfdd81eba93bedd8005d09c5756b9b1fe6f6c974955d4b1b1",
+      "bytes": 175707
+    },
+    "runs/showcase-03-l1-gpu-execution-retry-5-20260911-a/cases/docbench-129-0/trajectory.json": {
+      "sha256": "b8c21b018c50c8627e00aabe76dfcf3947085ff1744a6dd477ef76c5e334bcd5",
+      "bytes": 715699
+    },
+    "runs/showcase-03-l1-gpu-execution-retry-5-20260911-a/cases/docbench-148-2/result.json": {
+      "sha256": "58e30ce835cfd0f62141a840c1d62b19c2250b13053dfe410856020c0bada093",
+      "bytes": 15248
+    },
+    "runs/showcase-03-l1-gpu-execution-retry-5-20260911-a/cases/docbench-148-2/trajectory.json": {
+      "sha256": "f50a1bb062a9942fd1aacc431f589945d7a4abed24aa84485f07514940bd0d93",
+      "bytes": 1566837
+    },
+    "runs/showcase-03-l1-gpu-execution-retry-5-20260911-a/cases/docbench-183-0/result.json": {
+      "sha256": "4f8eb060858d9c1bddbb2bc02a2e8b57de10655dbe4a8443fea815482b50843b",
+      "bytes": 22776
+    },
+    "runs/showcase-03-l1-gpu-execution-retry-5-20260911-a/cases/docbench-183-0/trajectory.json": {
+      "sha256": "74fcd511a8f842c2b7baf7e9f0abf4014e19977019ca18c9d1fb89eb02f3c93f",
+      "bytes": 289960
+    },
+    "runs/showcase-03-l1-gpu-execution-retry-5-20260911-a/cases/docbench-40-0/result.json": {
+      "sha256": "76e5c8b4f30ed25b2c4c18d61f03ce445ce5561dfddeb054ba1364d964900c8e",
+      "bytes": 35783
+    },
+    "runs/showcase-03-l1-gpu-execution-retry-5-20260911-a/cases/docbench-40-0/trajectory.json": {
+      "sha256": "7d2f5b9ef394fc49b410bba163c050998d2275119524da3139c14f5e75d09860",
+      "bytes": 539712
+    },
+    "runs/showcase-03-l1-gpu-execution-retry-5-20260911-a/run_manifest.json": {
+      "sha256": "d0a4d596ee00443e3e4418e1a7385fba6687079622737cfe7492ab43283d2452",
+      "bytes": 1883
+    },
+    "runs/showcase-03-l1-gpu-execution-retry-5-20260911-a/scoring/cases/docbench-117-0.json": {
+      "sha256": "451346eb1d889bfee45b5a7fb1b02b7900207ba559e484825bccd301b5ec6778",
+      "bytes": 4652
+    },
+    "runs/showcase-03-l1-gpu-execution-retry-5-20260911-a/scoring/cases/docbench-129-0.json": {
+      "sha256": "0acb1ffe86121038c73a1a3e7808011520c1855c493e5bbc1621618ce6288ef6",
+      "bytes": 3978
+    },
+    "runs/showcase-03-l1-gpu-execution-retry-5-20260911-a/scoring/cases/docbench-148-2.json": {
+      "sha256": "2819f1f86e6103b17cd4a78d7e5aa3042c64eebf03d4014e290657ea379ac527",
+      "bytes": 4690
+    },
+    "runs/showcase-03-l1-gpu-execution-retry-5-20260911-a/scoring/cases/docbench-183-0.json": {
+      "sha256": "65f8dab35d212e71b9f6163d47ba02a7d28bf48817f623e212dfd734ec4f5144",
+      "bytes": 4309
+    },
+    "runs/showcase-03-l1-gpu-execution-retry-5-20260911-a/scoring/cases/docbench-40-0.json": {
+      "sha256": "2d0a0c509bc55c5ee9f2bb75fccd7e6b859c551242088af67a8dde3b30125f6b",
+      "bytes": 4058
+    },
+    "runs/showcase-03-l1-gpu-execution-retry-5-20260911-a/scoring/summary.json": {
+      "sha256": "edd7627859c13b61597ec8d485381fbf9947b79700004e1d1920fff633680c15",
+      "bytes": 3806
+    }
+  }
+}

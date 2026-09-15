@@ -1,0 +1,164 @@
+{
+  "schema_version": "docbench-compatible-score-v1",
+  "scoring_protocol": "docbench_prompt_compatible",
+  "official_comparable": false,
+  "status": "complete",
+  "prompt_sha256": "784a6d6cf4f8151765b169c633f46e62d12dcd77f8941172e72edbf8b30f9bde",
+  "judge": {
+    "provider": "openai-compatible",
+    "base_url": "https://models.sjtu.edu.cn/api/v1",
+    "model": "deepseek-chat",
+    "request_dialect": "deepseek",
+    "temperature": 0.0,
+    "thinking_enabled": false,
+    "max_output_tokens": 256,
+    "retry_policy": {
+      "max_attempts": 6,
+      "fallback_backoff_s": [
+        2.0,
+        4.0,
+        8.0,
+        16.0,
+        30.0
+      ],
+      "inter_case_delay_s": 1.0,
+      "retryable_http_statuses": [
+        408,
+        429,
+        "5xx"
+      ],
+      "retryable_transport_errors": [
+        "httpx.TransportError"
+      ]
+    },
+    "quota_enabled": true,
+    "quota": {
+      "requests_per_minute": 10,
+      "tokens_per_minute": 300000,
+      "tokens_per_week": 1000000000,
+      "max_in_flight": 2,
+      "quota_group": "sjtu-deepseek-v4-flash"
+    }
+  },
+  "case_count": 5,
+  "correct_count": 3,
+  "score": 0.6,
+  "aggregates": {
+    "overall": {
+      "total": 5,
+      "scored": 5,
+      "correct": 3,
+      "errors": 0,
+      "accuracy": 0.6,
+      "strict_accuracy": 0.6,
+      "coverage": 1.0
+    },
+    "by_domain": {
+      "academia": {
+        "total": 1,
+        "scored": 1,
+        "correct": 1,
+        "errors": 0,
+        "accuracy": 1.0,
+        "strict_accuracy": 1.0,
+        "coverage": 1.0
+      },
+      "government": {
+        "total": 2,
+        "scored": 2,
+        "correct": 1,
+        "errors": 0,
+        "accuracy": 0.5,
+        "strict_accuracy": 0.5,
+        "coverage": 1.0
+      },
+      "laws": {
+        "total": 1,
+        "scored": 1,
+        "correct": 0,
+        "errors": 0,
+        "accuracy": 0.0,
+        "strict_accuracy": 0.0,
+        "coverage": 1.0
+      },
+      "news": {
+        "total": 1,
+        "scored": 1,
+        "correct": 1,
+        "errors": 0,
+        "accuracy": 1.0,
+        "strict_accuracy": 1.0,
+        "coverage": 1.0
+      }
+    },
+    "by_type": {
+      "metadata": {
+        "total": 2,
+        "scored": 2,
+        "correct": 0,
+        "errors": 0,
+        "accuracy": 0.0,
+        "strict_accuracy": 0.0,
+        "coverage": 1.0
+      },
+      "multimodal": {
+        "total": 1,
+        "scored": 1,
+        "correct": 1,
+        "errors": 0,
+        "accuracy": 1.0,
+        "strict_accuracy": 1.0,
+        "coverage": 1.0
+      },
+      "text": {
+        "total": 2,
+        "scored": 2,
+        "correct": 2,
+        "errors": 0,
+        "accuracy": 1.0,
+        "strict_accuracy": 1.0,
+        "coverage": 1.0
+      }
+    }
+  },
+  "cases": [
+    {
+      "case_id": "docbench:117:0",
+      "score": 0,
+      "status": "completed",
+      "path": "cases/docbench-117-0.json"
+    },
+    {
+      "case_id": "docbench:129:0",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-129-0.json"
+    },
+    {
+      "case_id": "docbench:148:2",
+      "score": 0,
+      "status": "completed",
+      "path": "cases/docbench-148-2.json"
+    },
+    {
+      "case_id": "docbench:183:0",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-183-0.json"
+    },
+    {
+      "case_id": "docbench:40:0",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-40-0.json"
+    }
+  ],
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/showcase-03-l1-gpu-execution-retry-5-20260911-a/scoring/summary.json",
+    "source_sha256": "20411e56b12bbcebd4d52aa34e420148dc4be04c6cbdd24e08a61e5b2f6e3339",
+    "source_bytes": 26300,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

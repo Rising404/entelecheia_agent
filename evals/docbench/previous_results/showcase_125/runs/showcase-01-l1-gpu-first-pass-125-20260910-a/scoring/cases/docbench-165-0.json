@@ -1,0 +1,135 @@
+{
+  "schema_version": "docbench-compatible-case-score-v1",
+  "scoring_protocol": "docbench_prompt_compatible",
+  "official_comparable": false,
+  "case_id": "docbench:165:0",
+  "doc_id": "165",
+  "question_index": 0,
+  "domain": "laws",
+  "question_type": "text",
+  "system_answer": "根据文档（《Blasphemy Laws》——美国国会法律图书馆2023年报告）第7页的表格，伯利兹关于亵渎（blasphemy）和诽谤（defamation）的法律环境发生了以下变化：\n\n1. **新法取代旧法**：伯利兹2022年颁布了《Defamation Act, 2022》（2022年第15号法案），取代了原有的《Libel and Defamation Act》（伯利兹2020年修订法律第169章）。\n\n2. **新法明确排除保护亵渎或淫秽内容**：新法第18条第(2)款(c)项明确规定，该条（关于新闻媒体特权报道的规定）不得解释为保护亵渎性或淫秽性内容的发布。\n\n3. **旧法同样排除保护**：被取代的旧法《Libel and Defamation Act》也排除了对亵渎或淫秽内容的保护。\n\n4. **执行情况**：根据美国国务院2022年国际宗教自由报告，该法很少被实际执行。\n\n**总结**：伯利兹在2022年以新《Defamation Act》更新了诽谤法律体系，但新旧法律均明确将亵渎性和淫秽性内容排除在保护范围之外，法律在亵渎问题上的基本立场没有实质性改变。",
+  "prompt_sha256": "784a6d6cf4f8151765b169c633f46e62d12dcd77f8941172e72edbf8b30f9bde",
+  "filled_prompt_sha256": "557ec2afa9a32fb711ce36a8ff8f40215fa1aa469a088a5f7bf71622e211be45",
+  "judge_provider": "openai-compatible",
+  "judge_base_url": "https://models.sjtu.edu.cn/api/v1",
+  "judge_model": "deepseek-chat",
+  "judge_request_dialect": "deepseek",
+  "judge_retry_policy": {
+    "max_attempts": 6,
+    "fallback_backoff_s": [
+      2.0,
+      4.0,
+      8.0,
+      16.0,
+      30.0
+    ],
+    "inter_case_delay_s": 1.0,
+    "retryable_http_statuses": [
+      408,
+      429,
+      "5xx"
+    ],
+    "retryable_transport_errors": [
+      "httpx.TransportError"
+    ]
+  },
+  "judge_http_status": 200,
+  "judge_response_raw": {
+    "id": "chatcmpl-484cdd72-1bfe-4d65-9b1b-16981e59ddfd",
+    "created": 1789065718,
+    "model": "deepseek-chat",
+    "object": "chat.completion",
+    "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "1",
+          "role": "assistant",
+          "provider_specific_fields": {
+            "reasoning": null,
+            "refusal": null
+          }
+        },
+        "provider_specific_fields": {
+          "routed_experts": null,
+          "stop_reason": null,
+          "token_ids": null
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 2,
+      "prompt_tokens": 627,
+      "total_tokens": 629,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      }
+    }
+  },
+  "judge_response_text": "1",
+  "judge_attempts": [
+    {
+      "attempt_number": 1,
+      "attempted_at": "2026-09-10T18:41:46.617453+00:00",
+      "wait_before_attempt_s": 1.0,
+      "http_status": 200,
+      "response_raw": {
+        "id": "chatcmpl-484cdd72-1bfe-4d65-9b1b-16981e59ddfd",
+        "created": 1789065718,
+        "model": "deepseek-chat",
+        "object": "chat.completion",
+        "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "1",
+              "role": "assistant",
+              "provider_specific_fields": {
+                "reasoning": null,
+                "refusal": null
+              }
+            },
+            "provider_specific_fields": {
+              "routed_experts": null,
+              "stop_reason": null,
+              "token_ids": null
+            }
+          }
+        ],
+        "usage": {
+          "completion_tokens": 2,
+          "prompt_tokens": 627,
+          "total_tokens": 629,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          }
+        }
+      },
+      "status": "completed",
+      "error": null,
+      "retryable": false,
+      "retry_reason": null,
+      "retry_after_header": null,
+      "wait_before_next_attempt_s": null,
+      "wait_source": null
+    }
+  ],
+  "judge_attempt_count": 1,
+  "score_source": "judge",
+  "score": 1,
+  "error": null,
+  "scored_at": "2026-09-10T18:41:45.613923+00:00",
+  "status": "completed",
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-165-0-9ef9ecb16090.json",
+    "source_sha256": "136cef43e759cbb4f7b91d70d3aa5cc5aacf8c99ed9fde39663d7a93b7c68191",
+    "source_bytes": 4919,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

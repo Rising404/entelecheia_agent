@@ -65,14 +65,16 @@ def docbench_root(environment: Mapping[str, str] | None = None) -> Path:
     source = os.environ if environment is None else environment
     configured = source.get(BENCH_EVAL_DIR_ENV)
     if configured is None:
-        bench_eval_dir = Path.home() / "Desktop/bench_eval"
-    else:
-        configured = str(configured).strip()
-        if not configured:
-            raise DocBenchConfigError(f"{BENCH_EVAL_DIR_ENV} cannot be empty")
-        bench_eval_dir = Path(configured).expanduser()
-        if not bench_eval_dir.is_absolute():
-            raise DocBenchConfigError(f"{BENCH_EVAL_DIR_ENV} must be an absolute path")
+        raise DocBenchConfigError(
+            f"{BENCH_EVAL_DIR_ENV} is required; set it to an absolute directory "
+            "outside the source checkout"
+        )
+    configured = str(configured).strip()
+    if not configured:
+        raise DocBenchConfigError(f"{BENCH_EVAL_DIR_ENV} cannot be empty")
+    bench_eval_dir = Path(configured).expanduser()
+    if not bench_eval_dir.is_absolute():
+        raise DocBenchConfigError(f"{BENCH_EVAL_DIR_ENV} must be an absolute path")
     resolved = (bench_eval_dir / "docbench").resolve(strict=False)
     if resolved == PROJECT_ROOT or resolved.is_relative_to(PROJECT_ROOT):
         raise DocBenchConfigError(

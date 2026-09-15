@@ -1,0 +1,48 @@
+{
+  "schema_version": "personagraph-docbench-l1-run-v2",
+  "benchmark_id": "docbench",
+  "lane": "L1",
+  "run_id": "l1-gpu-deadline25-125-20260910-a",
+  "created_at": "2026-09-10T09:14:31.998682+00:00",
+  "config_sha256": "bb08e5dd56f03de3e2671e9cfb7b115ff71897438c1ee7e0a5dedc662f8c7600",
+  "selection_sha256": "ec6704e97db982f02b122e12b455b2f246b907b216e0223473f58c212808d43b",
+  "providers": {
+    "main": {
+      "provider": "openai-compatible",
+      "base_url": "https://models.sjtu.edu.cn/api/v1",
+      "model": "deepseek-chat",
+      "request_dialect": "deepseek",
+      "credential_source": "installation_profile",
+      "quota": {
+        "requests_per_minute": 10,
+        "tokens_per_minute": 300000,
+        "tokens_per_week": 1000000000,
+        "max_in_flight": 2,
+        "quota_group": "sjtu-deepseek-v4-flash"
+      }
+    },
+    "vision": {
+      "provider": "highland",
+      "base_url": "https://www.highland-api.top",
+      "model": "qwen3-vl-30b-a3b-instruct",
+      "request_dialect": "auto",
+      "credential_source": "installation_profile"
+    }
+  },
+  "provenance": {
+    "code_revision": "81d7fd761f98a968c24feee388c2b665c01d12df",
+    "worktree_dirty": true,
+    "source_sha256": "7a6043f6465a887328363891a3edc963c05cd81d2d78868558f2c17398e38da1",
+    "environment_sha256": "5a9cc2c88654db654eb343ce5e30faef0af6791a17f0daf4a7d82b971df23229",
+    "initial_run_provenance_complete": true
+  },
+  "frozen_cases_sha256": "1161a6ad22fd3a4655eb5ffa075f6d125a2d6529042414e0d644d09b0c7a17db",
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/run_manifest.json",
+    "source_sha256": "b9b87639d6fb2dde6000a9ad6c5ed48a198349c2c641960f2146d5452fb92e7b",
+    "source_bytes": 108833,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

@@ -6,7 +6,9 @@ from pathlib import Path
 
 import pytest
 
+from evals.docbench.reproduce_or_run_script import cli
 import evals.docbench.reproduce_or_run_script.selection as selection_module
+from evals.docbench.reproduce_or_run_script.config import BENCH_EVAL_DIR_ENV
 from evals.docbench.reproduce_or_run_script.selection import (
     BALANCED_SCHEMA_VERSION,
     BALANCED_SELECTION_ALGORITHM,
@@ -734,12 +736,15 @@ def test_balanced_loader_strictly_recomputes_manifest(
         (("--seed", "balanced-cli-override"), "balanced-cli-override"),
     ),
 )
+@pytest.mark.parametrize("unified_entry", (False, True))
 def test_balanced_cli_uses_frozen_defaults_and_strictly_reloads_125_cases(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
     seed_args: tuple[str, ...],
     expected_seed: str,
+    unified_entry: bool,
 ) -> None:
+    monkeypatch.delenv(BENCH_EVAL_DIR_ENV, raising=False)
     calls: dict[str, object] = {}
 
     def fake_write(output_path: Path, **kwargs: object) -> dict[str, object]:
@@ -761,16 +766,15 @@ def test_balanced_cli_uses_frozen_defaults_and_strictly_reloads_125_cases(
     data_root = tmp_path / "data"
     output_path = tmp_path / "balanced.json"
 
-    result = main(
-        (
-            "--balanced",
-            "--data-root",
-            str(data_root),
-            "--output",
-            str(output_path),
-            *seed_args,
-        )
+    arguments = (
+        "--balanced",
+        "--data-root",
+        str(data_root),
+        "--output",
+        str(output_path),
+        *seed_args,
     )
+    result = cli.main(("build-selection", *arguments)) if unified_entry else main(arguments)
 
     assert result == 0
     assert calls["write_output"] == output_path

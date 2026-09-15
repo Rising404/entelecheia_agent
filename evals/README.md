@@ -1,6 +1,8 @@
-# Entelecheia evaluations
+# 评测入口 / Evaluations
 
-DocBench is the supported benchmark integration, evaluating the L1 product path. The canonical entry is the repository module, not an author-specific launcher. Run from the checkout root after the [locked project setup](../README.md):
+当前正式接入的是 **DocBench 的 L1 产品链路**：真实 Session、Project、附件入库、检索和 Agent 执行。不会把参考答案注入上下文，也不指定工具顺序；L2 不在本评测范围。其他候选见 [Benchmark 清单](BENCHMARK_BACKLOG.md)。
+
+完成[项目安装](../README.md)后，从仓库根目录执行：
 
 ```bash
 export PERSONAGRAPH_BENCH_EVAL_DIR="/absolute/path/to/bench_eval"
@@ -9,27 +11,24 @@ export PERSONAGRAPH_BENCH_EVAL_DIR="/absolute/path/to/bench_eval"
 .venv/bin/python -m evals.docbench.reproduce_or_run_script list
 ```
 
-Replace the example with an absolute directory outside the checkout. Set it **before Python starts**; data-preparation defaults are resolved at import time. No external wrapper script is required. The module is run from source; it is not a separate installed console command.
+将示例换成自己的**仓库外绝对路径**，在启动 Python 前设置。无需桌面包装脚本，入口是仓库模块。没有默认桌面位置；`--help` 不要求环境变量，`validate` / `list` 要求变量，但不要求目录或数据已存在。
 
-## Ownership and prerequisites
+## 目录归属 / Directory ownership
 
-| Location | Purpose |
+| 位置 | 放什么 |
 | --- | --- |
-| [docbench/reproduce_or_run_script/](docbench/reproduce_or_run_script/README.md) | One implementation of preparation, selection, validation, run/retry and scoring. |
-| `docbench/configs/`, `docbench/selections/`, `docbench/config.schema.json` | Portable config spelling, frozen content-free selections and schema. Preserve their paths/hashes. |
-| `docbench/results/` | Reviewed sanitized summaries, not original answers or trajectories. |
-| [runbook](docbench/docs/formal_l1_eval_runbook.md), [state isolation](docbench/docs/state_isolation.md) | Public operator and process-boundary guidance. |
-| `<PERSONAGRAPH_BENCH_EVAL_DIR>/docbench/` | Private `source/`, `runs/`, `workspaces/` and optional evaluation config. Never publish this tree. |
+| [reproduce_or_run_script/](docbench/reproduce_or_run_script/README.md) | 唯一的准备、选题、运行、补跑、评分实现 |
+| [configs/](docbench/configs/README.md)、`selections/`、`config.schema.json` | 实验配置、无题答正文的选题清单、配置契约 |
+| [results/](docbench/results/README.md) | 后续新结果的整理区，不是 runner 默认写入目录 |
+| [previous_results/](docbench/previous_results/README.md) | 历史统计、评审和已清理的逐题执行证据；原件在被忽略的 `private_runs/` 中 |
+| [操作手册](docbench/docs/formal_l1_eval_runbook.md)、[状态隔离](docbench/docs/state_isolation.md) | 准备步骤、命令与进程边界 |
+| `<PERSONAGRAPH_BENCH_EVAL_DIR>/docbench/` | 各复现者独立管理的 `source/`、`runs/`、`workspaces/` |
 
-The runner uses the real Session/Project ingestion, retrieval and L1 execution path. It does not inject reference answers or dictate a retrieval/vision tool order. `runtime_closed_world.yaml` removes external web capabilities at the tool boundary; L2 is not part of this benchmark.
+**结果自动写到外部 `docbench/runs/<run-id>/`，不会自动复制回仓库 `results/`。** `output_root: bench://runs` 就指这里。可换外部根目录，但当前 runner 不支持把活跃状态任意写入源码目录。历史归档不参与选题、Provider 配置或状态恢复，不会污染别人的新运行。
 
-Install dependencies and fixed model assets using the project setup. The supported dependency lock includes `gdown` for explicit data download; do not install an unpinned standalone copy as a reproduction shortcut. Native document processing is the baseline; optional layout dependencies alone do not provide ready layout models.
+## 数据与依赖 / Prerequisites
 
-Benchmark files are not distributed here. The [pinned upstream manifest](docbench/upstream.manifest.json) records the upstream revision, expected hashes and the prior license review; it is not a grant to redistribute upstream code or third-party PDF/QA. Obtain authorized materials separately, keep them outside the checkout, and provide the pinned scoring prompt at `docbench/source/evaluation_prompt.txt`.
-
-## Configuration and preparation scope
-
-`l1_bge_m3_live_1.yaml` is a minimal single-case run; `l1_storage_smoke_3.yaml` is an engineering smoke; `l1_stage_20.yaml` and the small `*_regression_*` configs are focused regressions. `l1_balanced_125.yaml` selects 125 questions. Small regression sets are not population accuracy estimates. Run `list` for the full current catalog and canonical hashes.
+PDF、QA 和固定裁判提示词需先单独准备，默认在 `docbench/source/`；这里的 `source` 指数据，不是被测代码快照。YAML 的 `dataset.data_root`、`scoring.prompt` 也可显式指定数据路径。详见[数据准备](docbench/sources/README.md)和[上游清单](docbench/upstream.manifest.json)。
 
 ```bash
 .venv/bin/python -m evals.docbench.reproduce_or_run_script prepare-data --qa-catalog-only
@@ -37,14 +36,26 @@ Benchmark files are not distributed here. The [pinned upstream manifest](docbenc
 .venv/bin/python -m evals.docbench.reproduce_or_run_script readiness
 ```
 
-The first two commands require network access. They prepare the QA catalog and balanced125 PDFs only, not every regression config, upstream checkout, scoring prompt or model weights. The single-case doc 104 is included; other selections may require additional PDFs. There is no `prepare-data --config` capability. `readiness` checks the checked-in catalog offline and may fail because another config's materials are missing; it is not a paid Provider smoke.
+前两条会联网，只准备 QA 目录和 balanced125 所需 PDF；不下载所有回归附件、上游代码、裁判提示词或模型权重，没有 `prepare-data --config` 参数。`readiness` 离线检查整个配置目录；其他回归集缺材料也会影响整体状态，不等于所选配置一定不可运行，更不是付费 Provider 冒烟。
 
-## Running and interpreting results
+依赖使用项目锁定环境（包含 `gdown`）；BGE encoder / reranker 使用项目模型准备入口，不静默下载缺失权重。原生文档处理是基线，安装可选 layout 依赖不等于资产已就绪。上游 revision、哈希和许可审阅不构成再分发授权，原 PDF、QA 和上游材料不随源码发布。
 
-Follow the [runbook](docbench/docs/formal_l1_eval_runbook.md) for live commands, resumption, explicit retry selection and scoring. `run`, `retry-failed` and `score` require `--allow-live`; they can incur cost and send necessary prompts/document excerpts/page images to configured providers. Generation and scoring are separate operations.
+## 选择实验 / Experiment configuration
 
-Execution completion, actual L1 routing, outstanding user interaction, source stability and answer score are separate facts. The mechanical generation gate is not a correctness score. The configured scorer is `docbench_prompt_compatible` with the configured local judge identity, not an official-comparable result (`official_comparable=false`).
+- `l1_bge_m3_live_1.yaml`：单题 CPU 工程检查；文档 104 包含在 balanced125 下载范围。
+- `l1_storage_smoke_3.yaml`、`l1_stage_20.yaml` 及小样本配置：链路或定向回归，不是总体正确率。
+- `l1_balanced_125.yaml`：原有 125 题配置，语义验证开启，检索设备为 MPS。
+- `l1_balanced_125_gate_off.yaml`：同题同设置，仅关闭语义验证。
+- `l1_balanced_125_gate_off_highland_235b.yaml`：在关门配置上只改视觉端点为 Highland 的 `qwen3-vl-235b-a22b-instruct`，读取 `HIGHLAND_API_KEY`，不切换 GUI 活跃配置。
 
-The historical 125-question first pass and 3+5 retry batches belong to frozen source `l1-gpu-deadline25-20260910-a`. Eight retries do not create eight new independent questions. Keep first-pass results, retry lineage and replacement policy visible rather than reporting only selected later answers. Current code/config changes require a new run identity; historical results do not establish current-version performance. Exact reproduction requires the original frozen source/config/environment and authorized data, not just matching question IDs.
+该 VLM 已用于存档的同题 123 题实验（原 125 题排除两道 una-web），结果见[逐题证据](docbench/previous_results/gate_off_highland235b_123/README.md)；不据此保证当前端点可用或性能提升。更换视觉模型后不能再称为“只关闭验证门”。字段与示例见[配置说明](docbench/configs/README.md)。
 
-Only publish an explicit allowlist projection with stable IDs, hashes, numeric/enum results and methodology. Do not copy raw manifests unchecked: they can include local paths and private settings. Original PDFs/QA, full answers, prompts, judge output, logs, Session IDs/DBs and trajectories stay private. Run the repository privacy guard on any proposed summary; filename suffix alone does not make a file publishable.
+## 运行与解释 / Run and interpret
+
+按[操作手册](docbench/docs/formal_l1_eval_runbook.md)分别执行 `run` 和 `score`。`run`、`retry-failed`、`score` 都需 `--allow-live`，可能付费并外发必要文本、页面图像。同名 run 默认拒绝覆盖；续跑要求身份一致，补跑使用新状态并保留旧结果。
+
+工程成功、L1 路由正确、无待答用户问题、来源稳定和答案正确是不同指标。机械 generation gate 不是正确率；裁判为 `docbench_prompt_compatible`，`official_comparable=false`，不是官方榜单成绩。
+
+历史 125 题首跑与 3+5 补跑共用冻结 `source_sha256=7a6043f6465a887328363891a3edc963c05cd81d2d78868558f2c17398e38da1`，三个 run ID 见[历史统计](docbench/previous_results/showcase_125.summary.json)。8 次补跑不是 8 个新问题，应另列策略。新代码运行不能继承历史分数；精确复现还需相同源码、配置、环境和经授权数据。
+
+除既有统计外，公开明确审阅的逐题回答、调用/失败、评分及开销投影；保留文件 ID，清理私有路径、凭据、原始请求与文档正文。私有原件不变，公开清单与文件 SHA-256 锁定；`.json` 或 `.summary.json` 文件名本身不代表可公开。

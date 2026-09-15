@@ -1,0 +1,135 @@
+{
+  "schema_version": "docbench-compatible-case-score-v1",
+  "scoring_protocol": "docbench_prompt_compatible",
+  "official_comparable": false,
+  "case_id": "docbench:38:4",
+  "doc_id": "38",
+  "question_index": 4,
+  "domain": "academia",
+  "question_type": "multimodal",
+  "system_answer": "根据附件PDF（P18-4013.pdf）中第2页的图2（Figure 2）及第2-3节的文字说明，NCRF++中的词表示（word representations）形成过程如下：\n\n**整体架构**：NCRF++采用三层架构——字符序列层（Char Sequence Layer）、词序列层（Word Sequence Layer）和推理层（Inference Layer）。词表示是在字符序列层和词序列层之间形成的。\n\n**词表示的组成**：词表示是以下三部分向量的拼接（concatenation）：\n\n1. **词嵌入（Word Embeddings）**：图中以红色圆圈表示。每个词对应一个预训练或可学习的词嵌入向量，作为词序列层的输入之一。\n\n2. **字符序列编码隐藏向量（Character Sequence Encoding Hidden Vector）**：图中以黄色圆圈表示。字符序列层首先将词内的每个字符映射为字符嵌入（绿色圆圈），然后通过编码器（可选RNN/LSTM/GRU或CNN）处理字符序列：\n   - 若使用**字符RNN**（如双向LSTM/GRU），则从左到右和从右到左分别编码，将两个方向的最终隐藏状态拼接作为该词的字符级表示。\n   - 若使用**字符CNN**，则通过滑动窗口提取局部特征，再经最大池化（max-pooling）得到聚合的字符序列编码。\n\n3. **手工特征嵌入（Handcrafted Feature Embeddings）**：图中以灰色圆圈表示。这些是可选的稀疏特征嵌入，例如大小写（Cap）、词性标签（POS）、前缀（Pre）、后缀（Suf）等，由配置文件指定。\n\n**形成过程**：对于每个词，其词嵌入（红色）、字符序列编码（黄色）和手工特征嵌入（灰色）被拼接成一个单一的向量，即该词的**词表示**。然后，这个词表示被送入词序列层（Word Sequence Layer），由词级RNN/CNN进一步提取句子级特征，最终用于序列标注等下游任务。\n\n简言之，NCRF++的词表示 = 词嵌入 ⊕ 字符序列编码 ⊕ 手工特征嵌入（⊕表示拼接操作）。",
+  "prompt_sha256": "784a6d6cf4f8151765b169c633f46e62d12dcd77f8941172e72edbf8b30f9bde",
+  "filled_prompt_sha256": "2e359f2936331393bcbb8442e89cc7c5003634814acda18638fff15e1cb61c68",
+  "judge_provider": "openai-compatible",
+  "judge_base_url": "https://models.sjtu.edu.cn/api/v1",
+  "judge_model": "deepseek-chat",
+  "judge_request_dialect": "deepseek",
+  "judge_retry_policy": {
+    "max_attempts": 6,
+    "fallback_backoff_s": [
+      2.0,
+      4.0,
+      8.0,
+      16.0,
+      30.0
+    ],
+    "inter_case_delay_s": 1.0,
+    "retryable_http_statuses": [
+      408,
+      429,
+      "5xx"
+    ],
+    "retryable_transport_errors": [
+      "httpx.TransportError"
+    ]
+  },
+  "judge_http_status": 200,
+  "judge_response_raw": {
+    "id": "chatcmpl-633bbc1f-3319-47c9-b33f-8cdaeacb540c",
+    "created": 1789435675,
+    "model": "deepseek-chat",
+    "object": "chat.completion",
+    "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "1",
+          "role": "assistant",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning": null
+          }
+        },
+        "provider_specific_fields": {
+          "token_ids": null,
+          "stop_reason": null,
+          "routed_experts": null
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 2,
+      "prompt_tokens": 794,
+      "total_tokens": 796,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      }
+    }
+  },
+  "judge_response_text": "1",
+  "judge_attempts": [
+    {
+      "attempt_number": 1,
+      "attempted_at": "2026-09-15T01:27:52.957344+00:00",
+      "wait_before_attempt_s": 1.0,
+      "http_status": 200,
+      "response_raw": {
+        "id": "chatcmpl-633bbc1f-3319-47c9-b33f-8cdaeacb540c",
+        "created": 1789435675,
+        "model": "deepseek-chat",
+        "object": "chat.completion",
+        "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "1",
+              "role": "assistant",
+              "provider_specific_fields": {
+                "refusal": null,
+                "reasoning": null
+              }
+            },
+            "provider_specific_fields": {
+              "token_ids": null,
+              "stop_reason": null,
+              "routed_experts": null
+            }
+          }
+        ],
+        "usage": {
+          "completion_tokens": 2,
+          "prompt_tokens": 794,
+          "total_tokens": 796,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          }
+        }
+      },
+      "status": "completed",
+      "error": null,
+      "retryable": false,
+      "retry_reason": null,
+      "retry_after_header": null,
+      "wait_before_next_attempt_s": null,
+      "wait_source": null
+    }
+  ],
+  "judge_attempt_count": 1,
+  "score_source": "judge",
+  "score": 1,
+  "error": null,
+  "scored_at": "2026-09-15T01:27:51.954445+00:00",
+  "status": "completed",
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-38-4-aeab554963b4.json",
+    "source_sha256": "b35c3356a34ccea3fb6e7187eacabb61be77794ec5906ec340e96375b40a443c",
+    "source_bytes": 5844,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

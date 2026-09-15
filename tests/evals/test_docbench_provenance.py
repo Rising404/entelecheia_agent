@@ -1,10 +1,46 @@
 from __future__ import annotations
 
 from pathlib import Path
+import subprocess
 
 import pytest
 
 from evals.docbench.reproduce_or_run_script import provenance, runner
+
+
+@pytest.mark.parametrize("directory", ("results", "previous_results"))
+def test_result_archives_do_not_change_the_executable_source_fingerprint(
+    tmp_path: Path, directory: str,
+) -> None:
+    subprocess.run(["git", "init", "--quiet", str(tmp_path)], check=True)
+    source = tmp_path / "src/personagraph/example.py"
+    source.parent.mkdir(parents=True)
+    source.write_text("value = 1\n")
+    before = provenance.compute_source_tree_sha256(tmp_path)
+    assert before is not None
+
+    result = tmp_path / f"evals/docbench/{directory}/example.summary.json"
+    result.parent.mkdir(parents=True)
+    result.write_text('{"score": 0}\n')
+    assert provenance.compute_source_tree_sha256(tmp_path) == before
+    subprocess.run(["git", "add", str(result.relative_to(tmp_path))], cwd=tmp_path, check=True)
+    assert provenance.compute_source_tree_sha256(tmp_path) == before
+    result.write_text('{"score": 1}\n')
+    assert provenance.compute_source_tree_sha256(tmp_path) == before
+    result.unlink()
+    assert provenance.compute_source_tree_sha256(tmp_path) == before
+
+    for relative in (
+        "src/personagraph/example.py",
+        "evals/docbench/configs/example.yaml",
+        "evals/docbench/selections/example.json",
+        "evals/docbench/reproduce_or_run_script/runner.py",
+    ):
+        active = tmp_path / relative
+        active.parent.mkdir(parents=True, exist_ok=True)
+        previous = provenance.compute_source_tree_sha256(tmp_path)
+        active.write_text("changed executable input\n")
+        assert provenance.compute_source_tree_sha256(tmp_path) != previous
 
 
 def _manifest() -> dict[str, object]:

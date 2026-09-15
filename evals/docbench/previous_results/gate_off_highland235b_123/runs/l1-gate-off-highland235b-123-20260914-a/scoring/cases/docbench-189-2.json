@@ -1,0 +1,129 @@
+{
+  "schema_version": "docbench-compatible-case-score-v1",
+  "scoring_protocol": "docbench_prompt_compatible",
+  "official_comparable": false,
+  "case_id": "docbench:189:2",
+  "doc_id": "189",
+  "question_index": 2,
+  "domain": "news",
+  "question_type": "text",
+  "system_answer": "根据2023年9月8日《纽约时报》的报道，ecuavoley（一种三人制排球，起源于厄瓜多尔，被认为是该国仅次于足球的国民运动）与纽约皇后区（Queens）有着紧密的社区文化联系。\n\n具体来说：\n- 皇后区的Corona社区居住着大量厄瓜多尔裔居民，估计人数超过10万。\n- 每年夏天，在皇后区的法拉盛草原可乐娜公园（Flushing Meadows Corona Park），这些以厄瓜多尔移民为主的家庭会聚集在美网公开赛场地周围的停车场和公园区域，举办他们自己的ecuavoley比赛。\n- 报道中引用了一位来自皇后区Corona的41岁电工Miguel Tenecela的话：“这是我的比赛，它流淌在我的血液里。”\n- Ecuavoley有着安第斯山脉地区19世纪的历史根源，在皇后区成为厄瓜多尔社区维系文化认同和社交的重要活动。\n\n因此，ecuavoley在皇后区的存在是厄瓜多尔移民社区文化传承的生动体现，尤其在Corona社区和法拉盛草原可乐娜公园一带，这项运动已成为该地区一道独特的文化风景线。",
+  "prompt_sha256": "784a6d6cf4f8151765b169c633f46e62d12dcd77f8941172e72edbf8b30f9bde",
+  "filled_prompt_sha256": "0b8eae4b3c69359ed66052ac8f531eda0f5d4b200244703a5b659c83b3b7f895",
+  "judge_provider": "openai-compatible",
+  "judge_base_url": "https://models.sjtu.edu.cn/api/v1",
+  "judge_model": "deepseek-chat",
+  "judge_request_dialect": "deepseek",
+  "judge_retry_policy": {
+    "max_attempts": 6,
+    "fallback_backoff_s": [
+      2.0,
+      4.0,
+      8.0,
+      16.0,
+      30.0
+    ],
+    "inter_case_delay_s": 1.0,
+    "retryable_http_statuses": [
+      408,
+      429,
+      "5xx"
+    ],
+    "retryable_transport_errors": [
+      "httpx.TransportError"
+    ]
+  },
+  "judge_http_status": 200,
+  "judge_response_raw": {
+    "id": "chatcmpl-8a94f351-ad24-49af-bef4-5ab2f7b5ac6e",
+    "created": 1789436199,
+    "model": "deepseek-chat",
+    "object": "chat.completion",
+    "system_fingerprint": "vllm-0.26.0-tp8-ep-17a845fb",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "Correctness: 1",
+          "role": "assistant",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning": null
+          }
+        },
+        "provider_specific_fields": {
+          "token_ids": null,
+          "stop_reason": null,
+          "routed_experts": null
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 6,
+      "prompt_tokens": 573,
+      "total_tokens": 579
+    }
+  },
+  "judge_response_text": "Correctness: 1",
+  "judge_attempts": [
+    {
+      "attempt_number": 1,
+      "attempted_at": "2026-09-15T01:36:35.518766+00:00",
+      "wait_before_attempt_s": 1.0,
+      "http_status": 200,
+      "response_raw": {
+        "id": "chatcmpl-8a94f351-ad24-49af-bef4-5ab2f7b5ac6e",
+        "created": 1789436199,
+        "model": "deepseek-chat",
+        "object": "chat.completion",
+        "system_fingerprint": "vllm-0.26.0-tp8-ep-17a845fb",
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "Correctness: 1",
+              "role": "assistant",
+              "provider_specific_fields": {
+                "refusal": null,
+                "reasoning": null
+              }
+            },
+            "provider_specific_fields": {
+              "token_ids": null,
+              "stop_reason": null,
+              "routed_experts": null
+            }
+          }
+        ],
+        "usage": {
+          "completion_tokens": 6,
+          "prompt_tokens": 573,
+          "total_tokens": 579
+        }
+      },
+      "status": "completed",
+      "error": null,
+      "retryable": false,
+      "retry_reason": null,
+      "retry_after_header": null,
+      "wait_before_next_attempt_s": null,
+      "wait_source": null
+    }
+  ],
+  "judge_attempt_count": 1,
+  "score_source": "judge",
+  "score": 1,
+  "error": null,
+  "scored_at": "2026-09-15T01:36:34.508328+00:00",
+  "status": "completed",
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-189-2-859eb53a3c5b.json",
+    "source_sha256": "9054cc3051d00ef711508e033fb93c840d1ed13926fa2b90101a7c12acda2918",
+    "source_bytes": 4776,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

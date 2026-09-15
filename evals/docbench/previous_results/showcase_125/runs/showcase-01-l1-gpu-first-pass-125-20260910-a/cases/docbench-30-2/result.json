@@ -1,0 +1,342 @@
+{
+  "case_id": "docbench:30:2",
+  "doc_id": 30,
+  "question_index": 2,
+  "domain": "academia",
+  "question_type": "multimodal-f",
+  "level": "L1",
+  "session_id": "2a1b1ac2",
+  "project_id": "project-21282c3c9d7d41f2a85bdd85a5126f20",
+  "turn_id": "turn_ec2988f9",
+  "elapsed_s": 466.804,
+  "status": "completed",
+  "processing_level": "L1",
+  "reply": "根据论文C18-1182.pdf中的Figure 1，句子中每个单词在输入LSTM层之前的处理流程如下：\n\n1. **Word Embedding（词嵌入）**：每个单词首先通过一个Word Embedding层，被转换为词嵌入表示。Figure 1中展示了这一步骤，但未详细说明词嵌入的具体生成方式。\n\n2. **分别送入前向和后向LSTM**：得到的词嵌入被同时送入两个LSTM层：\n   - **Word LSTM-F（前向LSTM）**：按从左到右的顺序处理词嵌入序列。\n   - **Word LSTM-B（后向LSTM）**：按从右到左的顺序处理词嵌入序列。\n\n3. **拼接形成Word Representation**：前向LSTM和后向LSTM的输出被拼接（concatenate）在一起，形成每个单词的最终词表示（Word Representation），该表示同时包含了上下文信息。\n\n需要注意的是，Figure 1中仅展示了词嵌入层作为输入转换步骤，但未详细说明词嵌入的具体实现细节。",
+  "end_reason": null,
+  "error_code": null,
+  "user_interaction_mode": "closed_world",
+  "pending_user_question_count": 0,
+  "related_insession_task_ids": [],
+  "work_run_ids": [],
+  "model": {
+    "provider": "openai-compatible",
+    "request_dialect": "deepseek",
+    "base_url": "https://models.sjtu.edu.cn/api/v1",
+    "model": "deepseek-chat",
+    "has_key": true,
+    "default_projects_dir": "<local-path>",
+    "default_projects_dir_managed": true,
+    "legacy_office_soffice": {
+      "configured": false,
+      "available": false
+    },
+    "vision_provider": "highland",
+    "vision_base_url": "https://www.highland-api.top",
+    "vision_model": "qwen3-vl-30b-a3b-instruct",
+    "has_vision_key": true
+  },
+  "retrieval": {
+    "schema_version": "docbench-retrieval-observability-v1",
+    "status": "ready",
+    "requested_profile": {
+      "mode": "bge_m3",
+      "fingerprint": "document_retrieval_profile@1:mode=bge_m3;methods=dense,learned_sparse,bm25;index_recipe=rag-r1:dense1024+learned_sparse+bm25@1;encoder=hf:BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181;reranker=hf:BAAI/bge-reranker-v2-m3@953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e;device=mps;fp16=false;failure_policy=strict;local_only=true",
+      "failure_policy": "strict",
+      "required_methods": [
+        "dense",
+        "learned_sparse",
+        "bm25"
+      ],
+      "index_recipe": "rag-r1:dense1024+learned_sparse+bm25@1",
+      "encoder_asset_identity": "hf:BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181",
+      "reranker_mode": "bge_v2_m3",
+      "reranker_asset_identity": "hf:BAAI/bge-reranker-v2-m3@953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+      "device": "mps",
+      "use_fp16": false,
+      "local_files_only": true
+    },
+    "effective_profile": {
+      "mode": "bge_m3",
+      "fingerprint": "document_retrieval_profile@1:mode=bge_m3;methods=dense,learned_sparse,bm25;index_recipe=rag-r1:dense1024+learned_sparse+bm25@1;encoder=hf:BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181;reranker=hf:BAAI/bge-reranker-v2-m3@953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e;device=mps;fp16=false;failure_policy=strict;local_only=true",
+      "failure_policy": "strict",
+      "required_methods": [
+        "dense",
+        "learned_sparse",
+        "bm25"
+      ],
+      "index_recipe": "rag-r1:dense1024+learned_sparse+bm25@1",
+      "encoder_asset_identity": "hf:BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181",
+      "reranker_mode": "bge_v2_m3",
+      "reranker_asset_identity": "hf:BAAI/bge-reranker-v2-m3@953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+      "device": "mps",
+      "use_fp16": false,
+      "local_files_only": true
+    },
+    "encoder_fingerprint": "bge_m3:model=hf:BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181;dense=1024;sparse=flagembedding;sparse_projection_assets=available;device=mps;fp16=false;query_max_length=512;passage_max_length=8192;flagembedding=1.4.0;transformers=4.57.6;local_only=true",
+    "reranker_fingerprint": "bge_reranker_v2_m3:model=hf:BAAI/bge-reranker-v2-m3@953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e;device=mps;batch_size=8;query_max_length=256;max_length=1024;fp16=false;flagembedding=1.4.0;transformers=4.57.6;local_only=true",
+    "preflight": {
+      "profile_fingerprint": "document_retrieval_profile@1:mode=bge_m3;methods=dense,learned_sparse,bm25;index_recipe=rag-r1:dense1024+learned_sparse+bm25@1;encoder=hf:BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181;reranker=hf:BAAI/bge-reranker-v2-m3@953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e;device=mps;fp16=false;failure_policy=strict;local_only=true",
+      "ready": true,
+      "reason_codes": [],
+      "device_ready": true,
+      "device_selection": {
+        "requested_device": "mps",
+        "device": "mps",
+        "ready": true,
+        "fallback_reason": null,
+        "probe_reasons": [],
+        "model_verified": false
+      },
+      "sqlite_vec_ready": true,
+      "encoder_asset": {
+        "asset_identity": "hf:BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181",
+        "manifest": "bge_m3_hybrid",
+        "ready": true,
+        "reason_code": "ready",
+        "missing_files": [],
+        "missing_modules": [],
+        "content_sha256": null,
+        "local_files_only": true
+      },
+      "reranker_asset": {
+        "asset_identity": "hf:BAAI/bge-reranker-v2-m3@953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+        "manifest": "bge_reranker_v2_m3",
+        "ready": true,
+        "reason_code": "ready",
+        "missing_files": [],
+        "missing_modules": [],
+        "content_sha256": null,
+        "local_files_only": true
+      },
+      "local_files_only": true
+    },
+    "active_generation": {
+      "id": "rdv_9f93d9d9c149e81ad1ab9f98848a9754",
+      "fingerprint": "retrieval-generation-spec-v2:9f93d9d9c149e81ad1ab9f98848a97548aecc0efa14d346e56e6ec87118f853b",
+      "role": "active",
+      "state": "ready",
+      "expected_fingerprint": "retrieval-generation-spec-v2:9f93d9d9c149e81ad1ab9f98848a97548aecc0efa14d346e56e6ec87118f853b",
+      "matches_runtime": true
+    },
+    "methods": [
+      {
+        "method": "dense",
+        "required": true,
+        "ready": true,
+        "unit_count": 8,
+        "manifest_ready_count": 8,
+        "representation_present_count": 8,
+        "manifest_absent_count": 0,
+        "invalid_unit_count": 0
+      },
+      {
+        "method": "learned_sparse",
+        "required": true,
+        "ready": true,
+        "unit_count": 8,
+        "manifest_ready_count": 8,
+        "representation_present_count": 8,
+        "manifest_absent_count": 0,
+        "invalid_unit_count": 0
+      },
+      {
+        "method": "bm25",
+        "required": true,
+        "ready": true,
+        "unit_count": 8,
+        "manifest_ready_count": 8,
+        "representation_present_count": 8,
+        "manifest_absent_count": 0,
+        "invalid_unit_count": 0
+      }
+    ],
+    "indexing_outbox": {
+      "available": true,
+      "reason_code": null,
+      "attempt_audit_available": true,
+      "attempt_count": 8,
+      "attempt_audit_truncated": false,
+      "status_counts": {
+        "pending": 0,
+        "processing": 0,
+        "applied": 8,
+        "retryable_failed": 0,
+        "terminal_failed": 0
+      },
+      "outcome_counts": {
+        "applied": 8
+      },
+      "failure_counts": {},
+      "batch_count": 8,
+      "worker_instance_count": 1,
+      "terminal_failures": [],
+      "attempt_audits": [
+        {
+          "event_id": "picture-observation:upsert:5f38f8b60fa337f486dac97d1cbbe164",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "948739bcbf725987",
+          "batch_id": "84844a2166a669ff",
+          "batch_limit": 20,
+          "batch_size": 1,
+          "batch_ordinal": 1,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-10T10:08:02.479303+00:00"
+        },
+        {
+          "event_id": "picture-observation:upsert:32508c86b83afb9788db1e5c93899a0b",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "948739bcbf725987",
+          "batch_id": "0ec2ad9d5e5ca7d7",
+          "batch_limit": 20,
+          "batch_size": 1,
+          "batch_ordinal": 1,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-10T10:07:44.874220+00:00"
+        },
+        {
+          "event_id": "picture-observation:upsert:19822166e6c03551a2dc3ca7aba7c335",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "948739bcbf725987",
+          "batch_id": "baec086ea4c12b4b",
+          "batch_limit": 20,
+          "batch_size": 1,
+          "batch_ordinal": 1,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-10T10:07:30.670366+00:00"
+        },
+        {
+          "event_id": "picture-observation:upsert:14d30f7f6387aaf3c5647b39433e590c",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "948739bcbf725987",
+          "batch_id": "918cc81043525d5e",
+          "batch_limit": 20,
+          "batch_size": 1,
+          "batch_ordinal": 1,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-10T10:06:47.649792+00:00"
+        },
+        {
+          "event_id": "picture-observation:upsert:d0ee44423913ada23486f66f58a48654",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "948739bcbf725987",
+          "batch_id": "06d0a744e97fd5f0",
+          "batch_limit": 20,
+          "batch_size": 1,
+          "batch_ordinal": 1,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-10T10:06:32.083670+00:00"
+        },
+        {
+          "event_id": "picture-observation:upsert:a0bb38f7bbb0b29030a6094613ad6488",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "948739bcbf725987",
+          "batch_id": "a8634a19bd25a80c",
+          "batch_limit": 20,
+          "batch_size": 1,
+          "batch_ordinal": 1,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-10T10:06:01.793173+00:00"
+        },
+        {
+          "event_id": "picture-observation:upsert:744520592566aefa1c4704001980aa61",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "948739bcbf725987",
+          "batch_id": "8a01a22c11c803f0",
+          "batch_limit": 20,
+          "batch_size": 1,
+          "batch_ordinal": 1,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-10T10:05:46.179527+00:00"
+        },
+        {
+          "event_id": "picture-observation:upsert:f6739fc2ee4f2d9dbe6e692371f5247f",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "948739bcbf725987",
+          "batch_id": "da5e277d75c88dbd",
+          "batch_limit": 20,
+          "batch_size": 1,
+          "batch_ordinal": 1,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-10T10:05:08.602750+00:00"
+        }
+      ]
+    },
+    "sqlite_vec": {
+      "ready": true,
+      "reason_code": null
+    },
+    "degradation_reasons": []
+  },
+  "lane_ok": true,
+  "execution_ok": true,
+  "interaction_ok": true,
+  "worker_exit_code": 0,
+  "worker_stderr_tail": "You're using a XLMRobertaTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.\n",
+  "trajectory": {
+    "status": "complete",
+    "path": "cases/docbench-30-2/trajectory.json",
+    "sha256": "dbfc4a9cc305704eb37fb63934839491d79880e90452b93caf764013b393fa23",
+    "byte_count": 935610,
+    "database_count": 1,
+    "step_count": 26,
+    "part_count": 72,
+    "blob_count": 55,
+    "truncated_blob_count": 0
+  },
+  "telemetry": {
+    "provider_response_count": 20,
+    "rejected_output_count": 0,
+    "terminal_model_request_failure_count": 0,
+    "tool_call_count": 6,
+    "input_tokens_total": 234005,
+    "output_tokens_total": 5130,
+    "cache_read_tokens_total": 0,
+    "max_model_input_tokens": 13970,
+    "provider_response_purposes": {
+      "openai-compatible:deepseek-chat:runtime_entry_classify": 1,
+      "openai-compatible:deepseek-chat:runtime_l1_attempt": 13,
+      "openai-compatible:deepseek-chat:runtime_l1_semantic_verifier": 6
+    },
+    "tool_call_purposes": {
+      "analyze_pdf_page": 4,
+      "read_pdf_text": 1,
+      "read_tool_result": 1
+    },
+    "trajectory_database_count": 1,
+    "trajectory_read_failure_count": 0,
+    "trajectory_recording_failure_count": 0,
+    "telemetry_complete": true
+  },
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench:30:2/result.json",
+    "source_sha256": "4e20ebc4fc7430e4844e8b022cacc1a9bf8b4cb14044581ccc9416da7db2342a",
+    "source_bytes": 14474,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

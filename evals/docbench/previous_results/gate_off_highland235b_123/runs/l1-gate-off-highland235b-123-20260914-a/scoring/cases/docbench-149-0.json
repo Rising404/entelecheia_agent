@@ -1,0 +1,135 @@
+{
+  "schema_version": "docbench-compatible-case-score-v1",
+  "scoring_protocol": "docbench_prompt_compatible",
+  "official_comparable": false,
+  "case_id": "docbench:149:0",
+  "doc_id": "149",
+  "question_index": 0,
+  "domain": "laws",
+  "question_type": "text",
+  "system_answer": "根据附件PDF（Plea Bargaining: Singapore）中的描述，在CCR（Criminal Case Resolution，刑事案件解决）程序中，法官的角色是**促进性（facilitative）而非评价性（evaluative）**。具体而言：\n\n- CCR由一位资深且经验丰富的法官主持，在法官 chambers 内进行。\n- 法官不会对控辩双方案件的相对优劣给出任何指示性评估。\n- 不过，法官可以就证据的具体方面、可能的推论或法律问题酌情发表意见。\n- 如果案件在CCR中未能解决并进入审判，该CCR法官不会被指派为审判法官。\n- 在适当案件中，法官可以考虑给出量刑指示，但仅当该指示由被告人主动请求时才会考虑，以避免被告人被胁迫或压力而认罪。\n\n简言之，CCR法官充当中立、促进性的主持人，帮助双方探索早期解决案件的可能性，但不评价案件实质，也不担任后续审判的法官。",
+  "prompt_sha256": "784a6d6cf4f8151765b169c633f46e62d12dcd77f8941172e72edbf8b30f9bde",
+  "filled_prompt_sha256": "c41fc44023b35cef1aa19a856ed655592a015105bd2a1029cdcbb5b41ce5e857",
+  "judge_provider": "openai-compatible",
+  "judge_base_url": "https://models.sjtu.edu.cn/api/v1",
+  "judge_model": "deepseek-chat",
+  "judge_request_dialect": "deepseek",
+  "judge_retry_policy": {
+    "max_attempts": 6,
+    "fallback_backoff_s": [
+      2.0,
+      4.0,
+      8.0,
+      16.0,
+      30.0
+    ],
+    "inter_case_delay_s": 1.0,
+    "retryable_http_statuses": [
+      408,
+      429,
+      "5xx"
+    ],
+    "retryable_transport_errors": [
+      "httpx.TransportError"
+    ]
+  },
+  "judge_http_status": 200,
+  "judge_response_raw": {
+    "id": "chatcmpl-a378d029-bb97-4d37-bc7f-fac61445a123",
+    "created": 1789436040,
+    "model": "deepseek-chat",
+    "object": "chat.completion",
+    "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "1",
+          "role": "assistant",
+          "provider_specific_fields": {
+            "reasoning": null,
+            "refusal": null
+          }
+        },
+        "provider_specific_fields": {
+          "routed_experts": null,
+          "token_ids": null,
+          "stop_reason": null
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 2,
+      "prompt_tokens": 513,
+      "total_tokens": 515,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      }
+    }
+  },
+  "judge_response_text": "1",
+  "judge_attempts": [
+    {
+      "attempt_number": 1,
+      "attempted_at": "2026-09-15T01:33:58.288685+00:00",
+      "wait_before_attempt_s": 1.0,
+      "http_status": 200,
+      "response_raw": {
+        "id": "chatcmpl-a378d029-bb97-4d37-bc7f-fac61445a123",
+        "created": 1789436040,
+        "model": "deepseek-chat",
+        "object": "chat.completion",
+        "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "1",
+              "role": "assistant",
+              "provider_specific_fields": {
+                "reasoning": null,
+                "refusal": null
+              }
+            },
+            "provider_specific_fields": {
+              "routed_experts": null,
+              "token_ids": null,
+              "stop_reason": null
+            }
+          }
+        ],
+        "usage": {
+          "completion_tokens": 2,
+          "prompt_tokens": 513,
+          "total_tokens": 515,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          }
+        }
+      },
+      "status": "completed",
+      "error": null,
+      "retryable": false,
+      "retry_reason": null,
+      "retry_after_header": null,
+      "wait_before_next_attempt_s": null,
+      "wait_source": null
+    }
+  ],
+  "judge_attempt_count": 1,
+  "score_source": "judge",
+  "score": 1,
+  "error": null,
+  "scored_at": "2026-09-15T01:33:57.278294+00:00",
+  "status": "completed",
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-149-0-48379fdb905e.json",
+    "source_sha256": "68fb3988aa97aea95fcbac5b96768e4a92b049309b1fc7e15c3d5a7294547480",
+    "source_bytes": 4617,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

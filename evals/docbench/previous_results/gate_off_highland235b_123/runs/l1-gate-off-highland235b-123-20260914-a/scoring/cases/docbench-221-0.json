@@ -1,0 +1,154 @@
+{
+  "schema_version": "docbench-compatible-case-score-v1",
+  "scoring_protocol": "docbench_prompt_compatible",
+  "official_comparable": false,
+  "case_id": "docbench:221:0",
+  "doc_id": "221",
+  "question_index": 0,
+  "domain": "news",
+  "question_type": "metadata",
+  "system_answer": "根据对文件20231208.pdf的分析，该PDF仅包含1个物理页面（第1页）。该页面上刊登了标题为“Ukraine Carries On the Fight”的文章，但仅为文章的开头部分或摘要，并非完整详细报道。文章下方标注了“Page A6”，指示完整内容在报纸的A6版面。由于本PDF仅提供第1页，A6版面的内容未包含在内。\n\n因此，该报纸文件在第1页（物理页码）上报道了乌克兰战事的相关新闻，但仅包含开头部分，详细全文需参考报纸的A6版面。",
+  "prompt_sha256": "784a6d6cf4f8151765b169c633f46e62d12dcd77f8941172e72edbf8b30f9bde",
+  "filled_prompt_sha256": "1b444378ef0fa40d91954175cb70b4fc19c7984fe3bff0e4e29e911c1b8b9b96",
+  "judge_provider": "openai-compatible",
+  "judge_base_url": "https://models.sjtu.edu.cn/api/v1",
+  "judge_model": "deepseek-chat",
+  "judge_request_dialect": "deepseek",
+  "judge_retry_policy": {
+    "max_attempts": 6,
+    "fallback_backoff_s": [
+      2.0,
+      4.0,
+      8.0,
+      16.0,
+      30.0
+    ],
+    "inter_case_delay_s": 1.0,
+    "retryable_http_statuses": [
+      408,
+      429,
+      "5xx"
+    ],
+    "retryable_transport_errors": [
+      "httpx.TransportError"
+    ]
+  },
+  "judge_http_status": 200,
+  "judge_response_raw": {
+    "id": "chatcmpl-83dc634f-e1db-49c6-a5f8-1c141f10a1e5",
+    "created": 1789436373,
+    "model": "deepseek-chat",
+    "object": "chat.completion",
+    "system_fingerprint": "vllm-0.26.0-tp8-ep-17a845fb",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "Correctness: 0",
+          "role": "assistant",
+          "provider_specific_fields": {
+            "reasoning": null,
+            "refusal": null
+          }
+        },
+        "provider_specific_fields": {
+          "routed_experts": null,
+          "token_ids": null,
+          "stop_reason": null
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 6,
+      "prompt_tokens": 415,
+      "total_tokens": 421
+    }
+  },
+  "judge_response_text": "Correctness: 0",
+  "judge_attempts": [
+    {
+      "attempt_number": 1,
+      "attempted_at": "2026-09-15T01:38:10.629218+00:00",
+      "wait_before_attempt_s": 1.0,
+      "http_status": 429,
+      "response_raw": {
+        "error": {
+          "message": "Rate limit exceeded for api_key: e59c67527d39025dd2304446573355e49582b6929e7b47d7a766c081ee0249ff. Limit type: requests. Current limit: 10, Remaining: 0. Limit resets at: 2026-09-15 09:39:33 UTC",
+          "type": "None",
+          "param": "None",
+          "code": "429"
+        }
+      },
+      "status": "error",
+      "error": {
+        "type": "HTTPStatusError",
+        "message": "Client error '429 Too Many Requests' for url 'https://models.sjtu.edu.cn/api/v1/chat/completions' For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+        "http_status": 429
+      },
+      "retryable": true,
+      "retry_reason": "http_429",
+      "retry_after_header": "60",
+      "wait_before_next_attempt_s": 60.0,
+      "wait_source": "retry_after"
+    },
+    {
+      "attempt_number": 2,
+      "attempted_at": "2026-09-15T01:39:33.513147+00:00",
+      "wait_before_attempt_s": 60.0,
+      "http_status": 200,
+      "response_raw": {
+        "id": "chatcmpl-83dc634f-e1db-49c6-a5f8-1c141f10a1e5",
+        "created": 1789436373,
+        "model": "deepseek-chat",
+        "object": "chat.completion",
+        "system_fingerprint": "vllm-0.26.0-tp8-ep-17a845fb",
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "Correctness: 0",
+              "role": "assistant",
+              "provider_specific_fields": {
+                "reasoning": null,
+                "refusal": null
+              }
+            },
+            "provider_specific_fields": {
+              "routed_experts": null,
+              "token_ids": null,
+              "stop_reason": null
+            }
+          }
+        ],
+        "usage": {
+          "completion_tokens": 6,
+          "prompt_tokens": 415,
+          "total_tokens": 421
+        }
+      },
+      "status": "completed",
+      "error": null,
+      "retryable": false,
+      "retry_reason": null,
+      "retry_after_header": null,
+      "wait_before_next_attempt_s": null,
+      "wait_source": null
+    }
+  ],
+  "judge_attempt_count": 2,
+  "score_source": "judge",
+  "score": 0,
+  "error": null,
+  "scored_at": "2026-09-15T01:38:09.618911+00:00",
+  "status": "completed",
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-221-0-a96c6d582087.json",
+    "source_sha256": "8badfe345be936a4487131cc83f0731857a52d3d7f5fcb86d6fe8538b48e50d2",
+    "source_bytes": 4986,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

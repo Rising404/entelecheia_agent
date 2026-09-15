@@ -1,0 +1,129 @@
+{
+  "schema_version": "docbench-compatible-case-score-v1",
+  "scoring_protocol": "docbench_prompt_compatible",
+  "official_comparable": false,
+  "case_id": "docbench:19:4",
+  "doc_id": "19",
+  "question_index": 4,
+  "domain": "academia",
+  "question_type": "multimodal",
+  "system_answer": "根据文档 D18-1034.pdf，模型同时使用词级和字符级嵌入作为输入，主要有以下原因：\n\n1. **捕捉子词信息**：文档第3.1节指出，字符级神经网络（RNN或CNN）允许模型捕捉子词信息，例如**形态变化（morphological variations）和大小写模式（capitalization patterns）**。这些信息对于命名实体识别（NER）等任务非常重要，因为实体名称往往具有特定的形态或大小写特征。\n\n2. **提高准确率**：文档第1节提到，字符级特征已被证明对单语场景下的高精度NER至关重要（引用Ma and Hovy, 2016）。在跨语言迁移场景中，当词级嵌入因语言差异而无法完美对齐时，字符级信息提供了额外的、语言无关的线索。\n\n3. **弥补词级嵌入的不足**：文档指出，不同语言具有不同的语言属性，词嵌入空间难以完美对齐（见图1）。字符级嵌入不依赖词级对齐，因此即使在词级嵌入对齐不理想的情况下，模型仍能利用字符序列获得有用的形态学信息。\n\n4. **具体实现**：在第3.1节中，模型对每个词，将其字符级表示与词嵌入**拼接（concatenating）**，形成该词的最终表示 x_i，然后输入到词级双向LSTM中。这样，模型同时利用了词级的语义信息和字符级的形态学信息。\n\n5. **实验验证**：第4.2.2节的消融实验表明，使用目标语言的字符序列有助于提升性能，尤其对德语效果明显，部分原因在于德语的大小写模式与英语不同。这证实了字符级输入的实际价值。\n\n**总结**：同时使用词级和字符级嵌入，是为了让模型既能利用词级语义（通过预训练词嵌入获得），又能利用字符级形态学信息（如大小写、词缀等），从而在跨语言场景下获得更稳健、更准确的表示，尤其对形态丰富的语言和低资源语言更为重要。",
+  "prompt_sha256": "784a6d6cf4f8151765b169c633f46e62d12dcd77f8941172e72edbf8b30f9bde",
+  "filled_prompt_sha256": "383a23204b60afd35beeb616529f5220cf8b629c1af4621fdfab311c844a8b21",
+  "judge_provider": "openai-compatible",
+  "judge_base_url": "https://models.sjtu.edu.cn/api/v1",
+  "judge_model": "deepseek-chat",
+  "judge_request_dialect": "deepseek",
+  "judge_retry_policy": {
+    "max_attempts": 6,
+    "fallback_backoff_s": [
+      2.0,
+      4.0,
+      8.0,
+      16.0,
+      30.0
+    ],
+    "inter_case_delay_s": 1.0,
+    "retryable_http_statuses": [
+      408,
+      429,
+      "5xx"
+    ],
+    "retryable_transport_errors": [
+      "httpx.TransportError"
+    ]
+  },
+  "judge_http_status": 200,
+  "judge_response_raw": {
+    "id": "chatcmpl-0e4c9fb3-8f1d-4ca7-81c1-c90dbe01228d",
+    "created": 1789435614,
+    "model": "deepseek-chat",
+    "object": "chat.completion",
+    "system_fingerprint": "vllm-0.26.0-tp8-ep-17a845fb",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "Correctness: 1",
+          "role": "assistant",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning": null
+          }
+        },
+        "provider_specific_fields": {
+          "token_ids": null,
+          "stop_reason": null,
+          "routed_experts": null
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 6,
+      "prompt_tokens": 783,
+      "total_tokens": 789
+    }
+  },
+  "judge_response_text": "Correctness: 1",
+  "judge_attempts": [
+    {
+      "attempt_number": 1,
+      "attempted_at": "2026-09-15T01:26:52.111089+00:00",
+      "wait_before_attempt_s": 1.0,
+      "http_status": 200,
+      "response_raw": {
+        "id": "chatcmpl-0e4c9fb3-8f1d-4ca7-81c1-c90dbe01228d",
+        "created": 1789435614,
+        "model": "deepseek-chat",
+        "object": "chat.completion",
+        "system_fingerprint": "vllm-0.26.0-tp8-ep-17a845fb",
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "Correctness: 1",
+              "role": "assistant",
+              "provider_specific_fields": {
+                "refusal": null,
+                "reasoning": null
+              }
+            },
+            "provider_specific_fields": {
+              "token_ids": null,
+              "stop_reason": null,
+              "routed_experts": null
+            }
+          }
+        ],
+        "usage": {
+          "completion_tokens": 6,
+          "prompt_tokens": 783,
+          "total_tokens": 789
+        }
+      },
+      "status": "completed",
+      "error": null,
+      "retryable": false,
+      "retry_reason": null,
+      "retry_after_header": null,
+      "wait_before_next_attempt_s": null,
+      "wait_source": null
+    }
+  ],
+  "judge_attempt_count": 1,
+  "score_source": "judge",
+  "score": 1,
+  "error": null,
+  "scored_at": "2026-09-15T01:26:51.100649+00:00",
+  "status": "completed",
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-19-4-cec5faa10dfc.json",
+    "source_sha256": "4a025262689d1a055fd62b26450a5c9763f09fcfb9bdb3f5b2baa4de668d0018",
+    "source_bytes": 5833,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

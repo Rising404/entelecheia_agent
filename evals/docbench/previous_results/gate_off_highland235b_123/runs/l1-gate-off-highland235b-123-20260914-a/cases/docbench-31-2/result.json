@@ -1,0 +1,246 @@
+{
+  "case_id": "docbench:31:2",
+  "doc_id": 31,
+  "question_index": 2,
+  "domain": "academia",
+  "question_type": "unanswerable",
+  "level": "L1",
+  "reply": "根据对附件 L18-1269.pdf 的完整阅读（共6页），该文档是 SentEval 句子表示评估工具包的论文，主要内容包括：\n\n- 介绍 SentEval 工具包的设计与使用\n- 提供多种句子表示方法的迁移学习评估结果（Table 3），涉及 MR、CR、SUBJ、MPQA、SST-2、SST-5、TREC、MRPC、SICK-E 等分类和语义相似度任务\n- 讨论模型配置参数（如 dropout、SkipThought、InferSent 等）\n\n**文档中未包含 CoNLL 法语 NER 系统的任何性能数据。** 该论文不涉及命名实体识别（NER）任务，更未提及 CoNLL 法语数据集。因此，无法从该文档中回答 CoNLL 法语 NER 系统的性能表现。",
+  "post_commit": {
+    "status": "settled",
+    "turn_id": "turn_b803e692",
+    "window_released": true,
+    "jobs": [
+      {
+        "job_kind": "session_retrieval_index",
+        "status": "applied",
+        "reason_code": null
+      },
+      {
+        "job_kind": "session_summary",
+        "status": "applied",
+        "reason_code": null
+      }
+    ],
+    "timed_out": false
+  },
+  "post_commit_complete": true,
+  "post_commit_elapsed_s": 6.236,
+  "session_id": "80a24e67",
+  "project_id": "project-93756325b9404cbfadba1be3512cb960",
+  "turn_id": "turn_b803e692",
+  "answer_elapsed_s": 78.076,
+  "status": "completed",
+  "processing_level": "L1",
+  "end_reason": null,
+  "error_code": null,
+  "user_interaction_mode": "closed_world",
+  "pending_user_question_count": 0,
+  "related_insession_task_ids": [],
+  "work_run_ids": [],
+  "model": {
+    "provider": "openai-compatible",
+    "request_dialect": "deepseek",
+    "base_url": "https://models.sjtu.edu.cn/api/v1",
+    "model": "deepseek-chat",
+    "has_key": true,
+    "default_projects_dir": "<local-path>",
+    "default_projects_dir_managed": true,
+    "legacy_office_soffice": {
+      "configured": false,
+      "available": false
+    },
+    "vision_provider": "highland",
+    "vision_base_url": "https://www.highland-api.top",
+    "vision_model": "qwen3-vl-235b-a22b-instruct",
+    "has_vision_key": true
+  },
+  "lane_ok": true,
+  "execution_ok": true,
+  "interaction_ok": true,
+  "chain_complete": true,
+  "elapsed_s": 84.338,
+  "retrieval": {
+    "schema_version": "docbench-retrieval-observability-v1",
+    "status": "degraded",
+    "requested_profile": {
+      "mode": "bge_m3",
+      "fingerprint": "document_retrieval_profile@1:mode=bge_m3;methods=dense,learned_sparse,bm25;index_recipe=rag-r1:dense1024+learned_sparse+bm25@1;encoder=hf:BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181;reranker=hf:BAAI/bge-reranker-v2-m3@953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e;device=mps;fp16=false;failure_policy=strict;local_only=true",
+      "failure_policy": "strict",
+      "required_methods": [
+        "dense",
+        "learned_sparse",
+        "bm25"
+      ],
+      "index_recipe": "rag-r1:dense1024+learned_sparse+bm25@1",
+      "encoder_asset_identity": "hf:BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181",
+      "reranker_mode": "bge_v2_m3",
+      "reranker_asset_identity": "hf:BAAI/bge-reranker-v2-m3@953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+      "device": "mps",
+      "use_fp16": false,
+      "local_files_only": true
+    },
+    "effective_profile": {
+      "mode": "bge_m3",
+      "fingerprint": "document_retrieval_profile@1:mode=bge_m3;methods=dense,learned_sparse,bm25;index_recipe=rag-r1:dense1024+learned_sparse+bm25@1;encoder=hf:BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181;reranker=hf:BAAI/bge-reranker-v2-m3@953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e;device=mps;fp16=false;failure_policy=strict;local_only=true",
+      "failure_policy": "strict",
+      "required_methods": [
+        "dense",
+        "learned_sparse",
+        "bm25"
+      ],
+      "index_recipe": "rag-r1:dense1024+learned_sparse+bm25@1",
+      "encoder_asset_identity": "hf:BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181",
+      "reranker_mode": "bge_v2_m3",
+      "reranker_asset_identity": "hf:BAAI/bge-reranker-v2-m3@953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+      "device": "mps",
+      "use_fp16": false,
+      "local_files_only": true
+    },
+    "encoder_fingerprint": "bge_m3:model=hf:BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181;dense=1024;sparse=flagembedding;sparse_projection_assets=available;device=mps;fp16=false;query_max_length=512;passage_max_length=8192;flagembedding=1.4.0;transformers=4.57.6;local_only=true",
+    "reranker_fingerprint": "bge_reranker_v2_m3:model=hf:BAAI/bge-reranker-v2-m3@953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e;device=mps;batch_size=8;query_max_length=256;max_length=1024;fp16=false;flagembedding=1.4.0;transformers=4.57.6;local_only=true",
+    "preflight": {
+      "profile_fingerprint": "document_retrieval_profile@1:mode=bge_m3;methods=dense,learned_sparse,bm25;index_recipe=rag-r1:dense1024+learned_sparse+bm25@1;encoder=hf:BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181;reranker=hf:BAAI/bge-reranker-v2-m3@953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e;device=mps;fp16=false;failure_policy=strict;local_only=true",
+      "ready": true,
+      "reason_codes": [],
+      "device_ready": true,
+      "device_selection": {
+        "requested_device": "mps",
+        "device": "mps",
+        "ready": true,
+        "fallback_reason": null,
+        "probe_reasons": [],
+        "model_verified": false
+      },
+      "sqlite_vec_ready": true,
+      "encoder_asset": {
+        "asset_identity": "hf:BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181",
+        "manifest": "bge_m3_hybrid",
+        "ready": true,
+        "reason_code": "ready",
+        "missing_files": [],
+        "missing_modules": [],
+        "content_sha256": null,
+        "local_files_only": true
+      },
+      "reranker_asset": {
+        "asset_identity": "hf:BAAI/bge-reranker-v2-m3@953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+        "manifest": "bge_reranker_v2_m3",
+        "ready": true,
+        "reason_code": "ready",
+        "missing_files": [],
+        "missing_modules": [],
+        "content_sha256": null,
+        "local_files_only": true
+      },
+      "local_files_only": true
+    },
+    "active_generation": null,
+    "methods": [
+      {
+        "method": "dense",
+        "required": true,
+        "ready": false,
+        "unit_count": 0,
+        "manifest_ready_count": 0,
+        "representation_present_count": 0,
+        "manifest_absent_count": 0,
+        "invalid_unit_count": 0,
+        "reason_code": "active_generation_unavailable"
+      },
+      {
+        "method": "learned_sparse",
+        "required": true,
+        "ready": false,
+        "unit_count": 0,
+        "manifest_ready_count": 0,
+        "representation_present_count": 0,
+        "manifest_absent_count": 0,
+        "invalid_unit_count": 0,
+        "reason_code": "active_generation_unavailable"
+      },
+      {
+        "method": "bm25",
+        "required": true,
+        "ready": false,
+        "unit_count": 0,
+        "manifest_ready_count": 0,
+        "representation_present_count": 0,
+        "manifest_absent_count": 0,
+        "invalid_unit_count": 0,
+        "reason_code": "active_generation_unavailable"
+      }
+    ],
+    "indexing_outbox": {
+      "available": true,
+      "reason_code": null,
+      "attempt_audit_available": true,
+      "attempt_count": 0,
+      "attempt_audit_truncated": false,
+      "status_counts": {
+        "pending": 0,
+        "processing": 0,
+        "applied": 0,
+        "retryable_failed": 0,
+        "terminal_failed": 0
+      },
+      "outcome_counts": {},
+      "failure_counts": {},
+      "batch_count": 0,
+      "worker_instance_count": 0,
+      "terminal_failures": [],
+      "attempt_audits": []
+    },
+    "sqlite_vec": {
+      "ready": true,
+      "reason_code": null
+    },
+    "degradation_reasons": [
+      "active_generation_unavailable"
+    ]
+  },
+  "worker_exit_code": 0,
+  "worker_stderr_tail": "You're using a XLMRobertaTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.\n",
+  "trajectory": {
+    "status": "complete",
+    "path": "cases/docbench-31-2/trajectory.json",
+    "sha256": "2d94731be668fc604969015dabeada521a1b02310861a7f227957c6ae0e3978c",
+    "byte_count": 339976,
+    "database_count": 1,
+    "step_count": 12,
+    "part_count": 31,
+    "blob_count": 26,
+    "truncated_blob_count": 0
+  },
+  "telemetry": {
+    "provider_response_count": 7,
+    "rejected_output_count": 0,
+    "terminal_model_request_failure_count": 0,
+    "tool_call_count": 5,
+    "input_tokens_total": 75450,
+    "output_tokens_total": 1402,
+    "cache_read_tokens_total": 0,
+    "max_model_input_tokens": 14234,
+    "provider_response_purposes": {
+      "openai-compatible:deepseek-chat:runtime_entry_classify": 1,
+      "openai-compatible:deepseek-chat:runtime_l1_attempt": 6
+    },
+    "tool_call_purposes": {
+      "analyze_pdf_page": 1,
+      "prepare_files": 1,
+      "read_pdf_text": 3
+    },
+    "trajectory_database_count": 1,
+    "trajectory_read_failure_count": 0,
+    "trajectory_recording_failure_count": 0,
+    "telemetry_complete": true
+  },
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench:31:2/result.json",
+    "source_sha256": "2bf1df9ef4ee96613614ec9efc21e393c9f43cf7065d7b659f63cb5d95c6c730",
+    "source_bytes": 9797,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

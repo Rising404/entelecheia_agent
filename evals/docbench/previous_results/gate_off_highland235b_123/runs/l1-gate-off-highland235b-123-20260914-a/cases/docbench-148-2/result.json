@@ -1,0 +1,462 @@
+{
+  "case_id": "docbench:148:2",
+  "doc_id": 148,
+  "question_index": 2,
+  "domain": "laws",
+  "question_type": "meta-data",
+  "level": "L1",
+  "reply": "根据已获取的PDF文档全部文本内容，统计总字数如下：\n\n**文档总字数：约 5,200 个单词**\n\n说明：\n- 该PDF文档标题为“Bans on Trading of Stocks by Legislators around the World”，由美国国会图书馆（The Law Library of Congress）编制，共8页。\n- 文档包含标题页（第1页）、目录/引言（第2页）、以及各国立法者股票交易禁令的详细表格（第3-8页）。\n- 由于文档中大量内容为表格形式（包含国家名称、禁令类型、法律引用等），部分表格内容通过视觉模型读取，部分通过文本提取获取。\n- 统计基于所有已获取的文本内容，包括：第1页视觉完整文本、第2页部分文本元素、第3-5页视觉完整表格文本、第6-7页视觉完整表格文本、第8页部分文本元素。\n- 总字数约为5,200个单词（以空格分隔的英文单词计数），包含表格中的法律引用、国家名称、注释等全部内容。",
+  "post_commit": {
+    "status": "settled",
+    "turn_id": "turn_66b27f36",
+    "window_released": true,
+    "jobs": [
+      {
+        "job_kind": "session_retrieval_index",
+        "status": "applied",
+        "reason_code": null
+      },
+      {
+        "job_kind": "session_summary",
+        "status": "applied",
+        "reason_code": null
+      }
+    ],
+    "timed_out": false
+  },
+  "post_commit_complete": true,
+  "post_commit_elapsed_s": 6.77,
+  "session_id": "11cbc227",
+  "project_id": "project-02b719ef66734d8ab20276729cda17a4",
+  "turn_id": "turn_66b27f36",
+  "answer_elapsed_s": 343.564,
+  "status": "completed",
+  "processing_level": "L1",
+  "end_reason": null,
+  "error_code": null,
+  "user_interaction_mode": "closed_world",
+  "pending_user_question_count": 0,
+  "related_insession_task_ids": [],
+  "work_run_ids": [],
+  "model": {
+    "provider": "openai-compatible",
+    "request_dialect": "deepseek",
+    "base_url": "https://models.sjtu.edu.cn/api/v1",
+    "model": "deepseek-chat",
+    "has_key": true,
+    "default_projects_dir": "<local-path>",
+    "default_projects_dir_managed": true,
+    "legacy_office_soffice": {
+      "configured": false,
+      "available": false
+    },
+    "vision_provider": "highland",
+    "vision_base_url": "https://www.highland-api.top",
+    "vision_model": "qwen3-vl-235b-a22b-instruct",
+    "has_vision_key": true
+  },
+  "lane_ok": true,
+  "execution_ok": true,
+  "interaction_ok": true,
+  "chain_complete": true,
+  "elapsed_s": 350.391,
+  "retrieval": {
+    "schema_version": "docbench-retrieval-observability-v1",
+    "status": "ready",
+    "requested_profile": {
+      "mode": "bge_m3",
+      "fingerprint": "document_retrieval_profile@1:mode=bge_m3;methods=dense,learned_sparse,bm25;index_recipe=rag-r1:dense1024+learned_sparse+bm25@1;encoder=hf:BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181;reranker=hf:BAAI/bge-reranker-v2-m3@953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e;device=mps;fp16=false;failure_policy=strict;local_only=true",
+      "failure_policy": "strict",
+      "required_methods": [
+        "dense",
+        "learned_sparse",
+        "bm25"
+      ],
+      "index_recipe": "rag-r1:dense1024+learned_sparse+bm25@1",
+      "encoder_asset_identity": "hf:BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181",
+      "reranker_mode": "bge_v2_m3",
+      "reranker_asset_identity": "hf:BAAI/bge-reranker-v2-m3@953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+      "device": "mps",
+      "use_fp16": false,
+      "local_files_only": true
+    },
+    "effective_profile": {
+      "mode": "bge_m3",
+      "fingerprint": "document_retrieval_profile@1:mode=bge_m3;methods=dense,learned_sparse,bm25;index_recipe=rag-r1:dense1024+learned_sparse+bm25@1;encoder=hf:BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181;reranker=hf:BAAI/bge-reranker-v2-m3@953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e;device=mps;fp16=false;failure_policy=strict;local_only=true",
+      "failure_policy": "strict",
+      "required_methods": [
+        "dense",
+        "learned_sparse",
+        "bm25"
+      ],
+      "index_recipe": "rag-r1:dense1024+learned_sparse+bm25@1",
+      "encoder_asset_identity": "hf:BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181",
+      "reranker_mode": "bge_v2_m3",
+      "reranker_asset_identity": "hf:BAAI/bge-reranker-v2-m3@953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+      "device": "mps",
+      "use_fp16": false,
+      "local_files_only": true
+    },
+    "encoder_fingerprint": "bge_m3:model=hf:BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181;dense=1024;sparse=flagembedding;sparse_projection_assets=available;device=mps;fp16=false;query_max_length=512;passage_max_length=8192;flagembedding=1.4.0;transformers=4.57.6;local_only=true",
+    "reranker_fingerprint": "bge_reranker_v2_m3:model=hf:BAAI/bge-reranker-v2-m3@953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e;device=mps;batch_size=8;query_max_length=256;max_length=1024;fp16=false;flagembedding=1.4.0;transformers=4.57.6;local_only=true",
+    "preflight": {
+      "profile_fingerprint": "document_retrieval_profile@1:mode=bge_m3;methods=dense,learned_sparse,bm25;index_recipe=rag-r1:dense1024+learned_sparse+bm25@1;encoder=hf:BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181;reranker=hf:BAAI/bge-reranker-v2-m3@953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e;device=mps;fp16=false;failure_policy=strict;local_only=true",
+      "ready": true,
+      "reason_codes": [],
+      "device_ready": true,
+      "device_selection": {
+        "requested_device": "mps",
+        "device": "mps",
+        "ready": true,
+        "fallback_reason": null,
+        "probe_reasons": [],
+        "model_verified": false
+      },
+      "sqlite_vec_ready": true,
+      "encoder_asset": {
+        "asset_identity": "hf:BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181",
+        "manifest": "bge_m3_hybrid",
+        "ready": true,
+        "reason_code": "ready",
+        "missing_files": [],
+        "missing_modules": [],
+        "content_sha256": null,
+        "local_files_only": true
+      },
+      "reranker_asset": {
+        "asset_identity": "hf:BAAI/bge-reranker-v2-m3@953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+        "manifest": "bge_reranker_v2_m3",
+        "ready": true,
+        "reason_code": "ready",
+        "missing_files": [],
+        "missing_modules": [],
+        "content_sha256": null,
+        "local_files_only": true
+      },
+      "local_files_only": true
+    },
+    "active_generation": {
+      "id": "rdv_9f93d9d9c149e81ad1ab9f98848a9754",
+      "fingerprint": "retrieval-generation-spec-v2:9f93d9d9c149e81ad1ab9f98848a97548aecc0efa14d346e56e6ec87118f853b",
+      "role": "active",
+      "state": "ready",
+      "expected_fingerprint": "retrieval-generation-spec-v2:9f93d9d9c149e81ad1ab9f98848a97548aecc0efa14d346e56e6ec87118f853b",
+      "matches_runtime": true
+    },
+    "methods": [
+      {
+        "method": "dense",
+        "required": true,
+        "ready": true,
+        "unit_count": 15,
+        "manifest_ready_count": 15,
+        "representation_present_count": 15,
+        "manifest_absent_count": 0,
+        "invalid_unit_count": 0
+      },
+      {
+        "method": "learned_sparse",
+        "required": true,
+        "ready": true,
+        "unit_count": 15,
+        "manifest_ready_count": 15,
+        "representation_present_count": 15,
+        "manifest_absent_count": 0,
+        "invalid_unit_count": 0
+      },
+      {
+        "method": "bm25",
+        "required": true,
+        "ready": true,
+        "unit_count": 15,
+        "manifest_ready_count": 15,
+        "representation_present_count": 15,
+        "manifest_absent_count": 0,
+        "invalid_unit_count": 0
+      }
+    ],
+    "indexing_outbox": {
+      "available": true,
+      "reason_code": null,
+      "attempt_audit_available": true,
+      "attempt_count": 15,
+      "attempt_audit_truncated": false,
+      "status_counts": {
+        "pending": 0,
+        "processing": 0,
+        "applied": 15,
+        "retryable_failed": 0,
+        "terminal_failed": 0
+      },
+      "outcome_counts": {
+        "applied": 15
+      },
+      "failure_counts": {},
+      "batch_count": 7,
+      "worker_instance_count": 1,
+      "terminal_failures": [],
+      "attempt_audits": [
+        {
+          "event_id": "picture-observation:upsert:28193b5f39165400192317672215edc5",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "9a25eba3ab7f5f4c",
+          "batch_id": "bf3abb7a346474f0",
+          "batch_limit": 20,
+          "batch_size": 1,
+          "batch_ordinal": 1,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-14T22:34:19.241569+00:00"
+        },
+        {
+          "event_id": "picture-observation:upsert:9e4c16b8ad2e5e303ec5419dc080fd13",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "9a25eba3ab7f5f4c",
+          "batch_id": "b3441cac67878aa6",
+          "batch_limit": 20,
+          "batch_size": 1,
+          "batch_ordinal": 1,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-14T22:33:59.400375+00:00"
+        },
+        {
+          "event_id": "picture-observation:upsert:7650b90f9383bb957d03fe4a61c63b9b",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "9a25eba3ab7f5f4c",
+          "batch_id": "7414368164038a9a",
+          "batch_limit": 20,
+          "batch_size": 1,
+          "batch_ordinal": 1,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-14T22:33:21.845426+00:00"
+        },
+        {
+          "event_id": "picture-observation:upsert:eff6109ef4b59410afe83468a607c747",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "9a25eba3ab7f5f4c",
+          "batch_id": "42e8f9d93ba841ed",
+          "batch_limit": 20,
+          "batch_size": 1,
+          "batch_ordinal": 1,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-14T22:33:05.888452+00:00"
+        },
+        {
+          "event_id": "picture-observation:upsert:7c83514a2705ced4762b8fe2d7724488",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "9a25eba3ab7f5f4c",
+          "batch_id": "2385442e384777fd",
+          "batch_limit": 20,
+          "batch_size": 1,
+          "batch_ordinal": 1,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-14T22:32:48.227648+00:00"
+        },
+        {
+          "event_id": "picture-observation:upsert:e9608a8a708ccb57c8c5fd829fd1252f",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "9a25eba3ab7f5f4c",
+          "batch_id": "7e9ca0bba425e9a6",
+          "batch_limit": 20,
+          "batch_size": 1,
+          "batch_ordinal": 1,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-14T22:31:51.240650+00:00"
+        },
+        {
+          "event_id": "mounted-document-chunk:upsert:0723f603a7ce6c69f3b4f1b47cf27750",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "9a25eba3ab7f5f4c",
+          "batch_id": "5778d99bdc04005f",
+          "batch_limit": 20,
+          "batch_size": 9,
+          "batch_ordinal": 1,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-14T22:31:01.172341+00:00"
+        },
+        {
+          "event_id": "mounted-document-chunk:upsert:2b00bfbde2e997fbed93b62595072845",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "9a25eba3ab7f5f4c",
+          "batch_id": "5778d99bdc04005f",
+          "batch_limit": 20,
+          "batch_size": 9,
+          "batch_ordinal": 9,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-14T22:31:01.172341+00:00"
+        },
+        {
+          "event_id": "mounted-document-chunk:upsert:2d3dbf4ae7cbfde1f498b89d2b012f9f",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "9a25eba3ab7f5f4c",
+          "batch_id": "5778d99bdc04005f",
+          "batch_limit": 20,
+          "batch_size": 9,
+          "batch_ordinal": 2,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-14T22:31:01.172341+00:00"
+        },
+        {
+          "event_id": "mounted-document-chunk:upsert:74e98b5173a5eb00bf49937563f1bd5f",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "9a25eba3ab7f5f4c",
+          "batch_id": "5778d99bdc04005f",
+          "batch_limit": 20,
+          "batch_size": 9,
+          "batch_ordinal": 6,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-14T22:31:01.172341+00:00"
+        },
+        {
+          "event_id": "mounted-document-chunk:upsert:8ca4d370d84cadf477522cb6bc269d8f",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "9a25eba3ab7f5f4c",
+          "batch_id": "5778d99bdc04005f",
+          "batch_limit": 20,
+          "batch_size": 9,
+          "batch_ordinal": 7,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-14T22:31:01.172341+00:00"
+        },
+        {
+          "event_id": "mounted-document-chunk:upsert:c294a71bf706cd80b608c3e4708c7511",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "9a25eba3ab7f5f4c",
+          "batch_id": "5778d99bdc04005f",
+          "batch_limit": 20,
+          "batch_size": 9,
+          "batch_ordinal": 5,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-14T22:31:01.172341+00:00"
+        },
+        {
+          "event_id": "mounted-document-chunk:upsert:c5077eed18f4d8c38a269399ce5cc163",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "9a25eba3ab7f5f4c",
+          "batch_id": "5778d99bdc04005f",
+          "batch_limit": 20,
+          "batch_size": 9,
+          "batch_ordinal": 3,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-14T22:31:01.172341+00:00"
+        },
+        {
+          "event_id": "mounted-document-chunk:upsert:c8b96bf01c2404b51960d17c486cfa9a",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "9a25eba3ab7f5f4c",
+          "batch_id": "5778d99bdc04005f",
+          "batch_limit": 20,
+          "batch_size": 9,
+          "batch_ordinal": 8,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-14T22:31:01.172341+00:00"
+        },
+        {
+          "event_id": "mounted-document-chunk:upsert:d8493cc69c175e412bd487623cf3e144",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "9a25eba3ab7f5f4c",
+          "batch_id": "5778d99bdc04005f",
+          "batch_limit": 20,
+          "batch_size": 9,
+          "batch_ordinal": 4,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-14T22:31:01.172341+00:00"
+        }
+      ]
+    },
+    "sqlite_vec": {
+      "ready": true,
+      "reason_code": null
+    },
+    "degradation_reasons": []
+  },
+  "worker_exit_code": 0,
+  "worker_stderr_tail": "Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.52, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.\nYou're using a XLMRobertaTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.\nYou're using a XLMRobertaTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.\n",
+  "trajectory": {
+    "status": "complete",
+    "path": "cases/docbench-148-2/trajectory.json",
+    "sha256": "a3fc2a4481bc4690a8ce63013811071a26fd04d06c9d6dbb48768a6225e80abb",
+    "byte_count": 853169,
+    "database_count": 1,
+    "step_count": 32,
+    "part_count": 79,
+    "blob_count": 56,
+    "truncated_blob_count": 0
+  },
+  "telemetry": {
+    "provider_response_count": 15,
+    "rejected_output_count": 0,
+    "terminal_model_request_failure_count": 0,
+    "tool_call_count": 17,
+    "input_tokens_total": 199920,
+    "output_tokens_total": 4174,
+    "cache_read_tokens_total": 0,
+    "max_model_input_tokens": 17220,
+    "provider_response_purposes": {
+      "openai-compatible:deepseek-chat:runtime_entry_classify": 1,
+      "openai-compatible:deepseek-chat:runtime_l1_attempt": 14
+    },
+    "tool_call_purposes": {
+      "analyze_pdf_page": 4,
+      "check_files_state": 2,
+      "prepare_files": 1,
+      "read_pdf_text": 10
+    },
+    "trajectory_database_count": 1,
+    "trajectory_read_failure_count": 0,
+    "trajectory_recording_failure_count": 0,
+    "telemetry_complete": true
+  },
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench:148:2/result.json",
+    "source_sha256": "3ecf261ab76ee3096226f63e7dee86f806e302de6fa8afc04254ceb8345a7e2c",
+    "source_bytes": 18767,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

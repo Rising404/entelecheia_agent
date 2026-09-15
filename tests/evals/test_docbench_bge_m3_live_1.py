@@ -7,6 +7,7 @@ from pathlib import Path
 import pytest
 
 from evals.docbench.reproduce_or_run_script.config import (
+    BENCH_EVAL_DIR_ENV,
     load_docbench_config,
 )
 from evals.docbench.reproduce_or_run_script.selection import (
@@ -115,8 +116,12 @@ def test_bge_m3_live_one_case_selection_is_frozen_and_content_free(
         source_path.write_bytes(original)
 
 
-def test_bge_m3_live_one_case_config_freezes_strict_local_retrieval() -> None:
-    loaded = load_docbench_config(CONFIG_PATH, project_root=PROJECT_ROOT)
+def test_bge_m3_live_one_case_config_freezes_strict_local_retrieval(tmp_path: Path) -> None:
+    loaded = load_docbench_config(
+        CONFIG_PATH,
+        project_root=PROJECT_ROOT,
+        environment={BENCH_EVAL_DIR_ENV: str(tmp_path / "bench_eval")},
+    )
 
     assert loaded.config_sha256 == (
         "28ced34f2ddadbe4fb9b4b10c87bfbc5a05c9b3f4ddf987f46e37e400f5150cc"

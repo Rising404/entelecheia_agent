@@ -1,0 +1,356 @@
+{
+  "case_id": "docbench:40:0",
+  "doc_id": 40,
+  "question_index": 0,
+  "domain": "academia",
+  "question_type": "multimodal-f",
+  "level": "L1",
+  "session_id": "602c03ed",
+  "project_id": "project-8a6f2943046248db8be1dbe8a90fe234",
+  "turn_id": "turn_0070cfeb",
+  "elapsed_s": 645.561,
+  "status": "completed",
+  "processing_level": "L1",
+  "reply": "本轮未完成：本轮未能形成通过交付审查的答复。未通过审查的内容没有作为答案发布。",
+  "end_reason": "l1_terminal_notification",
+  "error_code": "VERIFICATION_FAILED",
+  "user_interaction_mode": "closed_world",
+  "pending_user_question_count": 0,
+  "related_insession_task_ids": [],
+  "work_run_ids": [],
+  "model": {
+    "provider": "openai-compatible",
+    "request_dialect": "deepseek",
+    "base_url": "https://models.sjtu.edu.cn/api/v1",
+    "model": "deepseek-chat",
+    "has_key": true,
+    "default_projects_dir": "<local-path>",
+    "default_projects_dir_managed": true,
+    "legacy_office_soffice": {
+      "configured": false,
+      "available": false
+    },
+    "vision_provider": "highland",
+    "vision_base_url": "https://www.highland-api.top",
+    "vision_model": "qwen3-vl-30b-a3b-instruct",
+    "has_vision_key": true
+  },
+  "retrieval": {
+    "schema_version": "docbench-retrieval-observability-v1",
+    "status": "ready",
+    "requested_profile": {
+      "mode": "bge_m3",
+      "fingerprint": "document_retrieval_profile@1:mode=bge_m3;methods=dense,learned_sparse,bm25;index_recipe=rag-r1:dense1024+learned_sparse+bm25@1;encoder=hf:BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181;reranker=hf:BAAI/bge-reranker-v2-m3@953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e;device=mps;fp16=false;failure_policy=strict;local_only=true",
+      "failure_policy": "strict",
+      "required_methods": [
+        "dense",
+        "learned_sparse",
+        "bm25"
+      ],
+      "index_recipe": "rag-r1:dense1024+learned_sparse+bm25@1",
+      "encoder_asset_identity": "hf:BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181",
+      "reranker_mode": "bge_v2_m3",
+      "reranker_asset_identity": "hf:BAAI/bge-reranker-v2-m3@953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+      "device": "mps",
+      "use_fp16": false,
+      "local_files_only": true
+    },
+    "effective_profile": {
+      "mode": "bge_m3",
+      "fingerprint": "document_retrieval_profile@1:mode=bge_m3;methods=dense,learned_sparse,bm25;index_recipe=rag-r1:dense1024+learned_sparse+bm25@1;encoder=hf:BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181;reranker=hf:BAAI/bge-reranker-v2-m3@953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e;device=mps;fp16=false;failure_policy=strict;local_only=true",
+      "failure_policy": "strict",
+      "required_methods": [
+        "dense",
+        "learned_sparse",
+        "bm25"
+      ],
+      "index_recipe": "rag-r1:dense1024+learned_sparse+bm25@1",
+      "encoder_asset_identity": "hf:BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181",
+      "reranker_mode": "bge_v2_m3",
+      "reranker_asset_identity": "hf:BAAI/bge-reranker-v2-m3@953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+      "device": "mps",
+      "use_fp16": false,
+      "local_files_only": true
+    },
+    "encoder_fingerprint": "bge_m3:model=hf:BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181;dense=1024;sparse=flagembedding;sparse_projection_assets=available;device=mps;fp16=false;query_max_length=512;passage_max_length=8192;flagembedding=1.4.0;transformers=4.57.6;local_only=true",
+    "reranker_fingerprint": "bge_reranker_v2_m3:model=hf:BAAI/bge-reranker-v2-m3@953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e;device=mps;batch_size=8;query_max_length=256;max_length=1024;fp16=false;flagembedding=1.4.0;transformers=4.57.6;local_only=true",
+    "preflight": {
+      "profile_fingerprint": "document_retrieval_profile@1:mode=bge_m3;methods=dense,learned_sparse,bm25;index_recipe=rag-r1:dense1024+learned_sparse+bm25@1;encoder=hf:BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181;reranker=hf:BAAI/bge-reranker-v2-m3@953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e;device=mps;fp16=false;failure_policy=strict;local_only=true",
+      "ready": true,
+      "reason_codes": [],
+      "device_ready": true,
+      "device_selection": {
+        "requested_device": "mps",
+        "device": "mps",
+        "ready": true,
+        "fallback_reason": null,
+        "probe_reasons": [],
+        "model_verified": false
+      },
+      "sqlite_vec_ready": true,
+      "encoder_asset": {
+        "asset_identity": "hf:BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181",
+        "manifest": "bge_m3_hybrid",
+        "ready": true,
+        "reason_code": "ready",
+        "missing_files": [],
+        "missing_modules": [],
+        "content_sha256": null,
+        "local_files_only": true
+      },
+      "reranker_asset": {
+        "asset_identity": "hf:BAAI/bge-reranker-v2-m3@953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+        "manifest": "bge_reranker_v2_m3",
+        "ready": true,
+        "reason_code": "ready",
+        "missing_files": [],
+        "missing_modules": [],
+        "content_sha256": null,
+        "local_files_only": true
+      },
+      "local_files_only": true
+    },
+    "active_generation": {
+      "id": "rdv_9f93d9d9c149e81ad1ab9f98848a9754",
+      "fingerprint": "retrieval-generation-spec-v2:9f93d9d9c149e81ad1ab9f98848a97548aecc0efa14d346e56e6ec87118f853b",
+      "role": "active",
+      "state": "ready",
+      "expected_fingerprint": "retrieval-generation-spec-v2:9f93d9d9c149e81ad1ab9f98848a97548aecc0efa14d346e56e6ec87118f853b",
+      "matches_runtime": true
+    },
+    "methods": [
+      {
+        "method": "dense",
+        "required": true,
+        "ready": true,
+        "unit_count": 9,
+        "manifest_ready_count": 9,
+        "representation_present_count": 9,
+        "manifest_absent_count": 0,
+        "invalid_unit_count": 0
+      },
+      {
+        "method": "learned_sparse",
+        "required": true,
+        "ready": true,
+        "unit_count": 9,
+        "manifest_ready_count": 9,
+        "representation_present_count": 9,
+        "manifest_absent_count": 0,
+        "invalid_unit_count": 0
+      },
+      {
+        "method": "bm25",
+        "required": true,
+        "ready": true,
+        "unit_count": 9,
+        "manifest_ready_count": 9,
+        "representation_present_count": 9,
+        "manifest_absent_count": 0,
+        "invalid_unit_count": 0
+      }
+    ],
+    "indexing_outbox": {
+      "available": true,
+      "reason_code": null,
+      "attempt_audit_available": true,
+      "attempt_count": 9,
+      "attempt_audit_truncated": false,
+      "status_counts": {
+        "pending": 0,
+        "processing": 0,
+        "applied": 9,
+        "retryable_failed": 0,
+        "terminal_failed": 0
+      },
+      "outcome_counts": {
+        "applied": 9
+      },
+      "failure_counts": {},
+      "batch_count": 9,
+      "worker_instance_count": 1,
+      "terminal_failures": [],
+      "attempt_audits": [
+        {
+          "event_id": "picture-observation:upsert:92c892d7101dbe93d9478d7eda2d9361",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "9bdbbd4328875cb5",
+          "batch_id": "3ac49f3e7d223a5b",
+          "batch_limit": 20,
+          "batch_size": 1,
+          "batch_ordinal": 1,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-10T10:43:05.234651+00:00"
+        },
+        {
+          "event_id": "picture-observation:upsert:dab807a3a7295be587696dea863b13a0",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "9bdbbd4328875cb5",
+          "batch_id": "ebefd16231269b00",
+          "batch_limit": 20,
+          "batch_size": 1,
+          "batch_ordinal": 1,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-10T10:42:47.217656+00:00"
+        },
+        {
+          "event_id": "picture-observation:upsert:e8f63100be0dfdea3b748f24c76a81d2",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "9bdbbd4328875cb5",
+          "batch_id": "d8edb8fd298ee1df",
+          "batch_limit": 20,
+          "batch_size": 1,
+          "batch_ordinal": 1,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-10T10:42:28.511315+00:00"
+        },
+        {
+          "event_id": "picture-observation:upsert:c595eb1d99d59c157300abe9d92c671e",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "9bdbbd4328875cb5",
+          "batch_id": "406561e2f7fd0f71",
+          "batch_limit": 20,
+          "batch_size": 1,
+          "batch_ordinal": 1,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-10T10:41:55.892256+00:00"
+        },
+        {
+          "event_id": "picture-observation:upsert:82295e9afb0b780cf9611dd6f1d80b0b",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "9bdbbd4328875cb5",
+          "batch_id": "a1b0ffd80b068525",
+          "batch_limit": 20,
+          "batch_size": 1,
+          "batch_ordinal": 1,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-10T10:41:40.042649+00:00"
+        },
+        {
+          "event_id": "picture-observation:upsert:d0457a62dd2de7bc9c0f945f8f7dbb28",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "9bdbbd4328875cb5",
+          "batch_id": "8e360577312ed71a",
+          "batch_limit": 20,
+          "batch_size": 1,
+          "batch_ordinal": 1,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-10T10:41:17.339432+00:00"
+        },
+        {
+          "event_id": "picture-observation:upsert:3f1ea8ca55d4f4a92b03e3daac174eab",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "9bdbbd4328875cb5",
+          "batch_id": "0554704584fb1435",
+          "batch_limit": 20,
+          "batch_size": 1,
+          "batch_ordinal": 1,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-10T10:40:43.331047+00:00"
+        },
+        {
+          "event_id": "picture-observation:upsert:fefcab0d49477b54fef05b32062d7358",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "9bdbbd4328875cb5",
+          "batch_id": "cca0216278595ca4",
+          "batch_limit": 20,
+          "batch_size": 1,
+          "batch_ordinal": 1,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-10T10:40:32.681894+00:00"
+        },
+        {
+          "event_id": "picture-observation:upsert:dd8a2d5fbca072182602b49f61581752",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "9bdbbd4328875cb5",
+          "batch_id": "1d5545181ae83040",
+          "batch_limit": 20,
+          "batch_size": 1,
+          "batch_ordinal": 1,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-10T10:40:18.780240+00:00"
+        }
+      ]
+    },
+    "sqlite_vec": {
+      "ready": true,
+      "reason_code": null
+    },
+    "degradation_reasons": []
+  },
+  "lane_ok": true,
+  "execution_ok": false,
+  "interaction_ok": true,
+  "worker_exit_code": 1,
+  "worker_stderr_tail": "You're using a XLMRobertaTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.\n",
+  "trajectory": {
+    "status": "complete",
+    "path": "cases/docbench-40-0/trajectory.json",
+    "sha256": "35262f4d0f88b9a617783f995e8dfa9362519a17024ae81f5695eda33120057a",
+    "byte_count": 1689323,
+    "database_count": 1,
+    "step_count": 56,
+    "part_count": 147,
+    "blob_count": 86,
+    "truncated_blob_count": 0
+  },
+  "telemetry": {
+    "provider_response_count": 34,
+    "rejected_output_count": 1,
+    "terminal_model_request_failure_count": 0,
+    "tool_call_count": 21,
+    "input_tokens_total": 441834,
+    "output_tokens_total": 8503,
+    "cache_read_tokens_total": 0,
+    "max_model_input_tokens": 16624,
+    "provider_response_purposes": {
+      "openai-compatible:deepseek-chat:runtime_entry_classify": 1,
+      "openai-compatible:deepseek-chat:runtime_l1_attempt": 25,
+      "openai-compatible:deepseek-chat:runtime_l1_semantic_verifier": 8
+    },
+    "tool_call_purposes": {
+      "analyze_pdf_page": 3,
+      "read_pdf_text": 1,
+      "read_tool_result": 17
+    },
+    "trajectory_database_count": 1,
+    "trajectory_read_failure_count": 0,
+    "trajectory_recording_failure_count": 0,
+    "telemetry_complete": true
+  },
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench:40:0/result.json",
+    "source_sha256": "f6b11f236d250e4115154ce952f631bafa197819f39f7cbac2d20e774a56c8fd",
+    "source_bytes": 14073,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

@@ -36,13 +36,22 @@ For a change, report the behavior affected, tests actually run and remaining lim
 
 Keep the public README, architecture and supported runbook aligned with current code. Prefer a durable explanation of interfaces and limitations over a historical change diary. Do not add links to omitted local reports, author-specific desktop paths or private run artifacts.
 
-Root `doc/` and `docs/` are ignored local development-record areas and must not be published. Public `README.md`, `ARCHITECTURE.md` and `CONTRIBUTING.md` are maintained separately as usage, architecture and contribution guidance; do not restore old private reports into the public copy.
+Root `doc/` and `docs/` are ignored local development-record areas and must not be published. Public `README.md`, `QUICKSTART.md`, `ARCHITECTURE.md` and `CONTRIBUTING.md` are maintained separately as overview, usage, architecture and contribution guidance; do not restore old private reports into the public copy. The original synthetic walkthrough in `examples/document_qa/` keeps its generator and instructions in Git; generated PDFs belong outside the checkout, not in an exception to the private-data policy.
 
 DocBench has one [repository-owned execution package](evals/docbench/reproduce_or_run_script/README.md). Keep experimental config/selection identities immutable when comparing historical runs. New current-code results must not be presented as exact reproduction of a different frozen source/config. Wrong answers, execution failure, coverage and official comparability are distinct measures.
 
 ## Privacy before publication
 
-Never commit user documents, original benchmark PDF/QA, raw prompts/replies, trajectories, credentials, runtime databases, model weights or caches. Use synthetic fixtures and reviewed content-free selections/summaries. A `.summary.json` suffix alone is not approval: the schema and fields must pass the repository privacy policy.
+Never commit user documents, original benchmark PDF/QA, unreviewed raw prompts/trajectories, credentials, runtime databases, model weights or caches. Generated answers, tool calls/failures, judge outputs and performance metrics may be published in the explicitly approved DocBench evidence exports. These field-cleaned projections are separate from ignored originals; their exact file sets and hashes are checked against reviewed publication manifests. Changed or additional payloads require fresh review, not merely a filename exception. Content-free selections/summaries retain their existing schema checks.
+
+After reviewing the checked-in hooks, enable them for each new clone:
+
+```bash
+git config --local core.hooksPath .githooks
+git config --get core.hooksPath
+```
+
+The second command should print `.githooks`. This local Git setting is not inherited by a new clone. The pre-commit and pre-push hooks run the privacy checker using `python3`, which must be available on your PATH. Remote CI remains a separate check; it cannot prevent private bytes from being uploaded in the first place. Manual checks remain available:
 
 ```bash
 .venv/bin/python scripts/check_repository_privacy.py --worktree

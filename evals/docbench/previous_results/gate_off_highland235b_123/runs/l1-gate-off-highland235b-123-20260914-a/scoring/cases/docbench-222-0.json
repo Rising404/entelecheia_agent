@@ -1,0 +1,135 @@
+{
+  "schema_version": "docbench-compatible-case-score-v1",
+  "scoring_protocol": "docbench_prompt_compatible",
+  "official_comparable": false,
+  "case_id": "docbench:222:0",
+  "doc_id": "222",
+  "question_index": 0,
+  "domain": "news",
+  "question_type": "metadata",
+  "system_answer": "根据《纽约时报》2022年7月19日头版，当天传达的主要新闻包括：\n\n1. **极端热浪席卷英国**：头版头条标题为“Blast of Heat Brings Britain To a Standstill”（热浪冲击使英国陷入停滞），报道英国遭遇前所未有的高温天气，导致社会运转受到严重影响。\n\n2. **新冠病毒BA.5变异株蔓延**：标题“MUTED WARNINGS AS VIRUS SURGES ACROSS COUNTRY”（病毒在全国蔓延之际警告声微弱）报道了BA.5变异株在美国快速传播，但公共卫生警告力度不足，且缺乏精确的疫情数据。\n\n3. **欧洲山火北移**：标题“Wave Moves North as Europe Battles Fires”（欧洲抗击山火，火势向北蔓延）报道欧洲多国遭遇山火，火势正向北部地区扩散。\n\n4. **民主党遭遇曼钦否决**：标题“Democrats Take Manchin’s ‘No’”（民主党面对曼钦的反对）报道西弗吉尼亚州参议员乔·曼钦反对民主党关键立法议程，包括全球税收协议和气候政策，使拜登政府面临困境。\n\n5. **堕胎权争议影响黑人选民**：标题“Abortion Battle Risks Derailing To Black Voters Global Tax Deal”（堕胎之争可能破坏对黑人选民的承诺及全球税收协议）报道最高法院推翻罗诉韦德案后，堕胎权议题可能影响民主党与黑人选民的关系，并干扰全球税收协议的推进。\n\n6. **艺术家克莱斯·奥登伯格逝世**：标题“CLAES OLDENBURG, 1929-2022”报道了这位著名波普艺术家的去世，他以将日常物品转化为巨型雕塑而闻名。\n\n7. **乌克兰战争创伤**：标题“At Site of Atrocities Near Kyiv, Family Copes With War’s Trauma”（在基辅附近的暴行现场，家庭应对战争创伤）报道了乌克兰战争中的家庭悲剧。\n\n注：由于该PDF页面包含大量视觉内容（如图片、图表等）无法通过文本提取完整获取，以上信息主要基于可提取的文本标题和段落内容整理。",
+  "prompt_sha256": "784a6d6cf4f8151765b169c633f46e62d12dcd77f8941172e72edbf8b30f9bde",
+  "filled_prompt_sha256": "28144ec20f328be7d46f7d4441a75478116bf10d8b52d99f1a8cdaa634c5bd7f",
+  "judge_provider": "openai-compatible",
+  "judge_base_url": "https://models.sjtu.edu.cn/api/v1",
+  "judge_model": "deepseek-chat",
+  "judge_request_dialect": "deepseek",
+  "judge_retry_policy": {
+    "max_attempts": 6,
+    "fallback_backoff_s": [
+      2.0,
+      4.0,
+      8.0,
+      16.0,
+      30.0
+    ],
+    "inter_case_delay_s": 1.0,
+    "retryable_http_statuses": [
+      408,
+      429,
+      "5xx"
+    ],
+    "retryable_transport_errors": [
+      "httpx.TransportError"
+    ]
+  },
+  "judge_http_status": 200,
+  "judge_response_raw": {
+    "id": "chatcmpl-d48dfe9a-ea7f-4be7-b6d0-b1198b5a70d3",
+    "created": 1789436375,
+    "model": "deepseek-chat",
+    "object": "chat.completion",
+    "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "1",
+          "role": "assistant",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning": null
+          }
+        },
+        "provider_specific_fields": {
+          "token_ids": null,
+          "stop_reason": null,
+          "routed_experts": null
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 2,
+      "prompt_tokens": 936,
+      "total_tokens": 938,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      }
+    }
+  },
+  "judge_response_text": "1",
+  "judge_attempts": [
+    {
+      "attempt_number": 1,
+      "attempted_at": "2026-09-15T01:39:35.820535+00:00",
+      "wait_before_attempt_s": 1.0,
+      "http_status": 200,
+      "response_raw": {
+        "id": "chatcmpl-d48dfe9a-ea7f-4be7-b6d0-b1198b5a70d3",
+        "created": 1789436375,
+        "model": "deepseek-chat",
+        "object": "chat.completion",
+        "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "1",
+              "role": "assistant",
+              "provider_specific_fields": {
+                "refusal": null,
+                "reasoning": null
+              }
+            },
+            "provider_specific_fields": {
+              "token_ids": null,
+              "stop_reason": null,
+              "routed_experts": null
+            }
+          }
+        ],
+        "usage": {
+          "completion_tokens": 2,
+          "prompt_tokens": 936,
+          "total_tokens": 938,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          }
+        }
+      },
+      "status": "completed",
+      "error": null,
+      "retryable": false,
+      "retry_reason": null,
+      "retry_after_header": null,
+      "wait_before_next_attempt_s": null,
+      "wait_source": null
+    }
+  ],
+  "judge_attempt_count": 1,
+  "score_source": "judge",
+  "score": 1,
+  "error": null,
+  "scored_at": "2026-09-15T01:39:34.815018+00:00",
+  "status": "completed",
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-222-0-c773291a2392.json",
+    "source_sha256": "77ddec43b0abd8da7c4230f3a0fb6def09e7d3f22c3e8360dadd77395980dd4a",
+    "source_bytes": 6561,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

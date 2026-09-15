@@ -1,0 +1,116 @@
+{
+  "schema_version": "docbench-compatible-score-v1",
+  "scoring_protocol": "docbench_prompt_compatible",
+  "official_comparable": false,
+  "status": "complete",
+  "prompt_sha256": "784a6d6cf4f8151765b169c633f46e62d12dcd77f8941172e72edbf8b30f9bde",
+  "judge": {
+    "provider": "openai-compatible",
+    "base_url": "https://models.sjtu.edu.cn/api/v1",
+    "model": "deepseek-chat",
+    "request_dialect": "deepseek",
+    "temperature": 0.0,
+    "thinking_enabled": false,
+    "max_output_tokens": 256,
+    "retry_policy": {
+      "max_attempts": 6,
+      "fallback_backoff_s": [
+        2.0,
+        4.0,
+        8.0,
+        16.0,
+        30.0
+      ],
+      "inter_case_delay_s": 1.0,
+      "retryable_http_statuses": [
+        408,
+        429,
+        "5xx"
+      ],
+      "retryable_transport_errors": [
+        "httpx.TransportError"
+      ]
+    },
+    "quota_enabled": true,
+    "quota": {
+      "requests_per_minute": 10,
+      "tokens_per_minute": 300000,
+      "tokens_per_week": 1000000000,
+      "max_in_flight": 2,
+      "quota_group": "sjtu-deepseek-v4-flash"
+    }
+  },
+  "case_count": 3,
+  "correct_count": 2,
+  "score": 0.6666666666666666,
+  "aggregates": {
+    "overall": {
+      "total": 3,
+      "scored": 3,
+      "correct": 2,
+      "errors": 0,
+      "accuracy": 0.6666666666666666,
+      "strict_accuracy": 0.6666666666666666,
+      "coverage": 1.0
+    },
+    "by_domain": {
+      "news": {
+        "total": 3,
+        "scored": 3,
+        "correct": 2,
+        "errors": 0,
+        "accuracy": 0.6666666666666666,
+        "strict_accuracy": 0.6666666666666666,
+        "coverage": 1.0
+      }
+    },
+    "by_type": {
+      "text": {
+        "total": 2,
+        "scored": 2,
+        "correct": 1,
+        "errors": 0,
+        "accuracy": 0.5,
+        "strict_accuracy": 0.5,
+        "coverage": 1.0
+      },
+      "unanswerable": {
+        "total": 1,
+        "scored": 1,
+        "correct": 1,
+        "errors": 0,
+        "accuracy": 1.0,
+        "strict_accuracy": 1.0,
+        "coverage": 1.0
+      }
+    }
+  },
+  "cases": [
+    {
+      "case_id": "docbench:203:1",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-203-1.json"
+    },
+    {
+      "case_id": "docbench:206:0",
+      "score": 0,
+      "status": "completed",
+      "path": "cases/docbench-206-0.json"
+    },
+    {
+      "case_id": "docbench:207:2",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-207-2.json"
+    }
+  ],
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/showcase-02-l1-gpu-transport-retry-3-20260911-a/scoring/summary.json",
+    "source_sha256": "888488ab2d10d36d4363fb7b34a33f79b3a4f75272a3d21f8b44fffeb8c96a31",
+    "source_bytes": 15699,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

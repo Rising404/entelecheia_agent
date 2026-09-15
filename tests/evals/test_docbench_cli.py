@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -10,11 +11,14 @@ from pathlib import Path
 import pytest
 
 from evals.docbench.reproduce_or_run_script import cli
+from evals.docbench.reproduce_or_run_script.config import BENCH_EVAL_DIR_ENV
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 CURRENT_CONFIG_IDS = (
     "l1_balanced_125",
+    "l1_balanced_125_gate_off",
+    "l1_balanced_125_gate_off_highland_235b",
     "l1_bge_m3_live_1",
     "l1_context_regression_5",
     "l1_gpu_context_regression_5",
@@ -30,7 +34,35 @@ CURRENT_CONFIG_IDS = (
 )
 
 
-def test_checked_in_config_catalog_is_strict_and_sorted() -> None:
+@pytest.mark.parametrize("root_value", (None, "", "relative-directory"))
+@pytest.mark.parametrize("command", ((), ("prepare-data",), ("build-selection",)))
+def test_help_does_not_resolve_benchmark_root(
+    root_value: str | None, command: tuple[str, ...],
+) -> None:
+    environment = dict(os.environ, PYTHONDONTWRITEBYTECODE="1")
+    environment.pop(BENCH_EVAL_DIR_ENV, None)
+    if root_value is not None:
+        environment[BENCH_EVAL_DIR_ENV] = root_value
+
+    result = subprocess.run(
+        [sys.executable, "-B", "-m", "evals.docbench.reproduce_or_run_script", *command, "--help"],
+        cwd=PROJECT_ROOT,
+        env=environment,
+        capture_output=True,
+        text=True,
+        timeout=20,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stderr
+    assert "usage:" in result.stdout
+    assert "Traceback" not in result.stderr
+
+
+def test_checked_in_config_catalog_is_strict_and_sorted(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv(BENCH_EVAL_DIR_ENV, str(tmp_path / "bench_eval"))
     expected_paths = tuple(sorted(cli.CONFIGS_DIR.glob("l1_*.yaml")))
 
     configs = cli.load_checked_in_configs()
@@ -44,9 +76,12 @@ def test_checked_in_config_catalog_is_strict_and_sorted() -> None:
 
 
 def test_validate_and_list_load_configs_without_running_live_actions(
+    tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
     capsys: pytest.CaptureFixture[str],
 ) -> None:
+    bench_eval_dir = tmp_path / "nonexistent-bench-eval"
+    monkeypatch.setenv(BENCH_EVAL_DIR_ENV, str(bench_eval_dir))
     def unexpected_live_action(*_args, **_kwargs):
         pytest.fail("config discovery must not dispatch a live action")
 
@@ -68,6 +103,56 @@ def test_validate_and_list_load_configs_without_running_live_actions(
     assert capsys.readouterr().out.splitlines() == [
         f"{config.source_path.stem}\t{config.sha256}" for config in configs
     ]
+    assert not bench_eval_dir.exists()
+
+
+@pytest.mark.parametrize("command", ("validate", "list", "prepare-data"))
+def test_commands_requiring_benchmark_root_fail_clearly_when_it_is_unset(
+    command: str,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    monkeypatch.delenv(BENCH_EVAL_DIR_ENV, raising=False)
+
+    def unexpected_download(**_kwargs):
+        pytest.fail("missing benchmark root must fail before download")
+
+    monkeypatch.setattr(cli.download_selection, "download_qa_catalog", unexpected_download)
+    arguments = [command]
+    if command == "prepare-data":
+        arguments.append("--qa-catalog-only")
+
+    assert cli.main(arguments) == 2
+    output = capsys.readouterr().out
+    assert f"{BENCH_EVAL_DIR_ENV} is required" in output
+    assert "absolute directory outside the source checkout" in output
+    assert "Traceback" not in output
+
+
+def test_readiness_reports_missing_benchmark_root_before_checking_dependencies(
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    monkeypatch.delenv(BENCH_EVAL_DIR_ENV, raising=False)
+
+    def unexpected_dependency_check(*_args, **_kwargs):
+        pytest.fail("missing root must fail before data, provider, or retrieval checks")
+
+    monkeypatch.setattr(cli.readiness, "_dataset_check", unexpected_dependency_check)
+    monkeypatch.setattr(cli.readiness, "_resolve_provider_context", unexpected_dependency_check)
+    monkeypatch.setattr(cli.readiness, "_retrieval_check", unexpected_dependency_check)
+
+    assert cli.main(["readiness"]) == 2
+    report = json.loads(capsys.readouterr().out)
+    assert report["status"] == "failed"
+    assert report["network_calls_performed"] == 0
+    assert report["run_directories_created"] == 0
+    assert report["config_count"] == len(CURRENT_CONFIG_IDS)
+    for config in report["configs"]:
+        assert set(config["checks"]) == {"config"}
+        error = config["checks"]["config"]
+        assert error["error_code"] == "DocBenchConfigError"
+        assert f"{BENCH_EVAL_DIR_ENV} is required" in error["message"]
 
 
 @pytest.mark.parametrize(
@@ -99,6 +184,7 @@ def test_readiness_dispatches_to_read_only_owner_and_returns_json_status(
 def test_unified_entry_dispatches_data_preparation_and_selection_build(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
+    monkeypatch.delenv(BENCH_EVAL_DIR_ENV, raising=False)
     received: list[tuple[str, object]] = []
     monkeypatch.setattr(
         cli.download_selection,
@@ -175,6 +261,8 @@ def test_help_uses_the_portable_repository_module_entrypoint(
     assert "python -m evals.docbench.reproduce_or_run_script" in output
     assert "PERSONAGRAPH_BENCH_EVAL_DIR" in output
     assert "outside the checkout" in output
+    assert "--help does not require this variable" in output
+    assert "before starting Python" not in output
     assert "Desktop" not in output
     assert "script/run.py" not in output
 
@@ -185,9 +273,9 @@ def test_config_discovery_uses_explicit_external_root_without_changing_identity(
 ) -> None:
     first_root = tmp_path / "first-eval-root"
     second_root = tmp_path / "second-eval-root"
-    monkeypatch.setenv("PERSONAGRAPH_BENCH_EVAL_DIR", str(first_root))
+    monkeypatch.setenv(BENCH_EVAL_DIR_ENV, str(first_root))
     first = cli.load_checked_in_configs()
-    monkeypatch.setenv("PERSONAGRAPH_BENCH_EVAL_DIR", str(second_root))
+    monkeypatch.setenv(BENCH_EVAL_DIR_ENV, str(second_root))
     second = cli.load_checked_in_configs()
 
     assert tuple(config.sha256 for config in first) == tuple(
@@ -230,15 +318,20 @@ def test_validate_rejects_an_empty_config_catalog(
     assert "no checked-in DocBench L1 configs" in capsys.readouterr().out
 
 
-def test_module_entrypoint_runs_the_non_live_validator() -> None:
+def test_module_entrypoint_runs_the_non_live_validator(tmp_path: Path) -> None:
+    bench_eval_dir = tmp_path / "nonexistent-bench-eval"
+    environment = dict(os.environ, PYTHONDONTWRITEBYTECODE="1")
+    environment[BENCH_EVAL_DIR_ENV] = str(bench_eval_dir)
     completed = subprocess.run(
         [
             sys.executable,
+            "-B",
             "-m",
             "evals.docbench.reproduce_or_run_script",
             "validate",
         ],
         cwd=PROJECT_ROOT,
+        env=environment,
         check=False,
         capture_output=True,
         text=True,
@@ -247,6 +340,7 @@ def test_module_entrypoint_runs_the_non_live_validator() -> None:
 
     assert completed.returncode == 0, completed.stderr
     assert "DocBench L1 configs" in completed.stdout
+    assert not bench_eval_dir.exists()
 
 
 def test_run_dispatches_to_the_formal_runner_without_an_adapter(
@@ -403,6 +497,7 @@ def test_docbench_python_code_is_owned_by_the_unified_script_package() -> None:
         "config.py",
         "derived_selection.py",
         "download_selection.py",
+        "export_results.py",
         "post_commit.py",
         "provenance.py",
         "readiness.py",

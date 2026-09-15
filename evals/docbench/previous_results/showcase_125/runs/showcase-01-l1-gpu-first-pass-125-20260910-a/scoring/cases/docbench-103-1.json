@@ -1,0 +1,135 @@
+{
+  "schema_version": "docbench-compatible-case-score-v1",
+  "scoring_protocol": "docbench_prompt_compatible",
+  "official_comparable": false,
+  "case_id": "docbench:103:1",
+  "doc_id": "103",
+  "question_index": 1,
+  "domain": "government",
+  "question_type": "text",
+  "system_answer": "**Yes, the Court allowed the government to use the proposed exhibits during the opening statement.**\n\nIn the order addressing the government's Motion to Use Photographs in Opening Statement [Doc. 122], the Court expressly found that \"the government may use the proposed exhibits in its opening statement.\" The Court analyzed the exhibits in three categories:\n\n1. **Exhibits 3B, 4D, 7A, 7E, 11A, 11B, and 21D** – The defense had not objected to their admissibility, so counsel could fairly expect they would come into evidence and could present them during opening.\n2. **Exhibits 9A, 11D, 11G, 11F, 14G, 25C, and the cropped version of 11I** – The Court had already found them relevant and admissible, so the government could also fairly expect they would come into evidence and could present them during opening.\n3. **Exhibits 6F and 11C** – The Court reserved ruling on admissibility pending the government's ability to lay a foundation, but nevertheless found it would not be unfairly prejudicial or misleading for the government to use them in opening, with a curative instruction available if needed.\n\nThe Court also reminded the government that it cannot refer to the plastic wrappers in Exhibit 14G as \"kilo wrappers,\" and noted that any potential prejudice would be cured by the Court's preliminary instruction to the jury that opening statements are not evidence.\n\n**The motion was granted in its entirety.**",
+  "prompt_sha256": "784a6d6cf4f8151765b169c633f46e62d12dcd77f8941172e72edbf8b30f9bde",
+  "filled_prompt_sha256": "ba7beb3eb66b4a925040c3bc18c281d68302f45820ef0f2835c9b4885bd39e3c",
+  "judge_provider": "openai-compatible",
+  "judge_base_url": "https://models.sjtu.edu.cn/api/v1",
+  "judge_model": "deepseek-chat",
+  "judge_request_dialect": "deepseek",
+  "judge_retry_policy": {
+    "max_attempts": 6,
+    "fallback_backoff_s": [
+      2.0,
+      4.0,
+      8.0,
+      16.0,
+      30.0
+    ],
+    "inter_case_delay_s": 1.0,
+    "retryable_http_statuses": [
+      408,
+      429,
+      "5xx"
+    ],
+    "retryable_transport_errors": [
+      "httpx.TransportError"
+    ]
+  },
+  "judge_http_status": 200,
+  "judge_response_raw": {
+    "id": "chatcmpl-cc0e978d-907d-4531-be93-1210fe5af724",
+    "created": 1789065502,
+    "model": "deepseek-chat",
+    "object": "chat.completion",
+    "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "Correctness: 1",
+          "role": "assistant",
+          "provider_specific_fields": {
+            "reasoning": null,
+            "refusal": null
+          }
+        },
+        "provider_specific_fields": {
+          "stop_reason": null,
+          "routed_experts": null,
+          "token_ids": null
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 6,
+      "prompt_tokens": 625,
+      "total_tokens": 631,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      }
+    }
+  },
+  "judge_response_text": "Correctness: 1",
+  "judge_attempts": [
+    {
+      "attempt_number": 1,
+      "attempted_at": "2026-09-10T18:38:21.093131+00:00",
+      "wait_before_attempt_s": 1.0,
+      "http_status": 200,
+      "response_raw": {
+        "id": "chatcmpl-cc0e978d-907d-4531-be93-1210fe5af724",
+        "created": 1789065502,
+        "model": "deepseek-chat",
+        "object": "chat.completion",
+        "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "Correctness: 1",
+              "role": "assistant",
+              "provider_specific_fields": {
+                "reasoning": null,
+                "refusal": null
+              }
+            },
+            "provider_specific_fields": {
+              "stop_reason": null,
+              "routed_experts": null,
+              "token_ids": null
+            }
+          }
+        ],
+        "usage": {
+          "completion_tokens": 6,
+          "prompt_tokens": 625,
+          "total_tokens": 631,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          }
+        }
+      },
+      "status": "completed",
+      "error": null,
+      "retryable": false,
+      "retry_reason": null,
+      "retry_after_header": null,
+      "wait_before_next_attempt_s": null,
+      "wait_source": null
+    }
+  ],
+  "judge_attempt_count": 1,
+  "score_source": "judge",
+  "score": 1,
+  "error": null,
+  "scored_at": "2026-09-10T18:38:20.087406+00:00",
+  "status": "completed",
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-103-1-66838e0a452f.json",
+    "source_sha256": "db06e826ae54bd0243f5e3fdf4c31f03aa3c208e19508924ed5190ea13c82fa1",
+    "source_bytes": 5148,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

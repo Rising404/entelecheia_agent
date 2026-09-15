@@ -1,0 +1,135 @@
+{
+  "schema_version": "docbench-compatible-case-score-v1",
+  "scoring_protocol": "docbench_prompt_compatible",
+  "official_comparable": false,
+  "case_id": "docbench:178:1",
+  "doc_id": "178",
+  "question_index": 1,
+  "domain": "laws",
+  "question_type": "text",
+  "system_answer": "根据意大利基础设施和交通部发布的2019年1月21日第7号通函（Circular No. 7 of January 21, 2019），矩形截面的mass timber（大体积木/实木产品）需要满足以下要求：\n\n1. **符合UNI EN 14080:2013标准**：mass timber必须符合协调欧洲标准UNI EN 14080:2013（《木结构：胶合层压木和胶合实木》），该标准包含一个名为\"强度分级矩形截面结构用木材：通用要求\"（Strength Graded Structural Timber with Rectangular Cross Section: General Requirements）的章节，其中详细规定了矩形截面mass timber的具体技术要求。\n\n2. **符合协调欧洲标准UNI EN 14081-1**：矩形截面的实木结构构件生产必须符合协调欧洲标准UNI EN 14081-1。\n\n3. **CE标志或资格认证**：当需要时，这些构件必须带有CE标志；当不需要CE标志时，结构用实木构件的生产商必须按照特定程序进行资格认证。\n\n4. **抗压强度分类**：矩形截面的mass timber（实木产品）必须进行抗压强度分类，为每块锯材分配一个抗压强度等级，该等级通常应与UNI EN 338标准所建议的等级一致。\n\n需要注意的是，通函中明确指出，不规则截面的实木不适用上述特定资格认证程序，而是适用默认的欧洲技术评估（ETA）程序。",
+  "prompt_sha256": "784a6d6cf4f8151765b169c633f46e62d12dcd77f8941172e72edbf8b30f9bde",
+  "filled_prompt_sha256": "eb922e3587b766655acfcffc42f36edcfb51ce98b5479145ec317ada55375ed8",
+  "judge_provider": "openai-compatible",
+  "judge_base_url": "https://models.sjtu.edu.cn/api/v1",
+  "judge_model": "deepseek-chat",
+  "judge_request_dialect": "deepseek",
+  "judge_retry_policy": {
+    "max_attempts": 6,
+    "fallback_backoff_s": [
+      2.0,
+      4.0,
+      8.0,
+      16.0,
+      30.0
+    ],
+    "inter_case_delay_s": 1.0,
+    "retryable_http_statuses": [
+      408,
+      429,
+      "5xx"
+    ],
+    "retryable_transport_errors": [
+      "httpx.TransportError"
+    ]
+  },
+  "judge_http_status": 200,
+  "judge_response_raw": {
+    "id": "chatcmpl-2d9299c0-a169-40af-b34a-3a939c4e6ae6",
+    "created": 1789065764,
+    "model": "deepseek-chat",
+    "object": "chat.completion",
+    "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "0",
+          "role": "assistant",
+          "provider_specific_fields": {
+            "reasoning": null,
+            "refusal": null
+          }
+        },
+        "provider_specific_fields": {
+          "routed_experts": null,
+          "stop_reason": null,
+          "token_ids": null
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 2,
+      "prompt_tokens": 649,
+      "total_tokens": 651,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      }
+    }
+  },
+  "judge_response_text": "0",
+  "judge_attempts": [
+    {
+      "attempt_number": 1,
+      "attempted_at": "2026-09-10T18:42:41.859937+00:00",
+      "wait_before_attempt_s": 1.0,
+      "http_status": 200,
+      "response_raw": {
+        "id": "chatcmpl-2d9299c0-a169-40af-b34a-3a939c4e6ae6",
+        "created": 1789065764,
+        "model": "deepseek-chat",
+        "object": "chat.completion",
+        "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "0",
+              "role": "assistant",
+              "provider_specific_fields": {
+                "reasoning": null,
+                "refusal": null
+              }
+            },
+            "provider_specific_fields": {
+              "routed_experts": null,
+              "stop_reason": null,
+              "token_ids": null
+            }
+          }
+        ],
+        "usage": {
+          "completion_tokens": 2,
+          "prompt_tokens": 649,
+          "total_tokens": 651,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          }
+        }
+      },
+      "status": "completed",
+      "error": null,
+      "retryable": false,
+      "retry_reason": null,
+      "retry_after_header": null,
+      "wait_before_next_attempt_s": null,
+      "wait_source": null
+    }
+  ],
+  "judge_attempt_count": 1,
+  "score_source": "judge",
+  "score": 0,
+  "error": null,
+  "scored_at": "2026-09-10T18:42:40.850591+00:00",
+  "status": "completed",
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-178-1-490c3b969d14.json",
+    "source_sha256": "461cf87ca8b1b2de793c1f7a4b2609c9a84b2c234a5c912b2ab86f53d0b38824",
+    "source_bytes": 5214,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

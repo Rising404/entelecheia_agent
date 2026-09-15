@@ -1,0 +1,135 @@
+{
+  "schema_version": "docbench-compatible-case-score-v1",
+  "scoring_protocol": "docbench_prompt_compatible",
+  "official_comparable": false,
+  "case_id": "docbench:137:1",
+  "doc_id": "137",
+  "question_index": 1,
+  "domain": "laws",
+  "question_type": "text",
+  "system_answer": "根据附件文档（《Regulating Electronic Means to Fight the Spread of COVID-19: Brazil》，美国国会图书馆法律图书馆报告），**IBGE 被明确禁止向任何公共或私营公司或机构提供数据**。\n\n文档第17-18页的相关段落（对应巴西临时措施 MP No. 954/2020 的条款）明确指出：\n\n> \"The IBGE is prohibited from making the data available to any public or private companies or bodies, or to entities of the public administration of any of the federative entities.\"\n\n（IBGE 被禁止向任何公共或私营公司或机构，或任何联邦实体的公共行政机关提供数据。）\n\n因此，**答案是否定的**——IBGE 不允许与公共或私营公司共享数据。\n\n补充背景：该临时措施允许电信公司向 IBGE 共享用户数据，但仅用于在 COVID-19 疫情期间以非面对面方式开展住户调查、生成官方统计。共享的数据须保密，不得用作任何行政、税务或司法程序的证据，且紧急状态结束后必须从 IBGE 数据库中删除。IBGE 仅被授权使用这些数据，而无权将其转交给第三方公司或机构。",
+  "prompt_sha256": "784a6d6cf4f8151765b169c633f46e62d12dcd77f8941172e72edbf8b30f9bde",
+  "filled_prompt_sha256": "99d6880c7dc0a88237255d19163908408f3530263918cbb0676f8aec15b9f745",
+  "judge_provider": "openai-compatible",
+  "judge_base_url": "https://models.sjtu.edu.cn/api/v1",
+  "judge_model": "deepseek-chat",
+  "judge_request_dialect": "deepseek",
+  "judge_retry_policy": {
+    "max_attempts": 6,
+    "fallback_backoff_s": [
+      2.0,
+      4.0,
+      8.0,
+      16.0,
+      30.0
+    ],
+    "inter_case_delay_s": 1.0,
+    "retryable_http_statuses": [
+      408,
+      429,
+      "5xx"
+    ],
+    "retryable_transport_errors": [
+      "httpx.TransportError"
+    ]
+  },
+  "judge_http_status": 200,
+  "judge_response_raw": {
+    "id": "chatcmpl-1370b72b-326f-4c3c-b4bf-95a29e05b638",
+    "created": 1789436031,
+    "model": "deepseek-chat",
+    "object": "chat.completion",
+    "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "Correctness: 1",
+          "role": "assistant",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning": null
+          }
+        },
+        "provider_specific_fields": {
+          "token_ids": null,
+          "stop_reason": null,
+          "routed_experts": null
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 6,
+      "prompt_tokens": 571,
+      "total_tokens": 577,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      }
+    }
+  },
+  "judge_response_text": "Correctness: 1",
+  "judge_attempts": [
+    {
+      "attempt_number": 1,
+      "attempted_at": "2026-09-15T01:33:49.618947+00:00",
+      "wait_before_attempt_s": 1.0,
+      "http_status": 200,
+      "response_raw": {
+        "id": "chatcmpl-1370b72b-326f-4c3c-b4bf-95a29e05b638",
+        "created": 1789436031,
+        "model": "deepseek-chat",
+        "object": "chat.completion",
+        "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "Correctness: 1",
+              "role": "assistant",
+              "provider_specific_fields": {
+                "refusal": null,
+                "reasoning": null
+              }
+            },
+            "provider_specific_fields": {
+              "token_ids": null,
+              "stop_reason": null,
+              "routed_experts": null
+            }
+          }
+        ],
+        "usage": {
+          "completion_tokens": 6,
+          "prompt_tokens": 571,
+          "total_tokens": 577,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          }
+        }
+      },
+      "status": "completed",
+      "error": null,
+      "retryable": false,
+      "retry_reason": null,
+      "retry_after_header": null,
+      "wait_before_next_attempt_s": null,
+      "wait_source": null
+    }
+  ],
+  "judge_attempt_count": 1,
+  "score_source": "judge",
+  "score": 1,
+  "error": null,
+  "scored_at": "2026-09-15T01:33:48.617982+00:00",
+  "status": "completed",
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-137-1-37ffda5ca4d9.json",
+    "source_sha256": "ba340c6cea1eab7f6abd2c261b9ec942177a94981477509a3b99fe9a21c34b66",
+    "source_bytes": 4989,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

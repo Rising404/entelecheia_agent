@@ -1,0 +1,1502 @@
+{
+  "kind": "reviewed_public_evidence",
+  "benchmark_id": "docbench",
+  "runs": [
+    {
+      "directory": "l1-gate-off-highland235b-123-20260914-a",
+      "run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "executions": 123,
+      "judge_correct": 97
+    }
+  ],
+  "files": {
+    "README.md": {
+      "sha256": "004cc8a1aae7e3d1c9966617083be10320b0070c68414605b8f7325e8b9bb866",
+      "bytes": 1712
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-1-1/result.json": {
+      "sha256": "90d3858e3126de3a008865c01ce6f4a1193295a5d4401dff1a2f43121200e9c2",
+      "bytes": 25730
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-1-1/trajectory.json": {
+      "sha256": "b64372d76bc54a67eb660239a8cf4d1dfc39a493b9d0f56616785fa264dba286",
+      "bytes": 194249
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-10-3/result.json": {
+      "sha256": "072e79d175e9ad8dbcf78db5d9857b2be5cc007f6314ab33fd04ca675504169d",
+      "bytes": 27327
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-10-3/trajectory.json": {
+      "sha256": "822c35c23bc430451cc3be852fe2a7780bd7e464455b377cd824798f8198a44f",
+      "bytes": 535272
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-103-1/result.json": {
+      "sha256": "3a378a64a2367395ceb46aa67c5b7f9c9211bef36cc3309d5fd2f492c62d0407",
+      "bytes": 14161
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-103-1/trajectory.json": {
+      "sha256": "c65f6c8ada88266e74ea04986190c2b754e87bbb47b58321407532f942f3b5e9",
+      "bytes": 204593
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-104-0/result.json": {
+      "sha256": "2fc4f95adebf0562ecfbecf574eb3e6ce2342f2aab3259fe3bafbc7fbf94f1fb",
+      "bytes": 25681
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-104-0/trajectory.json": {
+      "sha256": "1aae2770e4048ce34bb1404fe68d1306a6a6e0e4c45c00034ba28d47261ff535",
+      "bytes": 301917
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-105-2/result.json": {
+      "sha256": "3ae031a6ea884974ad58bb67445a0388af95ce1bc2900b4d793ba22874d1aaab",
+      "bytes": 27737
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-105-2/trajectory.json": {
+      "sha256": "0efd49515815bc1b61792a40a7400e004e508e5e71aecbf9f28547f142f585b3",
+      "bytes": 235883
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-106-0/result.json": {
+      "sha256": "da712820e0e7a8b04d5d2ff2c55d6548fc8a05bb32e5366a3b134f91b5f956db",
+      "bytes": 236746
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-106-0/trajectory.json": {
+      "sha256": "66b23ef4ba2d935669c1e6425b2ae578eb9f808bf60b401aebc45e1b38812554",
+      "bytes": 620900
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-108-2/result.json": {
+      "sha256": "767ed097fbd9b2c2d8c50bd3070a6067c25fb5add4b434f9f20efa551f63f617",
+      "bytes": 30563
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-108-2/trajectory.json": {
+      "sha256": "0626d9db8c93a8e34ca8392608c897bf0246871657df174edd5bbc2b97533a6a",
+      "bytes": 427905
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-109-3/result.json": {
+      "sha256": "12c42dababe91e0119e0504e13cca738d0267d424eff1214b7e36dd357562b64",
+      "bytes": 32924
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-109-3/trajectory.json": {
+      "sha256": "a138743555a6db14df8c2ade6546b486fdd6fe00aa286cd19714ef10f760914e",
+      "bytes": 446950
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-11-4/result.json": {
+      "sha256": "ce71afc799696c9b335453119dbe948417fad3e0fdbe488d5beeab29283b0e6c",
+      "bytes": 35779
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-11-4/trajectory.json": {
+      "sha256": "0409e73eb7ff055d280300a7d7f944b976aafbe7b35c28118c43f75fbeac99c1",
+      "bytes": 250310
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-110-2/result.json": {
+      "sha256": "87a7fc4d2188f5948f394310a452ff106a2d966a870fe30115c9b8da834a9ada",
+      "bytes": 312569
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-110-2/trajectory.json": {
+      "sha256": "427196baad52a0733ebaa65f663adb9c4620b2327ef50084c90a6bf50ef5c649",
+      "bytes": 674632
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-111-1/result.json": {
+      "sha256": "62b6df367cc526390aa0f23627d3ba6a7d5e8c72e943122725c8a3a0283e07d1",
+      "bytes": 25214
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-111-1/trajectory.json": {
+      "sha256": "14e091b059906b4352b95e5acfde76563de320a5b6e939453007f0ad7198e67b",
+      "bytes": 298922
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-112-2/result.json": {
+      "sha256": "a24a0b568df261f6970e3456648cb55bd9ab798f6fba14fb5f4ecea3e5e0d483",
+      "bytes": 34555
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-112-2/trajectory.json": {
+      "sha256": "952976d51318418c34142ce266f8ac7d2e011824079d0a180592b9253746591e",
+      "bytes": 429683
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-113-4/result.json": {
+      "sha256": "c1ba123e456262f167bed06fa6dfdd6147c406b289bf8614ac9d9d0d457e10f7",
+      "bytes": 27928
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-113-4/trajectory.json": {
+      "sha256": "4a9000c432866992dd6690d10f741d4a08269c0fdc1c49cc65281b0694febe92",
+      "bytes": 383402
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-114-2/result.json": {
+      "sha256": "c440cbbc5c900069413b3e4ea1c8c204b0e278316a53bca0e32880697ca0649b",
+      "bytes": 298503
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-114-2/trajectory.json": {
+      "sha256": "0dc098626d30c86035c0964ff9e97f9cb6f7593752b52c3212fa8ab125d302a5",
+      "bytes": 1321675
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-117-0/result.json": {
+      "sha256": "8edd74212e6e0a4c188ec717dc92e86e9843fcc363552c39359835b932d9d590",
+      "bytes": 28233
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-117-0/trajectory.json": {
+      "sha256": "d6422d05381a1fe5075c8c24cfd213df3eca7ebff5b82af227387d3b35636caa",
+      "bytes": 1041945
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-118-1/result.json": {
+      "sha256": "ff4aed069716c7941ebf7077550277fe54119790d6ae39ecd76f8c97456770b3",
+      "bytes": 25670
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-118-1/trajectory.json": {
+      "sha256": "f67a715f5e5abaa2db2948b43ba88b06b4ee6088f0b16df5fad85e68840e612b",
+      "bytes": 297710
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-119-2/result.json": {
+      "sha256": "c257aaf9ac7910d947e0a8a8e234e1aececc3ab477796c1c6b1dcb8e02c2294c",
+      "bytes": 35798
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-119-2/trajectory.json": {
+      "sha256": "00f2edc616152f7ca806601cf4896083b159c66cfa1d54c3c77801427a910bbd",
+      "bytes": 1276716
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-120-4/result.json": {
+      "sha256": "ca3b1a874911b13a62e582f10bc268b57d30c39b595ccf990a21012e71764b6a",
+      "bytes": 358256
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-120-4/trajectory.json": {
+      "sha256": "23c78c8f31f51d4b0abefa3a60d8ebe8e03b0f149bde7381aded702c8c53cff3",
+      "bytes": 1833306
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-122-3/result.json": {
+      "sha256": "3f6c671c721049d41cff24593191d2b92a24fa03ec93d0ace7db18abdb94031d",
+      "bytes": 45587
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-122-3/trajectory.json": {
+      "sha256": "6ea39c1c94f430acf4d9ad227c85c23b32b0d6cac06e2607250f15fde0713d90",
+      "bytes": 457282
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-123-0/result.json": {
+      "sha256": "aa55b0cff7779d8000709b1c08a8f5a3f85cb6c39078b80e29e1cb17899a9ff4",
+      "bytes": 20349
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-123-0/trajectory.json": {
+      "sha256": "f76a5096dd38e825c0122ff8c8139cf8e1306ea9b5d830309964ed3b6a0dafe7",
+      "bytes": 387032
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-124-2/result.json": {
+      "sha256": "61be4e5caa8e13286f1fdbea10c40ef12459470facfc5a0e44d7aa99da5ac858",
+      "bytes": 49862
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-124-2/trajectory.json": {
+      "sha256": "a3e4cedcd26e98fec5b6d8f129a8a44adac50430f48356ee63eae048a8e96a43",
+      "bytes": 968509
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-125-1/result.json": {
+      "sha256": "d10bda6dbc771d4ac1b5126cae34d4017e61777665b63cd4ab67c10a788983b9",
+      "bytes": 19808
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-125-1/trajectory.json": {
+      "sha256": "04adad1e1e478f94e9da3355d14da0788f5245e1fa94ff501e010062023ba0ad",
+      "bytes": 365543
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-128-2/result.json": {
+      "sha256": "e852eccd2af30057997b7156f686e72948dac5215c1ba2e3bd311f5f2cd3cad2",
+      "bytes": 27635
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-128-2/trajectory.json": {
+      "sha256": "74055b14b429efd4bb338c5ca6d45307a7ca14244b11df7b908eb632b9466175",
+      "bytes": 706462
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-129-0/result.json": {
+      "sha256": "f5035ef625c9db575571f62c12bf18a66e803c0e1e670603d34e5d2b31b05cc1",
+      "bytes": 176153
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-129-0/trajectory.json": {
+      "sha256": "5c1e40fcbd566e4d1cafc31bac66ac2652273f050013f7050226c9609ef16dcd",
+      "bytes": 534968
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-13-3/result.json": {
+      "sha256": "88976d2013f5d32d379a3334ac8dbfe63129244bece8382727990a22e8c520a6",
+      "bytes": 35643
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-13-3/trajectory.json": {
+      "sha256": "392b8ebfed778fad8982be764939f99a2db41f659c6fab41394dd99e1821aa48",
+      "bytes": 475164
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-132-2/result.json": {
+      "sha256": "803e4346dae100b5c12a5b45e90f50a0544f413fedc4174a0fd324592949dfff",
+      "bytes": 22788
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-132-2/trajectory.json": {
+      "sha256": "ea39d240cd803487456ac42040af69e098942b8f36dee3411efb22c51cc34e00",
+      "bytes": 289181
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-137-1/result.json": {
+      "sha256": "7e66a100d866d2d09080c64e3f220d5d55a48a978135eaeb622d951127629cbb",
+      "bytes": 184023
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-137-1/trajectory.json": {
+      "sha256": "5b9f15f85f5996635f61d01e56a5a740deeab842f905dd0274c86220543f7b4c",
+      "bytes": 743881
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-140-0/result.json": {
+      "sha256": "192e33f981f82dba5952828390cd27614670e7f67585f6aa6645543634de1964",
+      "bytes": 24184
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-140-0/trajectory.json": {
+      "sha256": "99bace97e3ad4b944521792711d37029e9eeb590d4e1dcbd64871be63cda88b3",
+      "bytes": 475100
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-144-3/result.json": {
+      "sha256": "1318a2266395bd7d48f4e274642e8d06c23e345660230b58ef1ed36f30d0951b",
+      "bytes": 67181
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-144-3/trajectory.json": {
+      "sha256": "84e574e171609bdd55f4e9ec20cf359d71de98c7042d9bd715dae840d39695aa",
+      "bytes": 2169204
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-148-2/result.json": {
+      "sha256": "594bc1adfcd3e66ec3403ff52cbe6fc959099e55da52a882655a0f64c55162b0",
+      "bytes": 18664
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-148-2/trajectory.json": {
+      "sha256": "a3fc2a4481bc4690a8ce63013811071a26fd04d06c9d6dbb48768a6225e80abb",
+      "bytes": 853169
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-149-0/result.json": {
+      "sha256": "13b5e0aa6d688e18e2b722095e2f79522092fd05475d1c310aadf31ff32368f1",
+      "bytes": 48209
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-149-0/trajectory.json": {
+      "sha256": "d78f252d4fb0d20e7502fbb25b070835975f12dd4c64940e2603987fcc3a8b3c",
+      "bytes": 540413
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-151-3/result.json": {
+      "sha256": "9a6b5da63f62d8a596090516f42dc01bc960d0cc5f0b9402c8d383e17dcf3fd7",
+      "bytes": 190514
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-151-3/trajectory.json": {
+      "sha256": "7a5bd952104a71e7777fab7b929fe22da8107ca8d99094290cdacd845780a98b",
+      "bytes": 199730
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-152-1/result.json": {
+      "sha256": "c612d40c1c5ca66bcb46c621fab7d62d8bc7351ac40e1d643c7d9c189dbeccd5",
+      "bytes": 20296
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-152-1/trajectory.json": {
+      "sha256": "6b505d373593acfb4a74422a7141210f7b2db9003b085be6aaf9577312486502",
+      "bytes": 301704
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-153-2/result.json": {
+      "sha256": "22cf8d494f2e37581c2c338d62f13143fb08d63c12cb4cc0eafe519269c693ca",
+      "bytes": 20298
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-153-2/trajectory.json": {
+      "sha256": "a17e707bc997474a1c38ba3f6bd3a15c3db605e6a729a1e499382328a85fbb18",
+      "bytes": 909335
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-156-4/result.json": {
+      "sha256": "e702a5ebb503483d779b365c829867c4da9a2ab02a4f21059ccb67ffbcb7491f",
+      "bytes": 91662
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-156-4/trajectory.json": {
+      "sha256": "752a6d099d6f6e9e75b1e416430d9fdd6d21355ff3d876701be36febe7c95515",
+      "bytes": 3314173
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-157-5/result.json": {
+      "sha256": "18e9a82c1193e413dc60885cad7c4a2ef61d059c2a5d3a6bd3081562718ea29e",
+      "bytes": 66950
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-157-5/trajectory.json": {
+      "sha256": "afd2f0300b58a4386ce68a17e60c1acb307561f3b0c0e7412450ae51291a4c33",
+      "bytes": 781620
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-158-1/result.json": {
+      "sha256": "f78665df1c8cd6b326dd9220028bb4fb7758b3fbf14a83c684f9ae2b31714b0a",
+      "bytes": 82594
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-158-1/trajectory.json": {
+      "sha256": "78a11b0137097b9cbffeec658a735fd3e82b1f56c51638ac6724bd02a6096017",
+      "bytes": 887187
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-159-3/result.json": {
+      "sha256": "cca473f41e216c2fd78e7f288848a28454b8966e9e34ef00ff2dbbde53573a91",
+      "bytes": 25441
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-159-3/trajectory.json": {
+      "sha256": "b611a1426b70301baa196a3458530627c0431ffb7a20e6ccb0be49b3db35903d",
+      "bytes": 225280
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-160-2/result.json": {
+      "sha256": "09927181c15c04f49d0cb5b750ae7b72bdd6d5a07748b9db8d19502e97e70f26",
+      "bytes": 96357
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-160-2/trajectory.json": {
+      "sha256": "8441c216b0e3b199acdfce2d40cc19b10d43325f3b7b36ec489779c58621c311",
+      "bytes": 1489929
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-161-0/result.json": {
+      "sha256": "ff2528d62a68f598fd48ae88175af1b955a1a6164496ec602e74612832eb9ff6",
+      "bytes": 67743
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-161-0/trajectory.json": {
+      "sha256": "08d81d1c18f25892321c00a305c80446615fdebcc19048db451ae9059fe9b5e0",
+      "bytes": 638128
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-164-1/result.json": {
+      "sha256": "0ba9b09d9ccd783622dcc42d3df001ff1ae4c7e3f66f2a7c2af3da0d47cd74dc",
+      "bytes": 25667
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-164-1/trajectory.json": {
+      "sha256": "f1bcb11d65a96de6461ce6df15c4b398d4db0ae24b88294c24aeb7a1fc2bc8a6",
+      "bytes": 349146
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-165-0/result.json": {
+      "sha256": "e0203a9d2406d302151c9348546f85aa01b8164f6fd48f193852e6078e157acb",
+      "bytes": 20299
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-165-0/trajectory.json": {
+      "sha256": "09ca72692ec45c787ca9d762013f110c34fb238779604a7f8548e82867dfc914",
+      "bytes": 393947
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-166-2/result.json": {
+      "sha256": "4be1434b16ffb9d10889dd597522652641f4e4fdcf0ead5abc771e4e9f64c2b9",
+      "bytes": 34906
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-166-2/trajectory.json": {
+      "sha256": "f95fe11d03e6b0b9c607062084f511ea83ebb4db38abe3b065c3f178a9fef1b9",
+      "bytes": 481146
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-167-0/result.json": {
+      "sha256": "0022dbe50a0fcc3c03023a62d5f0cbcd83dca34bb2e3aa46239e832d4c78cdd8",
+      "bytes": 75474
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-167-0/trajectory.json": {
+      "sha256": "70db77e44708da52ce3bc16d8f8eef1b2144e2fc2cfb466e91b35cd8d0797c0f",
+      "bytes": 708189
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-168-3/result.json": {
+      "sha256": "9ace87d6c44f4ae71ed2e73dabb71adca14c0d86029d7665bc7d86644f4fb0a0",
+      "bytes": 45327
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-168-3/trajectory.json": {
+      "sha256": "2c18d1b4fff061096fd2644df288651cfc17f4ca40177d0b2d1b2e55b756e396",
+      "bytes": 153615
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-169-2/result.json": {
+      "sha256": "319b08ca4bd531b01a6347938fd8c949dcfbe5cd8d8f4276fef28cc61497b3f9",
+      "bytes": 29378
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-169-2/trajectory.json": {
+      "sha256": "2098c87e89f6f1211d9b068162fe60bab151af73f0f2ee84fd25e8cdd2c3b611",
+      "bytes": 152681
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-17-8/result.json": {
+      "sha256": "15732bc2e1ea583b799bed4cd8d8cf5953223907c5c6799a65adc82bfd823357",
+      "bytes": 34715
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-17-8/trajectory.json": {
+      "sha256": "cd8df99a12ebce233fde11977a3e620d5b72893a4dad5262e2929c71391524db",
+      "bytes": 732709
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-170-3/result.json": {
+      "sha256": "1e9c8281133b4edd66190df1e7ef57a52b592d81b47f320d4527e6dda47af909",
+      "bytes": 180077
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-170-3/trajectory.json": {
+      "sha256": "8476b574ea3909694d648d2ce61f674685c5d108186c30cd6c99640deeacbb6e",
+      "bytes": 959732
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-171-5/result.json": {
+      "sha256": "593c4c42ec4fa82f94df82d8fe2f6781585abac1849309bd8b14970359c907aa",
+      "bytes": 58403
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-171-5/trajectory.json": {
+      "sha256": "41c5c4566d5143417c90ae79ab5c33dfd5b54f1fb3d9586b0cc4e90e067144c4",
+      "bytes": 331482
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-174-3/result.json": {
+      "sha256": "e689e0d41448a3afcd34dda3d288de2c56c618747a0ed71dcf4860a866d208fe",
+      "bytes": 70269
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-174-3/trajectory.json": {
+      "sha256": "40082566865ea1ae67d17f0f7f50a559c7101ebcee210371ed78e43027363de9",
+      "bytes": 151076
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-176-1/result.json": {
+      "sha256": "b43cc3c35db0d6d31a8d913b34332c44469a6beb972a835d23e7ac0fcbcfe579",
+      "bytes": 60587
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-176-1/trajectory.json": {
+      "sha256": "57a6b0e9b2dac851a21662de2b62c05439ddbe7381da756661098871b1211bfd",
+      "bytes": 673617
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-178-1/result.json": {
+      "sha256": "b575f8034c0342d10fa6724f32d96b9ff2f3931649f1dcc968d8409d5dd82305",
+      "bytes": 51939
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-178-1/trajectory.json": {
+      "sha256": "ed99bddcf0dcc86f3769bda387208cf664ef7614eb61a77279e6e10f45bda6c0",
+      "bytes": 781365
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-179-5/result.json": {
+      "sha256": "db4bef8c0a77fb52ecb919dcf4e7a893e04efaae3ce13c12e6f400e71d8a3db7",
+      "bytes": 25224
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-179-5/trajectory.json": {
+      "sha256": "c0f5c53a2cfad5a215a9c8d0da647c3a29848aa1a7cd133abfa86be2113c267c",
+      "bytes": 386868
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-183-0/result.json": {
+      "sha256": "a8a16e2530f41faffbdf242d7e16d941beffe97728e761986ccfc357992e6d50",
+      "bytes": 24056
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-183-0/trajectory.json": {
+      "sha256": "35e5f0351672b907c92a27774b599033bccd96978a1f5ba552f43da78ebde961",
+      "bytes": 287578
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-187-0/result.json": {
+      "sha256": "817192b989e5481072b0ccb58a12d028dfee9c9c00f255f2c7209e0606b712d5",
+      "bytes": 25180
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-187-0/trajectory.json": {
+      "sha256": "c3164d44eb89705509610644106e96aa1237b9d2c1602dd2ab31295ee011c53a",
+      "bytes": 360768
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-189-2/result.json": {
+      "sha256": "a01b61e646f33b73a856ccd65e24b2c40de71f66fd741ebfa465ecda818a589b",
+      "bytes": 25765
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-189-2/trajectory.json": {
+      "sha256": "85cd136018d9efb9e3de16028b6a5c7533d76c52c72fe0d9d20cd919b39e6683",
+      "bytes": 366940
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-19-4/result.json": {
+      "sha256": "6cd043e1af984a471669ae077326da47f9d9efe4808848b0226e03ecf6cfce57",
+      "bytes": 36412
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-19-4/trajectory.json": {
+      "sha256": "801cd244a67ba0e81ab72dc9ee68022aa8cee270cab5a8d98e42970050156396",
+      "bytes": 446810
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-190-2/result.json": {
+      "sha256": "f34f3490bf76eae97957847159ce3b7ac339d32c8783f3ef5137a288e667d3b1",
+      "bytes": 26240
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-190-2/trajectory.json": {
+      "sha256": "0d67db8d2aefbf30f152e075b2ab422c0b5a569a180b0f06bf35450b9add2184",
+      "bytes": 1031248
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-191-1/result.json": {
+      "sha256": "765fc4bd6dd9801ba444686ff4f493f8b317f7aa786d39e5c0a18b8c0bb281c3",
+      "bytes": 25423
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-191-1/trajectory.json": {
+      "sha256": "0cb4dd033dad6bdfd7bdebdc6eef1ee4c9bf8a57e536612a2010a44e81263ce9",
+      "bytes": 344257
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-192-4/result.json": {
+      "sha256": "b71046c0916693fb701cad8132411c01af31024e8992308eb4745a3fa3c36d50",
+      "bytes": 26609
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-192-4/trajectory.json": {
+      "sha256": "01a2aa8c560df083c2475402d97d9ac488841e04966382d3fe39e22e5bcc649d",
+      "bytes": 366024
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-193-1/result.json": {
+      "sha256": "8f3ffc4d45b6c183421048f5a28934c75ea96eefe5b45a80728cb7d5ff7b86a7",
+      "bytes": 26284
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-193-1/trajectory.json": {
+      "sha256": "2475f86f4c47500c87237736e4c45dc6899641458ab5e57e83d75d9206dd5c97",
+      "bytes": 3463432
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-194-1/result.json": {
+      "sha256": "df47e4d1519007b0dd7d31c0c0d571156769e81d45660c3df804ce8383e1da7a",
+      "bytes": 26127
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-194-1/trajectory.json": {
+      "sha256": "f341e7cffa94659104ada88cfdb718f7ea35c063baf6ee9228b21601a1f62cdc",
+      "bytes": 859122
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-198-4/result.json": {
+      "sha256": "e02a46e1a7bd2c8cdef220164ada7d39f5c5891954ad5e5162027107c5d0a943",
+      "bytes": 24699
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-198-4/trajectory.json": {
+      "sha256": "2a54ae180cf01c9ff8cb543b90a07360bbb4371e810f8dc55dd0812c819e28f2",
+      "bytes": 366739
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-199-8/result.json": {
+      "sha256": "390290f76f71ed28a859b53f5c4de7975f377855cc119bd8d395df4fbc84e02d",
+      "bytes": 26750
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-199-8/trajectory.json": {
+      "sha256": "63dc14e4517d5b6e6887b1de395b74ba8d62b8f0888f6d38b86351050204238c",
+      "bytes": 506637
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-2-0/result.json": {
+      "sha256": "ed4bda1a88714008b059f044d3791810aa86776b5e1b17d11ef5471736b51873",
+      "bytes": 23290
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-2-0/trajectory.json": {
+      "sha256": "405391af7d3931a26499bb354fdd6bb2304180f05353d4f3ae0cb59e31457829",
+      "bytes": 538980
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-20-4/result.json": {
+      "sha256": "9c5c822df37c8e6689b71f9bffca0eb19aa7bd39866e189aaae182f84e2ce508",
+      "bytes": 33622
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-20-4/trajectory.json": {
+      "sha256": "70e1af7e1c74d17f0a5cf0c9d5cc5784b40d6305cff07c9af51e8d541e4ea8ac",
+      "bytes": 503283
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-202-2/result.json": {
+      "sha256": "d2d5e8b98dbc537320e799e77fb11607a59181fb31e43a0b53df42b633ca378e",
+      "bytes": 26735
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-202-2/trajectory.json": {
+      "sha256": "6d2893dd088e5b4948a5940a71f67ce0ddf58d1fd486f0a3cb143a2063a85234",
+      "bytes": 313518
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-203-1/result.json": {
+      "sha256": "3c1a2912cd3e5b1383492869a7450c252897ee963756210a1672da009a560c7c",
+      "bytes": 24835
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-203-1/trajectory.json": {
+      "sha256": "233f8504f47773f01e2355abd2eb4e91a3a8c2458d341c14b5619add6bb9079d",
+      "bytes": 332354
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-206-0/result.json": {
+      "sha256": "6c432d3911bc34a34edbbaa61c9e3fd35df74c8165ca92989124c17ccce06c95",
+      "bytes": 21766
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-206-0/trajectory.json": {
+      "sha256": "7d862594648591eea359503c401dee79bb9cd7d0d03a8c61e9e6a38c76589134",
+      "bytes": 1682495
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-207-2/result.json": {
+      "sha256": "cb8442ef6dea4eac7b5b311a23df9a1694e0b42f33c97ca835c89868cfea90d9",
+      "bytes": 26393
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-207-2/trajectory.json": {
+      "sha256": "22b5dfa8fc6cffb05415bd312d84626ebf738ae2b60902f88bc06fa11e2470a9",
+      "bytes": 556146
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-208-1/result.json": {
+      "sha256": "3bd567ca7d1ce5723385f544f77693b03e348b18759da08c6378385cb2fecc12",
+      "bytes": 27359
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-208-1/trajectory.json": {
+      "sha256": "38bb7dba4f38ecd65e1cc4183c99e3afba0c8b3d2960c46310495d8df6a31260",
+      "bytes": 765098
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-21-0/result.json": {
+      "sha256": "9340a09741ee0b4696ffad7b8e65e23842a8cfb2998af4c35139a3260c86a7b1",
+      "bytes": 44207
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-21-0/trajectory.json": {
+      "sha256": "36dc30358edc91b3f3efa5c02de7e2e9f7a3bd0b161fd55db5982d5dad67f2b4",
+      "bytes": 480619
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-211-1/result.json": {
+      "sha256": "0e8b8376f1ecb1559976ab072267163f1907dfac861bc511e2baf9d9302d282b",
+      "bytes": 25714
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-211-1/trajectory.json": {
+      "sha256": "cdc83842759c72518b2d3ee8e0fe25928aae4edc5a7c61377af92b3842458b80",
+      "bytes": 835667
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-212-2/result.json": {
+      "sha256": "ed4e158714e06fbc98012a728b45294c98e9f54b7efcebd2116cd50aa394f67c",
+      "bytes": 25005
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-212-2/trajectory.json": {
+      "sha256": "57947fc9ad9fe134d374690e0d9e6462589463281edc026ba2f4de2a367465d9",
+      "bytes": 1352022
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-214-4/result.json": {
+      "sha256": "bc60a2f1367ae0d81bca885e2c38865c6f6ddd0061cdbd608b3017520e6ef3c5",
+      "bytes": 23857
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-214-4/trajectory.json": {
+      "sha256": "452b18f0cddff4f3d54ea1b10c2808753253ce4cded30c73167e216c32b67040",
+      "bytes": 1701786
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-217-2/result.json": {
+      "sha256": "007baf7116627484a3670f65067fd52813f2d1bc73d0adf0650667752aa54eb7",
+      "bytes": 20268
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-217-2/trajectory.json": {
+      "sha256": "25fae6bbe56b80a745a8749885c278e09b23dfbd216ede10764467c9811233a0",
+      "bytes": 197939
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-219-3/result.json": {
+      "sha256": "000752cd37530b33df18c4639c838015c727c4ca0a456a47164d3b81a4297e31",
+      "bytes": 20399
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-219-3/trajectory.json": {
+      "sha256": "1eec077129852a74dc5aa1992b3276f859632912034acf591848a9f7215e4724",
+      "bytes": 296806
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-220-1/result.json": {
+      "sha256": "62b631af34eeef8ef1cd7494d3fd7fd4654019420e702cbd371eb3c8ed0b20a3",
+      "bytes": 26400
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-220-1/trajectory.json": {
+      "sha256": "b82e7d4b73a9bd61f35d365ab7e688122e5ac369101f60aae2d1acb6cc131e67",
+      "bytes": 3255689
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-221-0/result.json": {
+      "sha256": "2bea763c1f8ab80aa3658151bd2db9f89804fa111e5e659afdfe278532639ab7",
+      "bytes": 29138
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-221-0/trajectory.json": {
+      "sha256": "c9f5d0cb61ee77d7a8fc247e1b21f2f6afaa87ab4f7d46e152501dda1deffcbc",
+      "bytes": 467482
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-222-0/result.json": {
+      "sha256": "a5c58bfa2af0ff53b90757a5a88a722313de516805376e90fc5a22eefeb91e9e",
+      "bytes": 10961
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-222-0/trajectory.json": {
+      "sha256": "ec443d896a32992c26b90307ed79315008304a3205b24a3af56a5486cc705eec",
+      "bytes": 799990
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-224-2/result.json": {
+      "sha256": "6f19aa8f9002bc774da4f72a36df7ac6467ad3ed849faf25376a536de04c62e6",
+      "bytes": 26584
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-224-2/trajectory.json": {
+      "sha256": "dff68d4a251be664a0e04a578fe0abefbf5345d5f18f309d4a34c00cd560ba23",
+      "bytes": 874697
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-23-3/result.json": {
+      "sha256": "2a1cbe7a0d26e85c78a54e4c290c05b2d698e95a50ba522d465aca81c9b740fe",
+      "bytes": 42060
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-23-3/trajectory.json": {
+      "sha256": "01931ea94cf23c62f047f931d800aaed5eec1d3e57eda41ee75b263718fcb051",
+      "bytes": 559550
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-29-0/result.json": {
+      "sha256": "00cba71414e9924c0ceeed56a60728868e76a3d5da1f8ff35ea55f2804473b43",
+      "bytes": 40653
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-29-0/trajectory.json": {
+      "sha256": "c1c8e16e92d1886c90c540f40ef6228bfe9f93744f223de6f157820cd354b202",
+      "bytes": 516242
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-30-2/result.json": {
+      "sha256": "2cdde1532e5f3df29a9395937965931898b5d17193bbd43f7ed42c43fbf78e80",
+      "bytes": 34703
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-30-2/trajectory.json": {
+      "sha256": "fffddd261d4c9965682b9f50fc8838a47a4b8ccd49860697d5e0bd1ade13e182",
+      "bytes": 639898
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-31-2/result.json": {
+      "sha256": "cde1c33bfbf1d47bb0b3c281ab5a0a4e8c396c8f8a6d1e8f231103ee41765e8b",
+      "bytes": 9664
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-31-2/trajectory.json": {
+      "sha256": "2d94731be668fc604969015dabeada521a1b02310861a7f227957c6ae0e3978c",
+      "bytes": 339976
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-32-1/result.json": {
+      "sha256": "be006d687dfd8e5a3615d00ad4b0e207daa8748b30ab38c7721787721fcd5b19",
+      "bytes": 33153
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-32-1/trajectory.json": {
+      "sha256": "77cb58a04c061c44a06c39565bdf87dcede2eecfc3b77b116d29891aad4d4524",
+      "bytes": 1553244
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-35-3/result.json": {
+      "sha256": "cfcf3f3b9d46ecb11f9d72a5f6e952998bcc906b8030bdcf8529589241bcdf58",
+      "bytes": 26270
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-35-3/trajectory.json": {
+      "sha256": "a5009cee30b0ac4bd1970b83ab9c6c73360465cfee8d11dc0b7e58edd0d68a4b",
+      "bytes": 494821
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-36-2/result.json": {
+      "sha256": "d0fbd1c091b812017b3712e491df9044b870f00d9b80206e5234e25caee9c428",
+      "bytes": 35332
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-36-2/trajectory.json": {
+      "sha256": "696534c9a2bc30d9e230d2c28f458f66e998b9ea1381e757d72a226ffb437011",
+      "bytes": 1233716
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-38-4/result.json": {
+      "sha256": "bde58f64f8e7d4b26b028d6e7672d1f26450b1436cd68efeecdfb07ed708eecf",
+      "bytes": 27630
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-38-4/trajectory.json": {
+      "sha256": "45846c6152280053aed313d648ba1d4fb658fc8c4d21a0a5785e06fbf8120ac8",
+      "bytes": 551426
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-39-9/result.json": {
+      "sha256": "3394735a33fc6d050a1f8ff6bce44a6e280a702a49ed51394e9ac982599a2e51",
+      "bytes": 42711
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-39-9/trajectory.json": {
+      "sha256": "80bb784839e9a488340a9b8ff5e8abbef2be04a0087e514c5d72bab064be73d0",
+      "bytes": 1410467
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-4-0/result.json": {
+      "sha256": "8bbe7746ec857c6a435db7915441a3e0da3ec1130129bea91b750e14309d8e14",
+      "bytes": 24275
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-4-0/trajectory.json": {
+      "sha256": "4c792bcbdf8e5a368d78f5068deb743c4150a24d39d56720394697c1501dd353",
+      "bytes": 216028
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-40-0/result.json": {
+      "sha256": "f65024a4195d81237542b581400b4c3db0aa27aecc7fd4d429922eb85b7efcf8",
+      "bytes": 37141
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-40-0/trajectory.json": {
+      "sha256": "05345ec703c19aede8cf387cb91218ae186fdbc9808c7bf35f558e109ea0b74f",
+      "bytes": 686867
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-42-5/result.json": {
+      "sha256": "495c9296c9ff5df5ab40044e2609be37d44135c7fbcf29ad397986152dfd4a27",
+      "bytes": 36188
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-42-5/trajectory.json": {
+      "sha256": "c1b5cc8dbddd7835000af28a1c4c0849a1404cb75bc443dcf676e1934b2fb93c",
+      "bytes": 373211
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-50-1/result.json": {
+      "sha256": "ea96885da9b91134fe3755a920b211c48e53f146e5fda687c585556a486a612a",
+      "bytes": 114880
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-50-1/trajectory.json": {
+      "sha256": "ade6107cec2c126af6bc0c6954ee5c6c9a7643a3f60c1c7b6ec82b06ab3333b0",
+      "bytes": 902233
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-51-3/result.json": {
+      "sha256": "d9cd99c5b3e0e8afe92f32e1649881904d37ac3d3927947f91c49a8516f6268d",
+      "bytes": 150363
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-51-3/trajectory.json": {
+      "sha256": "61876fc709b1537658f52dbb81634b48bd35eeb5e464c0946747b1ddb6adbef5",
+      "bytes": 882856
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-53-3/result.json": {
+      "sha256": "2da6344f867e1f64f9faf0c5ea563ae0c59184202733ffd1a7397e3134ac8984",
+      "bytes": 874709
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-53-3/trajectory.json": {
+      "sha256": "8e2ac09ce137e18a0894a98e7db24284bdd1329521e410ef7361f5ba11ae9889",
+      "bytes": 785221
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-54-4/result.json": {
+      "sha256": "3882fe6da2cf60e3504da484edd965bc33863b09d5974eff720f5c0409011f6c",
+      "bytes": 318271
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-54-4/trajectory.json": {
+      "sha256": "d463d245a1161f466213cd6150992b13e579c94584ca1620e475de77aaa6094d",
+      "bytes": 1086776
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-55-2/result.json": {
+      "sha256": "318f1ac640c96ed84f62cc454beb0b5440fb6f5b76057ac816e5f52f51218de3",
+      "bytes": 476561
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-55-2/trajectory.json": {
+      "sha256": "0da0818211c8c95aa7e124c7abf6aa8b814b5c4e672f92c57b1b1162e81d11b2",
+      "bytes": 746161
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-6-0/result.json": {
+      "sha256": "9f0d6616906c4b2724f1970ecd7068ea46336f39a077500f63efdd1ba417e0ec",
+      "bytes": 41289
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-6-0/trajectory.json": {
+      "sha256": "a5f7a74b9868fb7e6865f0ffa591fa17feac68a9b77ca0fa6970013a8d445a8f",
+      "bytes": 483037
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-60-2/result.json": {
+      "sha256": "b70a3bab5273aaf80a8b2d129ec95947c4c32d33d57289a232875ac4da0582e8",
+      "bytes": 138764
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-60-2/trajectory.json": {
+      "sha256": "8e8fd8bbf964a176aa3c9feb3d46a3d693d726f2b7cf56a7ec27e954408076ef",
+      "bytes": 482873
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-61-6/result.json": {
+      "sha256": "406525583ba8abf7a5dd847926f9e1cbae1e2602b2e835af870e529c405030f2",
+      "bytes": 389398
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-61-6/trajectory.json": {
+      "sha256": "6876e9141de68c034c1f15787cff59a8145b80b874891f012dc511ff08ae4d52",
+      "bytes": 704261
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-63-2/result.json": {
+      "sha256": "698e70f7bd606ebe1db23244640c6b00297b8a1dcf8a5f4108f642a26ea85b9c",
+      "bytes": 9166
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-63-2/trajectory.json": {
+      "sha256": "d9c7c027ed859ff2f0f54d9af52088a1d2b8ae76dfd968fbe44e45dae78362ec",
+      "bytes": 284722
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-64-1/result.json": {
+      "sha256": "8529d9b1971339dc33904321baa18eeab0e05d6acbf6d465f5acfa88689d3623",
+      "bytes": 663352
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-64-1/trajectory.json": {
+      "sha256": "a1bbe6a28f03c265af481115b5e1d7c7423194921d3e83c1d527a109355d7f76",
+      "bytes": 400077
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-66-3/result.json": {
+      "sha256": "eece406a37a888fab7099d2dbc9ed2f559985a5100bcc725786277e3f3590151",
+      "bytes": 865784
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-66-3/trajectory.json": {
+      "sha256": "37c0bedf7af6463f7b8aac1e765611dbe9beaac46bea9dfaf5fbf1b72dcd2bf7",
+      "bytes": 931451
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-67-4/result.json": {
+      "sha256": "7167b8250b4b9e6e7c85f773a7092a6733a875d628be0dee47906e4ccf9e4ad3",
+      "bytes": 239384
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-67-4/trajectory.json": {
+      "sha256": "89daa9ca48d0d39e523a83b97304ba731b3c4e5ef1854a017edcf90840d0b2d2",
+      "bytes": 736971
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-68-8/result.json": {
+      "sha256": "7655200fd92924a50903b718e725f369f4017cd477ae9a2087eb5c175992a682",
+      "bytes": 230589
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-68-8/trajectory.json": {
+      "sha256": "90d458329c9840b11a5571d07dd0ea90f62c2e51f23a2c57141db0844e16b335",
+      "bytes": 744739
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-69-4/result.json": {
+      "sha256": "698a83c2f15776b321bbc5d742b8b5eebf9e9be71ea3f6e86b7d28fa7e295f74",
+      "bytes": 290577
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-69-4/trajectory.json": {
+      "sha256": "a285040041bc8fda9287429d804dfcce010660eecc67e0c515f09ad0c4abe6bc",
+      "bytes": 246020
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-7-2/result.json": {
+      "sha256": "ec03573f711e3daf842af332f8f566ca7f9ea10e3d91818158f9816d5254c872",
+      "bytes": 67820
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-7-2/trajectory.json": {
+      "sha256": "11393d1f254ba074f91499feb09309ca64fd7ab51c52095e6a5b879ec9eda9a7",
+      "bytes": 459918
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-73-4/result.json": {
+      "sha256": "7e3eb22a43e4d5d7e8dbef698c627fc0585eb31bc3cb977015e814853eeeb649",
+      "bytes": 64881
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-73-4/trajectory.json": {
+      "sha256": "a2a5af0f9d558f971b76c89725b17be0207459ac00f8a3ccd74337475a0a49c4",
+      "bytes": 441132
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-75-0/result.json": {
+      "sha256": "5f915cf1aa15c490dca3ab4ebd0c004b70784fe4ea1a16ac375944d3893bf85d",
+      "bytes": 97034
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-75-0/trajectory.json": {
+      "sha256": "68668b944cb6a168347a4a366b6bf4ab30dcd8ab2c1180d91fcf5e7480d8f334",
+      "bytes": 607647
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-76-4/result.json": {
+      "sha256": "bb1355b0ca4ad3e71e3867ddfd399e4f172384036f4969a1d58157e7892eb815",
+      "bytes": 160521
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-76-4/trajectory.json": {
+      "sha256": "295497e7bf871f6e0aff78991d8d6c55925936c425e5647cc4200ef2e1e19517",
+      "bytes": 532554
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-78-6/result.json": {
+      "sha256": "0e2db1dc9602277938c7f12aa9ea46bf163acd6db3efedd4ad1bc44939ba5f2f",
+      "bytes": 147894
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-78-6/trajectory.json": {
+      "sha256": "dcc7676410a94d05de461908080e5d53a2488576ba61760b2618a91d56a05027",
+      "bytes": 773891
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-80-5/result.json": {
+      "sha256": "079e9db750aef64d2adc385871581b9e4aa6c4e16c94548d8722b43fd6b2b966",
+      "bytes": 217903
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-80-5/trajectory.json": {
+      "sha256": "9529efc7e9ae7da14de2a0df41a035d1b1d188583ba1d89e7f7927b4a76d0723",
+      "bytes": 1233370
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-81-2/result.json": {
+      "sha256": "9e6fc9c5bb9f403182fbededf66996264e0fa99c55de2f1a95af7e212dfad335",
+      "bytes": 642439
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-81-2/trajectory.json": {
+      "sha256": "34f6431b241a1ce0e3f0125ce18f68c7ed76a1f67d03853ef777e61f32e7cf01",
+      "bytes": 734670
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-82-3/result.json": {
+      "sha256": "5a3963c1f292ceff3ceda61961db7f6594578124d4b1914ea834c1f52e36aa23",
+      "bytes": 267972
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-82-3/trajectory.json": {
+      "sha256": "582642ad93fab65c098eba38c5a089d7140c48bc5e5843fac653a112b0ed51d7",
+      "bytes": 695232
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-83-3/result.json": {
+      "sha256": "eb3f4c283bd981703592f996434e330144645ef492d6ddc6ec714f49798d47ec",
+      "bytes": 676903
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-83-3/trajectory.json": {
+      "sha256": "33e5bf17f1089031b16e50233c42da440deadb8274ea7eb8e722a5d1435f23f1",
+      "bytes": 743977
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-85-0/result.json": {
+      "sha256": "71f70c441fb2530a2e19bfbd85bd36e0e714a85bd8cba110f7720b05330abcd7",
+      "bytes": 25648
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-85-0/trajectory.json": {
+      "sha256": "37cca8a383cbda10d8baba0a034bb7979a21d509c75b4c736a8a9641b966f22b",
+      "bytes": 931231
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-86-8/result.json": {
+      "sha256": "556a81468505ac99ac19408110fa3cc9268ea83dee5589711b97e8d5da993490",
+      "bytes": 146405
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-86-8/trajectory.json": {
+      "sha256": "8f4c47e17aecd2592563b617541932ea0e3263f767e1faa8509d657340f36746",
+      "bytes": 196717
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-87-9/result.json": {
+      "sha256": "3715b8023f045e12e17d4c224c6122051d0baf28d0704998c2374a51da70423d",
+      "bytes": 122671
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-87-9/trajectory.json": {
+      "sha256": "d58a4b6830ccf1a97f1cd59abec6db8da45fe212993de69cd5e878ce002c76f9",
+      "bytes": 748793
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-88-9/result.json": {
+      "sha256": "3d1c6a49f870a95ad2f6e82b45703700363855d1df0dd22bb714fe08ef42f1be",
+      "bytes": 195129
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-88-9/trajectory.json": {
+      "sha256": "31ac74d4c040cb01cf8ce5639ec6b138b45945d746465e4bcb4d51c015291457",
+      "bytes": 1755350
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-92-1/result.json": {
+      "sha256": "5d9c316152d999104fc8907c2a07cd3204056dcf5f1388d23970d7c56adf87dd",
+      "bytes": 44822
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-92-1/trajectory.json": {
+      "sha256": "edd0ff7adaae01c7d3537000f0fdbf2dad6a0372b0131c88b3a7f0b4c27cd9ae",
+      "bytes": 448973
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-93-3/result.json": {
+      "sha256": "099ff870068b4a99a46b1af8e9adaf41396816d5a09ecb19aa96736f6c3269b8",
+      "bytes": 231684
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-93-3/trajectory.json": {
+      "sha256": "077a0b43ddf2f6bb6e58eedbd703e7f433a741de05de7590fcc5c2b9d434bbcf",
+      "bytes": 702304
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-94-0/result.json": {
+      "sha256": "b837134c6f54d073d46a92d8e9aa4db04668db6ba798d59abad4353611bf9349",
+      "bytes": 39571
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench-94-0/trajectory.json": {
+      "sha256": "a016f3773a0ec0b2b2c6b76406314a5417b8e22aaaf2f8804644c3c6f7b434de",
+      "bytes": 482879
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/run_manifest.json": {
+      "sha256": "b488ae65da37d0c26a34af2c843b6a8384f30fe60af18d6d23ccdfb936112403",
+      "bytes": 1882
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-1-1.json": {
+      "sha256": "18c88e6ae74431624c158e38162f1cecde1e09e7f46dfb8c37846f3d48e39462",
+      "bytes": 3989
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-10-3.json": {
+      "sha256": "b40e29eefb9153eaa3dc713192eb8b2d853a1ef6ed28ed3bc88e2023fe301213",
+      "bytes": 3909
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-103-1.json": {
+      "sha256": "c48a723e0e4629bf54278823aa3033c0a4aec927459473a0008b8d0ee69a9623",
+      "bytes": 4755
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-104-0.json": {
+      "sha256": "a020c6af5a24384e822ebcba6bff7073a9804201718c740998a0bee284972a17",
+      "bytes": 5217
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-105-2.json": {
+      "sha256": "d4b69418194f18a1246a0e0c1adc34c10afa2a5f2770ed7a3831c3322488f1ec",
+      "bytes": 4399
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-106-0.json": {
+      "sha256": "2a5cf2d89864fad34ddb443a4057853bf2ef5c7a28fd1a8fa52ed5089bf0859b",
+      "bytes": 4080
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-108-2.json": {
+      "sha256": "c19217275a7d2397d7f23ef744aed52dd42826cf1227c35f5a3211f823e92c2c",
+      "bytes": 5213
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-109-3.json": {
+      "sha256": "d4b32dd1733a8a273aeb21f2de66a30cd3ebea9603fa4702be78a931dfef4820",
+      "bytes": 4416
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-11-4.json": {
+      "sha256": "d80d46863948ec19cfb632335fbe3c89e4d9aac225ef2b78b4509b1c058dacda",
+      "bytes": 3977
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-110-2.json": {
+      "sha256": "514de6e33a507484b515b79423adabfb1fa4fd4f5e4fe347653d77c38eea8c3f",
+      "bytes": 4385
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-111-1.json": {
+      "sha256": "744b8c18e6d446bc9a849d8baf2b7212d8d909c74ee0b138fe8c0274f8c3335e",
+      "bytes": 3933
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-112-2.json": {
+      "sha256": "82ac6368bdb8c7dac3cdc32a882d53714d84e953e68b1a3f5a81d93e2f962e3c",
+      "bytes": 4426
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-113-4.json": {
+      "sha256": "3eac2c754108f8a8b50dc87aa6db8f3a4c0ff1720b85254c980baca6b213d46b",
+      "bytes": 4062
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-114-2.json": {
+      "sha256": "f331646b53b7466b8d73a7d75d7e5006e2ec76df4791422b3560dce213236b4e",
+      "bytes": 3983
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-117-0.json": {
+      "sha256": "f796202bc31c065dceb08435bf9963b677420afa4fe10f9e1fb754cf61094399",
+      "bytes": 5613
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-118-1.json": {
+      "sha256": "e38b7dc215a199a6e669090763dc082b8c875c08462c2d978d827a1777e1aa43",
+      "bytes": 3713
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-119-2.json": {
+      "sha256": "ec2cf6ea32dd127b5812f129b02f1e1142c72a29cfe2a0f454d72528eec8bb10",
+      "bytes": 4805
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-120-4.json": {
+      "sha256": "037d3b440949b0c4ca43093625c3a0cfcb2042236a8a117b1fe77f6e1a3ffb13",
+      "bytes": 4137
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-122-3.json": {
+      "sha256": "96b2a7fd6ab61897cbdd0bd229896b0917728a5ea0d5693bcec8b6827e837bd8",
+      "bytes": 4197
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-123-0.json": {
+      "sha256": "29c2b937dc649972370e7a39ffd73f63569004421736097208818c47db0c56d4",
+      "bytes": 4769
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-124-2.json": {
+      "sha256": "ca06b4536fd6df957c732c5af249d1850165c645c17bcf5bc29209a6d7283668",
+      "bytes": 4181
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-125-1.json": {
+      "sha256": "dbbdd64527defb890d3c6ffb254762247153c9078b37973ef02f2f43afa231c6",
+      "bytes": 4223
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-128-2.json": {
+      "sha256": "b17a0125823c1dbb50c26d090556f9409db6d2dc27fa1a3b288b86c614b86af3",
+      "bytes": 3912
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-129-0.json": {
+      "sha256": "300bc6fef8242f4558964e4c579729b09c360a0fc1522518262cd79e700c83e9",
+      "bytes": 4112
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-13-3.json": {
+      "sha256": "1c0e147ae194fcf7a94b4e5b6bc4c5b7d8e51151c7f9b8ee8136c6769d45aea2",
+      "bytes": 3783
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-132-2.json": {
+      "sha256": "bae9bda19891850c55322670a04876c910320589a35ae5bade1ce52359dedda2",
+      "bytes": 4512
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-137-1.json": {
+      "sha256": "4465a5785dfc2f90fbfd61fe1577391c96b8e153bc00da8b61d4534b1915217c",
+      "bytes": 4983
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-140-0.json": {
+      "sha256": "fb2128f49e6782b1300c1dfa106b3a39d48f7d1e1ee9f17828d5ffb2a3c0e494",
+      "bytes": 4184
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-144-3.json": {
+      "sha256": "0aee48479cf4aec60573e02285419bf43162501f66ea2ff69661068d588afbb2",
+      "bytes": 4077
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-148-2.json": {
+      "sha256": "997ee7f177bde251261787f669af7c7ca6d638155f3c357a803f6538c6b3b265",
+      "bytes": 4782
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-149-0.json": {
+      "sha256": "7bdc344d9daf9909544378272654fd43f5647e65cd4840446fb211239fde25c6",
+      "bytes": 4743
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-151-3.json": {
+      "sha256": "f2f5ff31711e749094ad7e71b3be1be8fe4681be68842189f8567642934c80dc",
+      "bytes": 3745
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-152-1.json": {
+      "sha256": "6ba8d2fd98ed1f8bc5a840a2fcb0ec5031bc197d4fb9d1a7b9f0b5c66a39c9e4",
+      "bytes": 4154
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-153-2.json": {
+      "sha256": "7d832946308fb35f21c0c2564493bfbb2729b369d91ed72727701039b92ea8ab",
+      "bytes": 4048
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-156-4.json": {
+      "sha256": "7098b89fb6396d8f1db4ecc274fc4a67da01a8553915a3fb82332369d507cdff",
+      "bytes": 4185
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-157-5.json": {
+      "sha256": "7670d56c6fa7b67f37de79e633b74b9f5f441ca237ebbeba0259330cf0587e3b",
+      "bytes": 4405
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-158-1.json": {
+      "sha256": "57ab1f6ba6cc4ace754923390028b36c55135de5271a352f00f9d900a9b76727",
+      "bytes": 5254
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-159-3.json": {
+      "sha256": "15cd7a140b4f770a2d0ed0a6f6a3242c975f5b94e28415986cdaa5033e9a6f33",
+      "bytes": 4224
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-160-2.json": {
+      "sha256": "f9c3606670d7018e5182bc0c7082129a91af2b775fc93beafdf946efd382068d",
+      "bytes": 4576
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-161-0.json": {
+      "sha256": "73c1a37bf382abd4ab71bcdee0f016c70bfc407542512235b2447ca284d6048e",
+      "bytes": 4014
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-164-1.json": {
+      "sha256": "96e64186d0a5e0dbc4943c6ab4998b5c96b51e57e032e3914cf80728ef4ee6ba",
+      "bytes": 4119
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-165-0.json": {
+      "sha256": "a6d4acded33648d285da67d2d8df2b17abb89677706db4c3b5ac6ddd22aa92b5",
+      "bytes": 4886
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-166-2.json": {
+      "sha256": "d1859e175158f4cddf49fdd9f53c63cc280531fd434ffd2217f917565dbea28e",
+      "bytes": 4302
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-167-0.json": {
+      "sha256": "7a7c17671c4e6471778232fc31d90d7b865c3cf277e3ccfaa6faeaf792242ad5",
+      "bytes": 6035
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-168-3.json": {
+      "sha256": "12156728257f57c5b2a9f2c3976b154a8365a7bf965d90a7551249a3797c4a85",
+      "bytes": 3954
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-169-2.json": {
+      "sha256": "9aec0b593ec507ef2bda295112a7c647106abbbdcb05d3a01ec029ebf8b28287",
+      "bytes": 3912
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-17-8.json": {
+      "sha256": "c46a4d688a10e4d0b865d96ad4246bd22292e70a37f9728f4b8efa6baa9ff3ce",
+      "bytes": 4069
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-170-3.json": {
+      "sha256": "e35be49edab4c7e8fdcb7f9d75616ee85cd347b6bdf6a8fa6efdd6148b5f1203",
+      "bytes": 4582
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-171-5.json": {
+      "sha256": "7b4ed4debe3c3ca4c4305b3ba39274d7a06a4f2aa6cc6001b4283f6848064b62",
+      "bytes": 4121
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-174-3.json": {
+      "sha256": "10e1c58fe8bb90e17917d74a440c58464391bd106f1038315904783ff9c47fa0",
+      "bytes": 3980
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-176-1.json": {
+      "sha256": "1bcbf0d95e06fe83c2431a3963ef07dab355b0cfa191facf9394e30c2418b96e",
+      "bytes": 3974
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-178-1.json": {
+      "sha256": "55484094af5dec57a8bd1be0c7d8e8ac8b925258ff585db02058f93fc5ab542d",
+      "bytes": 4070
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-179-5.json": {
+      "sha256": "bce2df959c73ec07c9deabc0a4a1b051fb90f826ea02eabe70e16ec44029a21a",
+      "bytes": 4175
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-183-0.json": {
+      "sha256": "a4853854ded04cc5a134bb000a941761fa383f75b17aae531c7fb57c118f76f4",
+      "bytes": 4277
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-187-0.json": {
+      "sha256": "df370c42301e061eefa0f2c2165401db9720a3822926a8cfe07a02b21c3e0b5e",
+      "bytes": 4131
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-189-2.json": {
+      "sha256": "af20e6e60733e768ecb35ed03fe87a4c078c23f3ade80e98a7def88b136b6a85",
+      "bytes": 4774
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-19-4.json": {
+      "sha256": "0a69e183da3bb825dadf190eecad47f5e724d225814a392e93dc313da6f47df0",
+      "bytes": 5625
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-190-2.json": {
+      "sha256": "491c88ee902cfed36bd7e8e195ec3a1a5f15693ccf2b782d1cc9413b2b28bc4c",
+      "bytes": 3920
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-191-1.json": {
+      "sha256": "03a11918147d0b3295ffc34ed37a9cbdd0cb777fb65fffae5d7ea1719484e0bc",
+      "bytes": 4424
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-192-4.json": {
+      "sha256": "819601a1a11bedf931ed112d598cf5d744587f65ba23ddab33c29e238af01bdd",
+      "bytes": 3988
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-193-1.json": {
+      "sha256": "1ba8c22cda4fc742d94b0bd01042290bc5ba7c51a7db15b07f1dcc606b7d484c",
+      "bytes": 4382
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-194-1.json": {
+      "sha256": "62b57d776acb38b45ffb263e5eb12e192d85246598851273db81c2a3e8f9e4bc",
+      "bytes": 4143
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-198-4.json": {
+      "sha256": "82dea8b606ff372658cc819f8f1a0495b4bfd4577768f5ee67b8ed32dfffd2ec",
+      "bytes": 4159
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-199-8.json": {
+      "sha256": "7739e48d6f09533a9cfa178ce7686df9be38c2dae402ca25f7a4adf28d709821",
+      "bytes": 5048
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-2-0.json": {
+      "sha256": "34dbb8fea877ff810b8abdcbd408956114a0a0df2ee90fafd921ad0127493284",
+      "bytes": 3786
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-20-4.json": {
+      "sha256": "f7ab1c106d795203d4b9606f678601f0645f88eb7a67918e6d1ec2396c5da8bb",
+      "bytes": 4057
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-202-2.json": {
+      "sha256": "6fc1292cee3d78ac4cd350a9414215dbdb64ee929af08567a4ea601dbf8a26f5",
+      "bytes": 4253
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-203-1.json": {
+      "sha256": "0e7e42cc79f941ddc5f14e7e4a5dbbedc8fac88f8a970097a1143122486c745e",
+      "bytes": 3673
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-206-0.json": {
+      "sha256": "ae506957ddc4184d8e3d3ee09832ab7bf58e03b6ca2ba507ae2a233c4262df63",
+      "bytes": 4347
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-207-2.json": {
+      "sha256": "f06bb2343fb8965f2beffca8228b417c3a10e61b017b51381862c52ecade0102",
+      "bytes": 4105
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-208-1.json": {
+      "sha256": "e5395a4526a77fd91814899d7580554cc79cc376d77ceb2f9835340da68928ad",
+      "bytes": 4045
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-21-0.json": {
+      "sha256": "2f796307228ecc7570c7f15fb5425260dd397807500ebf171770598bcc487880",
+      "bytes": 5529
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-211-1.json": {
+      "sha256": "d0af3758d76ad8d867f991623fa1ee21cd37e1984ccd330a1cee38cfd1f76793",
+      "bytes": 3949
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-212-2.json": {
+      "sha256": "92cf5020e50741d597a0199473a5ff62aecd73a29b43bff968bb440174cedd23",
+      "bytes": 4054
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-214-4.json": {
+      "sha256": "134bca50663e5f6e704fe2e5892c5a205cfb1b66ad1bca130f1bab98a444b043",
+      "bytes": 4090
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-217-2.json": {
+      "sha256": "f704959dee6cb22affe6e243744f4b9946b610665e526556a3e635633c5d525f",
+      "bytes": 4334
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-219-3.json": {
+      "sha256": "dedd1fa9ea9f00938f9f786606cc5c1e693d754dec19e825da9b9c66f931d694",
+      "bytes": 4171
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-220-1.json": {
+      "sha256": "5cd4e21172682df95f22a7273333b710545a592da8580842a0c11b121467bc26",
+      "bytes": 4158
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-221-0.json": {
+      "sha256": "1abc43d77cbeaf99e235a348028aa7d3fb10b46d96b8ea60d543c4f10ae727de",
+      "bytes": 5225
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-222-0.json": {
+      "sha256": "6c8d943c9db60df77a9e5f83df01086688023d1f7cb2ead6879516c246c3f75e",
+      "bytes": 5800
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-224-2.json": {
+      "sha256": "6360f24409aadc985400dc4658a5b6bef50910bf29f29057eddea80114b8bd9e",
+      "bytes": 4136
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-23-3.json": {
+      "sha256": "ebf65098b3efa67de07cd6ef89947dba2575f51227f5bea2e595d48f8980f3f1",
+      "bytes": 3969
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-29-0.json": {
+      "sha256": "d7b715190e22071be2bf3f7d1a8b93584d069bb04abcdc071baef684dcc8884b",
+      "bytes": 3963
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-30-2.json": {
+      "sha256": "333f6defcfd600a92b9319138594e88b8e2152736f55f2466c6f2fe305c47b77",
+      "bytes": 4785
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-31-2.json": {
+      "sha256": "9ae337e9e15a44085af2593e068c5865a28d3d3ea3b095f9c971f30adbd494e4",
+      "bytes": 4488
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-32-1.json": {
+      "sha256": "856c42a6e1784bc204cef6bcd7e6541b2cb90825d12292551dcb2a4f2b37169b",
+      "bytes": 4412
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-35-3.json": {
+      "sha256": "35d080b4453e60ffb8a1e3cd868d2a4b0f098bfbe2f52bfdfdff957e13d58e81",
+      "bytes": 4995
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-36-2.json": {
+      "sha256": "fad8741ad8018c09aadb4223121a23b01fce13f8d673e5f9deec0a44f1d3e87c",
+      "bytes": 3915
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-38-4.json": {
+      "sha256": "91b8e533a2cf3fcea12050fd6a7359e2b75eb8ed9be5d4a1c01bac259fd41dbf",
+      "bytes": 5790
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-39-9.json": {
+      "sha256": "6b847c2985dcb168ae874b774490df0e7d2685744c68ffe07b6d52866f02dfe1",
+      "bytes": 4375
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-4-0.json": {
+      "sha256": "f8aec809e74e69dc583b82b9d22eb856192bc7e279a37a5cc62572171642ccd4",
+      "bytes": 3922
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-40-0.json": {
+      "sha256": "d8acd0ce3d149d5c52687ed7630934187876bf30feacc8c43d1c5819571ca656",
+      "bytes": 4186
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-42-5.json": {
+      "sha256": "ecdc84c3ea4b64ec6363d45d0f219695f37d729c76a200502abdd3d64d37bcde",
+      "bytes": 4503
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-50-1.json": {
+      "sha256": "e32fc6ea2b6242e24a079177a99ec82c4fa23db34a73a7f6c99ee86a748c2795",
+      "bytes": 4011
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-51-3.json": {
+      "sha256": "50efbbaab6d5a7e6c001316de8f12585ab757faae0cc9827e2dd303871f748bf",
+      "bytes": 4147
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-53-3.json": {
+      "sha256": "6a022627be35da7f0dc7f8f05503252bbad5ae86691950895881dffa39526415",
+      "bytes": 3996
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-54-4.json": {
+      "sha256": "bea3e503c9e23d637612ec956340c7412475ffd6437859a410df48a85da8b216",
+      "bytes": 4187
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-55-2.json": {
+      "sha256": "7cf8290e51db4b88f2ab6091bb5d0749d974978768359f217faecb48f9139147",
+      "bytes": 3983
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-6-0.json": {
+      "sha256": "1818268a958207c0852a7ebf20574ca6e70820125b3eb53beecd94e19cf7cb03",
+      "bytes": 4773
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-60-2.json": {
+      "sha256": "ab5c9700c36bbb980c798f542446c59b4eb62d5e34d7721a301684e402e92949",
+      "bytes": 4124
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-61-6.json": {
+      "sha256": "3377e02512b3835e1fc75cf7cd2f981bcf31c29f24216dbe0a84b77b084742d8",
+      "bytes": 4353
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-63-2.json": {
+      "sha256": "2adebab4f0cce475a2a97f78fdaeca21968ec0c6e54fae0500f1cb9f951c9481",
+      "bytes": 4049
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-64-1.json": {
+      "sha256": "a0c1305e43382e25b8bbb4b603a3d8cd849ca8d2e5452ef8f2929ad97f77e95f",
+      "bytes": 4131
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-66-3.json": {
+      "sha256": "3e64929c1a188892b7e44d5f344df703b34b80ecf79e97a6b1c9d4600da2d71a",
+      "bytes": 3978
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-67-4.json": {
+      "sha256": "512cca74ea187af4028f184784c39bd4d5025c09076bf38bbe26a469d66b1a3b",
+      "bytes": 4329
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-68-8.json": {
+      "sha256": "6b6722fe01b8541341d425c7415f46c313cf5d85b4b95e801495b713c32cc289",
+      "bytes": 4241
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-69-4.json": {
+      "sha256": "f04c1a257663364e2ee294dcea8b14a3986dba232cde063a1ee5123e0518ac63",
+      "bytes": 3723
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-7-2.json": {
+      "sha256": "403adb0abe7fa3ffa988a014dcfaec8b405f1d994306a0815ca602134aa99b2e",
+      "bytes": 5337
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-73-4.json": {
+      "sha256": "c35a76b34d5c8eedb07436a3a4c088f64480e91e9f1f7b9e6f8ca882a2a389f0",
+      "bytes": 3723
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-75-0.json": {
+      "sha256": "473f855f23f8d65d4a97387f191051f24eb684576d7d69742fbfb72c4874412e",
+      "bytes": 4280
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-76-4.json": {
+      "sha256": "619673ed4401a84660ab060863831aae93a7addf6936d56901f21f313e727010",
+      "bytes": 4331
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-78-6.json": {
+      "sha256": "cf648d01acf2d8ae8c08f6cede6062a40d451c501b684693bffd935d0f9738e3",
+      "bytes": 4198
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-80-5.json": {
+      "sha256": "50ed26539ef939ae785d8f4bbcf73e6323ecf63ed9c57b6cbe15632b5c3f2c36",
+      "bytes": 4202
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-81-2.json": {
+      "sha256": "cdc047ad0fa72d6175151f6289ca89e45bbd3d060f44e4efc2b463958d887f64",
+      "bytes": 4101
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-82-3.json": {
+      "sha256": "3ad2327191edb3e195b8660f0a3c070f438881cd83a24aa1c4da2f481f257dc4",
+      "bytes": 4073
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-83-3.json": {
+      "sha256": "c07ef9ded01f3d3d2170c826c7166901d5c3d0820620dc33f3180a08b863505d",
+      "bytes": 4307
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-85-0.json": {
+      "sha256": "708e6aa10839b9a87e54500bd6d6c3ba5ad0e0c939b7cfe8607f0c48b7adffde",
+      "bytes": 3979
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-86-8.json": {
+      "sha256": "77f6dd954400a69c50dde0b3ed7b6c82213317dee7f49b9946ae3aa45d57b189",
+      "bytes": 3825
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-87-9.json": {
+      "sha256": "9fe95509dac897e98b5e050aeaeba8f0ecb43c4e4b48563adedf0b493f0436fa",
+      "bytes": 4031
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-88-9.json": {
+      "sha256": "f91e9a0da88c3d0a93a81377801a37952020ecd405f8754eafe4b15a8b1de688",
+      "bytes": 4439
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-92-1.json": {
+      "sha256": "867284c4ffda8ab75a507bb3be9b8426b4f4cbe320f6fbb873e5487d15cc3c52",
+      "bytes": 3953
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-93-3.json": {
+      "sha256": "eaa33e5b92f10b90c6b4375f7178155ebc972f0475b77769c53290c307c97516",
+      "bytes": 4441
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-94-0.json": {
+      "sha256": "0d10168754ea91e108a35938668274891c58f92a9c81299d943026b8485e3773",
+      "bytes": 4714
+    },
+    "runs/l1-gate-off-highland235b-123-20260914-a/scoring/summary.json": {
+      "sha256": "b0ee0bbae0993683901b814043629188cab609dce843c2a91ac86ddd37ec1645",
+      "bytes": 20398
+    }
+  }
+}

@@ -1,0 +1,320 @@
+{
+  "case_id": "docbench:103:1",
+  "doc_id": 103,
+  "question_index": 1,
+  "domain": "government",
+  "question_type": "text-only",
+  "level": "L1",
+  "reply": "Yes, the Court allowed the government to use the proposed exhibits during the opening statement.\n\nThe Court granted the government's Motion to Use Photographs in Opening Statement (Doc. 122), finding that \"the government may use the proposed exhibits in its opening statement.\" Specifically:\n\n- For Exhibits 3B, 4D, 7A, 7E, 11A, 11B, and 21D, the defense did not object to admissibility, so the government could fairly expect them to come into evidence.\n- For Exhibits 9A, 11D, 11G, 11F, 14G, and the cropped version of 11I, the Court had already found them relevant and admissible.\n- For Exhibits 6F and 11C, the Court reserved ruling pending foundation, but found it would not be unfairly prejudicial or misleading for the government to use them in opening statement.\n\nThe Court did impose one restriction: the government could not refer to the plastic wrappers depicted in Exhibit 14G as \"kilo wrappers.\"",
+  "post_commit": {
+    "status": "settled",
+    "turn_id": "turn_0a3a0405",
+    "window_released": true,
+    "jobs": [
+      {
+        "job_kind": "session_retrieval_index",
+        "status": "applied",
+        "reason_code": null
+      },
+      {
+        "job_kind": "session_summary",
+        "status": "applied",
+        "reason_code": null
+      }
+    ],
+    "timed_out": false
+  },
+  "post_commit_complete": true,
+  "post_commit_elapsed_s": 15.39,
+  "session_id": "35323416",
+  "project_id": "project-b5c0032301e84840bcbcf0b6c2daefed",
+  "turn_id": "turn_0a3a0405",
+  "answer_elapsed_s": 72.576,
+  "status": "completed",
+  "processing_level": "L1",
+  "end_reason": null,
+  "error_code": null,
+  "user_interaction_mode": "closed_world",
+  "pending_user_question_count": 0,
+  "related_insession_task_ids": [],
+  "work_run_ids": [],
+  "model": {
+    "provider": "openai-compatible",
+    "request_dialect": "deepseek",
+    "base_url": "https://models.sjtu.edu.cn/api/v1",
+    "model": "deepseek-chat",
+    "has_key": true,
+    "default_projects_dir": "<local-path>",
+    "default_projects_dir_managed": true,
+    "legacy_office_soffice": {
+      "configured": false,
+      "available": false
+    },
+    "vision_provider": "highland",
+    "vision_base_url": "https://www.highland-api.top",
+    "vision_model": "qwen3-vl-235b-a22b-instruct",
+    "has_vision_key": true
+  },
+  "lane_ok": true,
+  "execution_ok": true,
+  "interaction_ok": true,
+  "chain_complete": true,
+  "elapsed_s": 88.018,
+  "retrieval": {
+    "schema_version": "docbench-retrieval-observability-v1",
+    "status": "ready",
+    "requested_profile": {
+      "mode": "bge_m3",
+      "fingerprint": "document_retrieval_profile@1:mode=bge_m3;methods=dense,learned_sparse,bm25;index_recipe=rag-r1:dense1024+learned_sparse+bm25@1;encoder=hf:BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181;reranker=hf:BAAI/bge-reranker-v2-m3@953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e;device=mps;fp16=false;failure_policy=strict;local_only=true",
+      "failure_policy": "strict",
+      "required_methods": [
+        "dense",
+        "learned_sparse",
+        "bm25"
+      ],
+      "index_recipe": "rag-r1:dense1024+learned_sparse+bm25@1",
+      "encoder_asset_identity": "hf:BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181",
+      "reranker_mode": "bge_v2_m3",
+      "reranker_asset_identity": "hf:BAAI/bge-reranker-v2-m3@953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+      "device": "mps",
+      "use_fp16": false,
+      "local_files_only": true
+    },
+    "effective_profile": {
+      "mode": "bge_m3",
+      "fingerprint": "document_retrieval_profile@1:mode=bge_m3;methods=dense,learned_sparse,bm25;index_recipe=rag-r1:dense1024+learned_sparse+bm25@1;encoder=hf:BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181;reranker=hf:BAAI/bge-reranker-v2-m3@953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e;device=mps;fp16=false;failure_policy=strict;local_only=true",
+      "failure_policy": "strict",
+      "required_methods": [
+        "dense",
+        "learned_sparse",
+        "bm25"
+      ],
+      "index_recipe": "rag-r1:dense1024+learned_sparse+bm25@1",
+      "encoder_asset_identity": "hf:BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181",
+      "reranker_mode": "bge_v2_m3",
+      "reranker_asset_identity": "hf:BAAI/bge-reranker-v2-m3@953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+      "device": "mps",
+      "use_fp16": false,
+      "local_files_only": true
+    },
+    "encoder_fingerprint": "bge_m3:model=hf:BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181;dense=1024;sparse=flagembedding;sparse_projection_assets=available;device=mps;fp16=false;query_max_length=512;passage_max_length=8192;flagembedding=1.4.0;transformers=4.57.6;local_only=true",
+    "reranker_fingerprint": "bge_reranker_v2_m3:model=hf:BAAI/bge-reranker-v2-m3@953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e;device=mps;batch_size=8;query_max_length=256;max_length=1024;fp16=false;flagembedding=1.4.0;transformers=4.57.6;local_only=true",
+    "preflight": {
+      "profile_fingerprint": "document_retrieval_profile@1:mode=bge_m3;methods=dense,learned_sparse,bm25;index_recipe=rag-r1:dense1024+learned_sparse+bm25@1;encoder=hf:BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181;reranker=hf:BAAI/bge-reranker-v2-m3@953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e;device=mps;fp16=false;failure_policy=strict;local_only=true",
+      "ready": true,
+      "reason_codes": [],
+      "device_ready": true,
+      "device_selection": {
+        "requested_device": "mps",
+        "device": "mps",
+        "ready": true,
+        "fallback_reason": null,
+        "probe_reasons": [],
+        "model_verified": false
+      },
+      "sqlite_vec_ready": true,
+      "encoder_asset": {
+        "asset_identity": "hf:BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181",
+        "manifest": "bge_m3_hybrid",
+        "ready": true,
+        "reason_code": "ready",
+        "missing_files": [],
+        "missing_modules": [],
+        "content_sha256": null,
+        "local_files_only": true
+      },
+      "reranker_asset": {
+        "asset_identity": "hf:BAAI/bge-reranker-v2-m3@953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+        "manifest": "bge_reranker_v2_m3",
+        "ready": true,
+        "reason_code": "ready",
+        "missing_files": [],
+        "missing_modules": [],
+        "content_sha256": null,
+        "local_files_only": true
+      },
+      "local_files_only": true
+    },
+    "active_generation": {
+      "id": "rdv_9f93d9d9c149e81ad1ab9f98848a9754",
+      "fingerprint": "retrieval-generation-spec-v2:9f93d9d9c149e81ad1ab9f98848a97548aecc0efa14d346e56e6ec87118f853b",
+      "role": "active",
+      "state": "ready",
+      "expected_fingerprint": "retrieval-generation-spec-v2:9f93d9d9c149e81ad1ab9f98848a97548aecc0efa14d346e56e6ec87118f853b",
+      "matches_runtime": true
+    },
+    "methods": [
+      {
+        "method": "dense",
+        "required": true,
+        "ready": true,
+        "unit_count": 5,
+        "manifest_ready_count": 5,
+        "representation_present_count": 5,
+        "manifest_absent_count": 0,
+        "invalid_unit_count": 0
+      },
+      {
+        "method": "learned_sparse",
+        "required": true,
+        "ready": true,
+        "unit_count": 5,
+        "manifest_ready_count": 5,
+        "representation_present_count": 5,
+        "manifest_absent_count": 0,
+        "invalid_unit_count": 0
+      },
+      {
+        "method": "bm25",
+        "required": true,
+        "ready": true,
+        "unit_count": 5,
+        "manifest_ready_count": 5,
+        "representation_present_count": 5,
+        "manifest_absent_count": 0,
+        "invalid_unit_count": 0
+      }
+    ],
+    "indexing_outbox": {
+      "available": true,
+      "reason_code": null,
+      "attempt_audit_available": true,
+      "attempt_count": 5,
+      "attempt_audit_truncated": false,
+      "status_counts": {
+        "pending": 0,
+        "processing": 0,
+        "applied": 5,
+        "retryable_failed": 0,
+        "terminal_failed": 0
+      },
+      "outcome_counts": {
+        "applied": 5
+      },
+      "failure_counts": {},
+      "batch_count": 1,
+      "worker_instance_count": 1,
+      "terminal_failures": [],
+      "attempt_audits": [
+        {
+          "event_id": "mounted-document-chunk:upsert:0404747400455689f3315fcf42db7e44",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "d1d4ac65a91c95f8",
+          "batch_id": "370b33003b2d22cb",
+          "batch_limit": 20,
+          "batch_size": 5,
+          "batch_ordinal": 5,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-14T20:26:17.353786+00:00"
+        },
+        {
+          "event_id": "mounted-document-chunk:upsert:5343b6fc111c09096d2b950ed41ce63c",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "d1d4ac65a91c95f8",
+          "batch_id": "370b33003b2d22cb",
+          "batch_limit": 20,
+          "batch_size": 5,
+          "batch_ordinal": 1,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-14T20:26:17.353786+00:00"
+        },
+        {
+          "event_id": "mounted-document-chunk:upsert:7c59dbf244b62ba4b094e57836cff42a",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "d1d4ac65a91c95f8",
+          "batch_id": "370b33003b2d22cb",
+          "batch_limit": 20,
+          "batch_size": 5,
+          "batch_ordinal": 3,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-14T20:26:17.353786+00:00"
+        },
+        {
+          "event_id": "mounted-document-chunk:upsert:7f920c21dcd3f5eead0463925799efed",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "d1d4ac65a91c95f8",
+          "batch_id": "370b33003b2d22cb",
+          "batch_limit": 20,
+          "batch_size": 5,
+          "batch_ordinal": 4,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-14T20:26:17.353786+00:00"
+        },
+        {
+          "event_id": "mounted-document-chunk:upsert:e62f95c685ee2c43969b5355c204fd6c",
+          "attempt": 1,
+          "worker_kind": "api-document-maintenance",
+          "worker_instance_hash": "d1d4ac65a91c95f8",
+          "batch_id": "370b33003b2d22cb",
+          "batch_limit": 20,
+          "batch_size": 5,
+          "batch_ordinal": 2,
+          "outcome": "applied",
+          "failure_stage": null,
+          "safe_error_code": null,
+          "occurred_at": "2026-09-14T20:26:17.353786+00:00"
+        }
+      ]
+    },
+    "sqlite_vec": {
+      "ready": true,
+      "reason_code": null
+    },
+    "degradation_reasons": []
+  },
+  "worker_exit_code": 0,
+  "worker_stderr_tail": "Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.52, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.\nYou're using a XLMRobertaTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.\nYou're using a XLMRobertaTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.\n\npre tokenize:   0%|          | 0/2 [00:00<?, ?it/s]You're using a XLMRobertaTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.\n\npre tokenize: 100%|██████████| 2/2 [00:00<00:00, 123.17it/s]\n\nCompute Scores:   0%|          | 0/2 [00:00<?, ?it/s]\nCompute Scores:  50%|█████     | 1/2 [00:02<00:02,  2.31s/it]\nCompute Scores: 100%|██████████| 2/2 [00:03<00:00,  1.81s/it]\nCompute Scores: 100%|██████████| 2/2 [00:03<00:00,  1.89s/it]\nYou're using a XLMRobertaTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.\n",
+  "trajectory": {
+    "status": "complete",
+    "path": "cases/docbench-103-1/trajectory.json",
+    "sha256": "c65f6c8ada88266e74ea04986190c2b754e87bbb47b58321407532f942f3b5e9",
+    "byte_count": 204593,
+    "database_count": 1,
+    "step_count": 7,
+    "part_count": 46,
+    "blob_count": 44,
+    "truncated_blob_count": 0
+  },
+  "telemetry": {
+    "provider_response_count": 4,
+    "rejected_output_count": 0,
+    "terminal_model_request_failure_count": 0,
+    "tool_call_count": 2,
+    "input_tokens_total": 35612,
+    "output_tokens_total": 713,
+    "cache_read_tokens_total": 0,
+    "max_model_input_tokens": 13015,
+    "provider_response_purposes": {
+      "openai-compatible:deepseek-chat:runtime_entry_classify": 1,
+      "openai-compatible:deepseek-chat:runtime_l1_attempt": 3
+    },
+    "tool_call_purposes": {
+      "prepare_files": 1,
+      "retrieve_files": 1
+    },
+    "trajectory_database_count": 1,
+    "trajectory_read_failure_count": 0,
+    "trajectory_recording_failure_count": 0,
+    "telemetry_complete": true
+  },
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/l1-gate-off-highland235b-123-20260914-a/cases/docbench:103:1/result.json",
+    "source_sha256": "863b71a86916c7a1111060874cd8966934fdf69aaf69689564ca2970eb2861d8",
+    "source_bytes": 14447,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

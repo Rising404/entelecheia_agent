@@ -1,0 +1,216 @@
+{
+  "case_id": "docbench:206:0",
+  "doc_id": 206,
+  "question_index": 0,
+  "domain": "news",
+  "question_type": "text-only",
+  "level": "L1",
+  "session_id": "b937453c",
+  "project_id": "project-ace76d75227345e0a93b5edd34e343d7",
+  "turn_id": "turn_a31b911f",
+  "elapsed_s": 59.245,
+  "status": "incomplete",
+  "processing_level": null,
+  "reply": "",
+  "end_reason": "provider_unavailable",
+  "error_code": "MODEL_TRANSPORT_FAILURE",
+  "user_interaction_mode": "closed_world",
+  "pending_user_question_count": 0,
+  "related_insession_task_ids": [],
+  "work_run_ids": [],
+  "model": {
+    "provider": "openai-compatible",
+    "request_dialect": "deepseek",
+    "base_url": "https://models.sjtu.edu.cn/api/v1",
+    "model": "deepseek-chat",
+    "has_key": true,
+    "default_projects_dir": "<local-path>",
+    "default_projects_dir_managed": true,
+    "legacy_office_soffice": {
+      "configured": false,
+      "available": false
+    },
+    "vision_provider": "highland",
+    "vision_base_url": "https://www.highland-api.top",
+    "vision_model": "qwen3-vl-30b-a3b-instruct",
+    "has_vision_key": true
+  },
+  "retrieval": {
+    "schema_version": "docbench-retrieval-observability-v1",
+    "status": "degraded",
+    "requested_profile": {
+      "mode": "bge_m3",
+      "fingerprint": "document_retrieval_profile@1:mode=bge_m3;methods=dense,learned_sparse,bm25;index_recipe=rag-r1:dense1024+learned_sparse+bm25@1;encoder=hf:BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181;reranker=hf:BAAI/bge-reranker-v2-m3@953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e;device=mps;fp16=false;failure_policy=strict;local_only=true",
+      "failure_policy": "strict",
+      "required_methods": [
+        "dense",
+        "learned_sparse",
+        "bm25"
+      ],
+      "index_recipe": "rag-r1:dense1024+learned_sparse+bm25@1",
+      "encoder_asset_identity": "hf:BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181",
+      "reranker_mode": "bge_v2_m3",
+      "reranker_asset_identity": "hf:BAAI/bge-reranker-v2-m3@953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+      "device": "mps",
+      "use_fp16": false,
+      "local_files_only": true
+    },
+    "effective_profile": {
+      "mode": "bge_m3",
+      "fingerprint": "document_retrieval_profile@1:mode=bge_m3;methods=dense,learned_sparse,bm25;index_recipe=rag-r1:dense1024+learned_sparse+bm25@1;encoder=hf:BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181;reranker=hf:BAAI/bge-reranker-v2-m3@953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e;device=mps;fp16=false;failure_policy=strict;local_only=true",
+      "failure_policy": "strict",
+      "required_methods": [
+        "dense",
+        "learned_sparse",
+        "bm25"
+      ],
+      "index_recipe": "rag-r1:dense1024+learned_sparse+bm25@1",
+      "encoder_asset_identity": "hf:BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181",
+      "reranker_mode": "bge_v2_m3",
+      "reranker_asset_identity": "hf:BAAI/bge-reranker-v2-m3@953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+      "device": "mps",
+      "use_fp16": false,
+      "local_files_only": true
+    },
+    "encoder_fingerprint": "bge_m3:model=hf:BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181;dense=1024;sparse=flagembedding;sparse_projection_assets=available;device=mps;fp16=false;query_max_length=512;passage_max_length=8192;flagembedding=1.4.0;transformers=4.57.6;local_only=true",
+    "reranker_fingerprint": "bge_reranker_v2_m3:model=hf:BAAI/bge-reranker-v2-m3@953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e;device=mps;batch_size=8;query_max_length=256;max_length=1024;fp16=false;flagembedding=1.4.0;transformers=4.57.6;local_only=true",
+    "preflight": {
+      "profile_fingerprint": "document_retrieval_profile@1:mode=bge_m3;methods=dense,learned_sparse,bm25;index_recipe=rag-r1:dense1024+learned_sparse+bm25@1;encoder=hf:BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181;reranker=hf:BAAI/bge-reranker-v2-m3@953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e;device=mps;fp16=false;failure_policy=strict;local_only=true",
+      "ready": true,
+      "reason_codes": [],
+      "device_ready": true,
+      "device_selection": {
+        "requested_device": "mps",
+        "device": "mps",
+        "ready": true,
+        "fallback_reason": null,
+        "probe_reasons": [],
+        "model_verified": false
+      },
+      "sqlite_vec_ready": true,
+      "encoder_asset": {
+        "asset_identity": "hf:BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181",
+        "manifest": "bge_m3_hybrid",
+        "ready": true,
+        "reason_code": "ready",
+        "missing_files": [],
+        "missing_modules": [],
+        "content_sha256": null,
+        "local_files_only": true
+      },
+      "reranker_asset": {
+        "asset_identity": "hf:BAAI/bge-reranker-v2-m3@953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+        "manifest": "bge_reranker_v2_m3",
+        "ready": true,
+        "reason_code": "ready",
+        "missing_files": [],
+        "missing_modules": [],
+        "content_sha256": null,
+        "local_files_only": true
+      },
+      "local_files_only": true
+    },
+    "active_generation": null,
+    "methods": [
+      {
+        "method": "dense",
+        "required": true,
+        "ready": false,
+        "unit_count": 0,
+        "manifest_ready_count": 0,
+        "representation_present_count": 0,
+        "manifest_absent_count": 0,
+        "invalid_unit_count": 0,
+        "reason_code": "active_generation_unavailable"
+      },
+      {
+        "method": "learned_sparse",
+        "required": true,
+        "ready": false,
+        "unit_count": 0,
+        "manifest_ready_count": 0,
+        "representation_present_count": 0,
+        "manifest_absent_count": 0,
+        "invalid_unit_count": 0,
+        "reason_code": "active_generation_unavailable"
+      },
+      {
+        "method": "bm25",
+        "required": true,
+        "ready": false,
+        "unit_count": 0,
+        "manifest_ready_count": 0,
+        "representation_present_count": 0,
+        "manifest_absent_count": 0,
+        "invalid_unit_count": 0,
+        "reason_code": "active_generation_unavailable"
+      }
+    ],
+    "indexing_outbox": {
+      "available": true,
+      "reason_code": null,
+      "attempt_audit_available": true,
+      "attempt_count": 0,
+      "attempt_audit_truncated": false,
+      "status_counts": {
+        "pending": 0,
+        "processing": 0,
+        "applied": 0,
+        "retryable_failed": 0,
+        "terminal_failed": 0
+      },
+      "outcome_counts": {},
+      "failure_counts": {},
+      "batch_count": 0,
+      "worker_instance_count": 0,
+      "terminal_failures": [],
+      "attempt_audits": []
+    },
+    "sqlite_vec": {
+      "ready": true,
+      "reason_code": null
+    },
+    "degradation_reasons": [
+      "active_generation_unavailable"
+    ]
+  },
+  "lane_ok": false,
+  "execution_ok": false,
+  "interaction_ok": true,
+  "worker_exit_code": 1,
+  "trajectory": {
+    "status": "incomplete",
+    "path": "cases/docbench-206-0/trajectory.json",
+    "sha256": "f05d60beec7430edc9f591c272c2657c529507131c3e52de45720e11d50fd9e6",
+    "byte_count": 1104,
+    "database_count": 1,
+    "step_count": 1,
+    "part_count": 0,
+    "blob_count": 0,
+    "truncated_blob_count": 0
+  },
+  "telemetry": {
+    "provider_response_count": 0,
+    "rejected_output_count": 0,
+    "terminal_model_request_failure_count": 1,
+    "tool_call_count": 0,
+    "input_tokens_total": 0,
+    "output_tokens_total": 0,
+    "cache_read_tokens_total": 0,
+    "max_model_input_tokens": 0,
+    "provider_response_purposes": {},
+    "tool_call_purposes": {},
+    "trajectory_database_count": 1,
+    "trajectory_read_failure_count": 0,
+    "trajectory_recording_failure_count": 0,
+    "telemetry_complete": false
+  },
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench:206:0/result.json",
+    "source_sha256": "c8100bf32a75c39f22430114144fd099d3f87aa2006b6da32e3fa7348a561113",
+    "source_bytes": 8216,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

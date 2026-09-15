@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import hashlib
 import json
+import re
 import shutil
 import subprocess
 import sys
@@ -19,7 +21,24 @@ from scripts.check_repository_privacy import (
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 CHECKER = REPOSITORY_ROOT / "scripts" / "check_repository_privacy.py"
-PUBLIC_EVALUATION = "evals/docbench/results/showcase_125.summary.json"
+PUBLIC_EVALUATION = "evals/docbench/previous_results/showcase_125.summary.json"
+HISTORICAL_EVALUATION_PATH = "evals/docbench/results/showcase_125.summary.json"
+REVIEWED_ANALYSIS_FILES = (
+    "evals/docbench/previous_results/analysis/README.md",
+    "evals/docbench/previous_results/analysis/EVALUATION_REVIEW.md",
+    "evals/docbench/previous_results/analysis/FAILURE_ATTRIBUTION.md",
+)
+PRIVATE_ANALYSIS_FILES = (
+    "evals/docbench/results/analysis/raw.md",
+    "evals/docbench/results/analysis/claude_review_scores.json",
+    "evals/docbench/results/analysis/nested/README.md",
+    "evals/docbench/results/analysis/raw.summary.json",
+    "evals/another_benchmark/results/analysis/README.md",
+    "evals/docbench/previous_results/analysis/raw.md",
+    "evals/docbench/previous_results/analysis/claude_review_scores.json",
+    "evals/docbench/previous_results/private_runs/showcase_125/README.md",
+    "evals/docbench/previous_results/private_runs/showcase_125/cases/example/result.json",
+)
 PRODUCT_BINARY_UPLOAD_SUFFIXES = frozenset(
     {
         "avif",
@@ -94,8 +113,14 @@ def test_published_evaluation_is_closed_and_keeps_judge_and_review_scopes_separa
     assert not _public_evaluation_errors(document)
     assert document["schema_version"] == "entelecheia-docbench-public-evaluation"
     assert document["official_comparable"] is False
-    assert document["cc_review_status"] == "pending"
+    assert document["cc_review_status"] == "archived_provisional"
     assert document["codex_review_status"] == "archived_provisional"
+    assert document["cc_review"] == {
+        "artifact_sha256": "de04415ef7871877e16ab6d0ce5cbf74deba9a13c497723a10b69af21bbe5820",
+        "reviewer_kind": "model",
+        "blind_review": False,
+        "source_check_basis": "reviewer_self_report",
+    }
     assert document["totals"] == {
         "case_count": 125,
         "execution_count": 133,
@@ -103,6 +128,10 @@ def test_published_evaluation_is_closed_and_keeps_judge_and_review_scopes_separa
         "retry_merged_judge_correct": 96,
         "codex_archived_first_correct": 99,
         "codex_archived_selected_correct": 104,
+        "cc_archived_first_correct": 100,
+        "cc_archived_selected_correct": 105,
+        "cc_debatable_count": 8,
+        "cc_source_checked_reported_count": 13,
     }
     assert [run["case_count"] for run in document["runs"]] == [125, 3, 5]
     assert any(
@@ -112,7 +141,7 @@ def test_published_evaluation_is_closed_and_keeps_judge_and_review_scopes_separa
 
 
 def test_public_evaluation_rejects_unknown_fields_at_every_record_level() -> None:
-    for location in ((), ("totals",), ("runs", 0), ("cases", 0), ("executions", 0)):
+    for location in ((), ("cc_review",), ("totals",), ("runs", 0), ("cases", 0), ("executions", 0)):
         document = _public_evaluation()
         record = document
         for key in location:
@@ -128,6 +157,13 @@ def test_public_evaluation_rejects_wrong_types_nonfinite_numbers_and_unreviewed_
     mutations = (
         (("official_comparable",), True),
         (("cc_review_status",), "completed"),
+        (("cc_review_status",), "pending"),
+        (("cc_review",), []),
+        (("cc_review", "artifact_sha256"), "not-a-sha256"),
+        (("cc_review", "reviewer_kind"), "human"),
+        (("cc_review", "blind_review"), True),
+        (("cc_review", "blind_review"), 0),
+        (("cc_review", "source_check_basis"), "independently_verified"),
         (("codex_review_status",), "gold"),
         (("runs",), {}),
         (("runs", 0, "ordinal"), True),
@@ -139,6 +175,11 @@ def test_public_evaluation_rejects_wrong_types_nonfinite_numbers_and_unreviewed_
         (("cases", 0, "original_judge_score"), True),
         (("cases", 0, "original_judge_score"), 1.0),
         (("cases", 0, "codex_archived_selected_score"), 2),
+        (("cases", 0, "cc_archived_first_score"), True),
+        (("cases", 0, "cc_archived_selected_score"), 1.0),
+        (("cases", 0, "cc_archived_selected_score"), 2),
+        (("cases", 0, "cc_debatable"), 0),
+        (("cases", 0, "cc_source_checked_reported"), "true"),
         (("cases", 0, "domain"), ["academia"]),
         (("cases", 0, "source_question_type"), {}),
         (("cases", 0, "review_status"), "human_verified"),
@@ -148,6 +189,8 @@ def test_public_evaluation_rejects_wrong_types_nonfinite_numbers_and_unreviewed_
         (("executions", 0, "elapsed_s"), float("inf")),
         (("executions", 0, "elapsed_s"), 10**400),
         (("totals", "case_count"), "125"),
+        (("totals", "cc_archived_first_correct"), True),
+        (("totals", "cc_debatable_count"), 8.0),
     )
     for location, value in mutations:
         document = _public_evaluation()
@@ -174,6 +217,10 @@ def test_public_evaluation_rejects_duplicate_and_broken_cross_record_identities(
         (("runs", 0, "correct_count"), 125),
         (("runs", 0, "elapsed_s"), 1),
         (("totals", "codex_archived_selected_correct"), 125),
+        (("totals", "cc_archived_first_correct"), 101),
+        (("totals", "cc_archived_selected_correct"), 106),
+        (("totals", "cc_debatable_count"), 9),
+        (("totals", "cc_source_checked_reported_count"), 14),
         (("totals", "execution_count"), 125),
     )
     for location, value in mutations:
@@ -186,6 +233,135 @@ def test_public_evaluation_rejects_duplicate_and_broken_cross_record_identities(
     document = _public_evaluation()
     document["executions"].pop(0)
     assert _public_evaluation_errors(document)
+
+
+def _pre_cc_evaluation() -> dict[str, object]:
+    document = _public_evaluation()
+    document["cc_review_status"] = "pending"
+    del document["cc_review"]
+    for case in document["cases"]:
+        for key in (
+            "cc_archived_first_score", "cc_archived_selected_score",
+            "cc_debatable", "cc_source_checked_reported",
+        ):
+            del case[key]
+    for key in (
+        "cc_archived_first_correct", "cc_archived_selected_correct",
+        "cc_debatable_count", "cc_source_checked_reported_count",
+    ):
+        del document["totals"][key]
+    return document
+
+
+def _pre_cc_evaluation_bytes() -> bytes:
+    return (json.dumps(_pre_cc_evaluation(), ensure_ascii=False, indent=2) + "\n").encode()
+
+
+def test_cc_review_projection_preserves_the_entire_preexisting_summary() -> None:
+    document = _pre_cc_evaluation()
+    # Pin the canonical, payload-free pre-CC projection, not private source content.
+    digest = hashlib.sha256(
+        json.dumps(document, sort_keys=True, separators=(",", ":")).encode()
+    ).hexdigest()
+    assert digest == "9832f5a675e8001f054e82ba017602840de38311128cc617d86d0e1917a0ec59"
+    assert hashlib.sha256(_pre_cc_evaluation_bytes()).hexdigest() == (
+        "2e25675eb999d397e2e7db6795a3b9036e25b1e0b2c0d3e7cf91df01ffecba18"
+    )
+
+
+def test_only_exact_reviewed_summary_bytes_and_path_are_accepted_as_history() -> None:
+    content = _pre_cc_evaluation_bytes()
+    assert eval_summary_violations(PUBLIC_EVALUATION, content)
+    assert eval_summary_violations(PUBLIC_EVALUATION, content, committed_history=True)
+    assert not eval_summary_violations(HISTORICAL_EVALUATION_PATH, content, committed_history=True)
+    assert eval_summary_violations(
+        "evals/docbench/results/other.summary.json", content, committed_history=True,
+    )
+    assert eval_summary_violations(HISTORICAL_EVALUATION_PATH, content + b" ", committed_history=True)
+    mutated = _pre_cc_evaluation()
+    mutated["cases"][0]["original_judge_score"] = 0
+    assert eval_summary_violations(
+        HISTORICAL_EVALUATION_PATH, json.dumps(mutated).encode(), committed_history=True,
+    )
+
+
+def test_reviewed_history_still_runs_the_ordinary_sensitive_value_scan(monkeypatch) -> None:
+    monkeypatch.setattr(
+        "scripts.check_repository_privacy.SECRET_VALUE_PATTERNS",
+        (re.compile("deepseek-chat"),),
+    )
+    reasons = eval_summary_violations(
+        HISTORICAL_EVALUATION_PATH, _pre_cc_evaluation_bytes(), committed_history=True,
+    )
+    assert any("secret-like value" in violation.reason for violation in reasons)
+
+
+def test_cc_review_matches_the_public_case_table_and_keeps_disagreements() -> None:
+    document = _public_evaluation()
+    review = (REPOSITORY_ROOT / REVIEWED_ANALYSIS_FILES[1]).read_text()
+    rows = re.findall(
+        r"^\| (docbench:\d+:\d+) \| ([01]) \| ([01]) \| (true|false) \| (true|false) \|$",
+        review, re.MULTILINE,
+    )
+    by_id = {
+        identity: (int(first), int(selected), debatable == "true", checked == "true")
+        for identity, first, selected, debatable, checked in rows
+    }
+    assert len(rows) == len(by_id) == 125
+    assert by_id == {
+        case["case_id"]: (
+            case["cc_archived_first_score"], case["cc_archived_selected_score"],
+            case["cc_debatable"], case["cc_source_checked_reported"],
+        )
+        for case in document["cases"]
+    }
+    assert {
+        case["case_id"] for case in document["cases"]
+        if case["cc_archived_selected_score"] != case["codex_archived_selected_score"]
+    } == {"docbench:80:5", "docbench:178:1", "docbench:220:1"}
+    retried = [case for case in document["cases"] if case["selected_run_ordinal"] != 1]
+    assert len(retried) == 8
+    assert sum(case["cc_archived_first_score"] for case in retried) == 0
+    assert sum(case["cc_archived_selected_score"] for case in retried) == 5
+
+
+def test_cc_review_rejects_missing_metadata_scores_and_flags() -> None:
+    for location in (
+        ("cc_review",), ("cc_review", "artifact_sha256"),
+        ("cc_review", "reviewer_kind"), ("cc_review", "blind_review"),
+        ("cc_review", "source_check_basis"),
+        ("cases", 0, "cc_archived_first_score"),
+        ("cases", 0, "cc_archived_selected_score"),
+        ("cases", 0, "cc_debatable"), ("cases", 0, "cc_source_checked_reported"),
+        ("totals", "cc_archived_first_correct"),
+    ):
+        document = _public_evaluation()
+        record = document
+        for key in location[:-1]:
+            record = record[key]
+        del record[location[-1]]
+        assert _public_evaluation_errors(document), location
+
+
+def test_cc_review_rejects_changed_labels_without_retries_even_with_matching_totals() -> None:
+    document = _public_evaluation()
+    case = next(case for case in document["cases"] if case["selected_run_ordinal"] == 1)
+    case["cc_archived_selected_score"] = 1 - case["cc_archived_first_score"]
+    document["totals"]["cc_archived_selected_correct"] = sum(
+        case["cc_archived_selected_score"] for case in document["cases"]
+    )
+    assert any("unchanged execution" in reason for reason in _public_evaluation_errors(document))
+
+
+def test_cc_review_rejects_case_score_and_flag_tampering() -> None:
+    for field in (
+        "cc_archived_first_score", "cc_archived_selected_score",
+        "cc_debatable", "cc_source_checked_reported",
+    ):
+        document = _public_evaluation()
+        case = document["cases"][0]
+        case[field] = not case[field] if type(case[field]) is bool else 1 - case[field]
+        assert _public_evaluation_errors(document), field
 
 
 def test_public_evaluation_still_applies_payload_and_secret_value_checks() -> None:
@@ -276,6 +452,8 @@ def test_raw_benchmark_subtrees_allow_only_explicit_public_metadata() -> None:
     private_paths = (
         "evals/docbench/results/nested/run.summary.json",
         "evals/docbench/results/raw.json",
+        "evals/docbench/previous_results/raw.json",
+        "evals/docbench/previous_results/nested/run.summary.json",
         "evals/docbench/sources/upstream/questions.json",
         "evals/docbench/sources/document.json",
         "evals/docbench/questions/questions.json",
@@ -285,6 +463,8 @@ def test_raw_benchmark_subtrees_allow_only_explicit_public_metadata() -> None:
         "evals/docbench/results/README.md",
         "evals/docbench/results/public.summary.json",
         "evals/docbench/results/public.baseline.json",
+        "evals/docbench/previous_results/README.md",
+        "evals/docbench/previous_results/public.summary.json",
         "evals/docbench/sources/README.md",
         "evals/docbench/sources/upstream.manifest.json",
         "evals/docbench/questions/README.md",
@@ -328,6 +508,48 @@ def test_user_document_and_media_file_types_are_rejected_even_when_forced() -> N
         path = f"notes/private-attachment.{suffix}"
         assert f"*.{suffix}" in ignored_lines, suffix
         assert path_violations(path), path
+
+
+def test_reviewed_analysis_allows_only_three_exact_markdown_paths() -> None:
+    for path in REVIEWED_ANALYSIS_FILES:
+        assert not path_violations(path), path
+        assert not inspect_snapshot([path], lambda _: b"Reviewed aggregate methodology.")
+    for path in PRIVATE_ANALYSIS_FILES:
+        assert path_violations(path), path
+
+
+def test_reviewed_analysis_does_not_bypass_secret_or_private_path_scanning() -> None:
+    private_contents = (
+        "Credential: sk-" + "a" * 48,
+        "Local source: /Users/" + "publication_owner/private-result.json",
+    )
+    for path in REVIEWED_ANALYSIS_FILES:
+        for content in private_contents:
+            violations = inspect_snapshot([path], lambda _: content.encode())
+            assert violations, path
+            assert any("content pattern" in violation.reason for violation in violations)
+
+
+def test_reviewed_analysis_gitignore_and_forced_staging_are_consistent(tmp_path: Path) -> None:
+    repository = tmp_path / "repository"
+    repository.mkdir()
+    _git(repository, "init", "--quiet")
+    shutil.copy2(REPOSITORY_ROOT / ".gitignore", repository / ".gitignore")
+    paths = (*REVIEWED_ANALYSIS_FILES, *PRIVATE_ANALYSIS_FILES)
+    for relative_path in paths:
+        candidate = repository / relative_path
+        candidate.parent.mkdir(parents=True, exist_ok=True)
+        candidate.write_text("Synthetic test content.", encoding="utf-8")
+    ignored = _git(repository, "check-ignore", "--no-index", *paths).stdout.splitlines()
+    assert set(ignored) == set(PRIVATE_ANALYSIS_FILES)
+
+    _git(repository, "add", *REVIEWED_ANALYSIS_FILES)
+    assert _check(repository, "--staged").returncode == 0
+    _git(repository, "add", "--force", *PRIVATE_ANALYSIS_FILES)
+    result = _check(repository, "--staged")
+    assert result.returncode == 1
+    for path in PRIVATE_ANALYSIS_FILES:
+        assert path in result.stderr
 
 
 def test_eval_summary_rejects_payload_fields_paths_and_secrets() -> None:
@@ -570,6 +792,47 @@ def test_worktree_staged_and_tree_views_are_distinct(tmp_path: Path) -> None:
 
     _git(repository, "add", "--all")
     assert _check(repository, "--staged").returncode == 0
+
+
+def test_cc_review_migration_keeps_tree_and_pre_push_history_checks_usable(tmp_path: Path) -> None:
+    repository = tmp_path / "repository"
+    repository.mkdir()
+    _git(repository, "init", "--quiet")
+    summary = repository / HISTORICAL_EVALUATION_PATH
+    summary.parent.mkdir(parents=True)
+    summary.write_bytes(_pre_cc_evaluation_bytes())
+    _git(repository, "add", HISTORICAL_EVALUATION_PATH)
+    assert _check(repository, "--worktree").returncode == 1
+    assert _check(repository, "--staged").returncode == 1
+    _git(
+        repository, "-c", "user.name=Privacy Test", "-c",
+        "user.email=privacy@example.invalid", "commit", "--quiet", "-m", "reviewed export",
+    )
+    assert _check(repository, "--tree", "HEAD").returncode == 0
+
+    summary.write_bytes((REPOSITORY_ROOT / PUBLIC_EVALUATION).read_bytes())
+    assert _check(repository, "--worktree").returncode == 0
+    assert _check(repository, "--staged").returncode == 1
+    _git(repository, "add", HISTORICAL_EVALUATION_PATH)
+    assert _check(repository, "--staged").returncode == 0
+    _git(
+        repository, "-c", "user.name=Privacy Test", "-c",
+        "user.email=privacy@example.invalid", "commit", "--quiet", "-m", "archive CC review",
+    )
+    assert _check(repository, "--tree", "HEAD").returncode == 0
+
+    (repository / "scripts").mkdir()
+    (repository / ".githooks").mkdir()
+    shutil.copy2(CHECKER, repository / "scripts" / CHECKER.name)
+    hook = repository / ".githooks" / "pre-push"
+    shutil.copy2(REPOSITORY_ROOT / ".githooks" / "pre-push", hook)
+    revision = _git(repository, "rev-parse", "HEAD").stdout.strip()
+    update = f"refs/heads/main {revision} refs/heads/main {'0' * 40}\n"
+    result = subprocess.run(
+        ["/bin/sh", str(hook), "origin", "unused"], cwd=repository, input=update,
+        check=False, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+    )
+    assert result.returncode == 0, result.stderr
 
 
 def test_staged_view_rejects_force_added_private_artifacts(tmp_path: Path) -> None:

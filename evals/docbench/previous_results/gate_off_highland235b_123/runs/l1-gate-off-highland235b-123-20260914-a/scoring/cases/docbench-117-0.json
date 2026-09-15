@@ -1,0 +1,135 @@
+{
+  "schema_version": "docbench-compatible-case-score-v1",
+  "scoring_protocol": "docbench_prompt_compatible",
+  "official_comparable": false,
+  "case_id": "docbench:117:0",
+  "doc_id": "117",
+  "question_index": 0,
+  "domain": "government",
+  "question_type": "metadata",
+  "system_answer": "根据对FBS_S_GAC_Public.pdf报告全文29个文本块的统计，报告中最常见的缩写是**PEPFAR**（President's Emergency Plan for AIDS Relief，美国总统艾滋病紧急救援计划），在全文中出现了非常高的频次（粗略统计超过200次），远高于其他缩写。\n\n其他高频缩写按出现频率排序依次为：\n- **HIV**（人类免疫缺陷病毒）——出现约100余次\n- **AIDS**（获得性免疫缺陷综合征）——出现约50余次\n- **S/GAC**（全球艾滋病协调员与卫生外交办公室）——出现约10余次\n- **FBS**（职能局战略）——出现约10次\n- **JSP**（联合战略计划）——出现约10次\n- **ART**（抗逆转录病毒治疗）——出现约10次\n- **DSD**（差异化服务交付）——出现约10次\n- **CLM**（社区主导监测）——出现约10次\n- **SDG**（可持续发展目标）——出现约10次\n- **USG**（美国政府）——出现约10次\n- **UNAIDS**（联合国艾滋病规划署）——出现约10次\n- **WHO**（世界卫生组织）——出现约10次\n- **TLD**（替诺福韦/拉米夫定/多替拉韦固定剂量复方）——出现约5次\n- **PrEP**（暴露前预防）——出现约5次\n- **COP**（国家年度行动计划）——出现约5次\n- **DREAMS**（决心、韧性、赋权、无艾滋病、指导、安全）——出现约5次\n- **SID**（可持续性指数与仪表板）——出现约5次\n- **HBCU**（传统黑人学院和大学）——出现约2次\n- **DEIA**（多样性、公平、包容和可及性）——出现约2次\n- **MOU**（谅解备忘录）——出现约2次\n- **PHIA**（人口健康影响评估）——出现约2次\n- **STI**（性传播感染）——出现约2次\n\n因此，**PEPFAR**是报告中最常见的缩写。",
+  "prompt_sha256": "784a6d6cf4f8151765b169c633f46e62d12dcd77f8941172e72edbf8b30f9bde",
+  "filled_prompt_sha256": "1caecb59282de1add150395d19f97ce6285593c2c8fc60d72a32ff4b393e8b7f",
+  "judge_provider": "openai-compatible",
+  "judge_base_url": "https://models.sjtu.edu.cn/api/v1",
+  "judge_model": "deepseek-chat",
+  "judge_request_dialect": "deepseek",
+  "judge_retry_policy": {
+    "max_attempts": 6,
+    "fallback_backoff_s": [
+      2.0,
+      4.0,
+      8.0,
+      16.0,
+      30.0
+    ],
+    "inter_case_delay_s": 1.0,
+    "retryable_http_statuses": [
+      408,
+      429,
+      "5xx"
+    ],
+    "retryable_transport_errors": [
+      "httpx.TransportError"
+    ]
+  },
+  "judge_http_status": 200,
+  "judge_response_raw": {
+    "id": "chatcmpl-c3b28ba7-9e34-4c28-b949-416247525bb6",
+    "created": 1789435960,
+    "model": "deepseek-chat",
+    "object": "chat.completion",
+    "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "0",
+          "role": "assistant",
+          "provider_specific_fields": {
+            "reasoning": null,
+            "refusal": null
+          }
+        },
+        "provider_specific_fields": {
+          "stop_reason": null,
+          "token_ids": null,
+          "routed_experts": null
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 2,
+      "prompt_tokens": 768,
+      "total_tokens": 770,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      }
+    }
+  },
+  "judge_response_text": "0",
+  "judge_attempts": [
+    {
+      "attempt_number": 1,
+      "attempted_at": "2026-09-15T01:32:38.071273+00:00",
+      "wait_before_attempt_s": 1.0,
+      "http_status": 200,
+      "response_raw": {
+        "id": "chatcmpl-c3b28ba7-9e34-4c28-b949-416247525bb6",
+        "created": 1789435960,
+        "model": "deepseek-chat",
+        "object": "chat.completion",
+        "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "0",
+              "role": "assistant",
+              "provider_specific_fields": {
+                "reasoning": null,
+                "refusal": null
+              }
+            },
+            "provider_specific_fields": {
+              "stop_reason": null,
+              "token_ids": null,
+              "routed_experts": null
+            }
+          }
+        ],
+        "usage": {
+          "completion_tokens": 2,
+          "prompt_tokens": 768,
+          "total_tokens": 770,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          }
+        }
+      },
+      "status": "completed",
+      "error": null,
+      "retryable": false,
+      "retry_reason": null,
+      "retry_after_header": null,
+      "wait_before_next_attempt_s": null,
+      "wait_source": null
+    }
+  ],
+  "judge_attempt_count": 1,
+  "score_source": "judge",
+  "score": 0,
+  "error": null,
+  "scored_at": "2026-09-15T01:32:37.060819+00:00",
+  "status": "completed",
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-117-0-cf29b3e0486d.json",
+    "source_sha256": "82cdf5609c858acb0a30f50ba93cacb8170541500b33c3dd384f8f2141ec9283",
+    "source_bytes": 5351,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

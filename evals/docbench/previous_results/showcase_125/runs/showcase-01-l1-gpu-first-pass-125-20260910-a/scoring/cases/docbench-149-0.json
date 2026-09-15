@@ -1,0 +1,135 @@
+{
+  "schema_version": "docbench-compatible-case-score-v1",
+  "scoring_protocol": "docbench_prompt_compatible",
+  "official_comparable": false,
+  "case_id": "docbench:149:0",
+  "doc_id": "149",
+  "question_index": 0,
+  "domain": "laws",
+  "question_type": "text",
+  "system_answer": "根据附件文档《Plea Bargaining: Singapore》（美国国会法律图书馆报告），法官在CCR（Criminal Case Resolution，刑事案解决会议）中的角色是**促进性（facilitative）而非评价性（evaluative）**。具体职责包括：\n\n1. **主持与促进**：CCR由一位资深且经验丰富的法官主持，在法官 chambers 内进行，为双方提供一个中立论坛，讨论并探索在不经审判的情况下尽早解决刑事案件的可能性。\n2. **不评价案情**：根据 Registrar’s Circular，法官不会对控辩双方的相对案情给出任何指示性评估，但可以就证据的具体方面、可能的推论或法律问题发表适当评论。\n3. **可考虑量刑提示**：在适当案件中，主持CCR会议的法官可以考虑给出量刑提示（sentence indication），但仅当被告主动请求时才予考虑，以避免被告被胁迫或压力而认罪。\n4. **回避后续审判**：如果案件在CCR中未能解决并进入审判，主持CCR的法官将不会被指派为该案的审判法官。\n5. **接受认罪与量刑**：如果被告在CCR过程中决定认罪，经双方同意，CCR法官可以当场接受认罪并判刑；认罪也可由另一名法官处理。\n\n总之，法官在CCR中扮演中立促进者的角色，帮助双方沟通和探索解决方案，但不评价案件是非，也不参与后续审判。",
+  "prompt_sha256": "784a6d6cf4f8151765b169c633f46e62d12dcd77f8941172e72edbf8b30f9bde",
+  "filled_prompt_sha256": "4da4f62960c5f1b3e39a34113a775b8dab87993b9b7f56ed56805e2be8bff547",
+  "judge_provider": "openai-compatible",
+  "judge_base_url": "https://models.sjtu.edu.cn/api/v1",
+  "judge_model": "deepseek-chat",
+  "judge_request_dialect": "deepseek",
+  "judge_retry_policy": {
+    "max_attempts": 6,
+    "fallback_backoff_s": [
+      2.0,
+      4.0,
+      8.0,
+      16.0,
+      30.0
+    ],
+    "inter_case_delay_s": 1.0,
+    "retryable_http_statuses": [
+      408,
+      429,
+      "5xx"
+    ],
+    "retryable_transport_errors": [
+      "httpx.TransportError"
+    ]
+  },
+  "judge_http_status": 200,
+  "judge_response_raw": {
+    "id": "chatcmpl-2a6811c9-6df2-473f-83ef-5591b501a0ed",
+    "created": 1789065644,
+    "model": "deepseek-chat",
+    "object": "chat.completion",
+    "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "1",
+          "role": "assistant",
+          "provider_specific_fields": {
+            "reasoning": null,
+            "refusal": null
+          }
+        },
+        "provider_specific_fields": {
+          "routed_experts": null,
+          "stop_reason": null,
+          "token_ids": null
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 2,
+      "prompt_tokens": 612,
+      "total_tokens": 614,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      }
+    }
+  },
+  "judge_response_text": "1",
+  "judge_attempts": [
+    {
+      "attempt_number": 1,
+      "attempted_at": "2026-09-10T18:40:41.809949+00:00",
+      "wait_before_attempt_s": 1.0,
+      "http_status": 200,
+      "response_raw": {
+        "id": "chatcmpl-2a6811c9-6df2-473f-83ef-5591b501a0ed",
+        "created": 1789065644,
+        "model": "deepseek-chat",
+        "object": "chat.completion",
+        "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "1",
+              "role": "assistant",
+              "provider_specific_fields": {
+                "reasoning": null,
+                "refusal": null
+              }
+            },
+            "provider_specific_fields": {
+              "routed_experts": null,
+              "stop_reason": null,
+              "token_ids": null
+            }
+          }
+        ],
+        "usage": {
+          "completion_tokens": 2,
+          "prompt_tokens": 612,
+          "total_tokens": 614,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          }
+        }
+      },
+      "status": "completed",
+      "error": null,
+      "retryable": false,
+      "retry_reason": null,
+      "retry_after_header": null,
+      "wait_before_next_attempt_s": null,
+      "wait_source": null
+    }
+  ],
+  "judge_attempt_count": 1,
+  "score_source": "judge",
+  "score": 1,
+  "error": null,
+  "scored_at": "2026-09-10T18:40:40.808342+00:00",
+  "status": "completed",
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-149-0-48379fdb905e.json",
+    "source_sha256": "079c2b70d584d793a55dfdcdd44edb5919c6bdc27b93a29618ebcf8d23803c33",
+    "source_bytes": 5074,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

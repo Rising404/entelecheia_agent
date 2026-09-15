@@ -2,6 +2,10 @@
 
 This folder contains frontend-only code for the Entelecheia UI.
 
+For installation, an isolated mock preview, and a first real document task, start with
+the root [Quickstart](../QUICKSTART.md). This page explains frontend development and platform boundaries;
+it does not provide a second installation workflow.
+
 The boundary is intentional:
 
 - `frontend/` owns UI layout, client-side state, and API calls.
@@ -55,19 +59,21 @@ From the repository root, install the pinned project-owned runtimes and locked d
 The bootstrap downloads checksum-verified Python and Node archives into the Git-ignored root `.runtime/`, binds
 root `.venv` to that Python, keeps Corepack and the pnpm store under `.runtime/`, and installs the Python
 dependency closure from `requirements-macos-arm64.lock` and frontend dependencies from `pnpm-lock.yaml`.
+Bootstrap itself checks runtime versions and checkout ownership before reporting success.
 The complete locked source installation is currently scoped to macOS arm64. Launch paths do not fall back
 to Codex, ChatGPT, system interpreters, or caller-provided runtime paths.
 To repair only the runtimes and virtual-environment binding while preserving installed packages:
 
 ```bash
 ./scripts/bootstrap-local-runtime.sh --runtime-only
-.venv/bin/python scripts/verify-runtime-independence.py
 ```
 
-Standalone runtime downloads are available for the macOS and Linux targets listed in the bootstrap script;
-`--runtime-only` is not a complete dependency installation on those other platforms. The experimental Windows launcher likewise accepts only
-repository-owned `.runtime\\node\\node.exe` and `.venv\\Scripts\\python.exe`, but automated Windows Runtime
-installation has not been implemented or verified yet; those pinned paths must currently be prepared separately.
+Standalone runtime downloads cover macOS arm64/x86_64 and Linux arm64/x86_64 only;
+`--runtime-only` does not install application dependencies or establish full support on those other targets.
+There is **no Windows branch** in bootstrap, including runtime-only mode. The experimental Windows launcher
+expects repository-owned `.runtime\\node\\node.exe` and `.venv\\Scripts\\python.exe`, but the existence of
+these path checks is not a supported Windows installation procedure. Core file operations also remain blocked
+by the POSIX safety boundary described below; manually supplying runtimes would not resolve that limitation.
 
 After a fresh checkout, verify the complete renderer, Electron recovery bridge, and production bundle before opening the app:
 
@@ -83,11 +89,11 @@ The lockfile pins the dependency graph; a partial `node_modules/` directory is n
 
 Complete the reproducible install above first. Use pnpm rather than npm so the committed lockfile stays authoritative.
 
-### 桌面应用（推荐，独立 Electron 窗口）
+### 桌面应用（macOS arm64，独立 Electron 窗口）
 
-- **macOS：双击 `start-electron.command`**
-- **Windows：双击 `start-electron-hidden.vbs`**（不显示 PowerShell/命令提示符）
-- Windows 排障入口：`.\start-electron.ps1`
+- 完成支持范围内的安装后，双击本目录的 `start-electron.command`。
+- Windows 的 `start-electron-hidden.vbs` 和 `.\start-electron.ps1` 仅是实验启动/排障入口，
+  不是可用的完整安装教程，也不承诺无闪窗或文档任务成功。
 
 macOS 还可以安装一个不打开 Terminal 的一键启动器：
 
@@ -99,12 +105,10 @@ macOS 还可以安装一个不打开 Terminal 的一键启动器：
 `Command+Shift+Space` 即可唤醒主窗口。应用菜单中的“显示主窗口”使用同一快捷键；如果本地 API
 意外退出，页面顶部会出现“唤醒本地服务”按钮。应用菜单也提供重新安装启动器的入口。
 
-Windows 第一次使用时还可以双击 `install-windows-shortcut.vbs`。它会在桌面创建
-`Entelecheia.lnk`；以后双击快捷方式，或按 `Ctrl+Shift+Space`，都能冷启动或唤醒现有窗口，
-启动路径被设计为不弹出 PowerShell、命令提示符或 Python sidecar 窗口。应用菜单也能重新创建这个快捷方式；
-实际无闪窗表现仍需 Windows 真机 smoke。
-启动失败只会显示简短提示，详细信息写入
-`%LOCALAPPDATA%\Entelecheia\Logs\launcher.log`。
+Windows 实验代码还包含 `install-windows-shortcut.vbs`，设计上会创建 `Entelecheia.lnk`，
+并支持 `Ctrl+Shift+Space` 冷启动/唤醒与隐藏控制台。启动日志路径为
+`%LOCALAPPDATA%\Entelecheia\Logs\launcher.log`。这些是待 Windows 真机验证的设计行为，
+不表示已经提供可用安装或解决下面的文件安全层限制。
 
 macOS 启动器只使用仓库 `.runtime/node`，用本地 `node_modules` 构建渲染层并启动
 Electron，**不依赖全局 Node 或 pnpm**。
@@ -113,22 +117,24 @@ Electron 复用已有本地 API 前，会先向 `http://127.0.0.1:8765/api/healt
 没有后端在跑就自动从仓库 `.venv` 拉起 Python API sidecar；身份不匹配则失败关闭。
 模型 Key 在应用内「设置」里填，无需命令行。
 
-Windows 目前是**桌面启动预览，不是完整链路支持**。Electron 和本地 API 进程可以按 Windows
-路径启动；但会话工作目录访问、把上传附件复制进工作目录、Agent 写入工作区、以及工作区产物验证，
-目前都依赖 Unix 的安全目录句柄，在 Windows 上会主动拒绝。因此不能把当前版本描述为“Windows
-可正常跑完整 L1/L2 任务”。此外，目录浏览/搜索需要系统 `PATH` 中存在 `rg.exe`（Python 的固定
-`ripgrep` wheel 不覆盖 Windows）；旧式 `.doc/.ppt` 的受限 LibreOffice 转换桥只实现了 macOS
+Windows 目前只有**桌面启动预览代码，不是完整链路支持**。Electron 和本地 API 有 Windows
+启动路径，但未提供对应的完整锁定安装。会话工作目录访问、把上传附件复制进工作目录、Agent
+写入工作区、以及工作区产物验证依赖 Unix 安全目录句柄，在 Windows 上会主动拒绝。
+这需要文件安全层适配，不是补齐解释器后跑一次 smoke 就能解决。因此不能把当前版本描述为
+“Windows 可正常跑完整 L1/L2 任务”。此外，当前 `pyproject.toml` 在 Windows 跳过 Python
+`ripgrep` 依赖；目录浏览/搜索要求系统 `PATH` 中有 `rg.exe`，但补上它也不解除前述阻塞。
+旧式 `.doc/.ppt` 的受限 LibreOffice 转换桥只实现了 macOS
 sandbox；PNG/JPG 的默认本地 OCR 使用 Apple Vision；评测结果的跨进程文件锁也仍使用 Unix
 `fcntl`。扫描 PDF 存在非 macOS 选择 RapidOCR 的设计路径，但推理依赖、模型预取和安全落盘尚未
 完成 Windows 适配/验证；配置好的外部视觉模型 HTTP 接口本身不依赖 macOS。完整支持还需要
 Windows 真机 smoke 和上述文件安全层的 Windows 实现。
 
-### 浏览器方式（不装 Electron）
+### 浏览器开发预览（不启动 Electron 窗口）
 
 - macOS：双击 `start-web.command`（起 Vite，打开 `http://127.0.0.1:5174/`）
 
 浏览器渲染同样先探 `http://127.0.0.1:8765`；想用真实数据时，另在仓库根手动起
-`PERSONAGRAPH_API_ALLOW_UNAUTHENTICATED_DEV_ORIGINS=1 python -m personagraph.api.server`。该开关只精确接受
+`PERSONAGRAPH_API_ALLOW_UNAUTHENTICATED_DEV_ORIGINS=1 .venv/bin/python -m personagraph.api.server`。该开关只精确接受
 `http://127.0.0.1:5174` 与 `http://localhost:5174`；`null`、`file://` 和额外配置的 Origin
 仍必须提供 Bearer token。Electron 正式路径使用 main-process Bearer 注入，不需要此降级。
 
@@ -150,7 +156,8 @@ Manual API startup is optional for Electron, but useful for browser fallback tes
 
 ## Desktop Shell
 
-Electron is the chosen desktop shell because this project prioritizes Windows compatibility and consistent Chromium rendering for future animated avatar surfaces.
+Electron provides the desktop window and a consistent Chromium renderer. A cross-platform shell does not make
+the Python runtime, file-safety layer, or dependency installation cross-platform; use the support matrix below.
 
 The desktop shell lives in `frontend/electron/`:
 
@@ -167,8 +174,11 @@ Future avatar code should live under a separate frontend surface such as `fronte
 
 Current platform status:
 
-- macOS: dependency install and Electron launch have been verified.
-- Windows: source layout and launch script are prepared; full verification still needs a Windows machine.
+- macOS arm64: the only complete locked installation target. Dependency installation, GUI startup, local model
+  inference, and paid task execution are separate acceptance steps; this documentation does not certify all four.
+- macOS Intel / Linux arm64 or x86_64: runtime bootstrap targets exist, without a validated full application installation.
+- Windows: experimental launcher code only; bootstrap has no Windows branch, and core POSIX file operations
+  need implementation work before end-to-end validation is meaningful.
 
 ## What Is Independent UI?
 

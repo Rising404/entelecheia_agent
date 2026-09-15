@@ -22,6 +22,9 @@ _SOURCE_FINGERPRINT_PATHS = (
     "src/personagraph",
     "tests/evals",
     "configs",
+    # 阅读归档不是被测实现；整理新旧结果不能触发 source_changed_during_run。
+    ":(exclude)evals/docbench/results/**",
+    ":(exclude)evals/docbench/previous_results/**",
 )
 _SENSITIVE_ENV_MARKERS = (
     "API_KEY",
@@ -71,7 +74,7 @@ def read_git_provenance(project_root: Path) -> tuple[str | None, bool | None]:
 
 
 def compute_source_tree_sha256(project_root: Path) -> str | None:
-    """计算与 DocBench 正式运行相关的已跟踪及未跟踪源码哈希。"""
+    """计算相关已跟踪/未跟踪源码哈希，不把新旧结果归档当作源码。"""
 
     try:
         completed = subprocess.run(  # noqa: S603,S607 - 固定本地 git 命令

@@ -1,0 +1,135 @@
+{
+  "schema_version": "docbench-compatible-case-score-v1",
+  "scoring_protocol": "docbench_prompt_compatible",
+  "official_comparable": false,
+  "case_id": "docbench:165:0",
+  "doc_id": "165",
+  "question_index": 0,
+  "domain": "laws",
+  "question_type": "text",
+  "system_answer": "根据美国国会法律图书馆2023年6月发布的《Blasphemy Laws》报告，伯利兹关于亵渎和诽谤的法律环境发生了以下变化：\n\n**1. 2022年《诽谤法》（Defamation Act 2022）**\n伯利兹于2022年颁布了新的《诽谤法》。该法对诽谤相关法律进行了更新和修订，但报告未提供该法的具体条款细节。\n\n**2. 亵渎相关条款**\n报告指出，伯利兹的《刑法》中仍保留有亵渎相关条款（blasphemy provisions），这些条款规定了对宗教侮辱行为的处罚。但报告未提供这些条款的具体内容或编号。\n\n**总结**\n伯利兹的法律环境变化主要体现在2022年《诽谤法》的颁布，对诽谤法律进行了更新。同时，伯利兹《刑法》中仍保留有亵渎相关条款。报告未详细说明这些变化的具体影响或是否废除了任何旧法。\n\n（注：以上信息来源于文档第7页的伯利兹条目，该条目以表格形式呈现，包含国家、法律、引用和评论四列，但评论列为空。）",
+  "prompt_sha256": "784a6d6cf4f8151765b169c633f46e62d12dcd77f8941172e72edbf8b30f9bde",
+  "filled_prompt_sha256": "6973dddc62cfd4f9f4a6051fc053ce00cdd2086bef0f6c8c16abb6aceaf8ad08",
+  "judge_provider": "openai-compatible",
+  "judge_base_url": "https://models.sjtu.edu.cn/api/v1",
+  "judge_model": "deepseek-chat",
+  "judge_request_dialect": "deepseek",
+  "judge_retry_policy": {
+    "max_attempts": 6,
+    "fallback_backoff_s": [
+      2.0,
+      4.0,
+      8.0,
+      16.0,
+      30.0
+    ],
+    "inter_case_delay_s": 1.0,
+    "retryable_http_statuses": [
+      408,
+      429,
+      "5xx"
+    ],
+    "retryable_transport_errors": [
+      "httpx.TransportError"
+    ]
+  },
+  "judge_http_status": 200,
+  "judge_response_raw": {
+    "id": "chatcmpl-b164ec4b-b6ff-4bf2-925a-973bbdb15fb9",
+    "created": 1789436102,
+    "model": "deepseek-chat",
+    "object": "chat.completion",
+    "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "Correctness: 1",
+          "role": "assistant",
+          "provider_specific_fields": {
+            "reasoning": null,
+            "refusal": null
+          }
+        },
+        "provider_specific_fields": {
+          "stop_reason": null,
+          "token_ids": null,
+          "routed_experts": null
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 6,
+      "prompt_tokens": 596,
+      "total_tokens": 602,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      }
+    }
+  },
+  "judge_response_text": "Correctness: 1",
+  "judge_attempts": [
+    {
+      "attempt_number": 1,
+      "attempted_at": "2026-09-15T01:35:00.588612+00:00",
+      "wait_before_attempt_s": 1.0,
+      "http_status": 200,
+      "response_raw": {
+        "id": "chatcmpl-b164ec4b-b6ff-4bf2-925a-973bbdb15fb9",
+        "created": 1789436102,
+        "model": "deepseek-chat",
+        "object": "chat.completion",
+        "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "Correctness: 1",
+              "role": "assistant",
+              "provider_specific_fields": {
+                "reasoning": null,
+                "refusal": null
+              }
+            },
+            "provider_specific_fields": {
+              "stop_reason": null,
+              "token_ids": null,
+              "routed_experts": null
+            }
+          }
+        ],
+        "usage": {
+          "completion_tokens": 6,
+          "prompt_tokens": 596,
+          "total_tokens": 602,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          }
+        }
+      },
+      "status": "completed",
+      "error": null,
+      "retryable": false,
+      "retry_reason": null,
+      "retry_after_header": null,
+      "wait_before_next_attempt_s": null,
+      "wait_source": null
+    }
+  ],
+  "judge_attempt_count": 1,
+  "score_source": "judge",
+  "score": 1,
+  "error": null,
+  "scored_at": "2026-09-15T01:34:59.581601+00:00",
+  "status": "completed",
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-165-0-9ef9ecb16090.json",
+    "source_sha256": "a6d210159cd635d9236cb33e51fdb507bddfa3064e08ff9a3db7965b51f910e8",
+    "source_bytes": 4906,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

@@ -37,14 +37,6 @@ DEFAULT_FOLDER_URL = (
 DOCBENCH_DOCUMENT_COUNT = 229
 DOCBENCH_DOCUMENT_IDS = frozenset(range(DOCBENCH_DOCUMENT_COUNT))
 CATALOG_MAPPING_SCHEMA_VERSION = "docbench-drive-catalog-map-v1"
-DOCBENCH_SOURCE_DIR = docbench_root() / "source"
-DEFAULT_DATA_ROOT = DOCBENCH_SOURCE_DIR / "data"
-DEFAULT_SELECTED_MAPPING_PATH = (
-    DOCBENCH_SOURCE_DIR / "selected_drive_map.json"
-)
-DEFAULT_QA_CATALOG_MAPPING_PATH = (
-    DOCBENCH_SOURCE_DIR / "drive_catalog_map.json"
-)
 BALANCED_SELECTION_DOCUMENT_COUNT = sum(DEFAULT_BALANCED_DOMAIN_COUNTS.values())
 
 
@@ -627,7 +619,7 @@ def _add_cli_arguments(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(
         "--data-root",
         type=Path,
-        default=DEFAULT_DATA_ROOT,
+        default=None,
     )
     parser.add_argument(
         "--mapping",
@@ -656,14 +648,21 @@ def _add_cli_arguments(parser: argparse.ArgumentParser) -> None:
 
 
 def _run_cli(args: argparse.Namespace) -> int:
-    mapping_path = args.mapping or (
-        DEFAULT_QA_CATALOG_MAPPING_PATH
-        if args.qa_catalog_only or args.balanced_pdfs_only
-        else DEFAULT_SELECTED_MAPPING_PATH
-    )
+    data_root = args.data_root
+    mapping_path = args.mapping
+    if data_root is None or mapping_path is None:
+        source_dir = docbench_root() / "source"
+        if data_root is None:
+            data_root = source_dir / "data"
+        if mapping_path is None:
+            mapping_path = source_dir / (
+                "drive_catalog_map.json"
+                if args.qa_catalog_only or args.balanced_pdfs_only
+                else "selected_drive_map.json"
+            )
     if args.qa_catalog_only:
         mapping = download_qa_catalog(
-            data_root=args.data_root,
+            data_root=data_root,
             mapping_path=mapping_path,
             folder_url=args.folder_url,
         )
@@ -677,7 +676,7 @@ def _run_cli(args: argparse.Namespace) -> int:
         }
     elif args.balanced_pdfs_only:
         result = download_balanced_pdfs(
-            data_root=args.data_root,
+            data_root=data_root,
             mapping_path=mapping_path,
             folder_url=args.folder_url,
             seed=args.seed or DEFAULT_BALANCED_SEED,
@@ -690,7 +689,7 @@ def _run_cli(args: argparse.Namespace) -> int:
         }
     else:
         mapping = download_selected(
-            data_root=args.data_root,
+            data_root=data_root,
             mapping_path=mapping_path,
             folder_url=args.folder_url,
             seed=args.seed or DEFAULT_SEED,

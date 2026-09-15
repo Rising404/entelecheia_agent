@@ -1,0 +1,135 @@
+{
+  "schema_version": "docbench-compatible-case-score-v1",
+  "scoring_protocol": "docbench_prompt_compatible",
+  "official_comparable": false,
+  "case_id": "docbench:21:0",
+  "doc_id": "21",
+  "question_index": 0,
+  "domain": "academia",
+  "question_type": "text",
+  "system_answer": "根据论文第4节（Model）的描述，模型生成用于目标预测（goal prediction）的panorama I_P的方法如下：\n\n**1. 全景图 I_P 的生成**\n在任务执行开始时（t=1），智能体从起始位置通过**旋转360度**进行**确定性探索**（deterministic exploration），以观察周围环境。这些在不同角度拍摄的观测图像沿**宽度维度拼接**（concatenation along the width dimension），形成一张完整的全景图 I_P。论文指出，这些确定性探索步骤不计入执行步数。\n\n**2. 从 I_P 生成特征图 F_0**\n得到全景图 I_P 后，模型通过以下步骤生成用于目标预测的特征图 F_0：\n- 首先，使用一个**两层卷积神经网络 CNN_0**（含ReLU激活）对 I_P 进行处理，得到初步特征。\n- 然后，将**位置嵌入 F_p** 沿通道维度拼接上去。F_p 的生成方式为：为构成全景图的每一张确定性观测图像创建一个通道，在该通道中，将全景图中对应观测位置的像素设为1，其余像素设为0。观测数量取决于智能体的相机视角。\n- 最终得到特征图 F_0 = [CNN_0(I_P); F_p]。\n\n**3. 从 F_0 预测目标位置**\n模型使用**LINGUNET**（一种受U-Net启发的架构，其重建阶段以自然语言指令为条件）在 F_0 上生成目标概率分布 P_g。具体流程为：\n- LINGUNET 先通过 m 个卷积层生成一系列特征图 F_j。\n- 自然语言指令被编码为表示向量 x̅，并均匀切分为 m 个向量 {x̅_j}，每个 x̅_j 通过仿射变换生成一个 1×1 的文本核 K_j。\n- 对每个 F_j，用对应的文本核 K_j 做 2D 1×1 卷积，生成文本条件特征图 G_j。\n- 然后通过 m 次反卷积操作生成 H_m,...,H_1。\n- 最后对 H_1 应用 softmax，并加上一个可学习的标量偏置项 b_g（用于表示目标不在视野内的情况），得到最终的目标概率分布 P_g。\n- 选择 P_g 中概率最高的像素作为目标在 F_0 中的位置，再通过相机反向投影计算出环境中的3D目标位置 l_g。\n\n**总结**：全景图 I_P 是通过在起始位置旋转360度、沿宽度拼接确定性观测生成的。随后通过 CNN_0 和位置嵌入得到特征图 F_0，再经 LINGUNET 以指令为条件生成目标概率分布 P_g，从而完成目标预测。",
+  "prompt_sha256": "784a6d6cf4f8151765b169c633f46e62d12dcd77f8941172e72edbf8b30f9bde",
+  "filled_prompt_sha256": "b40fefe018465cb840ba59757c6ed797c34afc556941368c38d53fd4fc1e982c",
+  "judge_provider": "openai-compatible",
+  "judge_base_url": "https://models.sjtu.edu.cn/api/v1",
+  "judge_model": "deepseek-chat",
+  "judge_request_dialect": "deepseek",
+  "judge_retry_policy": {
+    "max_attempts": 6,
+    "fallback_backoff_s": [
+      2.0,
+      4.0,
+      8.0,
+      16.0,
+      30.0
+    ],
+    "inter_case_delay_s": 1.0,
+    "retryable_http_statuses": [
+      408,
+      429,
+      "5xx"
+    ],
+    "retryable_transport_errors": [
+      "httpx.TransportError"
+    ]
+  },
+  "judge_http_status": 200,
+  "judge_response_raw": {
+    "id": "chatcmpl-073f85fc-2712-471a-967b-5d3bc0e788fc",
+    "created": 1789065256,
+    "model": "deepseek-chat",
+    "object": "chat.completion",
+    "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "1",
+          "role": "assistant",
+          "provider_specific_fields": {
+            "reasoning": null,
+            "refusal": null
+          }
+        },
+        "provider_specific_fields": {
+          "stop_reason": null,
+          "routed_experts": null,
+          "token_ids": null
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 2,
+      "prompt_tokens": 932,
+      "total_tokens": 934,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      }
+    }
+  },
+  "judge_response_text": "1",
+  "judge_attempts": [
+    {
+      "attempt_number": 1,
+      "attempted_at": "2026-09-10T18:34:16.658251+00:00",
+      "wait_before_attempt_s": 1.0,
+      "http_status": 200,
+      "response_raw": {
+        "id": "chatcmpl-073f85fc-2712-471a-967b-5d3bc0e788fc",
+        "created": 1789065256,
+        "model": "deepseek-chat",
+        "object": "chat.completion",
+        "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "1",
+              "role": "assistant",
+              "provider_specific_fields": {
+                "reasoning": null,
+                "refusal": null
+              }
+            },
+            "provider_specific_fields": {
+              "stop_reason": null,
+              "routed_experts": null,
+              "token_ids": null
+            }
+          }
+        ],
+        "usage": {
+          "completion_tokens": 2,
+          "prompt_tokens": 932,
+          "total_tokens": 934,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          }
+        }
+      },
+      "status": "completed",
+      "error": null,
+      "retryable": false,
+      "retry_reason": null,
+      "retry_after_header": null,
+      "wait_before_next_attempt_s": null,
+      "wait_source": null
+    }
+  ],
+  "judge_attempt_count": 1,
+  "score_source": "judge",
+  "score": 1,
+  "error": null,
+  "scored_at": "2026-09-10T18:34:15.652204+00:00",
+  "status": "completed",
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-21-0-c0588a80ec22.json",
+    "source_sha256": "71b2bef7b7b153863a2add7d461ca27f9cadb29972783a3792ea86d5896d0f3e",
+    "source_bytes": 6203,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

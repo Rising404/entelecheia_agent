@@ -1,0 +1,129 @@
+{
+  "schema_version": "docbench-compatible-case-score-v1",
+  "scoring_protocol": "docbench_prompt_compatible",
+  "official_comparable": false,
+  "case_id": "docbench:104:0",
+  "doc_id": "104",
+  "question_index": 0,
+  "domain": "government",
+  "question_type": "text",
+  "system_answer": "根据附件文档（FBS_H_23FEB2022_PUBLIC-1.pdf），Bureau Objective 2.1 通过确保提名人在整个确认过程中获得有效、一致和高质量的准备工作，来支持 JSP Goals 整体。\n\n文档明确指出：\n> **Bureau Objective 2.1:** Oversee effective, consistent, and high-quality preparation for each nominee throughout the confirmation process.\n> **Bureau Objective 2.1 Justification and Linkages:** Well-prepared nominees have a significantly better chance of being confirmed. **Having highly qualified nominees confirmed and in their leadership positions supports all the JSP Goals**, including:\n> - **Goal 1:** Renew U.S. leadership and mobilize coalitions to address the global challenges that have the greatest impact on Americans' security and well-being;\n> - **Goal 2:** Promote global prosperity and shape an international environment in which the United States can thrive;\n> - **Goal 3:** Strengthen democratic institutions, uphold universal values, and promote human dignity;\n> - **Goal 4:** Revitalize the diplomatic and development workforce and infrastructure;\n> - **Goal 5:** Serve U.S. Citizens around the world and facilitate secure international travel.\n\n**总结：** Bureau Objective 2.1 的核心是确保每一位需要参议院确认的提名人都得到充分准备，从而提高其确认通过的概率。一旦这些高素质的提名人被确认并进入领导岗位，他们就能在各个领域推动美国的外交政策议程，从而全面支持所有五项 JSP Goals 的实现。",
+  "prompt_sha256": "784a6d6cf4f8151765b169c633f46e62d12dcd77f8941172e72edbf8b30f9bde",
+  "filled_prompt_sha256": "da286ab0826def94f8d22afee905893122099b1c1045125c2b15c5c6e47e62c8",
+  "judge_provider": "openai-compatible",
+  "judge_base_url": "https://models.sjtu.edu.cn/api/v1",
+  "judge_model": "deepseek-chat",
+  "judge_request_dialect": "deepseek",
+  "judge_retry_policy": {
+    "max_attempts": 6,
+    "fallback_backoff_s": [
+      2.0,
+      4.0,
+      8.0,
+      16.0,
+      30.0
+    ],
+    "inter_case_delay_s": 1.0,
+    "retryable_http_statuses": [
+      408,
+      429,
+      "5xx"
+    ],
+    "retryable_transport_errors": [
+      "httpx.TransportError"
+    ]
+  },
+  "judge_http_status": 200,
+  "judge_response_raw": {
+    "id": "chatcmpl-d9926228-bdaa-456a-9f6c-5f4b50430d9e",
+    "created": 1789435899,
+    "model": "deepseek-chat",
+    "object": "chat.completion",
+    "system_fingerprint": "vllm-0.26.0-tp8-ep-17a845fb",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "Correctness: 1",
+          "role": "assistant",
+          "provider_specific_fields": {
+            "reasoning": null,
+            "refusal": null
+          }
+        },
+        "provider_specific_fields": {
+          "stop_reason": null,
+          "token_ids": null,
+          "routed_experts": null
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 6,
+      "prompt_tokens": 687,
+      "total_tokens": 693
+    }
+  },
+  "judge_response_text": "Correctness: 1",
+  "judge_attempts": [
+    {
+      "attempt_number": 1,
+      "attempted_at": "2026-09-15T01:31:37.466712+00:00",
+      "wait_before_attempt_s": 1.0,
+      "http_status": 200,
+      "response_raw": {
+        "id": "chatcmpl-d9926228-bdaa-456a-9f6c-5f4b50430d9e",
+        "created": 1789435899,
+        "model": "deepseek-chat",
+        "object": "chat.completion",
+        "system_fingerprint": "vllm-0.26.0-tp8-ep-17a845fb",
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "Correctness: 1",
+              "role": "assistant",
+              "provider_specific_fields": {
+                "reasoning": null,
+                "refusal": null
+              }
+            },
+            "provider_specific_fields": {
+              "stop_reason": null,
+              "token_ids": null,
+              "routed_experts": null
+            }
+          }
+        ],
+        "usage": {
+          "completion_tokens": 6,
+          "prompt_tokens": 687,
+          "total_tokens": 693
+        }
+      },
+      "status": "completed",
+      "error": null,
+      "retryable": false,
+      "retry_reason": null,
+      "retry_after_header": null,
+      "wait_before_next_attempt_s": null,
+      "wait_source": null
+    }
+  ],
+  "judge_attempt_count": 1,
+  "score_source": "judge",
+  "score": 1,
+  "error": null,
+  "scored_at": "2026-09-15T01:31:36.458772+00:00",
+  "status": "completed",
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-104-0-9859614ba10a.json",
+    "source_sha256": "8e3a12869fddd586c87f967887fe4b895c6b3c3cea3117b39b6a7abb02d6ebd8",
+    "source_bytes": 5443,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

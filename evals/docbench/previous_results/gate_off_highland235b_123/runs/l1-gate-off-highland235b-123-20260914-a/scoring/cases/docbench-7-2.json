@@ -1,0 +1,135 @@
+{
+  "schema_version": "docbench-compatible-case-score-v1",
+  "scoring_protocol": "docbench_prompt_compatible",
+  "official_comparable": false,
+  "case_id": "docbench:7:2",
+  "doc_id": "7",
+  "question_index": 2,
+  "domain": "academia",
+  "question_type": "multimodal",
+  "system_answer": "根据论文Figure 1及正文Section 6.2，Specificity（特异性）的定量确定方法如下：\n\n**定量指标：Normalized Inverse Document Frequency (NIDF)**\n\nSpecificity使用归一化逆文档频率（NIDF）作为词稀有度的度量，具体公式为：\n\n1. **IDF (Inverse Document Frequency)**：对于每个词w，IDF(w) = log(R / c_w)，其中R是数据集中回复的总数，c_w是包含该词的回复数量。\n\n2. **NIDF (Normalized IDF)**：将IDF归一化到[0, 1]区间：\n   NIDF(w) = (IDF(w) - min_idf) / (max_idf - min_idf)\n   其中min_idf和max_idf分别是词汇表中所有词的最小和最大IDF值。\n\n**如何定量确定Specificity：**\n- 对于一个给定的回复话语y，其Specificity被定义为该话语中所有词的NIDF的均值。\n- NIDF值越高表示词越稀有（更具体），NIDF值越低表示词越常见（更通用）。\n- 在条件训练（Conditional Training）方法中，控制变量z即为mean NIDF（离散化为10个等宽桶）。\n- 在加权解码（Weighted Decoding）方法中，NIDF被直接作为解码特征加入评分函数。\n\n**Figure 1的角色：**\nFigure 1是论文的示意图，展示了四个低层可控属性（Repetition、Specificity、Response-relatedness、Question-asking）与人类对话质量判断之间的关系。对于Specificity，图中标注的定量方法是\"normalized inverse document frequency\"（归一化逆文档频率），即上述NIDF指标。具体的计算公式和用法在论文Section 6.2中详细阐述。",
+  "prompt_sha256": "784a6d6cf4f8151765b169c633f46e62d12dcd77f8941172e72edbf8b30f9bde",
+  "filled_prompt_sha256": "2eab165b55472b81abd8c673d4d1a06191226e1e39a069224ac96b34a7dbcb69",
+  "judge_provider": "openai-compatible",
+  "judge_base_url": "https://models.sjtu.edu.cn/api/v1",
+  "judge_model": "deepseek-chat",
+  "judge_request_dialect": "deepseek",
+  "judge_retry_policy": {
+    "max_attempts": 6,
+    "fallback_backoff_s": [
+      2.0,
+      4.0,
+      8.0,
+      16.0,
+      30.0
+    ],
+    "inter_case_delay_s": 1.0,
+    "retryable_http_statuses": [
+      408,
+      429,
+      "5xx"
+    ],
+    "retryable_transport_errors": [
+      "httpx.TransportError"
+    ]
+  },
+  "judge_http_status": 200,
+  "judge_response_raw": {
+    "id": "chatcmpl-c74df738-f142-46e2-a4a0-e5fe09514435",
+    "created": 1789435604,
+    "model": "deepseek-chat",
+    "object": "chat.completion",
+    "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "1",
+          "role": "assistant",
+          "provider_specific_fields": {
+            "reasoning": null,
+            "refusal": null
+          }
+        },
+        "provider_specific_fields": {
+          "routed_experts": null,
+          "token_ids": null,
+          "stop_reason": null
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 2,
+      "prompt_tokens": 713,
+      "total_tokens": 715,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      }
+    }
+  },
+  "judge_response_text": "1",
+  "judge_attempts": [
+    {
+      "attempt_number": 1,
+      "attempted_at": "2026-09-15T01:26:41.999827+00:00",
+      "wait_before_attempt_s": 1.0,
+      "http_status": 200,
+      "response_raw": {
+        "id": "chatcmpl-c74df738-f142-46e2-a4a0-e5fe09514435",
+        "created": 1789435604,
+        "model": "deepseek-chat",
+        "object": "chat.completion",
+        "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "1",
+              "role": "assistant",
+              "provider_specific_fields": {
+                "reasoning": null,
+                "refusal": null
+              }
+            },
+            "provider_specific_fields": {
+              "routed_experts": null,
+              "token_ids": null,
+              "stop_reason": null
+            }
+          }
+        ],
+        "usage": {
+          "completion_tokens": 2,
+          "prompt_tokens": 713,
+          "total_tokens": 715,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          }
+        }
+      },
+      "status": "completed",
+      "error": null,
+      "retryable": false,
+      "retry_reason": null,
+      "retry_after_header": null,
+      "wait_before_next_attempt_s": null,
+      "wait_source": null
+    }
+  ],
+  "judge_attempt_count": 1,
+  "score_source": "judge",
+  "score": 1,
+  "error": null,
+  "scored_at": "2026-09-15T01:26:40.989686+00:00",
+  "status": "completed",
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-7-2-7f7e65450475.json",
+    "source_sha256": "79a4b2285b238258b39aea45496cf16ed092ffeb3eea16abfb6f08f5fb10a473",
+    "source_bytes": 5372,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

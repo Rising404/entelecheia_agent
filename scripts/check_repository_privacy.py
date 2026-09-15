@@ -16,6 +16,7 @@ the explicitly publishable evaluation-summary JSON files.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import io
 import json
 import math
@@ -52,6 +53,22 @@ FORBIDDEN_ROOTS = frozenset(
 )
 LOCAL_CONFIG_ROOT = ("configs", "local")
 LOCAL_CONFIG_EXCEPTIONS = frozenset({("configs", "local", "README.md")})
+REVIEWED_EVALUATION_MARKDOWN_PATHS = frozenset(
+    {
+        ("evals", "docbench", "previous_results", "analysis", "README.md"),
+        ("evals", "docbench", "previous_results", "analysis", "EVALUATION_REVIEW.md"),
+        ("evals", "docbench", "previous_results", "analysis", "FAILURE_ATTRIBUTION.md"),
+    }
+)
+
+# User-approved, field-cleaned execution evidence. A directory name or a newly
+# authored manifest never grants approval: the reviewed manifest bytes are pinned.
+REVIEWED_EVIDENCE_MANIFESTS = {
+    "evals/docbench/previous_results/showcase_125/publication_manifest.json":
+        "79220bee19eae42aaed0be4f28deef4e4ec419bbd3c0ab645215c99ce7040722",
+    "evals/docbench/previous_results/gate_off_highland235b_123/publication_manifest.json":
+        "cce5bce79d9c5187d874911cb9fc2aee2c16d5c68ccfb85bfd4e69294f006db7",
+}
 
 FORBIDDEN_SUFFIXES = (
     ".arrow",
@@ -284,10 +301,16 @@ FORBIDDEN_SUMMARY_KEYS = frozenset(
 )
 
 PUBLIC_EVALUATION_SCHEMA = "entelecheia-docbench-public-evaluation"
+# Only committed-tree scans may accept this exact, previously reviewed export.
+# Current worktree/index data must satisfy the canonical CC archival contract.
+REVIEWED_HISTORICAL_EVALUATION_SHA256 = {
+    "evals/docbench/results/showcase_125.summary.json":
+        "2e25675eb999d397e2e7db6795a3b9036e25b1e0b2c0d3e7cf91df01ffecba18",
+}
 PUBLIC_EVALUATION_TOP_LEVEL_KEYS = frozenset(
     {
         "schema_version", "benchmark_id", "lane", "official_comparable",
-        "cc_review_status", "codex_review_status", "main_model", "vision_model",
+        "cc_review_status", "cc_review", "codex_review_status", "main_model", "vision_model",
         "judge_model", "review_artifact_sha256", "runs", "cases", "executions",
         "totals",
     }
@@ -607,11 +630,22 @@ def _snapshot_content_cache(
     selected = {
         path: object_id
         for path, object_id in object_ids_by_path.items()
-        if not path_violations(path)
+        if (not path_violations(path) or path in REVIEWED_EVIDENCE_MANIFESTS)
         and (_is_eval_summary(path) or _is_text_candidate(path))
     }
     blobs = _batch_read_blobs(repo, selected.values())
-    return {path: blobs[object_id] for path, object_id in selected.items()}
+    content = {path: blobs[object_id] for path, object_id in selected.items()}
+    # Resolve reviewed manifests from this same Git snapshot before deciding
+    # which payloads to preload. Never read manifests from the working directory
+    # while checking a staged or historical tree.
+    evidence, _ = _reviewed_evidence_entries(set(object_ids_by_path), content.__getitem__)
+    additional = {
+        path: object_id for path, object_id in object_ids_by_path.items()
+        if path in evidence and path not in content and _is_text_candidate(path)
+    }
+    extra_blobs = _batch_read_blobs(repo, additional.values())
+    content.update({path: extra_blobs[object_id] for path, object_id in additional.items()})
+    return content
 
 
 def worktree_snapshot(repo: Path) -> tuple[list[str], Callable[[str], bytes]]:
@@ -695,7 +729,7 @@ def _parts(path: str) -> tuple[str, ...]:
     return tuple(part for part in PurePosixPath(path).parts if part not in {"", "."})
 
 
-def path_violations(path: str) -> list[Violation]:
+def path_violations(path: str, *, reviewed_evidence: bool = False) -> list[Violation]:
     parts = _parts(path)
     if not parts:
         return []
@@ -730,7 +764,14 @@ def path_violations(path: str) -> list[Violation]:
         for directory, reason, allowed in (
             (
                 "results",
-                "raw evaluation result (only direct README, *.summary.json, and *.baseline.json files are allowed)",
+                "raw evaluation result (only direct README, *.summary.json, *.baseline.json, and explicitly reviewed Markdown paths are allowed)",
+                lambda name: name == "readme.md"
+                or name.endswith(".summary.json")
+                or name.endswith(".baseline.json"),
+            ),
+            (
+                "previous_results",
+                "raw historical evaluation result (only direct README, *.summary.json, *.baseline.json, and explicitly reviewed Markdown paths are allowed)",
                 lambda name: name == "readme.md"
                 or name.endswith(".summary.json")
                 or name.endswith(".baseline.json"),
@@ -746,6 +787,12 @@ def path_violations(path: str) -> list[Violation]:
                 lambda name: name == "readme.md",
             ),
         ):
+            if directory == "previous_results" and reviewed_evidence:
+                # Only inspect_snapshot can establish exact manifest membership.
+                continue
+            if directory in {"results", "previous_results"} and parts in REVIEWED_EVALUATION_MARKDOWN_PATHS:
+                # Path approval does not skip the ordinary text/secret scan.
+                continue
             try:
                 directory_index = lowered_parts.index(directory, evals_index + 1)
             except ValueError:
@@ -796,7 +843,7 @@ def _unique_json_object(pairs: list[tuple[str, object]]) -> dict[str, object]:
 
 def _is_eval_summary(path: str) -> bool:
     parts = tuple(part.casefold() for part in _parts(path))
-    if not parts or parts[0] != "evals" or "results" not in parts:
+    if not parts or parts[0] != "evals" or not {"results", "previous_results"}.intersection(parts):
         return False
     return parts[-1].endswith(".summary.json") or parts[-1].endswith(".baseline.json")
 
@@ -875,11 +922,13 @@ def _looks_like_raw_evaluation_mapping(mapping: dict[object, object]) -> bool:
     return bool(question_keys and len(context_keys) >= 2)
 
 
-def structured_privacy_violations(path: str, content: bytes) -> list[Violation]:
+def structured_privacy_violations(
+    path: str, content: bytes, *, max_bytes: int = MAX_TEXT_SCAN_BYTES,
+) -> list[Violation]:
     """Detect credentials and raw per-case eval payloads after path renaming."""
 
     suffix = PurePosixPath(path).suffix.casefold()
-    if suffix not in STRUCTURED_CONFIG_SUFFIXES or len(content) > MAX_TEXT_SCAN_BYTES:
+    if suffix not in STRUCTURED_CONFIG_SUFFIXES or len(content) > max_bytes:
         return []
 
     document: object | None = None
@@ -950,12 +999,14 @@ def structured_privacy_violations(path: str, content: bytes) -> list[Violation]:
     return violations
 
 
-def text_secret_violations(path: str, content: bytes) -> list[Violation]:
-    if len(content) > MAX_TEXT_SCAN_BYTES:
+def text_secret_violations(
+    path: str, content: bytes, *, max_bytes: int = MAX_TEXT_SCAN_BYTES,
+) -> list[Violation]:
+    if len(content) > max_bytes:
         return [
             Violation(
                 path,
-                f"text file exceeds the {MAX_TEXT_SCAN_BYTES}-byte privacy scan limit",
+                f"text file exceeds the {max_bytes}-byte privacy scan limit",
             )
         ]
     text = content.decode("utf-8", "replace")
@@ -1042,7 +1093,8 @@ def _public_evaluation_violations(path: str, document: dict[str, object]) -> lis
         "benchmark_id": lambda v: v == "docbench",
         "lane": lambda v: v == "L1",
         "official_comparable": lambda v: v is False,
-        "cc_review_status": lambda v: v == "pending",
+        "cc_review_status": lambda v: v == "archived_provisional",
+        "cc_review": lambda v: isinstance(v, dict),
         "codex_review_status": lambda v: v == "archived_provisional",
         "main_model": identifier, "vision_model": identifier, "judge_model": identifier,
         "review_artifact_sha256": sha256,
@@ -1051,6 +1103,13 @@ def _public_evaluation_violations(path: str, document: dict[str, object]) -> lis
     }, "root")
     if violations:
         return violations
+
+    record(document["cc_review"], {
+        "artifact_sha256": sha256,
+        "reviewer_kind": lambda v: v == "model",
+        "blind_review": lambda v: v is False,
+        "source_check_basis": lambda v: v == "reviewer_self_report",
+    }, "cc_review")
 
     run_fields = {
         "ordinal": run_ordinal,
@@ -1089,6 +1148,9 @@ def _public_evaluation_violations(path: str, document: dict[str, object]) -> lis
         "selected_run_ordinal": run_ordinal,
         "original_judge_score": score, "retry_merged_judge_score": score,
         "codex_archived_first_score": score, "codex_archived_selected_score": score,
+        "cc_archived_first_score": score, "cc_archived_selected_score": score,
+        "cc_debatable": lambda v: type(v) is bool,
+        "cc_source_checked_reported": lambda v: type(v) is bool,
         "review_status": lambda v: v in (
             "original_review_retained", "unresolved_retained_original",
             "new_answer_checked", "confirmed_correction",
@@ -1108,9 +1170,15 @@ def _public_evaluation_violations(path: str, document: dict[str, object]) -> lis
         "retry_merged_judge_correct": "retry_merged_judge_score",
         "codex_archived_first_correct": "codex_archived_first_score",
         "codex_archived_selected_correct": "codex_archived_selected_score",
+        "cc_archived_first_correct": "cc_archived_first_score",
+        "cc_archived_selected_correct": "cc_archived_selected_score",
+    }
+    flag_totals = {
+        "cc_debatable_count": "cc_debatable",
+        "cc_source_checked_reported_count": "cc_source_checked_reported",
     }
     record(document["totals"], {
-        key: integer for key in ("case_count", "execution_count", *score_totals)
+        key: integer for key in ("case_count", "execution_count", *score_totals, *flag_totals)
     }, "totals")
     for table, fields in (("runs", run_fields), ("cases", case_fields), ("executions", execution_fields)):
         for index, row in enumerate(document[table]):
@@ -1154,6 +1222,8 @@ def _public_evaluation_violations(path: str, document: dict[str, object]) -> lis
             reject(f"cases.{identity}", "judge scores differ from the referenced executions")
         if case["question_type"] != source_types[case["source_question_type"]]:
             reject(f"cases.{identity}", "source question type does not match its reporting group")
+        if case["selected_run_ordinal"] == 1 and case["cc_archived_first_score"] != case["cc_archived_selected_score"]:
+            reject(f"cases.{identity}", "CC scores differ for the unchanged execution")
 
     totals = document["totals"]
     if totals["case_count"] != len(cases) or totals["execution_count"] != len(executions):
@@ -1161,10 +1231,15 @@ def _public_evaluation_violations(path: str, document: dict[str, object]) -> lis
     for total_key, case_key in score_totals.items():
         if totals[total_key] != sum(case[case_key] for case in cases.values()):
             reject(f"totals.{total_key}", "score sum mismatch")
+    for total_key, case_key in flag_totals.items():
+        if totals[total_key] != sum(case[case_key] for case in cases.values()):
+            reject(f"totals.{total_key}", "review declaration count mismatch")
     return violations
 
 
-def eval_summary_violations(path: str, content: bytes) -> list[Violation]:
+def eval_summary_violations(
+    path: str, content: bytes, *, committed_history: bool = False,
+) -> list[Violation]:
     if len(content) > MAX_SUMMARY_BYTES:
         return [Violation(path, f"evaluation summary exceeds {MAX_SUMMARY_BYTES} bytes")]
     try:
@@ -1182,8 +1257,14 @@ def eval_summary_violations(path: str, content: bytes) -> list[Violation]:
 
     violations: list[Violation] = []
     schema_version = document.get("schema_version")
-    if schema_version == PUBLIC_EVALUATION_SCHEMA:
+    reviewed_history = (
+        committed_history
+        and REVIEWED_HISTORICAL_EVALUATION_SHA256.get(path) == hashlib.sha256(content).hexdigest()
+    )
+    if schema_version == PUBLIC_EVALUATION_SCHEMA and not reviewed_history:
         violations.extend(_public_evaluation_violations(path, document))
+    # Exact historical approval replaces only current structural validation;
+    # the ordinary field, private-path, free-form and secret checks still run.
     allowed_top_level_keys = (
         SUMMARY_TOP_LEVEL_KEYS_BY_SCHEMA.get(schema_version)
         if isinstance(schema_version, str)
@@ -1227,10 +1308,45 @@ def eval_summary_violations(path: str, content: bytes) -> list[Violation]:
     return violations
 
 
-def inspect_snapshot(paths: Iterable[str], read: Callable[[str], bytes]) -> list[Violation]:
-    violations: set[Violation] = set()
+def _reviewed_evidence_entries(
+    paths: set[str], read: Callable[[str], bytes],
+) -> tuple[dict[str, tuple[str, int]], list[Violation]]:
+    entries: dict[str, tuple[str, int]] = {}
+    violations = []
+    for path, expected in REVIEWED_EVIDENCE_MANIFESTS.items():
+        if path not in paths:
+            continue
+        try:
+            raw = read(path)
+            if hashlib.sha256(raw).hexdigest() != expected:
+                raise ValueError("manifest is not the reviewed snapshot")
+            manifest = json.loads(raw, object_pairs_hook=_unique_json_object)
+            if manifest["kind"] != "reviewed_public_evidence":
+                raise ValueError("unexpected publication kind")
+            root = str(PurePosixPath(path).parent)
+            entries[path] = (expected, len(raw))
+            for relative, record in manifest["files"].items():
+                relative_path = PurePosixPath(relative)
+                if relative_path.is_absolute() or ".." in relative_path.parts:
+                    raise ValueError("unsafe publication path")
+                target = f"{root}/{relative}"
+                if target not in paths:
+                    violations.append(Violation(target, "reviewed evidence file is missing"))
+                entries[target] = (record["sha256"], record["bytes"])
+        except (OSError, CheckError, ValueError, KeyError, TypeError) as error:
+            violations.append(Violation(path, f"invalid reviewed evidence manifest: {error}"))
+    return entries, violations
+
+
+def inspect_snapshot(
+    paths: Iterable[str], read: Callable[[str], bytes], *, committed_history: bool = False,
+) -> list[Violation]:
+    paths = list(paths)
+    evidence, manifest_violations = _reviewed_evidence_entries(set(paths), read)
+    violations: set[Violation] = set(manifest_violations)
     for path in paths:
-        current_path_violations = path_violations(path)
+        expected = evidence.get(path)
+        current_path_violations = path_violations(path, reviewed_evidence=expected is not None)
         violations.update(current_path_violations)
         is_summary = _is_eval_summary(path)
         is_text = _is_text_candidate(path)
@@ -1240,11 +1356,22 @@ def inspect_snapshot(paths: Iterable[str], read: Callable[[str], bytes]) -> list
             except (OSError, CheckError):
                 violations.add(Violation(path, "privacy-scanned file could not be read"))
             else:
+                scan_limit = MAX_TEXT_SCAN_BYTES
+                if expected is not None:
+                    actual = (hashlib.sha256(content).hexdigest(), len(content))
+                    if actual != expected:
+                        violations.add(Violation(path, "reviewed evidence hash/size mismatch"))
+                        continue
+                    # Large approved trajectories still receive a complete scan;
+                    # this is not a generic size-limit exemption for raw artifacts.
+                    scan_limit = max(scan_limit, expected[1])
                 if is_text:
-                    violations.update(text_secret_violations(path, content))
-                    violations.update(structured_privacy_violations(path, content))
+                    violations.update(text_secret_violations(path, content, max_bytes=scan_limit))
+                    violations.update(structured_privacy_violations(path, content, max_bytes=scan_limit))
                 if is_summary:
-                    violations.update(eval_summary_violations(path, content))
+                    violations.update(eval_summary_violations(
+                        path, content, committed_history=committed_history,
+                    ))
     return sorted(violations)
 
 
@@ -1270,7 +1397,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         else:
             label = "worktree"
             paths, read = worktree_snapshot(repo)
-        violations = inspect_snapshot(paths, read)
+        violations = inspect_snapshot(paths, read, committed_history=arguments.tree is not None)
     except CheckError as error:
         print(f"repository privacy check could not run: {error}", file=sys.stderr)
         return 2

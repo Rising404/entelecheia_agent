@@ -1,0 +1,129 @@
+{
+  "schema_version": "docbench-compatible-case-score-v1",
+  "scoring_protocol": "docbench_prompt_compatible",
+  "official_comparable": false,
+  "case_id": "docbench:30:2",
+  "doc_id": "30",
+  "question_index": 2,
+  "domain": "academia",
+  "question_type": "multimodal",
+  "system_answer": "According to Figure 1 in the document (page 5), each word in a sentence is processed through the following steps before being input to the LSTM layers:\n\n1. **Word Embedding**: Each word is first converted into a dense vector representation called a word embedding. This is the bottom layer shown in the figure, labeled \"WordEmbedding\".\n\n2. **Forward and Backward LSTM**: The word embedding is then fed into two separate LSTM layers:\n   - **WordLSTM-F** (Forward LSTM): processes the word in the forward direction.\n   - **WordLSTM-B** (Backward LSTM): processes the word in the backward direction.\n\n3. **Word Representation**: The outputs from the forward and backward LSTM layers are combined to form the final \"WordRepresentation\" for each word, which is then used for subsequent tasks such as named entity recognition.\n\nIn summary, each word is first mapped to a word embedding, then passed through both a forward and a backward LSTM, and the resulting representations are concatenated or combined to produce the word-level representation that serves as input to the higher layers of the network.",
+  "prompt_sha256": "784a6d6cf4f8151765b169c633f46e62d12dcd77f8941172e72edbf8b30f9bde",
+  "filled_prompt_sha256": "950c22971b65f9a706fbd2dcea44d15cfd23f2f98202b0c727e2f377b0bbd551",
+  "judge_provider": "openai-compatible",
+  "judge_base_url": "https://models.sjtu.edu.cn/api/v1",
+  "judge_model": "deepseek-chat",
+  "judge_request_dialect": "deepseek",
+  "judge_retry_policy": {
+    "max_attempts": 6,
+    "fallback_backoff_s": [
+      2.0,
+      4.0,
+      8.0,
+      16.0,
+      30.0
+    ],
+    "inter_case_delay_s": 1.0,
+    "retryable_http_statuses": [
+      408,
+      429,
+      "5xx"
+    ],
+    "retryable_transport_errors": [
+      "httpx.TransportError"
+    ]
+  },
+  "judge_http_status": 200,
+  "judge_response_raw": {
+    "id": "chatcmpl-4a11cd49-38b5-419e-b534-feaa818299e6",
+    "created": 1789435664,
+    "model": "deepseek-chat",
+    "object": "chat.completion",
+    "system_fingerprint": "vllm-0.26.0-tp8-ep-17a845fb",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "Correctness: 1",
+          "role": "assistant",
+          "provider_specific_fields": {
+            "reasoning": null,
+            "refusal": null
+          }
+        },
+        "provider_specific_fields": {
+          "stop_reason": null,
+          "token_ids": null,
+          "routed_experts": null
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 6,
+      "prompt_tokens": 591,
+      "total_tokens": 597
+    }
+  },
+  "judge_response_text": "Correctness: 1",
+  "judge_attempts": [
+    {
+      "attempt_number": 1,
+      "attempted_at": "2026-09-15T01:27:42.549587+00:00",
+      "wait_before_attempt_s": 1.0,
+      "http_status": 200,
+      "response_raw": {
+        "id": "chatcmpl-4a11cd49-38b5-419e-b534-feaa818299e6",
+        "created": 1789435664,
+        "model": "deepseek-chat",
+        "object": "chat.completion",
+        "system_fingerprint": "vllm-0.26.0-tp8-ep-17a845fb",
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "Correctness: 1",
+              "role": "assistant",
+              "provider_specific_fields": {
+                "reasoning": null,
+                "refusal": null
+              }
+            },
+            "provider_specific_fields": {
+              "stop_reason": null,
+              "token_ids": null,
+              "routed_experts": null
+            }
+          }
+        ],
+        "usage": {
+          "completion_tokens": 6,
+          "prompt_tokens": 591,
+          "total_tokens": 597
+        }
+      },
+      "status": "completed",
+      "error": null,
+      "retryable": false,
+      "retry_reason": null,
+      "retry_after_header": null,
+      "wait_before_next_attempt_s": null,
+      "wait_source": null
+    }
+  ],
+  "judge_attempt_count": 1,
+  "score_source": "judge",
+  "score": 1,
+  "error": null,
+  "scored_at": "2026-09-15T01:27:41.540633+00:00",
+  "status": "completed",
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-30-2-a5c959e85fd8.json",
+    "source_sha256": "1095fda8b7a5fd6214db006487960a29863660a28e1581d42eafc1277a2c2631",
+    "source_bytes": 4962,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

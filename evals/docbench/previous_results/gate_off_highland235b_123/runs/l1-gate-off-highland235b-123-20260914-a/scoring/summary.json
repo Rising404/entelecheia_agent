@@ -1,0 +1,890 @@
+{
+  "schema_version": "docbench-compatible-score-v1",
+  "scoring_protocol": "docbench_prompt_compatible",
+  "official_comparable": false,
+  "status": "complete",
+  "prompt_sha256": "784a6d6cf4f8151765b169c633f46e62d12dcd77f8941172e72edbf8b30f9bde",
+  "judge": {
+    "provider": "openai-compatible",
+    "base_url": "https://models.sjtu.edu.cn/api/v1",
+    "model": "deepseek-chat",
+    "request_dialect": "deepseek",
+    "temperature": 0.0,
+    "thinking_enabled": false,
+    "max_output_tokens": 256,
+    "retry_policy": {
+      "max_attempts": 6,
+      "fallback_backoff_s": [
+        2.0,
+        4.0,
+        8.0,
+        16.0,
+        30.0
+      ],
+      "inter_case_delay_s": 1.0,
+      "retryable_http_statuses": [
+        408,
+        429,
+        "5xx"
+      ],
+      "retryable_transport_errors": [
+        "httpx.TransportError"
+      ]
+    },
+    "quota_enabled": true,
+    "quota": {
+      "requests_per_minute": 10,
+      "tokens_per_minute": 300000,
+      "tokens_per_week": 1000000000,
+      "max_in_flight": 2,
+      "quota_group": "sjtu-deepseek-v4-flash"
+    }
+  },
+  "case_count": 123,
+  "correct_count": 97,
+  "score": 0.7886178861788617,
+  "aggregates": {
+    "overall": {
+      "total": 123,
+      "scored": 123,
+      "correct": 97,
+      "errors": 0,
+      "accuracy": 0.7886178861788617,
+      "strict_accuracy": 0.7886178861788617,
+      "coverage": 1.0
+    },
+    "by_domain": {
+      "academia": {
+        "total": 23,
+        "scored": 23,
+        "correct": 21,
+        "errors": 0,
+        "accuracy": 0.9130434782608695,
+        "strict_accuracy": 0.9130434782608695,
+        "coverage": 1.0
+      },
+      "finance": {
+        "total": 25,
+        "scored": 25,
+        "correct": 17,
+        "errors": 0,
+        "accuracy": 0.68,
+        "strict_accuracy": 0.68,
+        "coverage": 1.0
+      },
+      "government": {
+        "total": 25,
+        "scored": 25,
+        "correct": 20,
+        "errors": 0,
+        "accuracy": 0.8,
+        "strict_accuracy": 0.8,
+        "coverage": 1.0
+      },
+      "laws": {
+        "total": 25,
+        "scored": 25,
+        "correct": 18,
+        "errors": 0,
+        "accuracy": 0.72,
+        "strict_accuracy": 0.72,
+        "coverage": 1.0
+      },
+      "news": {
+        "total": 25,
+        "scored": 25,
+        "correct": 21,
+        "errors": 0,
+        "accuracy": 0.84,
+        "strict_accuracy": 0.84,
+        "coverage": 1.0
+      }
+    },
+    "by_type": {
+      "metadata": {
+        "total": 25,
+        "scored": 25,
+        "correct": 17,
+        "errors": 0,
+        "accuracy": 0.68,
+        "strict_accuracy": 0.68,
+        "coverage": 1.0
+      },
+      "multimodal": {
+        "total": 25,
+        "scored": 25,
+        "correct": 19,
+        "errors": 0,
+        "accuracy": 0.76,
+        "strict_accuracy": 0.76,
+        "coverage": 1.0
+      },
+      "text": {
+        "total": 50,
+        "scored": 50,
+        "correct": 46,
+        "errors": 0,
+        "accuracy": 0.92,
+        "strict_accuracy": 0.92,
+        "coverage": 1.0
+      },
+      "unanswerable": {
+        "total": 23,
+        "scored": 23,
+        "correct": 15,
+        "errors": 0,
+        "accuracy": 0.6521739130434783,
+        "strict_accuracy": 0.6521739130434783,
+        "coverage": 1.0
+      }
+    }
+  },
+  "cases": [
+    {
+      "case_id": "docbench:103:1",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-103-1.json"
+    },
+    {
+      "case_id": "docbench:104:0",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-104-0.json"
+    },
+    {
+      "case_id": "docbench:105:2",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-105-2.json"
+    },
+    {
+      "case_id": "docbench:106:0",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-106-0.json"
+    },
+    {
+      "case_id": "docbench:108:2",
+      "score": 0,
+      "status": "completed",
+      "path": "cases/docbench-108-2.json"
+    },
+    {
+      "case_id": "docbench:109:3",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-109-3.json"
+    },
+    {
+      "case_id": "docbench:10:3",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-10-3.json"
+    },
+    {
+      "case_id": "docbench:110:2",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-110-2.json"
+    },
+    {
+      "case_id": "docbench:111:1",
+      "score": 0,
+      "status": "completed",
+      "path": "cases/docbench-111-1.json"
+    },
+    {
+      "case_id": "docbench:112:2",
+      "score": 0,
+      "status": "completed",
+      "path": "cases/docbench-112-2.json"
+    },
+    {
+      "case_id": "docbench:113:4",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-113-4.json"
+    },
+    {
+      "case_id": "docbench:114:2",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-114-2.json"
+    },
+    {
+      "case_id": "docbench:117:0",
+      "score": 0,
+      "status": "completed",
+      "path": "cases/docbench-117-0.json"
+    },
+    {
+      "case_id": "docbench:118:1",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-118-1.json"
+    },
+    {
+      "case_id": "docbench:119:2",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-119-2.json"
+    },
+    {
+      "case_id": "docbench:11:4",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-11-4.json"
+    },
+    {
+      "case_id": "docbench:120:4",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-120-4.json"
+    },
+    {
+      "case_id": "docbench:122:3",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-122-3.json"
+    },
+    {
+      "case_id": "docbench:123:0",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-123-0.json"
+    },
+    {
+      "case_id": "docbench:124:2",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-124-2.json"
+    },
+    {
+      "case_id": "docbench:125:1",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-125-1.json"
+    },
+    {
+      "case_id": "docbench:128:2",
+      "score": 0,
+      "status": "completed",
+      "path": "cases/docbench-128-2.json"
+    },
+    {
+      "case_id": "docbench:129:0",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-129-0.json"
+    },
+    {
+      "case_id": "docbench:132:2",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-132-2.json"
+    },
+    {
+      "case_id": "docbench:137:1",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-137-1.json"
+    },
+    {
+      "case_id": "docbench:13:3",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-13-3.json"
+    },
+    {
+      "case_id": "docbench:140:0",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-140-0.json"
+    },
+    {
+      "case_id": "docbench:144:3",
+      "score": 0,
+      "status": "completed",
+      "path": "cases/docbench-144-3.json"
+    },
+    {
+      "case_id": "docbench:148:2",
+      "score": 0,
+      "status": "completed",
+      "path": "cases/docbench-148-2.json"
+    },
+    {
+      "case_id": "docbench:149:0",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-149-0.json"
+    },
+    {
+      "case_id": "docbench:151:3",
+      "score": 0,
+      "status": "completed",
+      "path": "cases/docbench-151-3.json"
+    },
+    {
+      "case_id": "docbench:152:1",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-152-1.json"
+    },
+    {
+      "case_id": "docbench:153:2",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-153-2.json"
+    },
+    {
+      "case_id": "docbench:156:4",
+      "score": 0,
+      "status": "completed",
+      "path": "cases/docbench-156-4.json"
+    },
+    {
+      "case_id": "docbench:157:5",
+      "score": 0,
+      "status": "completed",
+      "path": "cases/docbench-157-5.json"
+    },
+    {
+      "case_id": "docbench:158:1",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-158-1.json"
+    },
+    {
+      "case_id": "docbench:159:3",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-159-3.json"
+    },
+    {
+      "case_id": "docbench:160:2",
+      "score": 0,
+      "status": "completed",
+      "path": "cases/docbench-160-2.json"
+    },
+    {
+      "case_id": "docbench:161:0",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-161-0.json"
+    },
+    {
+      "case_id": "docbench:164:1",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-164-1.json"
+    },
+    {
+      "case_id": "docbench:165:0",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-165-0.json"
+    },
+    {
+      "case_id": "docbench:166:2",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-166-2.json"
+    },
+    {
+      "case_id": "docbench:167:0",
+      "score": 0,
+      "status": "completed",
+      "path": "cases/docbench-167-0.json"
+    },
+    {
+      "case_id": "docbench:168:3",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-168-3.json"
+    },
+    {
+      "case_id": "docbench:169:2",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-169-2.json"
+    },
+    {
+      "case_id": "docbench:170:3",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-170-3.json"
+    },
+    {
+      "case_id": "docbench:171:5",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-171-5.json"
+    },
+    {
+      "case_id": "docbench:174:3",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-174-3.json"
+    },
+    {
+      "case_id": "docbench:176:1",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-176-1.json"
+    },
+    {
+      "case_id": "docbench:178:1",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-178-1.json"
+    },
+    {
+      "case_id": "docbench:179:5",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-179-5.json"
+    },
+    {
+      "case_id": "docbench:17:8",
+      "score": 0,
+      "status": "completed",
+      "path": "cases/docbench-17-8.json"
+    },
+    {
+      "case_id": "docbench:183:0",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-183-0.json"
+    },
+    {
+      "case_id": "docbench:187:0",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-187-0.json"
+    },
+    {
+      "case_id": "docbench:189:2",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-189-2.json"
+    },
+    {
+      "case_id": "docbench:190:2",
+      "score": 0,
+      "status": "completed",
+      "path": "cases/docbench-190-2.json"
+    },
+    {
+      "case_id": "docbench:191:1",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-191-1.json"
+    },
+    {
+      "case_id": "docbench:192:4",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-192-4.json"
+    },
+    {
+      "case_id": "docbench:193:1",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-193-1.json"
+    },
+    {
+      "case_id": "docbench:194:1",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-194-1.json"
+    },
+    {
+      "case_id": "docbench:198:4",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-198-4.json"
+    },
+    {
+      "case_id": "docbench:199:8",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-199-8.json"
+    },
+    {
+      "case_id": "docbench:19:4",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-19-4.json"
+    },
+    {
+      "case_id": "docbench:1:1",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-1-1.json"
+    },
+    {
+      "case_id": "docbench:202:2",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-202-2.json"
+    },
+    {
+      "case_id": "docbench:203:1",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-203-1.json"
+    },
+    {
+      "case_id": "docbench:206:0",
+      "score": 0,
+      "status": "completed",
+      "path": "cases/docbench-206-0.json"
+    },
+    {
+      "case_id": "docbench:207:2",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-207-2.json"
+    },
+    {
+      "case_id": "docbench:208:1",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-208-1.json"
+    },
+    {
+      "case_id": "docbench:20:4",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-20-4.json"
+    },
+    {
+      "case_id": "docbench:211:1",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-211-1.json"
+    },
+    {
+      "case_id": "docbench:212:2",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-212-2.json"
+    },
+    {
+      "case_id": "docbench:214:4",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-214-4.json"
+    },
+    {
+      "case_id": "docbench:217:2",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-217-2.json"
+    },
+    {
+      "case_id": "docbench:219:3",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-219-3.json"
+    },
+    {
+      "case_id": "docbench:21:0",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-21-0.json"
+    },
+    {
+      "case_id": "docbench:220:1",
+      "score": 0,
+      "status": "completed",
+      "path": "cases/docbench-220-1.json"
+    },
+    {
+      "case_id": "docbench:221:0",
+      "score": 0,
+      "status": "completed",
+      "path": "cases/docbench-221-0.json"
+    },
+    {
+      "case_id": "docbench:222:0",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-222-0.json"
+    },
+    {
+      "case_id": "docbench:224:2",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-224-2.json"
+    },
+    {
+      "case_id": "docbench:23:3",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-23-3.json"
+    },
+    {
+      "case_id": "docbench:29:0",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-29-0.json"
+    },
+    {
+      "case_id": "docbench:2:0",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-2-0.json"
+    },
+    {
+      "case_id": "docbench:30:2",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-30-2.json"
+    },
+    {
+      "case_id": "docbench:31:2",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-31-2.json"
+    },
+    {
+      "case_id": "docbench:32:1",
+      "score": 0,
+      "status": "completed",
+      "path": "cases/docbench-32-1.json"
+    },
+    {
+      "case_id": "docbench:35:3",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-35-3.json"
+    },
+    {
+      "case_id": "docbench:36:2",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-36-2.json"
+    },
+    {
+      "case_id": "docbench:38:4",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-38-4.json"
+    },
+    {
+      "case_id": "docbench:39:9",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-39-9.json"
+    },
+    {
+      "case_id": "docbench:40:0",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-40-0.json"
+    },
+    {
+      "case_id": "docbench:42:5",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-42-5.json"
+    },
+    {
+      "case_id": "docbench:4:0",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-4-0.json"
+    },
+    {
+      "case_id": "docbench:50:1",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-50-1.json"
+    },
+    {
+      "case_id": "docbench:51:3",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-51-3.json"
+    },
+    {
+      "case_id": "docbench:53:3",
+      "score": 0,
+      "status": "completed",
+      "path": "cases/docbench-53-3.json"
+    },
+    {
+      "case_id": "docbench:54:4",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-54-4.json"
+    },
+    {
+      "case_id": "docbench:55:2",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-55-2.json"
+    },
+    {
+      "case_id": "docbench:60:2",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-60-2.json"
+    },
+    {
+      "case_id": "docbench:61:6",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-61-6.json"
+    },
+    {
+      "case_id": "docbench:63:2",
+      "score": 0,
+      "status": "completed",
+      "path": "cases/docbench-63-2.json"
+    },
+    {
+      "case_id": "docbench:64:1",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-64-1.json"
+    },
+    {
+      "case_id": "docbench:66:3",
+      "score": 0,
+      "status": "completed",
+      "path": "cases/docbench-66-3.json"
+    },
+    {
+      "case_id": "docbench:67:4",
+      "score": 0,
+      "status": "completed",
+      "path": "cases/docbench-67-4.json"
+    },
+    {
+      "case_id": "docbench:68:8",
+      "score": 0,
+      "status": "completed",
+      "path": "cases/docbench-68-8.json"
+    },
+    {
+      "case_id": "docbench:69:4",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-69-4.json"
+    },
+    {
+      "case_id": "docbench:6:0",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-6-0.json"
+    },
+    {
+      "case_id": "docbench:73:4",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-73-4.json"
+    },
+    {
+      "case_id": "docbench:75:0",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-75-0.json"
+    },
+    {
+      "case_id": "docbench:76:4",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-76-4.json"
+    },
+    {
+      "case_id": "docbench:78:6",
+      "score": 0,
+      "status": "completed",
+      "path": "cases/docbench-78-6.json"
+    },
+    {
+      "case_id": "docbench:7:2",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-7-2.json"
+    },
+    {
+      "case_id": "docbench:80:5",
+      "score": 0,
+      "status": "completed",
+      "path": "cases/docbench-80-5.json"
+    },
+    {
+      "case_id": "docbench:81:2",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-81-2.json"
+    },
+    {
+      "case_id": "docbench:82:3",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-82-3.json"
+    },
+    {
+      "case_id": "docbench:83:3",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-83-3.json"
+    },
+    {
+      "case_id": "docbench:85:0",
+      "score": 0,
+      "status": "completed",
+      "path": "cases/docbench-85-0.json"
+    },
+    {
+      "case_id": "docbench:86:8",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-86-8.json"
+    },
+    {
+      "case_id": "docbench:87:9",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-87-9.json"
+    },
+    {
+      "case_id": "docbench:88:9",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-88-9.json"
+    },
+    {
+      "case_id": "docbench:92:1",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-92-1.json"
+    },
+    {
+      "case_id": "docbench:93:3",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-93-3.json"
+    },
+    {
+      "case_id": "docbench:94:0",
+      "score": 1,
+      "status": "completed",
+      "path": "cases/docbench-94-0.json"
+    }
+  ],
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/l1-gate-off-highland235b-123-20260914-a/scoring/summary.json",
+    "source_sha256": "d70c0569d599b1d043c9c26ac2aef3e038de04447959c20aa27953f508bbfa08",
+    "source_bytes": 585711,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

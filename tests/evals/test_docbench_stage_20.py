@@ -5,14 +5,17 @@ from hashlib import sha256
 import json
 from pathlib import Path
 
-from evals.docbench.reproduce_or_run_script.config import load_docbench_config
+from evals.docbench.reproduce_or_run_script.config import (
+    BENCH_EVAL_DIR_ENV,
+    load_docbench_config,
+)
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 SELECTION_PATH = PROJECT_ROOT / "evals/docbench/selections/stage_20_v1.json"
 CONFIG_PATH = PROJECT_ROOT / "evals/docbench/configs/l1_stage_20.yaml"
 PUBLIC_SUMMARY_PATH = (
-    PROJECT_ROOT / "evals/docbench/results/live_bge_m3_l1_20.summary.json"
+    PROJECT_ROOT / "evals/docbench/previous_results/live_bge_m3_l1_20.summary.json"
 )
 
 
@@ -45,8 +48,14 @@ def test_stage_twenty_selection_is_frozen_balanced_by_domain_and_content_free() 
     )
 
 
-def test_stage_twenty_config_freezes_strict_local_bge_m3_and_serial_cases() -> None:
-    loaded = load_docbench_config(CONFIG_PATH, project_root=PROJECT_ROOT)
+def test_stage_twenty_config_freezes_strict_local_bge_m3_and_serial_cases(
+    tmp_path: Path,
+) -> None:
+    loaded = load_docbench_config(
+        CONFIG_PATH,
+        project_root=PROJECT_ROOT,
+        environment={BENCH_EVAL_DIR_ENV: str(tmp_path / "bench_eval")},
+    )
 
     assert loaded.config_sha256 == (
         "9ba314ae087cf78127acc16bc431e6ec658d3a2165cdff98ab22ce7cbdbf4b33"

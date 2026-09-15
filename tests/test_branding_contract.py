@@ -83,13 +83,22 @@ def test_runtime_brand_changes_without_rotating_compatibility_ids() -> None:
 def test_public_documentation_links_only_to_available_checkout_surfaces() -> None:
     documents = (
         "README.md",
+        "QUICKSTART.md",
+        "examples/document_qa/README.md",
         "CONTRIBUTING.md",
         "ARCHITECTURE.md",
         "AGENTS.md",
+        "scripts/DEPENDENCIES.md",
         "evals/README.md",
         "evals/docbench/reproduce_or_run_script/README.md",
         "evals/docbench/docs/formal_l1_eval_runbook.md",
         "evals/docbench/docs/state_isolation.md",
+        "evals/docbench/configs/README.md",
+        "evals/docbench/results/README.md",
+        "evals/docbench/previous_results/README.md",
+        "evals/docbench/previous_results/analysis/README.md",
+        "evals/docbench/previous_results/analysis/EVALUATION_REVIEW.md",
+        "evals/docbench/previous_results/analysis/FAILURE_ATTRIBUTION.md",
     )
     for relative_path in documents:
         document = ROOT / relative_path
@@ -123,3 +132,24 @@ def test_docbench_config_schema_uses_current_branding() -> None:
 
     assert schema["title"] == "Entelecheia DocBench L1 evaluation configuration"
     assert schema["$id"].startswith("https://entelecheia.local/")
+
+
+def test_public_eval_docs_identify_the_recorded_source_not_a_run() -> None:
+    summary = json.loads(_read("evals/docbench/previous_results/showcase_125.summary.json"))
+    source_hashes = {run["source_sha256"] for run in summary["runs"]}
+    assert len(source_hashes) == 1
+
+    for relative_path in (
+        "evals/README.md",
+        "evals/docbench/docs/formal_l1_eval_runbook.md",
+    ):
+        documented = set(re.findall(r"source_sha256=([0-9a-f]{64})", _read(relative_path)))
+        assert documented == source_hashes, relative_path
+
+
+def test_contributor_guide_explains_local_hook_activation() -> None:
+    guide = _read("CONTRIBUTING.md")
+    assert "git config --local core.hooksPath .githooks" in guide
+    assert "git config --get core.hooksPath" in guide
+    assert (ROOT / ".githooks/pre-commit").is_file()
+    assert (ROOT / ".githooks/pre-push").is_file()

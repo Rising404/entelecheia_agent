@@ -1,44 +1,46 @@
-# DocBench evaluation state isolation
+# DocBench 状态隔离 / State isolation
 
-Entelecheia backend evaluations never use the GUI/API Session databases or its Project namespace. The supported unit is one case attempt, one fresh subprocess, one private state root and one Host-managed Session Project.
+后端评测不使用 GUI/API 的 Session 数据库或 Project 命名空间。隔离单位为：**一次题目尝试 → 一个新子进程 → 一份私有状态 → 一个 Host 创建的 Session Project**。
 
-## External root
+## 外部根 / External root
 
-From the repository root, set an explicit absolute `PERSONAGRAPH_BENCH_EVAL_DIR` outside the checkout **before starting Python**, then invoke `python -m evals.docbench.reproduce_or_run_script`. No external launcher is needed. The environment variable names the parent of:
+启动 Python **之前**，把 `PERSONAGRAPH_BENCH_EVAL_DIR` 设为仓库外绝对路径。从仓库根运行 `python -m evals.docbench.reproduce_or_run_script`，无需外部 launcher。
 
 ```text
-docbench/
-  source/                read-only benchmark inputs; never Agent-visible
-  runs/<run-id>/         private case inputs, state, trajectory and scoring
-  workspaces/<run-id>/   allocation root for Agent-visible Session Projects
+<PERSONAGRAPH_BENCH_EVAL_DIR>/docbench/
+  source/                benchmark 原始输入，整个目录不向 Agent 开放
+  runs/<run-id>/         单题输入、私有状态、轨迹、评分
+  workspaces/<run-id>/   Host 分配给 Agent 的 Session Project 根
 ```
 
-## Required process boundary
+每位复现者可选自己的外部根。源码中的 `results/`、`previous_results/` 是整理区，不参与运行定位。当前 runner 不支持将活跃状态直接写入源码目录。
 
-For an initial attempt, the parent assigns `runs/<run-id>/cases/<case-id>/state/`. Retries receive fresh state below that case's `attempts/` directory. Before the child interpreter starts, the parent sets the exact case state, case-local config, benchmark root and run workspace in its environment.
+## 子进程边界 / Process boundary
 
-Runtime path constants are frozen at import time. The worker checks the imported canonical paths before any state write or Provider work; a late environment assignment is not isolation. Private case state includes its project catalog/Session database, parsed chunks/indexes, turns/tasks, runtime trajectory, tool/model ledgers and authority/quota records.
+首跑由父进程分配 `runs/<run-id>/cases/<case-id>/state/`，补跑在该题 `attempts/` 下创建新状态。父进程在子解释器启动前，将精确 state、case-local config、benchmark root、run workspace 写入环境。产品路径在 import 时冻结，不能靠导入后赋值假装隔离。
 
-## Project allocation
+worker 在写状态或请求 Provider 前核对路径。私有状态包括 Project/Session 库、解析内容、索引、Turn/Task、轨迹、工具和模型账本、授权及配额记录。
 
-Workers in a run receive `workspaces/<run-id>` as `PERSONAGRAPH_DEFAULT_PROJECTS_DIR`. The product Session service, not a parallel evaluation implementation, creates and binds the actual Project below it. Every case creates a separate Session; retries create fresh Projects.
+## Project 分配 / Allocation
 
-The runner checks that the Project is below its run workspace and records a DocBench-root-relative locator in private case output. `source/` and private `runs/` must never be bound to a Session. This prevents tools from reading other benchmark inputs, QA/reference answers, judge evidence or SQLite authority merely by exploring the Project directory.
+同一 run 的 worker 将 `workspaces/<run-id>` 用作 `PERSONAGRAPH_DEFAULT_PROJECTS_DIR`。真正创建和绑定 Project 的是产品 Session service，不是评测替代实现。每题独立 Session，补跑使用新 Project。
 
-## Configuration reuse is not state sharing
+runner 验证 Project 在本 run workspace 下，在私有结果中记录 DocBench 根相对定位。**不能把 `source/` 或私有 `runs/` 绑定为 Project**，否则文件工具可能看到其他题目、参考答案、裁判材料或 SQLite 状态。模型只获得本题获准挂载的材料。
 
-The parent may read the active installation Provider profiles to resolve and freeze endpoint identity. Case workers replace product state/config roots before interpreter startup and never inherit the GUI default Project root. For evaluation-only credentials, set `PERSONAGRAPH_LOCAL_CONFIG_DIR` to a separate absolute private directory before starting the parent.
+## 配置复用不等于共享状态 / Configuration vs. state
 
-Do not move real profiles, `.env` files, state databases or GUI Projects into the repository to make setup convenient. Session names are not an isolation boundary: database roots and Project authority are. Provider requests may still transmit authorized document content externally; process isolation is not a no-egress guarantee.
+父进程可读取安装级活跃 Provider profile 并冻结端点；worker 启动前替换状态/配置根，不沿用 GUI 默认 Project 根。要独立凭据，可在启动父进程前将 `PERSONAGRAPH_LOCAL_CONFIG_DIR` 指向另一份仓库外私有配置目录。
 
-## Regression obligations
+不要把真实 profile、`.env`、数据库或 GUI Project 放入 Git。Session 名称不是隔离边界，数据库根和 Project 授权才是。隔离不等于禁止外发：真实 Provider 请求仍可能发送已授权的文档内容。
 
-1. Child state is an exact descendant of the run's case tree.
-2. Imported state/config constants equal the parent-owned case paths.
-3. Imported default Project root equals the run workspace.
-4. Workspace and private run/state paths do not overlap.
-5. Created Session Project is below the run workspace.
-6. Every retry uses fresh state and a fresh Host-created Project.
-7. GUI catalog/Session databases receive no benchmark records.
+## 回归约束 / Regression obligations
 
-Preserve these checks in `tests/evals/`. See the [runbook](formal_l1_eval_runbook.md) for prerequisites and explicit live actions.
+1. 子进程 state 在该 run 的精确 case 树下。
+2. import 后的 state/config 常量等于父进程指定路径。
+3. 默认 Project 根等于本 run workspace。
+4. workspace 与私有 run/state 不重叠。
+5. 新 Session Project 位于本 run workspace 下。
+6. 每次补跑新建 state 和 Host Project。
+7. GUI catalog/Session 库不新增评测记录。
+
+对应测试归 `tests/evals/`；真实运行前置条件见[操作手册](formal_l1_eval_runbook.md)。

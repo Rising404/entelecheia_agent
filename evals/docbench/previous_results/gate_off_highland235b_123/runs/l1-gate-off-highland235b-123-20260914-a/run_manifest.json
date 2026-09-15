@@ -1,0 +1,48 @@
+{
+  "schema_version": "personagraph-docbench-l1-run-v2",
+  "benchmark_id": "docbench",
+  "lane": "L1",
+  "run_id": "l1-gate-off-highland235b-123-20260914-a",
+  "created_at": "2026-09-14T16:21:37.155965+00:00",
+  "config_sha256": "6a9e3d431b6a1ba88b2499bc1f050437eeab6755a0e94e6f8b0973c8459bd359",
+  "selection_sha256": "d188f62b9ab07a24900826dd7365a622e42bb3636fc87d4afb757d2ec2100592",
+  "providers": {
+    "main": {
+      "provider": "openai-compatible",
+      "base_url": "https://models.sjtu.edu.cn/api/v1",
+      "model": "deepseek-chat",
+      "request_dialect": "deepseek",
+      "credential_source": "installation_profile",
+      "quota": {
+        "requests_per_minute": 10,
+        "tokens_per_minute": 300000,
+        "tokens_per_week": 1000000000,
+        "max_in_flight": 2,
+        "quota_group": "sjtu-deepseek-v4-flash"
+      }
+    },
+    "vision": {
+      "provider": "highland",
+      "base_url": "https://www.highland-api.top",
+      "model": "qwen3-vl-235b-a22b-instruct",
+      "request_dialect": "auto",
+      "credential_source": "env:HIGHLAND_API_KEY"
+    }
+  },
+  "provenance": {
+    "code_revision": "b3e93d44c2318761054896874bab60f8b8b7e4c4",
+    "worktree_dirty": true,
+    "source_sha256": "85215cccc1a5dc008e55f6012a793cf6708c9cee47d2eebbf395e58bd8ca446d",
+    "environment_sha256": "9123044b185a54005299cb10a3f5cb2e6a27d9897c4d957b6179d88381fdd4cd",
+    "initial_run_provenance_complete": true
+  },
+  "frozen_cases_sha256": "bc82f02fb8f571e8508c78d3d7f92f1b5a8348440c126320ee30c6e42b7e45e5",
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/l1-gate-off-highland235b-123-20260914-a/run_manifest.json",
+    "source_sha256": "e7b61e8ff3c58387c404add0d62490ed38a75bfb1bfce0b267add8b2f7cba2ba",
+    "source_bytes": 107462,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

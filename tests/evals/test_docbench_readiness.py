@@ -89,7 +89,8 @@ def _patch_ready_dependencies(
     monkeypatch.setattr(
         readiness,
         "load_features",
-        lambda _path: dict(readiness._REQUIRED_RUNTIME_FEATURES),
+        lambda _path: dict(readiness._REQUIRED_RUNTIME_FEATURES)
+        | {"l1_semantic_verification_mode": "always"},
     )
     monkeypatch.setattr(
         readiness,
@@ -207,6 +208,53 @@ def test_readiness_rejects_an_empty_config_catalog() -> None:
     assert report["status"] == "failed"
     assert report["config_count"] == 0
     assert report["catalog_error"]["error_code"] == "config_catalog_empty"
+
+
+@pytest.mark.parametrize("mode", ["always", "conditional", "off"])
+def test_runtime_readiness_accepts_and_reports_the_selected_semantic_gate_mode(
+    tmp_path: Path, mode: str,
+) -> None:
+    config = _ready_config(tmp_path)
+    features = dict(readiness._REQUIRED_RUNTIME_FEATURES)
+    features["l1_semantic_verification_mode"] = mode
+    Path(config.resolved["run"]["runtime_features"]).write_text(
+        json.dumps({"features": features}), encoding="utf-8",
+    )
+
+    report = readiness._runtime_features_check(config)
+
+    assert report["status"] == "ready"
+    assert report["effective_policy"]["l1_semantic_verification_mode"] == mode
+    assert report["effective_policy"]["l1_external_web_tools_enabled"] is False
+
+
+@pytest.mark.parametrize("mode", ["disabled", False])
+def test_runtime_readiness_rejects_invalid_semantic_gate_modes(
+    tmp_path: Path, mode: object,
+) -> None:
+    config = _ready_config(tmp_path)
+    features = dict(readiness._REQUIRED_RUNTIME_FEATURES)
+    features["l1_semantic_verification_mode"] = mode
+    Path(config.resolved["run"]["runtime_features"]).write_text(
+        json.dumps({"features": features}), encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="semantic verification mode"):
+        readiness._runtime_features_check(config)
+
+
+def test_semantic_gate_off_does_not_relax_closed_world_readiness(tmp_path: Path) -> None:
+    config = _ready_config(tmp_path)
+    features = dict(readiness._REQUIRED_RUNTIME_FEATURES)
+    features.update(
+        l1_semantic_verification_mode="off", l1_external_web_tools_enabled=True,
+    )
+    Path(config.resolved["run"]["runtime_features"]).write_text(
+        json.dumps({"features": features}), encoding="utf-8",
+    )
+
+    with pytest.raises(readiness.DocBenchReadinessError, match="l1_external_web_tools"):
+        readiness._runtime_features_check(config)
 
 
 def test_public_provider_includes_only_non_secret_quota_configuration() -> None:

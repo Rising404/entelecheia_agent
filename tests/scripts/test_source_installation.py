@@ -3,8 +3,12 @@
 from __future__ import annotations
 
 import importlib.util
+import os
 from pathlib import Path
+import platform
 import re
+import subprocess
+import sys
 import tomllib
 
 from packaging.requirements import Requirement
@@ -106,3 +110,53 @@ def test_source_install_has_one_locked_dependency_path():
         assert pin.group(1) in requirement.specifier
     assert "--hash=sha256:" in lock
     assert "/Users/" not in lock and "/private/tmp/" not in lock
+
+
+@pytest.fixture
+def bootstrap_environment_probe():
+    bootstrap = (ROOT / "scripts/bootstrap-local-runtime.sh").read_text()
+    match = re.search(r"<<'PY'\n(.*?)\nPY\n", bootstrap, re.DOTALL)
+    assert match is not None
+    assert bootstrap.index("<<'PY'") < bootstrap.index("-m pip")
+    assert '"$ROOT/.venv/bin/python" -I - ' in bootstrap
+    return match.group(1)
+
+
+@pytest.mark.parametrize("mismatch", [None, "version", "runtime", "packages"])
+def test_bootstrap_checks_environment_before_installing_packages(
+    bootstrap_environment_probe, tmp_path, mismatch,
+):
+    runtime = sys.base_prefix
+    environment = sys.prefix
+    version = platform.python_version()
+    expected_error = None
+    if mismatch == "version":
+        version = "0.0.0"
+        expected_error = "Python version does not match"
+    elif mismatch == "runtime":
+        runtime = str(tmp_path / "another-python")
+        expected_error = "venv must use this project's Python runtime"
+    elif mismatch == "packages":
+        environment = str(tmp_path / "another-venv")
+        expected_error = "Python packages must stay inside this project's venv"
+
+    # Run the installer's actual check in a real interpreter, without pip/network.
+    # Isolated mode must ignore an unrelated shell's Python configuration.
+    child_environment = {
+        **os.environ,
+        "PYTHONHOME": str(tmp_path / "foreign-home"),
+        "PYTHONPATH": str(tmp_path / "foreign-packages"),
+    }
+    result = subprocess.run(
+        [sys.executable, "-I", "-", runtime, environment, version],
+        input=bootstrap_environment_probe,
+        capture_output=True,
+        text=True,
+        timeout=15,
+        env=child_environment,
+    )
+    if expected_error is None:
+        assert result.returncode == 0, result.stderr
+    else:
+        assert result.returncode != 0
+        assert expected_error in result.stderr

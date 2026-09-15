@@ -1,0 +1,135 @@
+{
+  "schema_version": "docbench-compatible-case-score-v1",
+  "scoring_protocol": "docbench_prompt_compatible",
+  "official_comparable": false,
+  "case_id": "docbench:104:0",
+  "doc_id": "104",
+  "question_index": 0,
+  "domain": "government",
+  "question_type": "text",
+  "system_answer": "根据附件《FBS_H_23FEB2022_PUBLIC-1.pdf》，Bureau Objective 2.1 通过确保每位提名人在整个确认过程中获得有效、一致且高质量的准备工作，从而支持所有 JSP Goals（联合战略计划目标）。\n\n具体而言，Objective 2.1 的“理由与联系”（Justification and Linkages）部分明确指出：\n\n> “准备充分的提名人获得确认的机会显著更大。让高素质的提名人获得确认并进入领导岗位，支持所有 JSP Goals，包括：\n> - **Goal 1**：重振美国领导力并动员联盟，应对对美国人民安全与福祉影响最大的全球挑战；\n> - **Goal 2**：促进全球繁荣，塑造一个美国能够蓬勃发展的国际环境；\n> - **Goal 3**：加强民主制度、维护普世价值、促进人类尊严；\n> - **Goal 4**：振兴外交与发展队伍及基础设施；\n> - **Goal 5**：为全球美国公民提供服务并促进安全的国际旅行。”\n\n此外，Objective 2.1 的风险考量部分也强调：如果没有高素质的领导人担任重要的参议院确认职位，国务院将面临无法实现部长各项目标与目的的风险。\n\n因此，Bureau Objective 2.1 通过确保关键领导岗位及时由合格人员填补，为国务院整体战略目标的实现提供了根本性的人力保障，从而全面支撑了 JSP 五大目标的达成。",
+  "prompt_sha256": "784a6d6cf4f8151765b169c633f46e62d12dcd77f8941172e72edbf8b30f9bde",
+  "filled_prompt_sha256": "51dca75a961ca3821278d06106f87bd9048b1b18b4fcbe98297388bf6123de74",
+  "judge_provider": "openai-compatible",
+  "judge_base_url": "https://models.sjtu.edu.cn/api/v1",
+  "judge_model": "deepseek-chat",
+  "judge_request_dialect": "deepseek",
+  "judge_retry_policy": {
+    "max_attempts": 6,
+    "fallback_backoff_s": [
+      2.0,
+      4.0,
+      8.0,
+      16.0,
+      30.0
+    ],
+    "inter_case_delay_s": 1.0,
+    "retryable_http_statuses": [
+      408,
+      429,
+      "5xx"
+    ],
+    "retryable_transport_errors": [
+      "httpx.TransportError"
+    ]
+  },
+  "judge_http_status": 200,
+  "judge_response_raw": {
+    "id": "chatcmpl-8da1bc88-ee29-4e24-b7ee-15c8ed5d1fda",
+    "created": 1789065504,
+    "model": "deepseek-chat",
+    "object": "chat.completion",
+    "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "Correctness: 1",
+          "role": "assistant",
+          "provider_specific_fields": {
+            "reasoning": null,
+            "refusal": null
+          }
+        },
+        "provider_specific_fields": {
+          "routed_experts": null,
+          "stop_reason": null,
+          "token_ids": null
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 6,
+      "prompt_tokens": 671,
+      "total_tokens": 677,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      }
+    }
+  },
+  "judge_response_text": "Correctness: 1",
+  "judge_attempts": [
+    {
+      "attempt_number": 1,
+      "attempted_at": "2026-09-10T18:38:24.467695+00:00",
+      "wait_before_attempt_s": 1.0,
+      "http_status": 200,
+      "response_raw": {
+        "id": "chatcmpl-8da1bc88-ee29-4e24-b7ee-15c8ed5d1fda",
+        "created": 1789065504,
+        "model": "deepseek-chat",
+        "object": "chat.completion",
+        "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "Correctness: 1",
+              "role": "assistant",
+              "provider_specific_fields": {
+                "reasoning": null,
+                "refusal": null
+              }
+            },
+            "provider_specific_fields": {
+              "routed_experts": null,
+              "stop_reason": null,
+              "token_ids": null
+            }
+          }
+        ],
+        "usage": {
+          "completion_tokens": 6,
+          "prompt_tokens": 671,
+          "total_tokens": 677,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          }
+        }
+      },
+      "status": "completed",
+      "error": null,
+      "retryable": false,
+      "retry_reason": null,
+      "retry_after_header": null,
+      "wait_before_next_attempt_s": null,
+      "wait_source": null
+    }
+  ],
+  "judge_attempt_count": 1,
+  "score_source": "judge",
+  "score": 1,
+  "error": null,
+  "scored_at": "2026-09-10T18:38:23.467306+00:00",
+  "status": "completed",
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-104-0-9859614ba10a.json",
+    "source_sha256": "56d2063d3f25ae55ee7012ec2951ccd87d35374833684a73ee03ae0176dce6e2",
+    "source_bytes": 5440,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

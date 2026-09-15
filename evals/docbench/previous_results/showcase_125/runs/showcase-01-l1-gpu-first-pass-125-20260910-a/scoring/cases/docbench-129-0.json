@@ -1,0 +1,54 @@
+{
+  "schema_version": "docbench-compatible-case-score-v1",
+  "scoring_protocol": "docbench_prompt_compatible",
+  "official_comparable": false,
+  "case_id": "docbench:129:0",
+  "doc_id": "129",
+  "question_index": 0,
+  "domain": "government",
+  "question_type": "text",
+  "system_answer": "",
+  "prompt_sha256": "784a6d6cf4f8151765b169c633f46e62d12dcd77f8941172e72edbf8b30f9bde",
+  "filled_prompt_sha256": "c3bda512a410b4dc7abf1091ac22a36cc3bf1551e568a01cfa55e097b174bafa",
+  "judge_provider": "openai-compatible",
+  "judge_base_url": "https://models.sjtu.edu.cn/api/v1",
+  "judge_model": "deepseek-chat",
+  "judge_request_dialect": "deepseek",
+  "judge_retry_policy": {
+    "max_attempts": 6,
+    "fallback_backoff_s": [
+      2.0,
+      4.0,
+      8.0,
+      16.0,
+      30.0
+    ],
+    "inter_case_delay_s": 1.0,
+    "retryable_http_statuses": [
+      408,
+      429,
+      "5xx"
+    ],
+    "retryable_transport_errors": [
+      "httpx.TransportError"
+    ]
+  },
+  "judge_http_status": null,
+  "judge_response_raw": null,
+  "judge_response_text": null,
+  "judge_attempts": [],
+  "judge_attempt_count": 0,
+  "score_source": "official_prompt_empty_answer_rule",
+  "score": 0,
+  "error": null,
+  "scored_at": "2026-09-10T18:40:20.513912+00:00",
+  "status": "completed",
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-129-0-c68c48dd1dcd.json",
+    "source_sha256": "543f8a0647f50435a7d10431473209e03bb05dc91933b7dee5ac87efbfc66048",
+    "source_bytes": 1513,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

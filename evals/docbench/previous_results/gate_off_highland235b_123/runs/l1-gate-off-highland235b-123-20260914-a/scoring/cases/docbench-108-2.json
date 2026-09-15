@@ -1,0 +1,135 @@
+{
+  "schema_version": "docbench-compatible-case-score-v1",
+  "scoring_protocol": "docbench_prompt_compatible",
+  "official_comparable": false,
+  "case_id": "docbench:108:2",
+  "doc_id": "108",
+  "question_index": 2,
+  "domain": "government",
+  "question_type": "unanswerable",
+  "system_answer": "是的，文档中确实存在对因员工留任问题导致机构知识流失的担忧。\n\n在'Bureau Cross-Cutting Management Objective 1.1 Risk Considerations'部分，文档明确指出：\n\n'Failure to modernize and strengthen DEIA in our global PM workforce and workplaces, provide our people with the necessary tools to succeed, or adapt to a post-pandemic posture will put at risk the Bureau's investments in recruiting, developing, and retaining the best talent in the long-term. The Bureau may lose people due to burnout, lack of work-life flexibilities, and frustrations over lack of DEIA representation, career mobility, and professional development opportunities.'\n\n此外，文档还提到：'Without much-needed IT and data modernization and infrastructure upgrades, the Bureau also risks losing talent due to an inflexible work environment and/or health concerns in a post-pandemic posture.'\n\n这些表述直接表明文档对员工留任（retention）问题存在担忧，担心因倦怠、缺乏工作生活弹性、职业发展机会不足等原因失去人才。\n\n同时，文档在'Bureau Cross-Cutting Management Goal 1'中强调要'improve knowledge management'（改进知识管理），这进一步暗示了机构对知识保留的重视，与人才流失风险相关联。\n\n因此，可以确认文档中存在对因员工留任问题导致机构知识流失的担忧。",
+  "prompt_sha256": "784a6d6cf4f8151765b169c633f46e62d12dcd77f8941172e72edbf8b30f9bde",
+  "filled_prompt_sha256": "16ab43b9e9ad6077552ffd227f0ce1bf05e8bd984601ce5f80a5628f8c58334a",
+  "judge_provider": "openai-compatible",
+  "judge_base_url": "https://models.sjtu.edu.cn/api/v1",
+  "judge_model": "deepseek-chat",
+  "judge_request_dialect": "deepseek",
+  "judge_retry_policy": {
+    "max_attempts": 6,
+    "fallback_backoff_s": [
+      2.0,
+      4.0,
+      8.0,
+      16.0,
+      30.0
+    ],
+    "inter_case_delay_s": 1.0,
+    "retryable_http_statuses": [
+      408,
+      429,
+      "5xx"
+    ],
+    "retryable_transport_errors": [
+      "httpx.TransportError"
+    ]
+  },
+  "judge_http_status": 200,
+  "judge_response_raw": {
+    "id": "chatcmpl-2e98e121-f22d-4228-8b79-f37102765b5e",
+    "created": 1789435907,
+    "model": "deepseek-chat",
+    "object": "chat.completion",
+    "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "0",
+          "role": "assistant",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning": null
+          }
+        },
+        "provider_specific_fields": {
+          "token_ids": null,
+          "stop_reason": null,
+          "routed_experts": null
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 2,
+      "prompt_tokens": 570,
+      "total_tokens": 572,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      }
+    }
+  },
+  "judge_response_text": "0",
+  "judge_attempts": [
+    {
+      "attempt_number": 1,
+      "attempted_at": "2026-09-15T01:31:44.756152+00:00",
+      "wait_before_attempt_s": 1.0,
+      "http_status": 200,
+      "response_raw": {
+        "id": "chatcmpl-2e98e121-f22d-4228-8b79-f37102765b5e",
+        "created": 1789435907,
+        "model": "deepseek-chat",
+        "object": "chat.completion",
+        "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "0",
+              "role": "assistant",
+              "provider_specific_fields": {
+                "refusal": null,
+                "reasoning": null
+              }
+            },
+            "provider_specific_fields": {
+              "token_ids": null,
+              "stop_reason": null,
+              "routed_experts": null
+            }
+          }
+        ],
+        "usage": {
+          "completion_tokens": 2,
+          "prompt_tokens": 570,
+          "total_tokens": 572,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          }
+        }
+      },
+      "status": "completed",
+      "error": null,
+      "retryable": false,
+      "retry_reason": null,
+      "retry_after_header": null,
+      "wait_before_next_attempt_s": null,
+      "wait_source": null
+    }
+  ],
+  "judge_attempt_count": 1,
+  "score_source": "judge",
+  "score": 0,
+  "error": null,
+  "scored_at": "2026-09-15T01:31:43.750274+00:00",
+  "status": "completed",
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-108-2-b763d2daeec1.json",
+    "source_sha256": "e95285a0bccefcfea3c548d79adabecdc8dcfb9d0e0e10c07779627f974ce22b",
+    "source_bytes": 5039,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

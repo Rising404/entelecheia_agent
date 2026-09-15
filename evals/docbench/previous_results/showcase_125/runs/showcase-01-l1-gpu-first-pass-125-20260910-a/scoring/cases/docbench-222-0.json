@@ -1,0 +1,135 @@
+{
+  "schema_version": "docbench-compatible-case-score-v1",
+  "scoring_protocol": "docbench_prompt_compatible",
+  "official_comparable": false,
+  "case_id": "docbench:222:0",
+  "doc_id": "222",
+  "question_index": 0,
+  "domain": "news",
+  "question_type": "metadata",
+  "system_answer": "根据《纽约时报》2022年7月19日（第CLXXI卷，第59,489号）头版的视觉分析，头版传达的主要新闻如下：\n\n1. **英国热浪导致全国瘫痪**（主标题：\"Blast of Heat Brings Britain To a Standstill\"）——副标题提到热浪向北移动，同时欧洲多国正与火灾作斗争。\n\n2. **西班牙达利灵感海景拟建海上风电场**（\"Wind Farm May Rise on Spanish Seascapes That Inspired Dalí\"）\n\n3. **民主党将堕胎权之争转向黑人选民**（\"Democrats Take Abortion Battle To Black Voters\"）\n\n4. **曼钦的反对可能使全球税收协议落空**（\"Manchin's 'No' Risks Dashing Global Tax Deal\"）\n\n此外，头版还包含体育、科学、国际新闻和艺术等版块的导读标题及对应页码，并配有一张士兵在白金汉宫的照片。",
+  "prompt_sha256": "784a6d6cf4f8151765b169c633f46e62d12dcd77f8941172e72edbf8b30f9bde",
+  "filled_prompt_sha256": "22d1ebc13b5c1d1698e674a0e335b1482467ccae751d1c2aa4b338cef09038ce",
+  "judge_provider": "openai-compatible",
+  "judge_base_url": "https://models.sjtu.edu.cn/api/v1",
+  "judge_model": "deepseek-chat",
+  "judge_request_dialect": "deepseek",
+  "judge_retry_policy": {
+    "max_attempts": 6,
+    "fallback_backoff_s": [
+      2.0,
+      4.0,
+      8.0,
+      16.0,
+      30.0
+    ],
+    "inter_case_delay_s": 1.0,
+    "retryable_http_statuses": [
+      408,
+      429,
+      "5xx"
+    ],
+    "retryable_transport_errors": [
+      "httpx.TransportError"
+    ]
+  },
+  "judge_http_status": 200,
+  "judge_response_raw": {
+    "id": "chatcmpl-ae492fe1-a7bd-4772-a76c-bd7ff7ef2e52",
+    "created": 1789065917,
+    "model": "deepseek-chat",
+    "object": "chat.completion",
+    "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "Correctness: 0",
+          "role": "assistant",
+          "provider_specific_fields": {
+            "reasoning": null,
+            "refusal": null
+          }
+        },
+        "provider_specific_fields": {
+          "stop_reason": null,
+          "routed_experts": null,
+          "token_ids": null
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 6,
+      "prompt_tokens": 689,
+      "total_tokens": 695,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      }
+    }
+  },
+  "judge_response_text": "Correctness: 0",
+  "judge_attempts": [
+    {
+      "attempt_number": 1,
+      "attempted_at": "2026-09-10T18:45:16.744695+00:00",
+      "wait_before_attempt_s": 1.0,
+      "http_status": 200,
+      "response_raw": {
+        "id": "chatcmpl-ae492fe1-a7bd-4772-a76c-bd7ff7ef2e52",
+        "created": 1789065917,
+        "model": "deepseek-chat",
+        "object": "chat.completion",
+        "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "Correctness: 0",
+              "role": "assistant",
+              "provider_specific_fields": {
+                "reasoning": null,
+                "refusal": null
+              }
+            },
+            "provider_specific_fields": {
+              "stop_reason": null,
+              "routed_experts": null,
+              "token_ids": null
+            }
+          }
+        ],
+        "usage": {
+          "completion_tokens": 6,
+          "prompt_tokens": 689,
+          "total_tokens": 695,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          }
+        }
+      },
+      "status": "completed",
+      "error": null,
+      "retryable": false,
+      "retry_reason": null,
+      "retry_after_header": null,
+      "wait_before_next_attempt_s": null,
+      "wait_source": null
+    }
+  ],
+  "judge_attempt_count": 1,
+  "score_source": "judge",
+  "score": 0,
+  "error": null,
+  "scored_at": "2026-09-10T18:45:15.737690+00:00",
+  "status": "completed",
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-222-0-c773291a2392.json",
+    "source_sha256": "e8a099ae6938cb0a135fdaeb916d771e91bec21f6cf3b8e501a4c7d013bc3147",
+    "source_bytes": 5428,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

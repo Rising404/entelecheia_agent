@@ -20,18 +20,100 @@ PROMPT_SHA256 = "a" * 64
 NATURAL_DOCUMENT_QA_PREAMBLE = "Answer the question using the attached document.\n"
 
 
-def test_checked_in_case_timeouts_leave_headroom_above_the_frozen_turn_budget() -> None:
+def test_gate_off_experiment_changes_only_the_existing_semantic_review_switch(
+    tmp_path: Path,
+) -> None:
+    from personagraph.configuration.features import DEFAULT_FEATURES, load_features
+
+    project_root = Path(__file__).resolve().parents[2]
+    config_dir = project_root / "evals/docbench/configs"
+    environment = {BENCH_EVAL_DIR_ENV: str(tmp_path / "bench_eval")}
+    baseline = load_docbench_config(
+        config_dir / "l1_balanced_125.yaml", environment=environment,
+    )
+    experiment = load_docbench_config(
+        config_dir / "l1_balanced_125_gate_off.yaml", environment=environment,
+    )
+    expected = deepcopy(baseline.raw)
+    expected["run"]["runtime_features"] = (
+        "evals/docbench/configs/runtime_closed_world_gate_off.yaml"
+    )
+    assert experiment.raw == expected
+    baseline_features = load_features(str(baseline.resolved["run"]["runtime_features"]))
+    experiment_features = load_features(str(experiment.resolved["run"]["runtime_features"]))
+    assert baseline_features["l1_semantic_verification_mode"] == "always"
+    assert experiment_features == baseline_features | {"l1_semantic_verification_mode": "off"}
+    assert DEFAULT_FEATURES["l1_semantic_verification_mode"] == "always"
+
+
+def test_checked_in_case_timeouts_leave_headroom_above_the_frozen_turn_budget(
+    tmp_path: Path,
+) -> None:
     from personagraph.configuration.features import load_features
 
     project_root = Path(__file__).resolve().parents[2]
     configs = sorted((project_root / "evals/docbench/configs").glob("l1_*.yaml"))
     assert configs
     for config_path in configs:
-        loaded = load_docbench_config(config_path, project_root=project_root)
+        loaded = load_docbench_config(
+            config_path,
+            project_root=project_root,
+            environment={BENCH_EVAL_DIR_ENV: str(tmp_path / "bench_eval")},
+        )
         features = load_features(str(loaded.resolved["run"]["runtime_features"]))
         assert features["turn_wall_clock_budget_s"] == 1500, config_path.name
         assert loaded.raw["run"]["per_case_timeout_s"] == 1800, config_path.name
         assert loaded.raw["run"]["per_case_timeout_s"] > features["turn_wall_clock_budget_s"]
+
+
+def test_highland_235b_config_only_replaces_the_vision_endpoint(tmp_path: Path) -> None:
+    root = Path(__file__).resolve().parents[2]
+    configs = root / "evals/docbench/configs"
+    environment = {BENCH_EVAL_DIR_ENV: str(tmp_path / "bench_eval")}
+    baseline = load_docbench_config(
+        configs / "l1_balanced_125_gate_off.yaml", environment=environment,
+    )
+    experiment = load_docbench_config(
+        configs / "l1_balanced_125_gate_off_highland_235b.yaml", environment=environment,
+    )
+    expected = deepcopy(baseline.raw)
+    expected["providers"]["vision"] = {
+        "provider": "highland",
+        "base_url": "https://www.highland-api.top",
+        "model": "qwen3-vl-235b-a22b-instruct",
+        "api_key_env": "HIGHLAND_API_KEY",
+    }
+    assert experiment.raw == expected
+    assert experiment.sha256 != baseline.sha256
+
+
+def test_highland_235b_endpoint_resolves_without_changing_installation_profile(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from evals.docbench.reproduce_or_run_script import runner
+
+    def reject_installation_read(*args, **kwargs):
+        pytest.fail("explicit vision endpoint must not read or change the active profile")
+
+    monkeypatch.setattr(runner, "_active_installation_profile", reject_installation_read)
+    monkeypatch.setenv("HIGHLAND_API_KEY", "test-only-placeholder")
+    resolved = runner._resolve_provider(
+        {
+            "provider": "highland", "base_url": "https://www.highland-api.top",
+            "model": "qwen3-vl-235b-a22b-instruct", "api_key_env": "HIGHLAND_API_KEY",
+        },
+        kind="vision", require_secret=True,
+    )
+    assert resolved["model"] == "qwen3-vl-235b-a22b-instruct"
+    assert resolved["api_key"] == "test-only-placeholder"
+    assert resolved["credential_source"] == "env:HIGHLAND_API_KEY"
+    monkeypatch.delenv("HIGHLAND_API_KEY")
+    with pytest.raises(runner.DocBenchRunnerError, match="credential is unavailable"):
+        runner._resolve_provider(
+            {"provider": "highland", "base_url": "https://www.highland-api.top",
+             "model": "qwen3-vl-235b-a22b-instruct", "api_key_env": "HIGHLAND_API_KEY"},
+            kind="vision", require_secret=True,
+        )
 
 
 def _valid_payload() -> dict:
@@ -135,11 +217,13 @@ def test_loads_strict_l1_config_and_resolves_paths_from_project_root(
     assert len(loaded.sha256) == 64
 
 
-def test_checked_in_preambles_do_not_prescribe_an_agent_strategy() -> None:
+def test_checked_in_preambles_do_not_prescribe_an_agent_strategy(tmp_path: Path) -> None:
     configs_dir = Path(__file__).resolve().parents[2] / "evals/docbench/configs"
 
     for path in sorted(configs_dir.glob("l1_*.yaml")):
-        loaded = load_docbench_config(path)
+        loaded = load_docbench_config(
+            path, environment={BENCH_EVAL_DIR_ENV: str(tmp_path / "bench_eval")},
+        )
         preamble = loaded.raw["prompt"]["preamble"]
 
         assert preamble == NATURAL_DOCUMENT_QA_PREAMBLE
@@ -184,10 +268,18 @@ def test_bench_path_namespace_uses_external_docbench_root_without_changing_repo_
     ).resolve()
 
 
-def test_docbench_root_defaults_to_desktop_bench_eval() -> None:
-    assert docbench_root(environment={}) == (
-        Path.home() / "Desktop/bench_eval/docbench"
-    ).resolve()
+def test_docbench_root_requires_explicit_external_directory() -> None:
+    with pytest.raises(DocBenchConfigError, match=f"{BENCH_EVAL_DIR_ENV}.*required"):
+        docbench_root(environment={})
+
+
+@pytest.mark.parametrize(
+    ("value", "message"),
+    (("", "cannot be empty"), ("   ", "cannot be empty"), ("relative", "absolute path")),
+)
+def test_docbench_root_rejects_empty_or_relative_directories(value: str, message: str) -> None:
+    with pytest.raises(DocBenchConfigError, match=message):
+        docbench_root(environment={BENCH_EVAL_DIR_ENV: value})
 
 
 def test_docbench_root_rejects_a_location_inside_source_checkout() -> None:

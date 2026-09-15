@@ -1,0 +1,135 @@
+{
+  "schema_version": "docbench-compatible-case-score-v1",
+  "scoring_protocol": "docbench_prompt_compatible",
+  "official_comparable": false,
+  "case_id": "docbench:38:4",
+  "doc_id": "38",
+  "question_index": 4,
+  "domain": "academia",
+  "question_type": "multimodal",
+  "system_answer": "根据论文 P18-4013 中 Figure 2 的图示及相关文字说明，NCRF++ 中的词表示（word representations）是通过**拼接（concatenation）**三个主要组件形成的，具体过程如下：\n\n### 1. 字符序列表示（Character Sequence Representation）\n- 输入是单个单词的字符序列（例如 \"love\" 分解为 'l', 'o', 'v', 'e'）。\n- 每个字符首先被映射为**字符嵌入**（图中用**绿色圆圈**表示）。\n- 这些字符嵌入通过一个 RNN/CNN 模型进行编码，输出一个**字符序列表示**（图中用**黄色圆圈**表示），该表示捕捉了单词内部的形态结构信息。\n\n### 2. 词嵌入（Word Embedding）\n- 每个单词本身有一个预训练或可学习的**词嵌入**（图中用**红色圆圈**表示），这是一个固定维度的稠密向量，代表了该单词的语义信息。\n\n### 3. 手工特征（Handcrafted Features）\n- 这些是额外的、非学习的稀疏特征，例如：\n  - 大小写（Capitalization, [Cap]）\n  - 词性标签（POS tag, [POS]）\n  - 前缀（Prefixes, [Pre]）\n  - 后缀（Suffixes, [Suf]）\n- 这些特征通常以独热编码（one-hot encoding）表示，并通过查找表转换为稠密向量，即**稀疏特征的嵌入**（图中用**灰色圆圈**表示）。\n\n### 4. 拼接（Concatenation）\n- 最终的词表示是将上述三个组件的向量**拼接**在一起：\n  **最终词表示 = [字符序列表示] + [词嵌入] + [手工特征向量]**\n- 这个拼接后的向量作为输入，进入下一层“词序列层”（Word Sequence Layer）进行进一步处理。\n\n### 图中颜色圆圈的含义总结\n| 颜色 | 表示内容 |\n|------|----------|\n| 绿色圆圈 | 字符嵌入（character embeddings） |\n| 红色圆圈 | 词嵌入（word embeddings） |\n| 黄色圆圈 | 字符序列表示（character sequence representations） |\n| 灰色圆圈 | 稀疏特征的嵌入（embeddings of sparse features，即手工特征） |\n\n因此，NCRF++ 的词表示是一个融合了字符级形态信息、词级语义信息以及手工特征的综合向量表示。",
+  "prompt_sha256": "784a6d6cf4f8151765b169c633f46e62d12dcd77f8941172e72edbf8b30f9bde",
+  "filled_prompt_sha256": "a5200b67d233ca9840800823851ca4de4cafe58327a6ce57870881aad0f051de",
+  "judge_provider": "openai-compatible",
+  "judge_base_url": "https://models.sjtu.edu.cn/api/v1",
+  "judge_model": "deepseek-chat",
+  "judge_request_dialect": "deepseek",
+  "judge_retry_policy": {
+    "max_attempts": 6,
+    "fallback_backoff_s": [
+      2.0,
+      4.0,
+      8.0,
+      16.0,
+      30.0
+    ],
+    "inter_case_delay_s": 1.0,
+    "retryable_http_statuses": [
+      408,
+      429,
+      "5xx"
+    ],
+    "retryable_transport_errors": [
+      "httpx.TransportError"
+    ]
+  },
+  "judge_http_status": 200,
+  "judge_response_raw": {
+    "id": "chatcmpl-dbf61085-c485-4f8b-bda0-930ae543bd76",
+    "created": 1789065316,
+    "model": "deepseek-chat",
+    "object": "chat.completion",
+    "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "1",
+          "role": "assistant",
+          "provider_specific_fields": {
+            "reasoning": null,
+            "refusal": null
+          }
+        },
+        "provider_specific_fields": {
+          "stop_reason": null,
+          "routed_experts": null,
+          "token_ids": null
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 2,
+      "prompt_tokens": 847,
+      "total_tokens": 849,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      }
+    }
+  },
+  "judge_response_text": "1",
+  "judge_attempts": [
+    {
+      "attempt_number": 1,
+      "attempted_at": "2026-09-10T18:35:16.465740+00:00",
+      "wait_before_attempt_s": 1.0,
+      "http_status": 200,
+      "response_raw": {
+        "id": "chatcmpl-dbf61085-c485-4f8b-bda0-930ae543bd76",
+        "created": 1789065316,
+        "model": "deepseek-chat",
+        "object": "chat.completion",
+        "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "1",
+              "role": "assistant",
+              "provider_specific_fields": {
+                "reasoning": null,
+                "refusal": null
+              }
+            },
+            "provider_specific_fields": {
+              "stop_reason": null,
+              "routed_experts": null,
+              "token_ids": null
+            }
+          }
+        ],
+        "usage": {
+          "completion_tokens": 2,
+          "prompt_tokens": 847,
+          "total_tokens": 849,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          }
+        }
+      },
+      "status": "completed",
+      "error": null,
+      "retryable": false,
+      "retry_reason": null,
+      "retry_after_header": null,
+      "wait_before_next_attempt_s": null,
+      "wait_source": null
+    }
+  ],
+  "judge_attempt_count": 1,
+  "score_source": "judge",
+  "score": 1,
+  "error": null,
+  "scored_at": "2026-09-10T18:35:15.458362+00:00",
+  "status": "completed",
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-38-4-aeab554963b4.json",
+    "source_sha256": "81c3dd5ae8218f55057f2ab8cb440793db92b4f6c71236d335a9633f91da30b3",
+    "source_bytes": 5988,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

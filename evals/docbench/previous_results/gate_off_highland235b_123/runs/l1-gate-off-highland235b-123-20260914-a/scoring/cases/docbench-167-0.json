@@ -1,0 +1,135 @@
+{
+  "schema_version": "docbench-compatible-case-score-v1",
+  "scoring_protocol": "docbench_prompt_compatible",
+  "official_comparable": false,
+  "case_id": "docbench:167:0",
+  "doc_id": "167",
+  "question_index": 0,
+  "domain": "laws",
+  "question_type": "text",
+  "system_answer": "根据附件文档（美国国会法律图书馆《Restrictions on Land Ownership by Foreigners in Selected Jurisdictions》），外籍人士在阿拉伯联合酋长国（UAE）拥有土地的可能性取决于具体酋长国，因为阿联酋没有联邦层面的统一立法，而是由各酋长国自行制定地方法规。以下是文档中关于阿布扎比和迪拜两个主要酋长国的规定：\n\n**阿布扎比（Abu Dhabi）**\n- 2005年第19号法律（经修订）规定，不动产所有权仅限于阿联酋公民。外籍国民只能拥有建筑物本身，而不能拥有建筑物所在的土地，且所有权仅限于投资区（investment zones）。外籍人士有权对其住宅单元享有99年的用益权（usufruct），但在首次行使用益权或所有权后的10年内不得处置该单元或建筑物。\n- 2019年第13号法律（修正2005年第19号法律）放宽了限制，允许外籍国民和实体在阿布扎比的投资区内拥有和取得不动产的全部原始权利和物权（包括土地所有权）。\n\n**迪拜（Dubai）**\n- 2006年第7号法律规定，迪拜的不动产所有权仅限于阿联酋公民和海湾合作委员会（GCC）国家（包括阿曼、科威特、卡塔尔、沙特阿拉伯和巴林）的公民。外籍国民可以在由迪拜统治者指定的特定地点（designated locations）被授予自由所有权（free right of ownership）。\n\n**总结**\n- 在阿联酋，外籍人士**不能在所有地区自由拥有土地**，但在特定条件下可以：\n  - 在阿布扎比的**投资区**内，外籍人士可以拥有土地及不动产的全部权利（依据2019年第13号法律）。\n  - 在迪拜的**指定地点**，外籍人士可以被授予土地或不动产的自由所有权（依据2006年第7号法律）。\n- 在投资区或指定地点之外，外籍人士的土地所有权受到严格限制，通常只能拥有建筑物或通过长期用益权（如99年）使用土地。\n\n因此，答案是：**外籍人士在阿联酋拥有土地是可能的，但仅限于特定酋长国（如阿布扎比和迪拜）划定的投资区或指定地点，且需遵守各酋长国的地方法规。**",
+  "prompt_sha256": "784a6d6cf4f8151765b169c633f46e62d12dcd77f8941172e72edbf8b30f9bde",
+  "filled_prompt_sha256": "ec38bc2dfe52176e6a224df1d5b0ac4bd9b831de720e7560ece132075a14d3ee",
+  "judge_provider": "openai-compatible",
+  "judge_base_url": "https://models.sjtu.edu.cn/api/v1",
+  "judge_model": "deepseek-chat",
+  "judge_request_dialect": "deepseek",
+  "judge_retry_policy": {
+    "max_attempts": 6,
+    "fallback_backoff_s": [
+      2.0,
+      4.0,
+      8.0,
+      16.0,
+      30.0
+    ],
+    "inter_case_delay_s": 1.0,
+    "retryable_http_statuses": [
+      408,
+      429,
+      "5xx"
+    ],
+    "retryable_transport_errors": [
+      "httpx.TransportError"
+    ]
+  },
+  "judge_http_status": 200,
+  "judge_response_raw": {
+    "id": "chatcmpl-a5f6f705-24ec-48a0-b72e-54ffe3bcedc3",
+    "created": 1789436135,
+    "model": "deepseek-chat",
+    "object": "chat.completion",
+    "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "Correctness: 0",
+          "role": "assistant",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning": null
+          }
+        },
+        "provider_specific_fields": {
+          "token_ids": null,
+          "stop_reason": null,
+          "routed_experts": null
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 6,
+      "prompt_tokens": 816,
+      "total_tokens": 822,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      }
+    }
+  },
+  "judge_response_text": "Correctness: 0",
+  "judge_attempts": [
+    {
+      "attempt_number": 1,
+      "attempted_at": "2026-09-15T01:35:07.958134+00:00",
+      "wait_before_attempt_s": 1.0,
+      "http_status": 200,
+      "response_raw": {
+        "id": "chatcmpl-a5f6f705-24ec-48a0-b72e-54ffe3bcedc3",
+        "created": 1789436135,
+        "model": "deepseek-chat",
+        "object": "chat.completion",
+        "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "Correctness: 0",
+              "role": "assistant",
+              "provider_specific_fields": {
+                "refusal": null,
+                "reasoning": null
+              }
+            },
+            "provider_specific_fields": {
+              "token_ids": null,
+              "stop_reason": null,
+              "routed_experts": null
+            }
+          }
+        ],
+        "usage": {
+          "completion_tokens": 6,
+          "prompt_tokens": 816,
+          "total_tokens": 822,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          }
+        }
+      },
+      "status": "completed",
+      "error": null,
+      "retryable": false,
+      "retry_reason": null,
+      "retry_after_header": null,
+      "wait_before_next_attempt_s": null,
+      "wait_source": null
+    }
+  ],
+  "judge_attempt_count": 1,
+  "score_source": "judge",
+  "score": 0,
+  "error": null,
+  "scored_at": "2026-09-15T01:35:06.955245+00:00",
+  "status": "completed",
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-167-0-598dca146900.json",
+    "source_sha256": "c70375dc0a4d93acaf3e65e028248f026f44f7c648afeb5ee33685af56b218e1",
+    "source_bytes": 5932,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

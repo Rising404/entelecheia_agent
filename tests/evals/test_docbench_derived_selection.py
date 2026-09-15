@@ -10,7 +10,10 @@ from pathlib import Path
 
 import pytest
 
-from evals.docbench.reproduce_or_run_script.config import load_docbench_config
+from evals.docbench.reproduce_or_run_script.config import (
+    BENCH_EVAL_DIR_ENV,
+    load_docbench_config,
+)
 from evals.docbench.reproduce_or_run_script.selection import (
     DEFAULT_SEED,
     DOMAIN_ORDER,
@@ -207,9 +210,14 @@ def test_remaining_fifteen_is_exactly_the_ordered_twenty_minus_five():
     )
 
 
-def test_gpu_remaining_config_changes_only_the_selection_path():
-    five = load_docbench_config(CONFIGS / "l1_gpu_context_regression_5.yaml")
-    remaining = load_docbench_config(CONFIGS / "l1_gpu_stage_remaining_15.yaml")
+def test_gpu_remaining_config_changes_only_the_selection_path(tmp_path: Path):
+    environment = {BENCH_EVAL_DIR_ENV: str(tmp_path / "bench_eval")}
+    five = load_docbench_config(
+        CONFIGS / "l1_gpu_context_regression_5.yaml", environment=environment,
+    )
+    remaining = load_docbench_config(
+        CONFIGS / "l1_gpu_stage_remaining_15.yaml", environment=environment,
+    )
     expected = deepcopy(five.raw)
     expected["dataset"]["selection"] = (
         "evals/docbench/selections/stage_remaining_15.json"
@@ -221,7 +229,7 @@ def test_gpu_remaining_config_changes_only_the_selection_path():
     assert remaining.raw["run"]["max_workers"] == 1
 
 
-def test_visual_publication_regression_uses_only_five_original_case_identities():
+def test_visual_publication_regression_uses_only_five_original_case_identities(tmp_path: Path):
     base_bytes = (SELECTIONS / "stage_20_v1.json").read_bytes()
     base = json.loads(base_bytes)
     raw = json.loads((SELECTIONS / "vision_publication_regression_5.json").read_text())
@@ -234,8 +242,13 @@ def test_visual_publication_regression_uses_only_five_original_case_identities()
         case["case_id"] for case in base["cases"] if case["case_id"] not in selected
     ]
     assert raw["case_count"] == 5
-    original = load_docbench_config(CONFIGS / "l1_gpu_vision_diagnostics_20.yaml")
-    regression = load_docbench_config(CONFIGS / "l1_gpu_vision_publication_regression_5.yaml")
+    environment = {BENCH_EVAL_DIR_ENV: str(tmp_path / "bench_eval")}
+    original = load_docbench_config(
+        CONFIGS / "l1_gpu_vision_diagnostics_20.yaml", environment=environment,
+    )
+    regression = load_docbench_config(
+        CONFIGS / "l1_gpu_vision_publication_regression_5.yaml", environment=environment,
+    )
     expected = deepcopy(original.raw)
     expected["dataset"]["selection"] = "evals/docbench/selections/vision_publication_regression_5.json"
     assert regression.raw == expected

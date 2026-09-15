@@ -1,0 +1,135 @@
+{
+  "schema_version": "docbench-compatible-case-score-v1",
+  "scoring_protocol": "docbench_prompt_compatible",
+  "official_comparable": false,
+  "case_id": "docbench:30:2",
+  "doc_id": "30",
+  "question_index": 2,
+  "domain": "academia",
+  "question_type": "multimodal",
+  "system_answer": "根据论文C18-1182.pdf中的Figure 1，句子中每个单词在输入LSTM层之前的处理流程如下：\n\n1. **Word Embedding（词嵌入）**：每个单词首先通过一个Word Embedding层，被转换为词嵌入表示。Figure 1中展示了这一步骤，但未详细说明词嵌入的具体生成方式。\n\n2. **分别送入前向和后向LSTM**：得到的词嵌入被同时送入两个LSTM层：\n   - **Word LSTM-F（前向LSTM）**：按从左到右的顺序处理词嵌入序列。\n   - **Word LSTM-B（后向LSTM）**：按从右到左的顺序处理词嵌入序列。\n\n3. **拼接形成Word Representation**：前向LSTM和后向LSTM的输出被拼接（concatenate）在一起，形成每个单词的最终词表示（Word Representation），该表示同时包含了上下文信息。\n\n需要注意的是，Figure 1中仅展示了词嵌入层作为输入转换步骤，但未详细说明词嵌入的具体实现细节。",
+  "prompt_sha256": "784a6d6cf4f8151765b169c633f46e62d12dcd77f8941172e72edbf8b30f9bde",
+  "filled_prompt_sha256": "f3bffa665cbf660a879b3e575ae043397cfcbaa1fcb53aca1f1ab638aac85d7a",
+  "judge_provider": "openai-compatible",
+  "judge_base_url": "https://models.sjtu.edu.cn/api/v1",
+  "judge_model": "deepseek-chat",
+  "judge_request_dialect": "deepseek",
+  "judge_retry_policy": {
+    "max_attempts": 6,
+    "fallback_backoff_s": [
+      2.0,
+      4.0,
+      8.0,
+      16.0,
+      30.0
+    ],
+    "inter_case_delay_s": 1.0,
+    "retryable_http_statuses": [
+      408,
+      429,
+      "5xx"
+    ],
+    "retryable_transport_errors": [
+      "httpx.TransportError"
+    ]
+  },
+  "judge_http_status": 200,
+  "judge_response_raw": {
+    "id": "chatcmpl-9e412239-06c2-4f53-ba4f-b70a8d970e3b",
+    "created": 1789065264,
+    "model": "deepseek-chat",
+    "object": "chat.completion",
+    "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "1",
+          "role": "assistant",
+          "provider_specific_fields": {
+            "reasoning": null,
+            "refusal": null
+          }
+        },
+        "provider_specific_fields": {
+          "stop_reason": null,
+          "routed_experts": null,
+          "token_ids": null
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 2,
+      "prompt_tokens": 578,
+      "total_tokens": 580,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      }
+    }
+  },
+  "judge_response_text": "1",
+  "judge_attempts": [
+    {
+      "attempt_number": 1,
+      "attempted_at": "2026-09-10T18:34:24.544014+00:00",
+      "wait_before_attempt_s": 1.0,
+      "http_status": 200,
+      "response_raw": {
+        "id": "chatcmpl-9e412239-06c2-4f53-ba4f-b70a8d970e3b",
+        "created": 1789065264,
+        "model": "deepseek-chat",
+        "object": "chat.completion",
+        "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "1",
+              "role": "assistant",
+              "provider_specific_fields": {
+                "reasoning": null,
+                "refusal": null
+              }
+            },
+            "provider_specific_fields": {
+              "stop_reason": null,
+              "routed_experts": null,
+              "token_ids": null
+            }
+          }
+        ],
+        "usage": {
+          "completion_tokens": 2,
+          "prompt_tokens": 578,
+          "total_tokens": 580,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          }
+        }
+      },
+      "status": "completed",
+      "error": null,
+      "retryable": false,
+      "retry_reason": null,
+      "retry_after_header": null,
+      "wait_before_next_attempt_s": null,
+      "wait_source": null
+    }
+  ],
+  "judge_attempt_count": 1,
+  "score_source": "judge",
+  "score": 1,
+  "error": null,
+  "scored_at": "2026-09-10T18:34:23.539929+00:00",
+  "status": "completed",
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/scoring/cases/docbench-30-2-a5c959e85fd8.json",
+    "source_sha256": "81bea004ff75fd1a47ebe167e33ec803cd835775923f47edfa52285ba4f95fcb",
+    "source_bytes": 4923,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

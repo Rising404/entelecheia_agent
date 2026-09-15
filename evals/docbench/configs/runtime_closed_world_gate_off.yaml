@@ -1,0 +1,10 @@
+features:
+  # Only semantic review changes; mechanical/source/schema/authority checks remain.
+  # Quote "off": an unquoted YAML off is interpreted as a boolean by PyYAML.
+  l1_semantic_verification_mode: "off"
+  user_interaction_mode: closed_world
+  turn_wall_clock_budget_s: 1500
+  l1_external_web_tools_enabled: false
+  file_retrieval_write_enabled: true
+  file_retrieval_read_enabled: true
+  l1_retrieval_tools_enabled: true

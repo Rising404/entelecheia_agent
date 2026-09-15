@@ -1,0 +1,135 @@
+{
+  "schema_version": "docbench-compatible-case-score-v1",
+  "scoring_protocol": "docbench_prompt_compatible",
+  "official_comparable": false,
+  "case_id": "docbench:148:2",
+  "doc_id": "148",
+  "question_index": 2,
+  "domain": "laws",
+  "question_type": "metadata",
+  "system_answer": "由于文档内容较多，在有限的尝试次数内未能完整读取PDF的全部文本内容，因此无法给出文档的准确总字数。\n\n已读取到的部分文本内容（第1-7页的部分元素）字数统计如下：\n- 第1页（封面）：无文字\n- 第2页（部分文本）：约1,000个单词\n- 第3页（部分文本）：约250个单词\n- 第4页（表格+标题）：约2,100个单词\n- 第5页（表格+标题）：约2,050个单词\n- 第6页（表格+标题）：约2,100个单词\n- 第7页（表格+标题）：约1,500个单词\n\n已读取部分合计约9,000个单词。但文档共8页，且第2-8页的total_text_elements=34，实际只读取了索引0-28共29个元素（其中索引0-15来自第2页，索引16-28来自第3-7页），索引29-33（第8页及可能其他页的剩余内容）尚未读取。因此无法提供文档的总字数。",
+  "prompt_sha256": "784a6d6cf4f8151765b169c633f46e62d12dcd77f8941172e72edbf8b30f9bde",
+  "filled_prompt_sha256": "262dd73d76a5aacf20906ea6175fc0c5082cc46f631a22827790bdfa63d29995",
+  "judge_provider": "openai-compatible",
+  "judge_base_url": "https://models.sjtu.edu.cn/api/v1",
+  "judge_model": "deepseek-chat",
+  "judge_request_dialect": "deepseek",
+  "judge_retry_policy": {
+    "max_attempts": 6,
+    "fallback_backoff_s": [
+      2.0,
+      4.0,
+      8.0,
+      16.0,
+      30.0
+    ],
+    "inter_case_delay_s": 1.0,
+    "retryable_http_statuses": [
+      408,
+      429,
+      "5xx"
+    ],
+    "retryable_transport_errors": [
+      "httpx.TransportError"
+    ]
+  },
+  "judge_http_status": 200,
+  "judge_response_raw": {
+    "id": "chatcmpl-d57d2b8c-33d6-4066-8087-9e669e42a7f6",
+    "created": 1789095923,
+    "model": "deepseek-chat",
+    "object": "chat.completion",
+    "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "0",
+          "role": "assistant",
+          "provider_specific_fields": {
+            "reasoning": null,
+            "refusal": null
+          }
+        },
+        "provider_specific_fields": {
+          "routed_experts": null,
+          "token_ids": null,
+          "stop_reason": null
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 2,
+      "prompt_tokens": 530,
+      "total_tokens": 532,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      }
+    }
+  },
+  "judge_response_text": "0",
+  "judge_attempts": [
+    {
+      "attempt_number": 1,
+      "attempted_at": "2026-09-11T03:05:21.895319+00:00",
+      "wait_before_attempt_s": 1.0,
+      "http_status": 200,
+      "response_raw": {
+        "id": "chatcmpl-d57d2b8c-33d6-4066-8087-9e669e42a7f6",
+        "created": 1789095923,
+        "model": "deepseek-chat",
+        "object": "chat.completion",
+        "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "0",
+              "role": "assistant",
+              "provider_specific_fields": {
+                "reasoning": null,
+                "refusal": null
+              }
+            },
+            "provider_specific_fields": {
+              "routed_experts": null,
+              "token_ids": null,
+              "stop_reason": null
+            }
+          }
+        ],
+        "usage": {
+          "completion_tokens": 2,
+          "prompt_tokens": 530,
+          "total_tokens": 532,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          }
+        }
+      },
+      "status": "completed",
+      "error": null,
+      "retryable": false,
+      "retry_reason": null,
+      "retry_after_header": null,
+      "wait_before_next_attempt_s": null,
+      "wait_source": null
+    }
+  ],
+  "judge_attempt_count": 1,
+  "score_source": "judge",
+  "score": 0,
+  "error": null,
+  "scored_at": "2026-09-11T03:05:20.885110+00:00",
+  "status": "completed",
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/showcase-03-l1-gpu-execution-retry-5-20260911-a/scoring/cases/docbench-148-2-0645eedf2f28.json",
+    "source_sha256": "98f9585170b91b959ba2036325799c65258f20bedb49fcbb88065074c292280f",
+    "source_bytes": 4417,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

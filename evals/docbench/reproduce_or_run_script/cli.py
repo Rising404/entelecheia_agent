@@ -14,6 +14,7 @@ from evals.docbench.reproduce_or_run_script import (
     selection,
 )
 from evals.docbench.reproduce_or_run_script.config import (
+    BENCH_EVAL_DIR_ENV,
     PROJECT_ROOT,
     DocBenchConfigError,
     LoadedDocBenchConfig,
@@ -51,9 +52,10 @@ def _parser(
         prog=prog,
         description="Validate and reproduce checked-in DocBench L1 evaluations.",
         epilog=(
-            "Run from the repository root. Set PERSONAGRAPH_BENCH_EVAL_DIR "
-            "to an absolute directory outside the checkout before starting Python; "
-            "source data and private runs live in its docbench subdirectory."
+            f"Run from the repository root. Commands resolving bench:// paths or "
+            f"default download paths require {BENCH_EVAL_DIR_ENV}, set to an absolute "
+            "directory outside the checkout; source data and private runs live in "
+            "its docbench subdirectory. --help does not require this variable."
         ),
     )
     commands = parser.add_subparsers(dest="command", required=True)

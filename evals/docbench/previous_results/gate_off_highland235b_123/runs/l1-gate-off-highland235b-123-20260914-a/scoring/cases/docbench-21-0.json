@@ -1,0 +1,135 @@
+{
+  "schema_version": "docbench-compatible-case-score-v1",
+  "scoring_protocol": "docbench_prompt_compatible",
+  "official_comparable": false,
+  "case_id": "docbench:21:0",
+  "doc_id": "21",
+  "question_index": 0,
+  "domain": "academia",
+  "question_type": "text",
+  "system_answer": "根据论文第4节（Model）的描述，用于目标预测的panorama IP（全景内部表示）按以下方式生成：\n\n1. **全景图像 I_P 的获取**：在任务执行开始时，智能体通过旋转360度进行确定性探索（deterministic exploration）来观察环境，从而生成全景图像 I_P。该全景图是沿宽度方向拼接的确定性观测结果。\n\n2. **特征图 F_0 的生成**：从初始全景观测 I_P 出发，通过卷积操作生成特征图 F_0。具体地，F_0 = [CNN_0(I_P); F_p]，其中：\n   - CNN_0 是一个两层卷积神经网络（CNN），使用ReLU激活函数。\n   - F_p 是位置嵌入（positional embeddings），沿通道维度与CNN输出拼接。\n\n3. **位置嵌入 F_p 的构造**：为全景图中用于创建全景的每次确定性观测分别创建一个通道，将该观测对应位置的所有像素设为1，其余位置设为0。观测数量取决于智能体的相机视角。\n\n4. **目标位置预测**：基于特征图 F_0，使用LINGUNET（语言条件化的U-Net图像生成网络）生成目标概率分布 P_g。LINGUNET首先通过m个卷积层生成特征图序列 F_j = CNN_j(F_{j-1})，每个卷积层使用leaky ReLU和实例归一化。指令表示 x̄ 被均匀分成m个向量 {x̄_j}，每个向量通过仿射变换生成1×1卷积核 K_j，用于对特征图 F_j 进行条件化卷积，生成文本条件化特征图 G_j。随后通过m次反卷积生成 H_m,...,H_1，最终从 H_1 计算得到目标概率分布 P_g。\n\n5. **目标位置推断**：目标位置通过取 P_g 的最大值对应的像素来确定，再通过相机参数和智能体在起始位置的姿态进行反向投影，得到环境中的3D目标位置 l_g。",
+  "prompt_sha256": "784a6d6cf4f8151765b169c633f46e62d12dcd77f8941172e72edbf8b30f9bde",
+  "filled_prompt_sha256": "019c82fc1681a4d7c56d14f2933a2dba697bb0719a2a6e488af475239e3f67c7",
+  "judge_provider": "openai-compatible",
+  "judge_base_url": "https://models.sjtu.edu.cn/api/v1",
+  "judge_model": "deepseek-chat",
+  "judge_request_dialect": "deepseek",
+  "judge_retry_policy": {
+    "max_attempts": 6,
+    "fallback_backoff_s": [
+      2.0,
+      4.0,
+      8.0,
+      16.0,
+      30.0
+    ],
+    "inter_case_delay_s": 1.0,
+    "retryable_http_statuses": [
+      408,
+      429,
+      "5xx"
+    ],
+    "retryable_transport_errors": [
+      "httpx.TransportError"
+    ]
+  },
+  "judge_http_status": 200,
+  "judge_response_raw": {
+    "id": "chatcmpl-1f26946d-bfc6-474a-98f3-43bd90c19ba2",
+    "created": 1789435657,
+    "model": "deepseek-chat",
+    "object": "chat.completion",
+    "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "1",
+          "role": "assistant",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning": null
+          }
+        },
+        "provider_specific_fields": {
+          "token_ids": null,
+          "stop_reason": null,
+          "routed_experts": null
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 2,
+      "prompt_tokens": 769,
+      "total_tokens": 771,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      }
+    }
+  },
+  "judge_response_text": "1",
+  "judge_attempts": [
+    {
+      "attempt_number": 1,
+      "attempted_at": "2026-09-15T01:27:34.895691+00:00",
+      "wait_before_attempt_s": 1.0,
+      "http_status": 200,
+      "response_raw": {
+        "id": "chatcmpl-1f26946d-bfc6-474a-98f3-43bd90c19ba2",
+        "created": 1789435657,
+        "model": "deepseek-chat",
+        "object": "chat.completion",
+        "system_fingerprint": "vllm-0.21.0-tp8-ep-d873796e",
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "1",
+              "role": "assistant",
+              "provider_specific_fields": {
+                "refusal": null,
+                "reasoning": null
+              }
+            },
+            "provider_specific_fields": {
+              "token_ids": null,
+              "stop_reason": null,
+              "routed_experts": null
+            }
+          }
+        ],
+        "usage": {
+          "completion_tokens": 2,
+          "prompt_tokens": 769,
+          "total_tokens": 771,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          }
+        }
+      },
+      "status": "completed",
+      "error": null,
+      "retryable": false,
+      "retry_reason": null,
+      "retry_after_header": null,
+      "wait_before_next_attempt_s": null,
+      "wait_source": null
+    }
+  ],
+  "judge_attempt_count": 1,
+  "score_source": "judge",
+  "score": 1,
+  "error": null,
+  "scored_at": "2026-09-15T01:27:33.891235+00:00",
+  "status": "completed",
+  "publication": {
+    "kind": "reviewed_public_projection",
+    "source_relative_path": "runs/l1-gate-off-highland235b-123-20260914-a/scoring/cases/docbench-21-0-c0588a80ec22.json",
+    "source_sha256": "ef31ad86a58866ed6b5e32cfa729012970e30ca8e80815ab283b11f4b843d042",
+    "source_bytes": 5614,
+    "original_metrics_preserved": true,
+    "not_a_raw_or_replayable_copy": true
+  }
+}

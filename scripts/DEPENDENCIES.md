@@ -12,7 +12,6 @@ Run at the repository root:
 
 ```sh
 ./scripts/bootstrap-local-runtime.sh
-.venv/bin/python scripts/verify-runtime-independence.py
 ```
 
 Bootstrap verifies the downloaded standalone Python/Node archives, installs
@@ -26,13 +25,22 @@ the frozen pnpm lock. Runtime, pip, Corepack, and pnpm caches stay in `.runtime`
 The shell needs `curl`, `tar`, and `shasum` or `sha256sum`.
 
 Do not copy an old `.venv`, `.runtime`, `node_modules`, or editable installation
-to another checkout. Re-run bootstrap at the new location. The verifier checks
-interpreter ownership and paths, not application readiness or model quality.
+to another checkout. Re-run bootstrap at the new location. Bootstrap itself checks
+runtime versions and checkout ownership; installation success does not establish
+application readiness or model quality.
 
-`--runtime-only` is available for the other standalone platforms listed in the
-bootstrap script. It does **not** install dependencies, and is not a claim of a
-complete, tested Linux/Windows/Intel Mac application installation. A macOS arm64
-dependency lock must not silently be used as their lock.
+`--runtime-only` covers the macOS arm64/x86_64 and Linux arm64/x86_64 targets
+listed in bootstrap. It does **not** install application dependencies or establish
+full Linux/Intel Mac support. Bootstrap has **no Windows branch**, including
+runtime-only mode; experimental Windows launcher paths are not an installation
+workflow. A macOS arm64 dependency lock must not silently be used on another platform.
+
+Windows also lacks the required file-safety implementation: workspace access,
+attachment copying, Agent file writes and output verification depend on POSIX
+directory-handle semantics and fail closed there. Evaluation file locking uses
+`fcntl`. Supplying Python/Node or adding `rg.exe` cannot resolve those boundaries.
+See the [platform notes](../frontend/README.md) before treating a shell launch as
+end-to-end application support.
 
 ## Explicit retrieval model preparation
 
@@ -93,8 +101,9 @@ Do not inherit a private package index or credentials when generating a public
 lock. Retain current pins by default; use explicit `--upgrade-package` only for
 intentional updates. The initial lock is seeded with versions already used by
 the project, not with a copied virtualenv. Unrelated packages are not included.
-Review dependency changes and rerun a clean install, `pip check`, runtime path
-verification, and the targeted installation tests before accepting a new lock.
+Review dependency changes and rerun a clean bootstrap, including its runtime
+version/ownership checks and `pip check`, plus the targeted installation tests
+before accepting a new lock.
 
 ```sh
 .venv/bin/python -m pytest -q tests/scripts/test_source_installation.py
