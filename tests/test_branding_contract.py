@@ -46,7 +46,7 @@ def test_frontend_package_and_visible_surfaces_use_entelecheia() -> None:
     assert "`personagraph`" in readme
     assert "persona subsystem" in readme
     for relative_path in (
-        "CONTRIBUTING.md",
+        "AGENTS.md",
         "ARCHITECTURE.md",
         "frontend/index.html",
         "frontend/src/components/AppNav.vue",
@@ -85,7 +85,6 @@ def test_public_documentation_links_only_to_available_checkout_surfaces() -> Non
         "README.md",
         "QUICKSTART.md",
         "examples/document_qa/README.md",
-        "CONTRIBUTING.md",
         "ARCHITECTURE.md",
         "AGENTS.md",
         "scripts/DEPENDENCIES.md",
@@ -152,9 +151,11 @@ def test_public_eval_docs_identify_the_recorded_source_not_a_run() -> None:
         assert documented == source_hashes, relative_path
 
 
-def test_contributor_guide_explains_local_hook_activation() -> None:
-    guide = _read("CONTRIBUTING.md")
+def test_repository_rules_explain_local_hook_activation() -> None:
+    guide = _read("AGENTS.md")
     assert "git config --local core.hooksPath .githooks" in guide
     assert "git config --get core.hooksPath" in guide
+    assert ".venv/bin/python scripts/check_repository_privacy.py --worktree" in guide
+    assert ".venv/bin/python scripts/check_repository_privacy.py --staged" in guide
     assert (ROOT / ".githooks/pre-commit").is_file()
     assert (ROOT / ".githooks/pre-push").is_file()

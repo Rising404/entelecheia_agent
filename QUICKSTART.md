@@ -29,7 +29,7 @@ Entelecheia 是本地单用户文档 Agent 工作台，仍在开发中。本教�
 | Windows | 有桌面启动预览代码，没有完整自动安装/端到端支持；不能照本教程宣称可运行文档任务 |
 
 Windows 的限制不只是缺一个安装脚本：工作目录访问、上传附件复制、Agent 写文件与产物验证
-依赖 Unix 安全目录句柄，Windows 路径会主动拒绝；评测文件锁也依赖 `fcntl`。
+依赖 Unix 安全目录句柄，Windows 路径会主动拒绝。
 OCR、旧 Office 转换和目录搜索还各有平台约束，详见 [前端平台说明](frontend/README.md)。
 
 先在你希望保存源码的位置克隆仓库；需要已安装 Git。已有 checkout 时直接进入其根目录，不必再克隆：
@@ -176,7 +176,7 @@ PERSONAGRAPH_DOCUMENT_ENGINE=native ./frontend/start-electron.command
 
 Provider 密钥保存在源码外的本地明文配置中。不要录屏展示密钥，不要提交配置、用户文档、
 对话、轨迹、数据库或模型缓存。默认 macOS 数据位于用户的 `Library/Application Support/Entelecheia/`，
-默认 Project 位于用户的 `Documents/Entelecheia/`；可用 README 中的外部路径设置隔离。
+默认 Project 位于用户的 `Documents/Entelecheia/`；可用本教程中的外部路径设置隔离。
 
 任务 prompt、必要文本摘录和页面图像可能发送给你配置的远程服务商；当前外发默认同意，
 不逐次弹窗。先确认文档可以交给该服务，再进行真实问答。所谓“本地工作台”不等于模型推理全部本地。
@@ -258,5 +258,5 @@ DocBench 还有两个不同于普通 GUI 文本任务的前提：
 | readiness 不通过 | 阅读各配置的失败项；可能是别的回归集缺材料，不等于当前 Provider 已实测故障 |
 | 有回答，但任务仍异常或内容不对 | 分别检查工具证据、最终交付和 post_commit/退出状态；不要把有正文当成全链路完成 |
 
-需要贡献代码时再读 [架构](ARCHITECTURE.md) 和 [贡献指南](CONTRIBUTING.md)。
+需要修改代码时再读 [架构](ARCHITECTURE.md) 和 [开发规则](AGENTS.md)。
 根目录 `doc/`、`docs/` 是不发布的本地开发记录区，不用它们保存需要公开的教程或示例。

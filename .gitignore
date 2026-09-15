@@ -113,6 +113,8 @@ htmlcov/
 *.dump
 *.bak
 *.png
+# Visually reviewed desktop screenshot; the privacy gate pins its exact bytes.
+!/assets/entelecheia-desktop.png
 *.jpg
 *.jpeg
 *.gif

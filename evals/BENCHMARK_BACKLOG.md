@@ -18,11 +18,3 @@
 | GAIA | 开放域助理、网页检索和多步工具使用候选集；数据访问受限。 |
 | PaperBench | 长周期论文复现与产物质量评测候选集，运行成本较高。 |
 | `local_longdoc_qa` | 曾用于本地长文档真实链路探测，不是正式公开 benchmark。 |
-
-## 历史组合门
-
-| 名称 | 概要 |
-| --- | --- |
-| `phase0_core_v1` | 曾组合 document core、TaskGraph revision 与 product entry 三套内部回归；它是发布门，不是独立 benchmark。 |
-
-普通代码回归测试仍归 `tests/` 管理；本清单不会自动注册、下载或运行任何 benchmark。

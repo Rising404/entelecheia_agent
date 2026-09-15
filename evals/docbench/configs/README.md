@@ -3,6 +3,9 @@
 每次运行绑定一份完整 YAML。`run` 与 `score` 使用同一份配置；不要改写已运行配置去续跑。
 下表仅列主要入口，完整列表用 `python -m evals.docbench.reproduce_or_run_script list` 查看。
 
+正式选题清单位于相邻的 [selections/](../selections/)；真实 QA 从 `dataset.data_root` 读取。
+参考答案只供裁判使用，不挂载到 Agent 的 Project。
+
 | 配置 | 用途 |
 | --- | --- |
 | `l1_bge_m3_live_1.yaml` | 单题 CPU 工程冒烟 |
@@ -29,8 +32,8 @@ providers:
 `api_key_env` 只是变量名，不会自动读取 GUI 的 Highland 密钥；显式端点不切换 GUI 活跃模型。
 主模型仍读取安装配置，裁判仍使用主模型。旧配置、旧评分和运行快照不改写。
 
-该端点尚未在本轮发请求验证。更大模型是否改善识图、输出是否完整，需后续真实对照评测；
-同时改了 VLM 的新实验不能用来单独归因语义门效果。
+已归档的 [123 题实验](../previous_results/gate_off_highland235b_123/README.md) 使用了该 235B 视觉模型。
+与前轮相比，该实验同时关闭语义门并更换 VLM，不能将结果变化单独归因于语义门或视觉模型。
 
 ## 可调整字段 / Editable fields
 

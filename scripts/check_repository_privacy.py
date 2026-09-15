@@ -79,7 +79,19 @@ REVIEWED_EVIDENCE_MANIFESTS = {
         (
             "cce5bce79d9c5187d874911cb9fc2aee2c16d5c68ccfb85bfd4e69294f006db7",
             "3ff2d0f0675f63c6da11acaadf573ae74912217a13cc19de35fe4b0b68aa5294",
+            "dc38d9575d7cc63d6379cd345e565da2e77d21a5ec197a0ea20555be28d78614",
         ),
+}
+
+# A screenshot is approved only after visual review, at this exact path and byte
+# identity. Other images and replacements remain private, including in Git history.
+REVIEWED_SCREENSHOT_FILES = {
+    "assets/entelecheia-desktop.png": (
+        "810e8002c7263ed40165a6fe01ba13ce5b9254f53a1fa66da237209ff54ee2ab",
+        1555668,
+        2141,
+        1274,
+    ),
 }
 
 FORBIDDEN_SUFFIXES = (
@@ -642,8 +654,10 @@ def _snapshot_content_cache(
     selected = {
         path: object_id
         for path, object_id in object_ids_by_path.items()
-        if (not path_violations(path) or path in REVIEWED_EVIDENCE_MANIFESTS)
-        and (_is_eval_summary(path) or _is_text_candidate(path))
+        if path in REVIEWED_SCREENSHOT_FILES or (
+            (not path_violations(path) or path in REVIEWED_EVIDENCE_MANIFESTS)
+            and (_is_eval_summary(path) or _is_text_candidate(path))
+        )
     }
     blobs = _batch_read_blobs(repo, selected.values())
     content = {path: blobs[object_id] for path, object_id in selected.items()}
@@ -741,7 +755,9 @@ def _parts(path: str) -> tuple[str, ...]:
     return tuple(part for part in PurePosixPath(path).parts if part not in {"", "."})
 
 
-def path_violations(path: str, *, reviewed_evidence: bool = False) -> list[Violation]:
+def path_violations(
+    path: str, *, reviewed_evidence: bool = False, reviewed_screenshot: bool = False,
+) -> list[Violation]:
     parts = _parts(path)
     if not parts:
         return []
@@ -768,7 +784,9 @@ def path_violations(path: str, *, reviewed_evidence: bool = False) -> list[Viola
         violations.append(Violation(path, "credential or private-key filename"))
     if FORBIDDEN_DIAGNOSTIC_FILENAME.fullmatch(filename):
         violations.append(Violation(path, "local diagnostic artifact filename"))
-    if filename.endswith(FORBIDDEN_SUFFIXES):
+    if filename.endswith(FORBIDDEN_SUFFIXES) and not (
+        reviewed_screenshot and path in REVIEWED_SCREENSHOT_FILES
+    ):
         violations.append(Violation(path, "private data/database/key material file type"))
 
     if lowered_parts[0] == "evals":
@@ -1351,6 +1369,19 @@ def _reviewed_evidence_entries(
     return entries, violations
 
 
+def _reviewed_screenshot_violations(path: str, content: bytes) -> list[Violation]:
+    expected_hash, expected_size, width, height = REVIEWED_SCREENSHOT_FILES[path]
+    if (hashlib.sha256(content).hexdigest(), len(content)) != (expected_hash, expected_size):
+        return [Violation(path, "reviewed screenshot hash/size mismatch")]
+    if (
+        content[:16] != b"\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR"
+        or int.from_bytes(content[16:20], "big") != width
+        or int.from_bytes(content[20:24], "big") != height
+    ):
+        return [Violation(path, "reviewed screenshot PNG header/dimensions mismatch")]
+    return []
+
+
 def inspect_snapshot(
     paths: Iterable[str], read: Callable[[str], bytes], *, committed_history: bool = False,
 ) -> list[Violation]:
@@ -1359,7 +1390,18 @@ def inspect_snapshot(
     violations: set[Violation] = set(manifest_violations)
     for path in paths:
         expected = evidence.get(path)
-        current_path_violations = path_violations(path, reviewed_evidence=expected is not None)
+        reviewed_screenshot = False
+        if path in REVIEWED_SCREENSHOT_FILES:
+            try:
+                screenshot_errors = _reviewed_screenshot_violations(path, read(path))
+            except (OSError, CheckError):
+                violations.add(Violation(path, "reviewed screenshot could not be read"))
+            else:
+                violations.update(screenshot_errors)
+                reviewed_screenshot = not screenshot_errors
+        current_path_violations = path_violations(
+            path, reviewed_evidence=expected is not None, reviewed_screenshot=reviewed_screenshot,
+        )
         violations.update(current_path_violations)
         is_summary = _is_eval_summary(path)
         is_text = _is_text_candidate(path)

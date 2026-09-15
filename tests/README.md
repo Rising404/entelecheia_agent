@@ -1,6 +1,6 @@
 # Test Suite Layout
 
-`tests/` 按被验证的系统层分类。新增测试优先放到对应主题目录，根目录只保留
+`tests/` 按被验证的系统层分类。新增测试放到对应主题目录；根目录仍保留部分现有回归测试、
 `conftest.py` 和本说明文件。
 
 ## Directory Map

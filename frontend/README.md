@@ -124,8 +124,8 @@ Windows 目前只有**桌面启动预览代码，不是完整链路支持**。El
 “Windows 可正常跑完整 L1/L2 任务”。此外，当前 `pyproject.toml` 在 Windows 跳过 Python
 `ripgrep` 依赖；目录浏览/搜索要求系统 `PATH` 中有 `rg.exe`，但补上它也不解除前述阻塞。
 旧式 `.doc/.ppt` 的受限 LibreOffice 转换桥只实现了 macOS
-sandbox；PNG/JPG 的默认本地 OCR 使用 Apple Vision；评测结果的跨进程文件锁也仍使用 Unix
-`fcntl`。扫描 PDF 存在非 macOS 选择 RapidOCR 的设计路径，但推理依赖、模型预取和安全落盘尚未
+sandbox；PNG/JPG 的默认本地 OCR 使用 Apple Vision。扫描 PDF 存在非 macOS 选择 RapidOCR
+的设计路径，但推理依赖、模型预取和安全落盘尚未
 完成 Windows 适配/验证；配置好的外部视觉模型 HTTP 接口本身不依赖 macOS。完整支持还需要
 Windows 真机 smoke 和上述文件安全层的 Windows 实现。
 
@@ -170,8 +170,6 @@ Security defaults:
 - `contextIsolation: true`
 - `sandbox: true`
 
-Future avatar code should live under a separate frontend surface such as `frontend/avatar/`, not inside the runtime or graph code.
-
 Current platform status:
 
 - macOS arm64: the only complete locked installation target. Dependency installation, GUI startup, local model
@@ -185,7 +183,7 @@ Current platform status:
 There are two ways to view the current frontend:
 
 - Electron: independent desktop window. This is the intended app shell. It should start or reuse the local API sidecar and then talk to real session/project databases.
-- Browser fallback: static renderer hosted by `start.command`. It is useful for visual checks, but if `127.0.0.1:8765` is not running it shows an offline connection state and API errors.
+- Browser fallback: static renderer hosted by `start-web.command`. It is useful for visual checks, but if `127.0.0.1:8765` is not running it shows an offline connection state and API errors.
 
 So seeing `离线` or API component errors in the connection panel means the renderer is not attached to the local backend. It does not mean the project only has static HTML.
 

@@ -10,7 +10,7 @@ searching through generic session, context, and runtime suites.
 - `extraction/`: model JSON parsing and evidence ownership.
 - `lifecycle/`: TTL, expiry, retract, and conflict lifecycle.
 - `persistence/`: current evidence, candidate/view/audit, transactions, and durable reset.
-- `runtime/`: Graph ordering, feature isolation, fail-soft boundaries.
+- `runtime/`: SessionContext reset, inspection, and Repair API contracts.
 - `maintenance/`: Repair, correction, diff, atomic replacement, reset-boundary replay.
 
 ## Commands

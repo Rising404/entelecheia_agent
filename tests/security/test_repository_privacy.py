@@ -9,6 +9,7 @@ import sys
 from pathlib import Path
 
 from scripts.check_repository_privacy import (
+    CheckError,
     FORBIDDEN_SUFFIXES,
     TEXT_SUFFIXES,
     eval_summary_violations,
@@ -22,6 +23,7 @@ from scripts.check_repository_privacy import (
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 CHECKER = REPOSITORY_ROOT / "scripts" / "check_repository_privacy.py"
 PUBLIC_EVALUATION = "evals/docbench/previous_results/showcase_125.summary.json"
+PUBLIC_SCREENSHOT = "assets/entelecheia-desktop.png"
 HISTORICAL_EVALUATION_PATH = "evals/docbench/results/showcase_125.summary.json"
 REVIEWED_ANALYSIS_FILES = (
     "evals/docbench/previous_results/showcase_125/analysis/README.md",
@@ -508,6 +510,64 @@ def test_user_document_and_media_file_types_are_rejected_even_when_forced() -> N
         path = f"notes/private-attachment.{suffix}"
         assert f"*.{suffix}" in ignored_lines, suffix
         assert path_violations(path), path
+
+
+def test_reviewed_desktop_screenshot_requires_exact_public_bytes() -> None:
+    content = (REPOSITORY_ROOT / PUBLIC_SCREENSHOT).read_bytes()
+    assert path_violations(PUBLIC_SCREENSHOT), "a filename alone does not approve an image"
+    assert not inspect_snapshot([PUBLIC_SCREENSHOT], lambda _: content)
+    for replacement in (
+        content[:-1] + bytes([content[-1] ^ 1]),
+        content[:-1],
+        content + b"unreviewed metadata",
+    ):
+        violations = inspect_snapshot([PUBLIC_SCREENSHOT], lambda _: replacement)
+        assert any("screenshot hash/size mismatch" in item.reason for item in violations)
+
+
+def test_reviewed_desktop_screenshot_does_not_approve_other_image_paths() -> None:
+    content = (REPOSITORY_ROOT / PUBLIC_SCREENSHOT).read_bytes()
+    for path in (
+        "assets/other.png",
+        "assets/nested/entelecheia-desktop.png",
+        "assets/Entelecheia-desktop.png",
+        "notes/entelecheia-desktop.png",
+    ):
+        assert inspect_snapshot([path], lambda _: content), path
+
+
+def test_reviewed_desktop_screenshot_fails_closed_when_unreadable() -> None:
+    for error_type in (OSError, CheckError):
+        def unavailable(_: str) -> bytes:
+            raise error_type("unavailable screenshot")
+
+        violations = inspect_snapshot([PUBLIC_SCREENSHOT], unavailable)
+        assert any("screenshot could not be read" in item.reason for item in violations)
+
+
+def test_reviewed_desktop_screenshot_uses_the_selected_git_snapshot(tmp_path: Path) -> None:
+    repository = tmp_path / "repository"
+    repository.mkdir()
+    _git(repository, "init", "--quiet")
+    (repository / ".gitignore").write_bytes((REPOSITORY_ROOT / ".gitignore").read_bytes())
+    screenshot = repository / PUBLIC_SCREENSHOT
+    screenshot.parent.mkdir()
+    screenshot.write_bytes((REPOSITORY_ROOT / PUBLIC_SCREENSHOT).read_bytes())
+    ignored = _git(repository, "check-ignore", "--no-index", "--verbose", PUBLIC_SCREENSHOT).stdout
+    assert f"!/{PUBLIC_SCREENSHOT}\t{PUBLIC_SCREENSHOT}" in ignored
+    assert _git(repository, "check-ignore", "--no-index", "assets/other.png").stdout
+    _git(repository, "add", ".gitignore", PUBLIC_SCREENSHOT)
+    _git(
+        repository, "-c", "user.name=Privacy Test", "-c", "user.email=privacy@example.invalid",
+        "commit", "--quiet", "-m", "reviewed screenshot",
+    )
+    screenshot.write_bytes(b"unreviewed replacement")
+    assert _check(repository, "--worktree").returncode == 1
+    assert _check(repository, "--staged").returncode == 0
+    assert _check(repository, "--tree", "HEAD").returncode == 0
+    _git(repository, "add", PUBLIC_SCREENSHOT)
+    assert _check(repository, "--staged").returncode == 1
+    assert _check(repository, "--tree", "HEAD").returncode == 0
 
 
 def test_reviewed_analysis_allows_only_three_exact_markdown_paths() -> None:

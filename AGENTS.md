@@ -1,7 +1,7 @@
 # Entelecheia Repository Rules
 
-在修改本仓库前，先阅读本文件及 [CONTRIBUTING.md](CONTRIBUTING.md)。架构职责见
-[ARCHITECTURE.md](ARCHITECTURE.md)。本公开副本不依赖本机历史报告或私有文档目录。
+本文件统一维护 Entelecheia 的开发规则。修改前先阅读本文件、[架构职责](ARCHITECTURE.md)
+及受影响模块的源码与测试。本公开副本不依赖本机历史报告或私有文档目录。
 
 ## 单一现行实现
 
@@ -40,3 +40,53 @@
   哈希锁定的逐题投影，完整私有原件仍忽略。不把公开投影冒充原样请求或可恢复状态。
   文档不能链接到缺失的本机历史报告。发布前审阅 exact file set 并运行隐私门禁。
 - 只修改被分配的文件；保留并行工作树改动。提交、推送和外部发布需要明确授权。
+
+## 开发与验证
+
+- 依赖从 API/工具适配、应用编排流向领域契约和显式存储/Provider 端口，禁止反向依赖。
+  纯校验与 I/O 分离；可变配置、存储连接和生命周期由明确的所有者管理。
+- 工具 schema、API 信封、状态枚举、持久化模型及限制各有唯一来源。未知状态、Provider
+  或后端应明确拒绝；schema 变更需记录支持的起始版本、迁移与身份校验，并保留现有数据。
+- 按 [快速上手](QUICKSTART.md) 准备受支持的独立运行时；依赖遵守平台锁，不用临时补包
+  代替正式安装。先运行受影响模块的检查，再运行相关完整套件。
+- 保留 `tests/conftest.py` 的隔离、合成 fixture、子进程与冷导入检查。测试不得继承真实
+  凭据、用户数据库或后台任务；报告实际执行的检查与限制，不把 mock 通过当作真实推理验收。
+
+常用检查在仓库根执行；测试归属与定向命令见 [tests/README.md](tests/README.md)：
+
+```bash
+.venv/bin/python -m ruff check src tests scripts evals
+.venv/bin/python -m pytest -q
+./scripts/run-project-pnpm.sh --dir frontend run check
+```
+
+## 文档与评测维护
+
+- `README.md` 展示项目与实验结果，`QUICKSTART.md` 维护完整使用步骤，`ARCHITECTURE.md`
+  说明职责与源码入口，本文件维护开发规则。根目录 `doc/`、`docs/` 只放不发布的本地记录。
+- 公开文档只链接仓库内可访问的材料。合成示例维护在 `examples/document_qa/`，生成文件
+  保存在仓库外；不将私有历史报告或用户文档恢复到公开副本。
+- DocBench 使用唯一的[现行执行入口](evals/docbench/reproduce_or_run_script/README.md)。
+  历史实验配置、选题与来源身份保持不变；当前源码重跑应记录为新实验。分别报告回答正确率、
+  执行失败、覆盖范围与官方可比性，不能相互替代。
+
+## 本地 hooks 与发布检查
+
+新 clone 不会继承 Git 的本地 hooks 设置。审阅 `.githooks/` 后，启用并确认：
+
+```bash
+git config --local core.hooksPath .githooks
+git config --get core.hooksPath
+```
+
+第二条命令应输出 `.githooks`。pre-commit 与 pre-push 使用 PATH 中的 `python3` 执行
+隐私检查；远端 CI 不能阻止私有数据先被上传。手动检查入口为：
+
+```bash
+.venv/bin/python scripts/check_repository_privacy.py --worktree
+.venv/bin/python scripts/check_repository_privacy.py --staged
+```
+
+发布前审阅具体文件集合和预期提交树。已批准的评测公开投影仍受清单与哈希约束，新增或修改
+内容需要重新审阅；完整私有原件保持忽略。`.gitignore` 不能移除已跟踪的秘密，门禁也不是
+任意内容均无隐私问题的证明。不得通过推送未经审阅的历史来试运行远端检查。
