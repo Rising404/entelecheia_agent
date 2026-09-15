@@ -95,10 +95,10 @@ def test_public_documentation_links_only_to_available_checkout_surfaces() -> Non
         "evals/docbench/configs/README.md",
         "evals/docbench/results/README.md",
         "evals/docbench/previous_results/README.md",
-        "evals/docbench/previous_results/showcase_125/analysis/README.md",
-        "evals/docbench/previous_results/showcase_125/analysis/EVALUATION_REVIEW.md",
-        "evals/docbench/previous_results/showcase_125/analysis/FAILURE_ATTRIBUTION.md",
-        "evals/docbench/previous_results/showcase_125/README.md",
+        "evals/docbench/previous_results/first_gate_on_125/analysis/README.md",
+        "evals/docbench/previous_results/first_gate_on_125/analysis/EVALUATION_REVIEW.md",
+        "evals/docbench/previous_results/first_gate_on_125/analysis/FAILURE_ATTRIBUTION.md",
+        "evals/docbench/previous_results/first_gate_on_125/README.md",
         "evals/docbench/previous_results/gate_off_highland235b_123/README.md",
         "evals/docbench/previous_results/gate_off_highland235b_123/reviews/README.md",
         "evals/docbench/previous_results/gate_off_highland235b_123/reviews/codex/REVIEW.md",
@@ -143,12 +143,15 @@ def test_public_eval_docs_identify_the_recorded_source_not_a_run() -> None:
     source_hashes = {run["source_sha256"] for run in summary["runs"]}
     assert len(source_hashes) == 1
 
-    for relative_path in (
-        "evals/README.md",
-        "evals/docbench/docs/formal_l1_eval_runbook.md",
-    ):
-        documented = set(re.findall(r"source_sha256=([0-9a-f]{64})", _read(relative_path)))
-        assert documented == source_hashes, relative_path
+    runbook = "evals/docbench/docs/formal_l1_eval_runbook.md"
+    documented = set(re.findall(r"source_sha256=([0-9a-f]{64})", _read(runbook)))
+    assert documented == source_hashes, runbook
+
+    # The reader-facing index links to the reproduction record and source data;
+    # the exact fingerprint is maintained once in the detailed runbook.
+    index = _read("evals/README.md")
+    assert "docbench/docs/formal_l1_eval_runbook.md" in index
+    assert "docbench/previous_results/showcase_125.summary.json" in index
 
 
 def test_repository_rules_explain_local_hook_activation() -> None:

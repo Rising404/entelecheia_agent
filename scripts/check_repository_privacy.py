@@ -55,11 +55,8 @@ LOCAL_CONFIG_ROOT = ("configs", "local")
 LOCAL_CONFIG_EXCEPTIONS = frozenset({("configs", "local", "README.md")})
 REVIEWED_EVALUATION_MARKDOWN_PATHS = frozenset(
     {
-        ("evals", "docbench", "previous_results", "showcase_125", "analysis", "README.md"),
-        ("evals", "docbench", "previous_results", "showcase_125", "analysis", "EVALUATION_REVIEW.md"),
-        ("evals", "docbench", "previous_results", "showcase_125", "analysis", "FAILURE_ATTRIBUTION.md"),
-        # Previously published paths remain readable when scanning Git history.
-        # The current .gitignore no longer permits adding files at these paths.
+        # Earlier standalone analysis publications retain their original policy.
+        # The current experiment packages instead require complete manifests.
         ("evals", "docbench", "previous_results", "analysis", "README.md"),
         ("evals", "docbench", "previous_results", "analysis", "EVALUATION_REVIEW.md"),
         ("evals", "docbench", "previous_results", "analysis", "FAILURE_ATTRIBUTION.md"),
@@ -70,17 +67,27 @@ REVIEWED_EVALUATION_MARKDOWN_PATHS = frozenset(
 # authored manifest never grants approval: the reviewed manifest bytes are pinned.
 # Earlier approved publications remain valid immutable snapshots in Git history.
 REVIEWED_EVIDENCE_MANIFESTS = {
-    "evals/docbench/previous_results/showcase_125/publication_manifest.json":
-        (
-            "79220bee19eae42aaed0be4f28deef4e4ec419bbd3c0ab645215c99ce7040722",
-            "be81604d889d3a396d00cdd5d6def02d964d23acf5554eddc283bc9569c74a16",
-        ),
+    "evals/docbench/previous_results/first_gate_on_125/publication_manifest.json": (
+        "be81604d889d3a396d00cdd5d6def02d964d23acf5554eddc283bc9569c74a16",
+        "c8e1e8a854eacda1c5a9d65f60ed108df34a4c006ac61f34281057f68372f29c",
+    ),
     "evals/docbench/previous_results/gate_off_highland235b_123/publication_manifest.json":
         (
             "cce5bce79d9c5187d874911cb9fc2aee2c16d5c68ccfb85bfd4e69294f006db7",
             "3ff2d0f0675f63c6da11acaadf573ae74912217a13cc19de35fe4b0b68aa5294",
             "dc38d9575d7cc63d6379cd345e565da2e77d21a5ec197a0ea20555be28d78614",
+            "f17e25b0ff0b292e3a7d7776b150eef28ec3de168c1c1df0161e541108da60fa",
+            "9212c3df4e01557f082414fbe1080aa5f37fd870a9ce8bbbc764d271b07e3551",
         ),
+}
+
+# Retired package locations are accepted only when reading committed history,
+# with the same exact manifest and payload checks as current publications.
+REVIEWED_HISTORICAL_EVIDENCE_MANIFESTS = {
+    "evals/docbench/previous_results/showcase_125/publication_manifest.json": (
+        "79220bee19eae42aaed0be4f28deef4e4ec419bbd3c0ab645215c99ce7040722",
+        "be81604d889d3a396d00cdd5d6def02d964d23acf5554eddc283bc9569c74a16",
+    ),
 }
 
 # A screenshot is approved only after visual review, at this exact path and byte
@@ -648,14 +655,21 @@ def _batch_read_blobs(repo: Path, object_ids: Iterable[str]) -> dict[str, bytes]
     return blobs
 
 
+def _reviewed_manifest_hashes(*, committed_history: bool) -> dict[str, tuple[str, ...]]:
+    if committed_history:
+        return REVIEWED_EVIDENCE_MANIFESTS | REVIEWED_HISTORICAL_EVIDENCE_MANIFESTS
+    return REVIEWED_EVIDENCE_MANIFESTS
+
+
 def _snapshot_content_cache(
-    repo: Path, object_ids_by_path: dict[str, str]
+    repo: Path, object_ids_by_path: dict[str, str], *, committed_history: bool = False,
 ) -> dict[str, bytes]:
+    manifests = _reviewed_manifest_hashes(committed_history=committed_history)
     selected = {
         path: object_id
         for path, object_id in object_ids_by_path.items()
         if path in REVIEWED_SCREENSHOT_FILES or (
-            (not path_violations(path) or path in REVIEWED_EVIDENCE_MANIFESTS)
+            (not path_violations(path) or path in manifests)
             and (_is_eval_summary(path) or _is_text_candidate(path))
         )
     }
@@ -664,7 +678,9 @@ def _snapshot_content_cache(
     # Resolve reviewed manifests from this same Git snapshot before deciding
     # which payloads to preload. Never read manifests from the working directory
     # while checking a staged or historical tree.
-    evidence, _ = _reviewed_evidence_entries(set(object_ids_by_path), content.__getitem__)
+    evidence, _ = _reviewed_evidence_entries(
+        set(object_ids_by_path), content.__getitem__, committed_history=committed_history,
+    )
     additional = {
         path: object_id for path, object_id in object_ids_by_path.items()
         if path in evidence and path not in content and _is_text_candidate(path)
@@ -740,7 +756,7 @@ def tree_snapshot(
             paths.append(path)
             object_ids_by_path[path] = _object_id.decode("ascii")
     paths.sort()
-    content = _snapshot_content_cache(repo, object_ids_by_path)
+    content = _snapshot_content_cache(repo, object_ids_by_path, committed_history=True)
 
     def read(path: str) -> bytes:
         try:
@@ -1339,11 +1355,11 @@ def eval_summary_violations(
 
 
 def _reviewed_evidence_entries(
-    paths: set[str], read: Callable[[str], bytes],
+    paths: set[str], read: Callable[[str], bytes], *, committed_history: bool = False,
 ) -> tuple[dict[str, tuple[str, int]], list[Violation]]:
     entries: dict[str, tuple[str, int]] = {}
     violations = []
-    for path, approved_hashes in REVIEWED_EVIDENCE_MANIFESTS.items():
+    for path, approved_hashes in _reviewed_manifest_hashes(committed_history=committed_history).items():
         if path not in paths:
             continue
         try:
@@ -1386,7 +1402,9 @@ def inspect_snapshot(
     paths: Iterable[str], read: Callable[[str], bytes], *, committed_history: bool = False,
 ) -> list[Violation]:
     paths = list(paths)
-    evidence, manifest_violations = _reviewed_evidence_entries(set(paths), read)
+    evidence, manifest_violations = _reviewed_evidence_entries(
+        set(paths), read, committed_history=committed_history,
+    )
     violations: set[Violation] = set(manifest_violations)
     for path in paths:
         expected = evidence.get(path)

@@ -1,17 +1,18 @@
 # 数据准备 / DocBench sources
 
-记录固定 revision、许可、下载方式和 source manifest。上游材料统一放在仓库外的
+[上游清单](../upstream.manifest.json) 记录数据来源、固定 revision、许可和哈希。下载材料默认放在仓库外的
 `<PERSONAGRAPH_BENCH_EVAL_DIR>/docbench/source/`：`data/` 保存 Drive QA/PDF，映射 JSON 与固定
-`evaluation_prompt.txt` 位于其同级。这些材料都不得提交；现行配置通过 `bench://source/...`
-解析，不再借用产品 `STATE_DIR`。
+`evaluation_prompt.txt` 位于其同级。仓库提供下载命令和选题清单，PDF、QA 与裁判提示词单独准备。
+配置通过 `bench://source/...` 解析这些路径，与产品 `STATE_DIR` 分开。
 
-`source/` 是默认布局，不是必须使用的目录名。已有合法数据时可在实验 YAML 中配置
+`source/` 是默认布局。已有数据时可在实验 YAML 中配置
 `dataset.data_root`，裁判提示词用 `scoring.prompt` 指定；选题清单仍会核验内容和哈希。
-自定义外部根通过 `PERSONAGRAPH_BENCH_EVAL_DIR` 设置，不能指向源码目录。
+自定义外部根通过 `PERSONAGRAPH_BENCH_EVAL_DIR` 设置，使用仓库外的绝对路径。
 
-下载入口：
+从仓库根执行，先将示例替换为自己的外部目录。以下下载命令需要联网：
 
 ```bash
+export PERSONAGRAPH_BENCH_EVAL_DIR="/absolute/path/to/bench_eval"
 .venv/bin/python -m evals.docbench.reproduce_or_run_script prepare-data --qa-catalog-only
 .venv/bin/python -m evals.docbench.reproduce_or_run_script prepare-data --balanced-pdfs-only
 ```

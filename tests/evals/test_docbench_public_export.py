@@ -191,6 +191,95 @@ def test_reviewed_publication_hashes_allow_only_explicitly_approved_snapshots(
     assert privacy.inspect_snapshot(snapshots[2], snapshots[2].__getitem__, committed_history=True)
 
 
+def test_renamed_publication_keeps_old_paths_exclusive_to_exact_history(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    old_root = "evals/docbench/previous_results/showcase_125"
+    new_root = "evals/docbench/previous_results/first_gate_on_125"
+    raw = encode({"case_id": "docbench:1:0", "reply": "Preserved generated answer"})
+    manifest = encode({"kind": "reviewed_public_evidence", "files": {
+        "result.json": {"sha256": digest(raw), "bytes": len(raw)},
+    }})
+    monkeypatch.setattr(privacy, "REVIEWED_EVIDENCE_MANIFESTS", {
+        new_root + "/publication_manifest.json": (digest(manifest),),
+    })
+    monkeypatch.setattr(privacy, "REVIEWED_HISTORICAL_EVIDENCE_MANIFESTS", {
+        old_root + "/publication_manifest.json": (digest(manifest),),
+    })
+    current = {new_root + "/publication_manifest.json": manifest, new_root + "/result.json": raw}
+    historical = {old_root + "/publication_manifest.json": manifest, old_root + "/result.json": raw}
+    assert not privacy.inspect_snapshot(current, current.__getitem__)
+    assert privacy.inspect_snapshot(historical, historical.__getitem__)
+    assert not privacy.inspect_snapshot(historical, historical.__getitem__, committed_history=True)
+    for files, history in ((current, False), (historical, True)):
+        for path in files:
+            replaced = {**files, path: files[path] + b" "}
+            assert privacy.inspect_snapshot(replaced, replaced.__getitem__, committed_history=history)
+            incomplete = {key: value for key, value in files.items() if key != path}
+            assert privacy.inspect_snapshot(incomplete, incomplete.__getitem__, committed_history=history)
+    elsewhere = {path.replace("showcase_125", "unreviewed_copy"): data for path, data in historical.items()}
+    assert privacy.inspect_snapshot(elsewhere, elsewhere.__getitem__, committed_history=True)
+    injected = {**historical, old_root + "/analysis/README.md": b"Unreviewed historical prose"}
+    assert privacy.inspect_snapshot(injected, injected.__getitem__, committed_history=True)
+
+
+def test_publication_directory_migration_separates_worktree_index_and_old_tree(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def git(*args: str) -> None:
+        subprocess.run(
+            ["git", "-c", "user.name=Export test", "-c", "user.email=test@example.invalid", *args],
+            cwd=tmp_path, check=True, capture_output=True,
+        )
+
+    old_root = "evals/docbench/previous_results/showcase_125"
+    new_root = "evals/docbench/previous_results/first_gate_on_125"
+    raw = encode({"case_id": "docbench:1:0", "reply": "Preserved generated answer"})
+    manifest = encode({"kind": "reviewed_public_evidence", "files": {
+        "result.json": {"sha256": digest(raw), "bytes": len(raw)},
+    }})
+    monkeypatch.setattr(privacy, "REVIEWED_EVIDENCE_MANIFESTS", {
+        new_root + "/publication_manifest.json": (digest(manifest),),
+    })
+    monkeypatch.setattr(privacy, "REVIEWED_HISTORICAL_EVIDENCE_MANIFESTS", {
+        old_root + "/publication_manifest.json": (digest(manifest),),
+    })
+    files = {"result.json": raw, "publication_manifest.json": manifest}
+    (tmp_path / old_root).mkdir(parents=True)
+    for relative, content in files.items():
+        (tmp_path / old_root / relative).write_bytes(content)
+    git("init", "-q")
+    git("add", ".")
+    git("commit", "-qm", "Historical publication fixture")
+    for paths, read in (privacy.worktree_snapshot(tmp_path), privacy.staged_snapshot(tmp_path)):
+        assert privacy.inspect_snapshot(paths, read)
+    paths, read = privacy.tree_snapshot(tmp_path, "HEAD")
+    assert not privacy.inspect_snapshot(paths, read, committed_history=True)
+
+    (tmp_path / new_root).mkdir(parents=True)
+    for relative, content in files.items():
+        (tmp_path / old_root / relative).unlink()
+        (tmp_path / new_root / relative).write_bytes(content)
+    git("add", "--all")
+    for paths, read in (privacy.worktree_snapshot(tmp_path), privacy.staged_snapshot(tmp_path)):
+        assert not privacy.inspect_snapshot(paths, read)
+    (tmp_path / new_root / "result.json").write_bytes(raw + b"unreviewed")
+    paths, read = privacy.worktree_snapshot(tmp_path)
+    assert privacy.inspect_snapshot(paths, read)
+    paths, read = privacy.staged_snapshot(tmp_path)
+    assert not privacy.inspect_snapshot(paths, read)
+    paths, read = privacy.tree_snapshot(tmp_path, "HEAD")
+    assert not privacy.inspect_snapshot(paths, read, committed_history=True)
+
+
+def test_first_gate_on_publication_matches_its_complete_reviewed_manifest() -> None:
+    repository = Path(__file__).resolve().parents[2]
+    root = repository / "evals/docbench/previous_results/first_gate_on_125"
+    paths = [path.relative_to(repository).as_posix() for path in root.rglob("*") if path.is_file()]
+    assert paths, "the current reviewed publication must be present"
+    assert not privacy.inspect_snapshot(paths, lambda path: (repository / path).read_bytes())
+
+
 def test_archived_reviews_reconcile_with_public_answers_and_judge_without_merging_scores() -> None:
     root = Path(__file__).resolve().parents[2] / "evals/docbench/previous_results/gate_off_highland235b_123"
     reviews = {}

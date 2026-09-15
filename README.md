@@ -89,8 +89,8 @@ Entelecheia 是一个面向文档研究与问答的桌面 Agent 项目。模型�
 | --- | --- |
 | 关闭验证门一轮的运行配置、回答、工具调用与评分 | [123 题实验档案](evals/docbench/previous_results/gate_off_highland235b_123/README.md) |
 | 关闭验证门一轮的评审汇总、评分分歧与 badcase | [本轮分析总览](evals/docbench/previous_results/gate_off_highland235b_123/reviews/README.md) · [Astra](evals/docbench/previous_results/gate_off_highland235b_123/reviews/codex/REVIEW.md) · [Opus 5](evals/docbench/previous_results/gate_off_highland235b_123/reviews/claude/REVIEW.md) |
-| 开启验证门一轮的三位裁判结果与分项统计 | [开启验证门一轮评测分析](evals/docbench/previous_results/showcase_125/analysis/EVALUATION_REVIEW.md) · [逐题统计 JSON](evals/docbench/previous_results/showcase_125.summary.json) |
-| 开启验证门一轮链路失败的具体原因 | [链路失败分析](evals/docbench/previous_results/showcase_125/analysis/FAILURE_ATTRIBUTION.md) |
+| 开启验证门一轮的三位裁判结果与分项统计 | [开启验证门一轮评测分析](evals/docbench/previous_results/first_gate_on_125/analysis/EVALUATION_REVIEW.md) · [逐题统计 JSON](evals/docbench/previous_results/showcase_125.summary.json) |
+| 开启验证门一轮链路失败的具体原因 | [链路失败分析](evals/docbench/previous_results/first_gate_on_125/analysis/FAILURE_ATTRIBUTION.md) |
 
 <details>
 <summary>统计口径与实验说明</summary>

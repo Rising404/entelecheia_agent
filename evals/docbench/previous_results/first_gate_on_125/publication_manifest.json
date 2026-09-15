@@ -23,20 +23,20 @@
   ],
   "files": {
     "README.md": {
-      "sha256": "a5e5a67cbe5e10e873863af4d4d6d6c8df8d1637b04190db5b609876f48ae4a7",
-      "bytes": 2021
+      "sha256": "4e1bc9e78b11964e745b70a018199017e8909d392b93a1692dbb8b046fa21a69",
+      "bytes": 1870
     },
     "analysis/EVALUATION_REVIEW.md": {
-      "sha256": "481de7d5d0c09947e735b1bc72eb62fc4f74969b70c7fa8f602f929188e86ad9",
-      "bytes": 17742
+      "sha256": "e623433dc4337408d411922e5c56e64bea568504113351a182abfd63a84b1125",
+      "bytes": 12402
     },
     "analysis/FAILURE_ATTRIBUTION.md": {
-      "sha256": "5e2ded407ed18a492375bf401e6420e7fca7f7dfe7e4de3f1c656b0b48b624d7",
-      "bytes": 25517
+      "sha256": "1429142a41dcd8f9f10f9dc490fcd5d4cd5f7f57aebe8ba896267097c453aa45",
+      "bytes": 23803
     },
     "analysis/README.md": {
-      "sha256": "1a424265947ff72523b1ec8d3d7d6e9081dfbf3582a333f705cb9d704e67c75b",
-      "bytes": 6308
+      "sha256": "fec8be01eb2e72b3bc8b9217948d602b8d38865072418fe36c892612087fe1b3",
+      "bytes": 1263
     },
     "runs/showcase-01-l1-gpu-first-pass-125-20260910-a/cases/docbench-1-1/result.json": {
       "sha256": "4d0e8878f560f7a6ab0c15404c20d24eee99845f30f551be7d6bf559f4b0a7d2",

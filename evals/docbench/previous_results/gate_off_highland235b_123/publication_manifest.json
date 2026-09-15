@@ -11,24 +11,24 @@
   ],
   "files": {
     "README.md": {
-      "sha256": "84499a5888fe0a78cdb47f697568f6fc6be20feb2c946a5eb682cb60532ba7d8",
-      "bytes": 1788
+      "sha256": "5f89db9f93733fd5b7844da9d5915ecf0fc7c00eef02807130a392586d69dfd0",
+      "bytes": 1517
     },
     "reviews/README.md": {
-      "sha256": "dc8516116917f0f2a925b9dd9c370c6d1ea6c8c4b701a9c58c4b9e046fb79af6",
-      "bytes": 6261
+      "sha256": "5a3c8d9856d02bfe42d67bbc73379535cc682f887e2fc253edcc1c2db241ee31",
+      "bytes": 3708
     },
     "reviews/claude/REVIEW.md": {
-      "sha256": "4ea81c4ddf20d136f4688301612f789f256e0d454309c2ebe3a19bbe7cc2fbad",
-      "bytes": 20971
+      "sha256": "fb93855b7835910cc4e78bf28b014a7ee53811cf990dfffeb548a170da643910",
+      "bytes": 20330
     },
     "reviews/claude/case_reviews.json": {
       "sha256": "ad27dad7332ecd3a1fd8f83ba4452ae4784c17aa84e77d7c0a187be81218a498",
       "bytes": 193740
     },
     "reviews/codex/REVIEW.md": {
-      "sha256": "1b5c2788702ddbf705d56fca55111b488502b1c6f28ffaa6342f33384d70b5d7",
-      "bytes": 11933
+      "sha256": "87c1feb75d1469daa758f3346d91e36fa8dc65e03cc62264c050eff64a386020",
+      "bytes": 10569
     },
     "reviews/codex/case_reviews.json": {
       "sha256": "3d18f188b7de79bff0605d86e225e104ffc9a77a3a1e8dcadb8043850a5cd5a0",

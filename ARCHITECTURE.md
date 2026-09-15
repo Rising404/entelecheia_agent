@@ -150,8 +150,8 @@ TurnRun、Attempt 和调用账本记录执行事实，内存变量只是当前�
 每个 case 首跑或补跑使用独立子进程、状态和 Host 创建的 Project；它不使用 GUI Session 数据库，
 也不把 QA、参考答案目录挂载给模型。具体边界见 [评测隔离](evals/docbench/docs/state_isolation.md)。
 
-[评分复核](evals/docbench/previous_results/showcase_125/analysis/EVALUATION_REVIEW.md) 分列首跑、定向补跑与模型评审意见。
-[失败归因](evals/docbench/previous_results/showcase_125/analysis/FAILURE_ATTRIBUTION.md) 则展示这些边界受到的实际考验：
+[评分复核](evals/docbench/previous_results/first_gate_on_125/analysis/EVALUATION_REVIEW.md) 分列首跑、定向补跑与模型评审意见。
+[失败归因](evals/docbench/previous_results/first_gate_on_125/analysis/FAILURE_ATTRIBUTION.md) 则展示这些边界受到的实际考验：
 引用身份混用、工具历史路径错误、文档覆盖与计数口径分歧、视觉结果不完整，以及提交后的生命周期问题。
 报告区分源证据、评审推断和调整建议，没有同条件消融就不能把总分归功于 RRF、笔记或验证门。
 

@@ -1,36 +1,25 @@
-# 逐题公开证据 / Public per-case evidence
+# 关闭验证门一轮：实验档案
 
-本目录仅对应关闭语义验证门并改用 Highland 235B VLM 的 123 题实验。
+本轮关闭语义验证门，并将视觉模型换为 Qwen3-VL 235B。任务主模型与 DeepSeek 裁判均为 **DeepSeek Flash，未开启思考模式**。
 
-双方事后复核、badcase 分析和证据边界见 [reviews/README.md](reviews/README.md)：
+原选集排除两道需要联网的题 **`docbench:26:4`、`docbench:37:4`** 后共 123 题。单次运行全部完成回答交付、后台收尾与进程正常退出；三位裁判成绩为 **DeepSeek Flash 97/123（78.86%）、Astra 103/123（83.74%）、Opus 5 106/123（86.18%）**。
 
-ds裁判 97/123，Codex 文档校准 103/123，CC 106/123，三套评分不相互覆盖。
+## 分析
 
-- `runs/<batch>/cases/<case>/result.json`：回答、状态、统计及轨迹引用。
-- 同题 `trajectory.json`：全部已记录步骤、调用参数、返回及单次指标；正文仍通过 blobs 关联。
-- `runs/<batch>/scoring/`：原裁判逐题记录与汇总，裁判 token 与生成阶段分开。
-- `run_manifest.json`：原运行身份、模型及配置/源码哈希，不含完整本机配置。
+- [分析概要与评分分歧](reviews/README.md)：两轮比较、工具使用、视觉错误与评审分歧。
+- [Astra 分析](reviews/codex/REVIEW.md)、[Opus 5 分析](reviews/claude/REVIEW.md)：逐题判断与后续建议。
+- [两轮实验对比](../README.md)：轮次、文档领域和题型的完整表格。
 
-(仅省略原题/参考答案字段、原始用户请求、文档 text/content/snippet 和无法判别来源的展开文本叶；
+## 查阅逐题记录
 
-这些位置保留 publication_omitted、原字节数与 SHA-256。模型生成的回答、视觉观察、文件 ID、工具参数、错误和性能指标保留；
+运行批次为 [`l1-gate-off-highland235b-123-20260914-a`](runs/l1-gate-off-highland235b-123-20260914-a/)。
 
-私有绝对路径替换为 <local-path>，凭据不公开。
+| 文件 | 内容 |
+| --- | --- |
+| `cases/<题目>/result.json` | 回答、执行状态、耗时与调用统计 |
+| 同题 `trajectory.json` | 工具调用、返回结果和执行过程 |
+| `scoring/` | DeepSeek 的逐题评分与汇总 |
+| `run_manifest.json` | 模型、配置和运行信息 |
+| [Astra 逐题评分](reviews/codex/case_reviews.json) · [Opus 5 逐题评分](reviews/claude/case_reviews.json) | 两位裁判的判断、理由和对应证据 |
 
-模型上下文不是原样请求，不能按公开文本重算原 token 或直接重放；已有 assistant 摘要不补写。
-
-模型回答/观察可能包含引文，未另行将源 PDF 或 QA 数据集打包。来源身份用于追溯，不授予第三方版权。
-
-`publication.source_sha256` 指向私有原件；
-
-result.trajectory.sha256 指向这里的公开轨迹，parts 的 source_blob_sha256 保留被修改前的正文身份。
-
-原始 incomplete、失败和零分全部保留。
-
-路径中的冒号改为连字符便于跨平台 checkout；
-
-JSON 内的 case_id 不变。)
-
-## 批次 / Runs
-
-- `l1-gate-off-highland235b-123-20260914-a`：123 次执行，原裁判ds 97/123。
+原 PDF 和 QA 数据需另行准备，公开轨迹省略了部分原始输入与文档正文。

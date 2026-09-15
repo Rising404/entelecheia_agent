@@ -8,6 +8,9 @@ import subprocess
 import sys
 from pathlib import Path
 
+import pytest
+
+from scripts import check_repository_privacy as privacy
 from scripts.check_repository_privacy import (
     CheckError,
     FORBIDDEN_SUFFIXES,
@@ -26,9 +29,9 @@ PUBLIC_EVALUATION = "evals/docbench/previous_results/showcase_125.summary.json"
 PUBLIC_SCREENSHOT = "assets/entelecheia-desktop.png"
 HISTORICAL_EVALUATION_PATH = "evals/docbench/results/showcase_125.summary.json"
 REVIEWED_ANALYSIS_FILES = (
-    "evals/docbench/previous_results/showcase_125/analysis/README.md",
-    "evals/docbench/previous_results/showcase_125/analysis/EVALUATION_REVIEW.md",
-    "evals/docbench/previous_results/showcase_125/analysis/FAILURE_ATTRIBUTION.md",
+    "evals/docbench/previous_results/first_gate_on_125/analysis/README.md",
+    "evals/docbench/previous_results/first_gate_on_125/analysis/EVALUATION_REVIEW.md",
+    "evals/docbench/previous_results/first_gate_on_125/analysis/FAILURE_ATTRIBUTION.md",
 )
 PRIVATE_ANALYSIS_FILES = (
     "evals/docbench/results/analysis/raw.md",
@@ -36,8 +39,11 @@ PRIVATE_ANALYSIS_FILES = (
     "evals/docbench/results/analysis/nested/README.md",
     "evals/docbench/results/analysis/raw.summary.json",
     "evals/another_benchmark/results/analysis/README.md",
-    "evals/docbench/previous_results/showcase_125/analysis/raw.md",
-    "evals/docbench/previous_results/showcase_125/analysis/claude_review_scores.json",
+    "evals/docbench/previous_results/first_gate_on_125/analysis/raw.md",
+    "evals/docbench/previous_results/first_gate_on_125/analysis/claude_review_scores.json",
+    "evals/docbench/previous_results/showcase_125/README.md",
+    "evals/docbench/previous_results/showcase_125/analysis/README.md",
+    "evals/docbench/previous_results/showcase_125/publication_manifest.json",
     "evals/docbench/previous_results/private_runs/showcase_125/README.md",
     "evals/docbench/previous_results/private_runs/showcase_125/cases/example/result.json",
 )
@@ -570,24 +576,54 @@ def test_reviewed_desktop_screenshot_uses_the_selected_git_snapshot(tmp_path: Pa
     assert _check(repository, "--tree", "HEAD").returncode == 0
 
 
-def test_reviewed_analysis_allows_only_three_exact_markdown_paths() -> None:
+def _reviewed_analysis_snapshot(content: bytes) -> tuple[dict[str, bytes], str]:
+    root = "evals/docbench/previous_results/first_gate_on_125/"
+    files = {path: content for path in REVIEWED_ANALYSIS_FILES}
+    manifest_path = root + "publication_manifest.json"
+    files[manifest_path] = json.dumps({
+        "kind": "reviewed_public_evidence",
+        "files": {
+            path.removeprefix(root): {"sha256": hashlib.sha256(raw).hexdigest(), "bytes": len(raw)}
+            for path, raw in files.items()
+        },
+    }).encode()
+    return files, manifest_path
+
+
+def test_reviewed_analysis_requires_its_complete_approved_manifest(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    files, manifest_path = _reviewed_analysis_snapshot(b"Reviewed aggregate methodology.")
+    monkeypatch.setattr(privacy, "REVIEWED_EVIDENCE_MANIFESTS", {
+        manifest_path: (hashlib.sha256(files[manifest_path]).hexdigest(),),
+    })
+    assert not inspect_snapshot(files, files.__getitem__)
     for path in REVIEWED_ANALYSIS_FILES:
-        assert not path_violations(path), path
-        assert not inspect_snapshot([path], lambda _: b"Reviewed aggregate methodology.")
+        assert path_violations(path), path
+        assert inspect_snapshot([path], files.__getitem__)
+        incomplete = {key: value for key, value in files.items() if key != path}
+        assert inspect_snapshot(incomplete, incomplete.__getitem__)
+        replaced = {**files, path: files[path] + b" Unreviewed addition."}
+        assert any("hash/size mismatch" in item.reason for item in inspect_snapshot(replaced, replaced.__getitem__))
     for path in PRIVATE_ANALYSIS_FILES:
         assert path_violations(path), path
 
 
-def test_reviewed_analysis_does_not_bypass_secret_or_private_path_scanning() -> None:
+def test_reviewed_analysis_does_not_bypass_secret_or_private_path_scanning(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     private_contents = (
         "Credential: sk-" + "a" * 48,
         "Local source: /Users/" + "publication_owner/private-result.json",
     )
-    for path in REVIEWED_ANALYSIS_FILES:
-        for content in private_contents:
-            violations = inspect_snapshot([path], lambda _: content.encode())
-            assert violations, path
-            assert any("content pattern" in violation.reason for violation in violations)
+    for content in private_contents:
+        files, manifest_path = _reviewed_analysis_snapshot(content.encode())
+        monkeypatch.setattr(privacy, "REVIEWED_EVIDENCE_MANIFESTS", {
+            manifest_path: (hashlib.sha256(files[manifest_path]).hexdigest(),),
+        })
+        violations = inspect_snapshot(files, files.__getitem__)
+        for path in REVIEWED_ANALYSIS_FILES:
+            assert any(item.path == path and "content pattern" in item.reason for item in violations)
 
 
 def test_reviewed_analysis_gitignore_and_forced_staging_are_consistent(tmp_path: Path) -> None:
@@ -604,7 +640,10 @@ def test_reviewed_analysis_gitignore_and_forced_staging_are_consistent(tmp_path:
     assert set(ignored) == set(PRIVATE_ANALYSIS_FILES)
 
     _git(repository, "add", *REVIEWED_ANALYSIS_FILES)
-    assert _check(repository, "--staged").returncode == 0
+    # Being trackable does not approve Markdown without its pinned manifest.
+    unapproved = _check(repository, "--staged")
+    assert unapproved.returncode == 1
+    assert all(path in unapproved.stderr for path in REVIEWED_ANALYSIS_FILES)
     _git(repository, "add", "--force", *PRIVATE_ANALYSIS_FILES)
     result = _check(repository, "--staged")
     assert result.returncode == 1
