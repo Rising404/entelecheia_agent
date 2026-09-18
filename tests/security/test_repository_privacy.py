@@ -306,7 +306,10 @@ def test_reviewed_history_still_runs_the_ordinary_sensitive_value_scan(monkeypat
 
 def test_cc_review_matches_the_public_case_table_and_keeps_disagreements() -> None:
     document = _public_evaluation()
-    review = (REPOSITORY_ROOT / REVIEWED_ANALYSIS_FILES[1]).read_text()
+    archived_by_id = {case["case_id"]: case for case in document["cases"]}
+    assert len(document["cases"]) == len(archived_by_id) == 125
+    excluded_case_ids = {"docbench:26:4", "docbench:37:4"}
+    review = (REPOSITORY_ROOT / REVIEWED_ANALYSIS_FILES[1]).read_text(encoding="utf-8")
     rows = re.findall(
         r"^\| (docbench:\d+:\d+) \| ([01]) \| ([01]) \| (true|false) \| (true|false) \|$",
         review, re.MULTILINE,
@@ -315,13 +318,16 @@ def test_cc_review_matches_the_public_case_table_and_keeps_disagreements() -> No
         identity: (int(first), int(selected), debatable == "true", checked == "true")
         for identity, first, selected, debatable, checked in rows
     }
-    assert len(rows) == len(by_id) == 125
+    # The report shows the shared subset; the archive retains all original cases.
+    assert len(rows) == len(by_id) == 123
+    assert set(archived_by_id) - set(by_id) == excluded_case_ids
     assert by_id == {
-        case["case_id"]: (
+        case_id: (
             case["cc_archived_first_score"], case["cc_archived_selected_score"],
             case["cc_debatable"], case["cc_source_checked_reported"],
         )
-        for case in document["cases"]
+        for case_id, case in archived_by_id.items()
+        if case_id not in excluded_case_ids
     }
     assert {
         case["case_id"] for case in document["cases"]
