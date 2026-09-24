@@ -52,8 +52,8 @@ def _edit(catalogue, callback):
     catalogue.write_text(json.dumps(data))
 
 
-def _clean_failure(tmp_path, catalogue, archive):
-    with pytest.raises(release.ReleaseAssetError):
+def _clean_failure(tmp_path, catalogue, archive, *, match=None):
+    with pytest.raises(release.ReleaseAssetError, match=match):
         _fetch(tmp_path, catalogue, archive)
     assert not (tmp_path / "output").exists()
     assert not list(tmp_path.glob(".output-*"))
@@ -89,11 +89,16 @@ def test_authenticated_archive_still_requires_exact_regular_members(tmp_path, de
         members.pop()
     elif defect == "duplicate":
         members.append(members[0])
+    elif defect in {"symlink", "hardlink", "fifo"}:
+        kinds = {"symlink": tarfile.SYMTYPE, "hardlink": tarfile.LNKTYPE, "fifo": tarfile.FIFOTYPE}
+        # Keep the registered path and size valid so only the member type is wrong.
+        members[-1] = ("sample/empty", b"", kinds[defect])
     else:
-        kinds = {"extra": tarfile.REGTYPE, "symlink": tarfile.SYMTYPE, "hardlink": tarfile.LNKTYPE, "fifo": tarfile.FIFOTYPE, "extra_dir": tarfile.DIRTYPE}
+        kinds = {"extra": tarfile.REGTYPE, "extra_dir": tarfile.DIRTYPE}
         members.append(("sample/unexpected", b"", kinds[defect]))
     catalogue, archive, _ = _fixture(tmp_path, members=members)
-    _clean_failure(tmp_path, catalogue, archive)
+    match = "non-regular member" if defect in {"symlink", "hardlink", "fifo"} else None
+    _clean_failure(tmp_path, catalogue, archive, match=match)
 
 
 @pytest.mark.parametrize("path", ["../escaped", "/absolute", "sample/../escaped", "sample//escaped", "sample/./escaped", "sample\\escaped", "other/README.md"])

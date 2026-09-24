@@ -69,8 +69,13 @@ def test_background_owner_finishes_and_acknowledges_without_another_visual_call(
         releaser = threading.Thread(target=release_after_claim)
         releaser.start()
     try:
+        call_deadline = time.monotonic() + 5
         with tool_execution_scope(ToolExecutionContext(
-            deadline_monotonic=time.monotonic() + (0.5 if caller_times_out else 5),
+            deadline_monotonic=call_deadline,
+            # 超时定位在后台领取之后，避免把准备速度误当成恢复行为。
+            clock=lambda: (
+                call_deadline if caller_times_out and claimed.is_set() else time.monotonic()
+            ),
             logical_tool_call_id="one-physical-visual-call",
         )):
             payload = {
@@ -78,8 +83,9 @@ def test_background_owner_finishes_and_acknowledges_without_another_visual_call(
                 "detail": "low", "region": "page",
             }
             if caller_times_out:
-                with pytest.raises(ToolInvocationCancelled):
+                with pytest.raises(ToolInvocationCancelled) as error:
                     registration.handler(payload)
+                assert error.value.reason == "execution_timeout"
                 assert claimed.is_set()
                 assert ledger.list_ready_publications(session_id=session_id)
                 release.set()

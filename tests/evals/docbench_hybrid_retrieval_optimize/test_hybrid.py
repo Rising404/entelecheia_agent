@@ -468,8 +468,9 @@ def test_encoding_cache_hit_only_batches_skip_device_cleanup(
     assert summary["cleanup_count_by_phase"]["query"] == 3
 
 
-@pytest.mark.parametrize("reason", ("encoder fingerprint mismatch", "cache database hash mismatch"))
-def test_encoding_cache_identity_errors_fail_before_build(corpus, tmp_path, runtime, monkeypatch, reason):
+def test_encoding_cache_errors_propagate_before_build(corpus, tmp_path, runtime, monkeypatch):
+    reason = "synthetic cache validation failure"
+
     @contextmanager
     def invalid_cache(*args, **kwargs):
         raise ValueError(reason)
