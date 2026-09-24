@@ -39,6 +39,11 @@
   用户已批准公开 DocBench 的生成回答、工具调用与失败、评分、token 和耗时；仅发布明确审阅、
   哈希锁定的逐题投影，完整私有原件仍忽略。不把公开投影冒充原样请求或可恢复状态。
   文档不能链接到缺失的本机历史报告。发布前审阅 exact file set 并运行隐私门禁。
+  用户另已明确批准公开 `evals/docbench_hybrid_retrieval_optimize/` 下的检索语料、题目、
+  标签、区域图片、派生索引与检索结果。大语料与索引作为 GitHub Release 附件按需下载，
+  本地副本忽略；主仓保留代码、报告与小型元数据。publication manifest 核验主仓精确文件，
+  独立锁定的 release_assets.json 核验附件及其完整文件集合。清理本机路径后才能发布；
+  不因此公开原始 PDF、模型权重、凭据或 Agent 状态数据库。
 - 只修改被分配的文件；保留并行工作树改动。提交、推送和外部发布需要明确授权。
 
 ## 开发与验证
@@ -69,6 +74,8 @@
 - DocBench 使用唯一的[现行执行入口](evals/docbench/reproduce_or_run_script/README.md)。
   历史实验配置、选题与来源身份保持不变；当前源码重跑应记录为新实验。分别报告回答正确率、
   执行失败、覆盖范围与官方可比性，不能相互替代。
+- 冻结语料的[纯检索评测](evals/docbench_hybrid_retrieval_optimize/README.md)独立于 Agent 运行。
+  默认测试使用合成数据，不下载 Release 语料；附件下载显式启用并校验完整性。
 
 ## 本地 hooks 与发布检查
 

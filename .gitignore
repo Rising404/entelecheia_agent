@@ -56,6 +56,7 @@ htmlcov/
 /runs/
 /tmp/
 
+
 # 数据集、原始评测流和诊断导出默认只属于本机。若未来确需公开合成 fixture，
 # 必须经过 repository privacy gate 审核后再增加精确的逐文件例外。
 *.jsonl
@@ -227,3 +228,28 @@ var/third_party/
 evals/**/questions/**
 !evals/**/questions/
 !evals/**/questions/README.md
+
+# 检索大语料和索引通过公开 Release 按需下载，本地副本不进入主仓历史。
+!/evals/docbench_hybrid_retrieval_optimize/dataset/
+/evals/docbench_hybrid_retrieval_optimize/dataset/**
+!/evals/docbench_hybrid_retrieval_optimize/dataset/README.md
+!/evals/docbench_hybrid_retrieval_optimize/dataset/repaired75-20260923/
+!/evals/docbench_hybrid_retrieval_optimize/dataset/repaired75-20260923/README.md
+!/evals/docbench_hybrid_retrieval_optimize/dataset/repaired75-20260923/CORRECTIONS.md
+!/evals/docbench_hybrid_retrieval_optimize/dataset/repaired75-20260923/MIGRATION.json
+!/evals/docbench_hybrid_retrieval_optimize/dataset/repaired75-20260923/manifest.json
+!/evals/docbench_hybrid_retrieval_optimize/dataset/reused75-20260922/
+!/evals/docbench_hybrid_retrieval_optimize/dataset/reused75-20260922/README.md
+!/evals/docbench_hybrid_retrieval_optimize/dataset/reused75-20260922/MIGRATION.json
+!/evals/docbench_hybrid_retrieval_optimize/dataset/reused75-20260922/manifest.json
+!/evals/docbench_hybrid_retrieval_optimize/indexes/
+/evals/docbench_hybrid_retrieval_optimize/indexes/**
+!/evals/docbench_hybrid_retrieval_optimize/indexes/README.md
+!/evals/docbench_hybrid_retrieval_optimize/indexes/repaired75-bge-m3-mps-fp32/
+!/evals/docbench_hybrid_retrieval_optimize/indexes/repaired75-bge-m3-mps-fp32/archive.json
+!/evals/docbench_hybrid_retrieval_optimize/indexes/repaired75-bge-m3-mps-fp32/manifest.json
+# 已审小型结果仍在 Git 中，隐私门禁核验精确清单及文件哈希。
+!/evals/docbench_hybrid_retrieval_optimize/results/
+!/evals/docbench_hybrid_retrieval_optimize/results/**
+/evals/docbench_hybrid_retrieval_optimize/**/__pycache__/
+/evals/docbench_hybrid_retrieval_optimize/**/.DS_Store

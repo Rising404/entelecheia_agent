@@ -1,0 +1,54 @@
+{
+  "schema_version": "docbench-retrieval-timing-review-v1",
+  "run_id": "retrieval-repaired75-hybrid-20260923",
+  "source_report_sha256": "d3cf83a52c3e3e06460b9bd17308a62c8ec0fb2c6c72017a7d59ccef428a446b",
+  "completed_run": {
+    "index_build_seconds": 3552.5292752919486,
+    "query_seconds": 1086.8497124159476,
+    "runner_elapsed_seconds": 4671.342990958015,
+    "batch_progress_deltas": {
+      "description": "Deltas between index batch progress events: timings include DB and bookkeeping; fresh batches also include inference; first includes setup. Not a profiler decomposition.",
+      "batches": {
+        "cache_only": {
+          "batches": 2580,
+          "units": 20640,
+          "seconds": 1388.1441929534776,
+          "fresh_units": 0,
+          "reused_units": 20640
+        },
+        "with_fresh_encoding": {
+          "batches": 301,
+          "units": 2408,
+          "seconds": 2156.432088838541,
+          "fresh_units": 1640,
+          "reused_units": 768
+        }
+      },
+      "logged_total_seconds": 3544.5762817920186
+    }
+  },
+  "interrupted_builds": [
+    {
+      "last_completed_units": 11184,
+      "index_elapsed_seconds": 2163.7429954579566,
+      "reason": "MPS allocator growth and memory pressure; stopped"
+    },
+    {
+      "last_completed_units": 12656,
+      "index_elapsed_seconds": 3123.7006587090436,
+      "reason": "Saved exact committed checkpoint before switching to reuse"
+    },
+    {
+      "last_completed_units": 14808,
+      "index_elapsed_seconds": 1549.8911663340405,
+      "reason": "Preserved latest partial; extend representation reuse to proven identical tokenizer inputs after strip only"
+    }
+  ],
+  "interrupted_build_seconds_total": 6837.334820501041,
+  "recorded_elapsed_seconds_sum": 11508.677811459056,
+  "measurement_limits": [
+    "Interrupted checkpoints supplied representations to the successful run; their whole duration is not discarded work.",
+    "The recorded sum excludes cache preparation, debugging, documentation and final artifact checks.",
+    "Batch progress deltas are not a profiler split of CPU, GPU and database time."
+  ]
+}

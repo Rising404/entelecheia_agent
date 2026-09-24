@@ -42,6 +42,10 @@ export PERSONAGRAPH_BENCH_EVAL_DIR="/absolute/path/to/bench_eval"
 
 更大 VLM 可选 `l1_balanced_125_gate_off_highland_235b.yaml`，从环境读取 `HIGHLAND_API_KEY`，只在关门配置上替换视觉端点，不改主模型和裁判来源。见[配置说明](../configs/README.md)。
 
+## 独立召回评测
+
+召回语料构建、标注和基线评测见 [docbench_hybrid_retrieval_optimize](../../docbench_hybrid_retrieval_optimize/README.md)。本入口只承担 DocBench Agent 运行与裁判评分。
+
 ## 源码入口 / Implementation
 
 | 文件 | 职责 |

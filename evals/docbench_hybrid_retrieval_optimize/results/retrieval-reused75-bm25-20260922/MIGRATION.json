@@ -1,0 +1,11 @@
+{
+  "origin_artifact": "docbench-artifact://reports/retrieval-reused75-bm25-20260922",
+  "origin_report_sha256": "e36ec5fcddb6588a4067e32d5ef6e587490546af3bc3b9df29810d5bf2d159cd",
+  "report_sha256": "3c1f448681cd18cdee36c0467d817f8e5793203b9ad87bd53a8ff2aae4bf8680",
+  "dataset_sha256": "d140d2cbaf014371d39f4d5637a361a81d4ddfcabcae77b155776481b7959265",
+  "manifest_sha256": "fff259ecee642843dd7eb4fc1120fbab6a5d73d12202b63f4a3a9cbe411de27b",
+  "description": "Public path-metadata projection of the original frozen artifact. Corpus text, questions, answers, evidence, qrels, assets, scores and vectors are unchanged; no model or evaluation was rerun. Original artifact hashes are retained as origin_*.",
+  "unchanged_result_files": {
+    "rankings.jsonl": "fa62e1e4e92a89a13178e4c743b8cdd76f116b337158482170d8dc93780818e9"
+  }
+}

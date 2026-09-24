@@ -36,3 +36,7 @@ export PERSONAGRAPH_BENCH_EVAL_DIR="/absolute/path/to/bench_eval"
 `run`、`retry-failed`、`score` 需要 `--allow-live`，会调用配置的模型服务并可能产生费用。字段说明见[实验配置](docbench/configs/README.md)，其余命令见[CLI 说明](docbench/reproduce_or_run_script/README.md)。
 
 尚未接入的评测集见 [Benchmark 候选清单](BENCHMARK_BACKLOG.md)。
+
+## 纯检索评测
+
+冻结语料、独立索引和召回结果由 [docbench_hybrid_retrieval_optimize](docbench_hybrid_retrieval_optimize/README.md) 管理，与 Agent 执行和裁判评分分开。大语料和索引通过公开 Release 按需下载，主仓保留脚本、报告与校验清单。

@@ -1,0 +1,972 @@
+{
+  "annotation_batches": [
+    {
+      "case_ids": [
+        "docbench:103:1",
+        "docbench:104:0",
+        "docbench:105:2",
+        "docbench:106:0",
+        "docbench:109:3",
+        "docbench:10:3",
+        "docbench:113:4",
+        "docbench:122:3",
+        "docbench:123:0",
+        "docbench:129:0",
+        "docbench:132:2",
+        "docbench:137:1",
+        "docbench:13:3",
+        "docbench:140:0",
+        "docbench:149:0",
+        "docbench:158:1",
+        "docbench:161:0",
+        "docbench:164:1",
+        "docbench:165:0",
+        "docbench:166:2",
+        "docbench:167:0",
+        "docbench:170:3",
+        "docbench:176:1",
+        "docbench:178:1",
+        "docbench:179:5",
+        "docbench:183:0",
+        "docbench:187:0",
+        "docbench:189:2",
+        "docbench:190:2",
+        "docbench:191:1",
+        "docbench:192:4",
+        "docbench:193:1",
+        "docbench:194:1",
+        "docbench:198:4",
+        "docbench:199:8",
+        "docbench:19:4",
+        "docbench:1:1",
+        "docbench:202:2",
+        "docbench:203:1",
+        "docbench:206:0",
+        "docbench:20:4",
+        "docbench:21:0",
+        "docbench:29:0",
+        "docbench:2:0",
+        "docbench:30:2",
+        "docbench:32:1",
+        "docbench:36:2",
+        "docbench:38:4",
+        "docbench:40:0",
+        "docbench:42:5",
+        "docbench:4:0",
+        "docbench:50:1",
+        "docbench:51:3",
+        "docbench:53:3",
+        "docbench:54:4",
+        "docbench:55:2",
+        "docbench:60:2",
+        "docbench:61:6",
+        "docbench:63:2",
+        "docbench:64:1",
+        "docbench:66:3",
+        "docbench:67:4",
+        "docbench:6:0",
+        "docbench:75:0",
+        "docbench:7:2",
+        "docbench:80:5",
+        "docbench:81:2",
+        "docbench:82:3",
+        "docbench:83:3",
+        "docbench:85:0",
+        "docbench:87:9",
+        "docbench:88:9",
+        "docbench:92:1",
+        "docbench:93:3",
+        "docbench:94:0"
+      ],
+      "sha256": "bf6b3334d0bb40bb6cb42229e4c6e263710319cdb51deb2b7421e1cfe23dd9cc"
+    }
+  ],
+  "annotation_counts": {
+    "reviewed": 75
+  },
+  "case_count": 75,
+  "curation": {
+    "correction_count": 10,
+    "method": "reviewed_source_transcription; original references retained in curation_events",
+    "sha256": "5fb3be2bad0ff84db62f3238935c79607be41353268522090d991a4c50cbb7d8",
+    "unit_count": 9
+  },
+  "dataset_sha256": "b0d7a0befcafa0e4653985376f0421422faf208708160ebdbd07842eeea49d95",
+  "historical_source_order": [
+    "docbench-run://l1-gate-off-highland235b-123-20260914-a",
+    "docbench-run://showcase-01-l1-gpu-first-pass-125-20260910-a"
+  ],
+  "label_policy": "independent_review_required",
+  "limitations": [
+    "Historical parser/chunker versions are heterogeneous and frozen per document.",
+    "Detector visual units may be fragments or decorations, not semantic whole figures.",
+    "Visual descriptions use the text layer inside the exported region, with own-element text fallback; no fresh VLM interpretation.",
+    "No original question, reference answer or evidence is used to construct corpus descriptions."
+  ],
+  "query_conditioned_observations_included": false,
+  "question_types": {
+    "multimodal-f": 14,
+    "multimodal-t": 11,
+    "text-only": 50
+  },
+  "schema_version": "docbench-retrieval-dataset-v1",
+  "scope": "per_document",
+  "selection_sha256": "ec6704e97db982f02b122e12b455b2f246b907b216e0223473f58c212808d43b",
+  "sources": [
+    {
+      "case_id": "docbench:1:1",
+      "chunk_count": 29,
+      "doc_id": "1",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "aa1553a51c7254d36a3ae128404db755ef41ab9660e129e852d67ac74db026aa"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 0
+    },
+    {
+      "case_id": "docbench:2:0",
+      "chunk_count": 23,
+      "doc_id": "2",
+      "source_db_hashes": {
+        "db": "df790ba7b9d1f19aa5dfec6687552a5cd0dc82e0947de53f4dee569cf5a760d4"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 7
+    },
+    {
+      "case_id": "docbench:4:0",
+      "chunk_count": 26,
+      "doc_id": "4",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "f38e036cfbec56c6cc3ae385ea1a24fe47ece51960529c2c6abc07a4d10d88bb"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 0
+    },
+    {
+      "case_id": "docbench:6:0",
+      "chunk_count": 55,
+      "doc_id": "6",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "e9b4faceb92f1defc3e91c5cdc66d4923995a1828f1d7669735a010c15b5d45e"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 0
+    },
+    {
+      "case_id": "docbench:7:2",
+      "chunk_count": 104,
+      "doc_id": "7",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "efb1d4eaded809915ac46f97dfa366eca1ba66ed0193f630f1752f7015d40f84"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 20
+    },
+    {
+      "case_id": "docbench:10:3",
+      "chunk_count": 28,
+      "doc_id": "10",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "f82006057cd5ae2bfbf77baee4e4843198a27afdeb147b1e86118722262554cd"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 9
+    },
+    {
+      "case_id": "docbench:13:3",
+      "chunk_count": 46,
+      "doc_id": "13",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "37dd789f4caa7da36bab631a05daef4d551042950c749a3183c55e4add66728e"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 9
+    },
+    {
+      "case_id": "docbench:19:4",
+      "chunk_count": 44,
+      "doc_id": "19",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "23ebf7d38c8095a2bc9fcdfc2f772d4dd1283f8e425ea043a7a800e3194a4c8a"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 7
+    },
+    {
+      "case_id": "docbench:20:4",
+      "chunk_count": 40,
+      "doc_id": "20",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "dee9139bcac6894ab825600792383d3ea1902ff4acc80ec4bbd9ab2c5675b86b"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 10
+    },
+    {
+      "case_id": "docbench:21:0",
+      "chunk_count": 59,
+      "doc_id": "21",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "d7012f4560dbfc158ad99f223d2877b62ecefa0649165de7b9d01186020c7804"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 0
+    },
+    {
+      "case_id": "docbench:29:0",
+      "chunk_count": 55,
+      "doc_id": "29",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "504ef00f8fc58add95cc00d7d2cd706146b06bf39526129ec18a621e06372c8f"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 0
+    },
+    {
+      "case_id": "docbench:30:2",
+      "chunk_count": 42,
+      "doc_id": "30",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "20c713e3e4995318d2d9be0e789a2749b1fafd9300b84f973de7857a0bcb414a"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 7
+    },
+    {
+      "case_id": "docbench:32:1",
+      "chunk_count": 39,
+      "doc_id": "32",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "eb1611d9056c9a46c0d4e0cd85c34dfea98d4a79419a084dd053cadcd7e102b7"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 9
+    },
+    {
+      "case_id": "docbench:36:2",
+      "chunk_count": 38,
+      "doc_id": "36",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "337f31bdee75fb1a04e38a2183a04e08a500dd00c22ca119d89ea112a06c6834"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 7
+    },
+    {
+      "case_id": "docbench:38:4",
+      "chunk_count": 27,
+      "doc_id": "38",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "24bc13f163c7ed44c1a8bbed2d11e91d668c67e4af7dfdb19b1c3bd7b9ed1231"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 6
+    },
+    {
+      "case_id": "docbench:40:0",
+      "chunk_count": 46,
+      "doc_id": "40",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "42adfc3bee7ab861badb59da0355fc4cea577232c1ed907591fd79088999445e"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 11
+    },
+    {
+      "case_id": "docbench:42:5",
+      "chunk_count": 43,
+      "doc_id": "42",
+      "source_db_hashes": {
+        "db": "17e40f598036b6469cfefcfc5d5542019ece40060da1efd735acd874cb9d2aec"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 17
+    },
+    {
+      "case_id": "docbench:50:1",
+      "chunk_count": 195,
+      "doc_id": "50",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "87123376aba63dee1e924eaa20ea50c9fc1041bcc44f9a03a0bb3b50ee06cea4"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 0
+    },
+    {
+      "case_id": "docbench:51:3",
+      "chunk_count": 262,
+      "doc_id": "51",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "fda664d4957202170ad9eec84d1a5ed5c8dd220cadbd4f50501c0c5b8786fa3c"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 404
+    },
+    {
+      "case_id": "docbench:53:3",
+      "chunk_count": 1630,
+      "doc_id": "53",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "9b2299a35958e940439a71265f29cafe7812728e87d4ebacb375f27c952af53f"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 2361
+    },
+    {
+      "case_id": "docbench:54:4",
+      "chunk_count": 579,
+      "doc_id": "54",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "08a46e89564327b9b391285959007e42c7a4de9808ac73f0bde0e1ff57524c88"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 337
+    },
+    {
+      "case_id": "docbench:55:2",
+      "chunk_count": 878,
+      "doc_id": "55",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "d094ddde0f4cce89f74f34d1bacf7b18e72ddc1b6c29d80b9b445e1c0bc6f548"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 266
+    },
+    {
+      "case_id": "docbench:60:2",
+      "chunk_count": 240,
+      "doc_id": "60",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "b33f1364417043c893cbfae8f6d52b73a251d78466f1660786c91bcedb7f91ed"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 0
+    },
+    {
+      "case_id": "docbench:61:6",
+      "chunk_count": 713,
+      "doc_id": "61",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "0e190de48bc889aa8a3ad6ee73f536ea343a4b0ae73dc7907c177788dc3a12f1"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 313
+    },
+    {
+      "case_id": "docbench:63:2",
+      "chunk_count": 685,
+      "doc_id": "63",
+      "source_db_hashes": {
+        "db": "079e1cff948ba70647ac8a503b7ee3a39c54106f54e831025a8a031f3bbe259c"
+      },
+      "source_run_id": "showcase-01-l1-gpu-first-pass-125-20260910-a",
+      "visual_count": 0
+    },
+    {
+      "case_id": "docbench:64:1",
+      "chunk_count": 1227,
+      "doc_id": "64",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "8e03e6ba14394965b00128b7d616cb74d83dd028c008ad240e741d0bd85df620"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 665
+    },
+    {
+      "case_id": "docbench:66:3",
+      "chunk_count": 1613,
+      "doc_id": "66",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "f08590307e6878285b83cac54b66196a6f76d131c205b1f915a2fd43f793420d"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 836
+    },
+    {
+      "case_id": "docbench:67:4",
+      "chunk_count": 430,
+      "doc_id": "67",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "8d0f7fc2171ec77c23aa06ab37cc2be93592e6633ca82a358591cd1c1574852a"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 356
+    },
+    {
+      "case_id": "docbench:75:0",
+      "chunk_count": 158,
+      "doc_id": "75",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "40deeba91fb99a20bb7744b0ed7bd1e6438416fa4025761a8d590167d193e04b"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 0
+    },
+    {
+      "case_id": "docbench:80:5",
+      "chunk_count": 388,
+      "doc_id": "80",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "72d396c931bf659a10632891ae2ec2d9019425eaa98a93ae7cfecbf2a88c25f0"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 176
+    },
+    {
+      "case_id": "docbench:81:2",
+      "chunk_count": 1191,
+      "doc_id": "81",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "c569f39fc3764a85f9b7e2df457a5fcd9743a2b02b511bd05bcc46879f665308"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 0
+    },
+    {
+      "case_id": "docbench:82:3",
+      "chunk_count": 484,
+      "doc_id": "82",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "fea14d3e93292aff0f2a42f855001b6dbce7154457535baa246e77b18a34b69d"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 169
+    },
+    {
+      "case_id": "docbench:83:3",
+      "chunk_count": 1256,
+      "doc_id": "83",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "d76c135cbad4807a3c2f7da9f2c847191f1f6af172ae376ad059d2f7b9487645"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 0
+    },
+    {
+      "case_id": "docbench:85:0",
+      "chunk_count": 25,
+      "doc_id": "85",
+      "source_db_hashes": {
+        "db": "6c01121286de17e933cd8da6571938f4e7c83dbc135bb685b179acba6078999f"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 13
+    },
+    {
+      "case_id": "docbench:87:9",
+      "chunk_count": 210,
+      "doc_id": "87",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "ba834acf0705d15232ab78c7144374222d8607ffd0a947f274467d046200a19d"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 162
+    },
+    {
+      "case_id": "docbench:88:9",
+      "chunk_count": 346,
+      "doc_id": "88",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "e0095f87300cc54ea5124766ecfecf5b7b30b701ae9c961ed5d8442ecb69440d"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 411
+    },
+    {
+      "case_id": "docbench:92:1",
+      "chunk_count": 63,
+      "doc_id": "92",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "e8eed301379504021e6a65632e71dd1cd49e0975b700bcd78121bb3153618fb1"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 0
+    },
+    {
+      "case_id": "docbench:93:3",
+      "chunk_count": 415,
+      "doc_id": "93",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "c20887776c17d38ad6834fcd91858df1112c3300923c958ba99d8f919f0a7ef9"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 0
+    },
+    {
+      "case_id": "docbench:94:0",
+      "chunk_count": 52,
+      "doc_id": "94",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "c675ffb16eea3285ca446d53bdb6b326accdfccaf362b56004558fa114a785ac"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 0
+    },
+    {
+      "case_id": "docbench:103:1",
+      "chunk_count": 5,
+      "doc_id": "103",
+      "source_db_hashes": {
+        "db": "970c8d948d9c5275dee4bbbb950637089e154d9b5ea3b5406e53cd3a6c27116c"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 0
+    },
+    {
+      "case_id": "docbench:104:0",
+      "chunk_count": 25,
+      "doc_id": "104",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "793710f625eba7cca7192cf62928d560a6db0ef5fe319b44abd5209c460ae9b8"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 0
+    },
+    {
+      "case_id": "docbench:105:2",
+      "chunk_count": 31,
+      "doc_id": "105",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "68ca23df4aaa6a029862f684ea9794735798dd5fef1ece96468809056c1b7a8b"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 0
+    },
+    {
+      "case_id": "docbench:106:0",
+      "chunk_count": 425,
+      "doc_id": "106",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "a353fb17ad92e374f21d7bfbcf4329420a55e6d51dfc0237e9307e2dcf69de7a"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 0
+    },
+    {
+      "case_id": "docbench:109:3",
+      "chunk_count": 40,
+      "doc_id": "109",
+      "source_db_hashes": {
+        "db": "9bca0ebd93b340f729b4ec79bcc737edb6702ae8f29da5e3e62b56f3a1beafd8"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 0
+    },
+    {
+      "case_id": "docbench:113:4",
+      "chunk_count": 31,
+      "doc_id": "113",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "7d0d647f4080f08f6853e1485942e9fd5f81cd1734757ff76414ec3a6fa2819e"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 0
+    },
+    {
+      "case_id": "docbench:122:3",
+      "chunk_count": 58,
+      "doc_id": "122",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "b76ce153bdcc69fb0ffa33f1c40debda7b7b7a3f09dbeafd24e1f2d4888ac2f8"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 0
+    },
+    {
+      "case_id": "docbench:123:0",
+      "chunk_count": 16,
+      "doc_id": "123",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "5b353fc597636088981836def3380ef1c406928d8daec7eac8a47d9ffbdffa0f"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 0
+    },
+    {
+      "case_id": "docbench:129:0",
+      "chunk_count": 311,
+      "doc_id": "129",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "4935e49c1981cfea6cdf212bc79f39d96c5e85cf003f3bdaa817eed524b67797"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 0
+    },
+    {
+      "case_id": "docbench:132:2",
+      "chunk_count": 21,
+      "doc_id": "132",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "40c20de08f43fa090a3a3d6c30a30ff3937c19cc6b62ee0a25bec82ff1dcf531"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 0
+    },
+    {
+      "case_id": "docbench:137:1",
+      "chunk_count": 324,
+      "doc_id": "137",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "3558752edecb36760a52a2e4d9344572f19e1f1c6143f403ea09d753dda7f088"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 0
+    },
+    {
+      "case_id": "docbench:140:0",
+      "chunk_count": 24,
+      "doc_id": "140",
+      "source_db_hashes": {
+        "db": "03bcec8090638d3c042c0c908142dc20b5539a92001d9fb527583b474c7c07ae"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 0
+    },
+    {
+      "case_id": "docbench:149:0",
+      "chunk_count": 68,
+      "doc_id": "149",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "cf7b48855c53f41722876708d53ae063d5c9601e0a7c629363028dbf06fcd724"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 0
+    },
+    {
+      "case_id": "docbench:158:1",
+      "chunk_count": 132,
+      "doc_id": "158",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "fecfd930cc713ea41ecdf69874524922492487e16bb6d2d87d389c10146ea772"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 0
+    },
+    {
+      "case_id": "docbench:161:0",
+      "chunk_count": 106,
+      "doc_id": "161",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "241a79a9007f6add13c22bc263a836adee4c89f32883d41876dfe9d7b6b4bf7e"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 0
+    },
+    {
+      "case_id": "docbench:164:1",
+      "chunk_count": 27,
+      "doc_id": "164",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "8e71ab8e4c6cf76422f5569a1d1ae1f9265c0e443636d073cca01802f4cc8152"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 0
+    },
+    {
+      "case_id": "docbench:165:0",
+      "chunk_count": 18,
+      "doc_id": "165",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "79b2440dc6fea3ec893081a1517fc0bff133f48b804885d725fdcd122f0ce5f8"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 0
+    },
+    {
+      "case_id": "docbench:166:2",
+      "chunk_count": 44,
+      "doc_id": "166",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "8534c81e853af62897a8fcf09061d6f9acbd51aaa32dbb95d60a632af1bc0f28"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 0
+    },
+    {
+      "case_id": "docbench:167:0",
+      "chunk_count": 117,
+      "doc_id": "167",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "c3e8e3101db0a2a22a7d2ee36048eb152bf59c11ebe6ef01246e30308e123901"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 0
+    },
+    {
+      "case_id": "docbench:170:3",
+      "chunk_count": 317,
+      "doc_id": "170",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "3c908da51acbeaaea1a4b644c5bb4d381c3c2bdbe6b98575dcb8fb9d855d776b"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 0
+    },
+    {
+      "case_id": "docbench:176:1",
+      "chunk_count": 93,
+      "doc_id": "176",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "72c13dd6ebb3ad1929c03efa3f42c90a67b7dda25246ffbab1ca1ccc283816cd"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 0
+    },
+    {
+      "case_id": "docbench:178:1",
+      "chunk_count": 76,
+      "doc_id": "178",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "de0234c0ebebd57895c45456ae8f558e5994d599b0e918d42724bf75dd56a38f"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 0
+    },
+    {
+      "case_id": "docbench:179:5",
+      "chunk_count": 26,
+      "doc_id": "179",
+      "source_db_hashes": {
+        "db": "29bd26b5aeb1e03c21f34cf2c63f3df378a803f6a22bdc0c4e248035115510e9"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 0
+    },
+    {
+      "case_id": "docbench:183:0",
+      "chunk_count": 24,
+      "doc_id": "183",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "a3245803b61f4318e3bc43d100c636f98355048c2acabf3ad735d317a2c317bc"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 0
+    },
+    {
+      "case_id": "docbench:187:0",
+      "chunk_count": 26,
+      "doc_id": "187",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "d953985107b9918f8758d33a7f666e2c791bc6951a1f4b451b8520a2b895c8ef"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 0
+    },
+    {
+      "case_id": "docbench:189:2",
+      "chunk_count": 26,
+      "doc_id": "189",
+      "source_db_hashes": {
+        "db": "1e92691132b2ebcb5a6fc16c3387250cde3552f5c985aff20b5b970cd816bc94"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 0
+    },
+    {
+      "case_id": "docbench:190:2",
+      "chunk_count": 30,
+      "doc_id": "190",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "cc923e7922a9aaa9f39d40c64103e9ffb6ec257fd879323a5fbf779014b304a6"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 1
+    },
+    {
+      "case_id": "docbench:191:1",
+      "chunk_count": 26,
+      "doc_id": "191",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "ec4ef15d31b250cd783c797a04021fc2b089b96886605eab7e9a2dee45d0bb02"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 0
+    },
+    {
+      "case_id": "docbench:192:4",
+      "chunk_count": 29,
+      "doc_id": "192",
+      "source_db_hashes": {
+        "db": "dde1e9ceeea45c575f1470ace43863a5ee620121e30870b906774b63fc898c23"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 0
+    },
+    {
+      "case_id": "docbench:193:1",
+      "chunk_count": 27,
+      "doc_id": "193",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "9f0f75f8b372ac998d940bd07b35c7f2a44bede4cf8852c7724b23362854d4f9"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 0
+    },
+    {
+      "case_id": "docbench:194:1",
+      "chunk_count": 27,
+      "doc_id": "194",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "f701cbddfc9b2f188e5c9452a8703e785d823cde8d547d752cb0125ca4711bbf"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 0
+    },
+    {
+      "case_id": "docbench:198:4",
+      "chunk_count": 25,
+      "doc_id": "198",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "783ddae4ee5d8ee49cdedd043b81772ff6675594fe472b719cd07e82ace30bd0"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 0
+    },
+    {
+      "case_id": "docbench:199:8",
+      "chunk_count": 27,
+      "doc_id": "199",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "461f151a608504c78a86397653bd230428bb1abbf7babf6c7ff7a1c49b944d6a"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 0
+    },
+    {
+      "case_id": "docbench:202:2",
+      "chunk_count": 29,
+      "doc_id": "202",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "aff875a4cdf564f08614683c6620192306e8ddc8413d816aad73fb691d09600c"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 0
+    },
+    {
+      "case_id": "docbench:203:1",
+      "chunk_count": 26,
+      "doc_id": "203",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "c1a4c4a746adf597f6d0561ecb8447ceb0c7fb59d4e52f1d10425ff917524bd6"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 0
+    },
+    {
+      "case_id": "docbench:206:0",
+      "chunk_count": 17,
+      "doc_id": "206",
+      "source_db_hashes": {
+        "-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "db": "23d11eb55cb924287056b082d40e8facc2eae723dc28126e8f43917a6f25cd6a"
+      },
+      "source_run_id": "l1-gate-off-highland235b-123-20260914-a",
+      "visual_count": 0
+    }
+  ],
+  "status": "reviewed",
+  "unit_counts": {
+    "chunk": 16459,
+    "figure": 2105,
+    "table": 1601,
+    "vector_graphics": 2883
+  },
+  "visual_description_method": "pdf_text_layer_region_or_own_element",
+  "visual_document_ids": [
+    "2",
+    "7",
+    "10",
+    "13",
+    "19",
+    "20",
+    "30",
+    "32",
+    "36",
+    "38",
+    "40",
+    "42",
+    "51",
+    "53",
+    "54",
+    "55",
+    "61",
+    "64",
+    "66",
+    "67",
+    "80",
+    "82",
+    "85",
+    "87",
+    "88",
+    "190"
+  ],
+  "visual_document_scope": "explicit_document_ids",
+  "origin_dataset_sha256": "7921b057d9a6b1b6d8974da956ed0da9f7acd85048645c9fcbd2505b237c66eb",
+  "origin_manifest_sha256": "34d64fa59df6ccd8731ead35710d13c563ea80307d54e4c1e8c70beabf6cb9ea",
+  "publication_projection": "Public path-metadata projection of the original frozen artifact. Corpus text, questions, answers, evidence, qrels, assets, scores and vectors are unchanged; no model or evaluation was rerun. Original artifact hashes are retained as origin_*."
+}

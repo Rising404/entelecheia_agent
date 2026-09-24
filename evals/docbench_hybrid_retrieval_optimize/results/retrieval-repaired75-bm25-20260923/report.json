@@ -1,0 +1,3759 @@
+{
+  "route_id": "sqlite_fts5_bm25",
+  "scope": "question_document; text=chunk; multimodal=figure+table+vector_graphics",
+  "gold_policy": "reviewed primary qrels only; support is not scored",
+  "metric_interpretation": "Binary relevance over a flat primary-gold set: Hit means at least one gold unit; Recall measures gold-unit coverage. Equivalent alternatives and jointly necessary evidence are not grouped, so these metrics do not measure answer completeness.",
+  "cutoffs": [
+    1,
+    3,
+    5,
+    10
+  ],
+  "coverage": {
+    "total_queries": 75,
+    "scored_queries": 75,
+    "scored_fraction": 1.0,
+    "pending_case_ids": [],
+    "reviewed_without_primary_case_ids": [],
+    "by_question_type": {
+      "text-only": {
+        "total_queries": 50,
+        "scored_queries": 50
+      },
+      "multimodal-t": {
+        "total_queries": 11,
+        "scored_queries": 11
+      },
+      "multimodal-f": {
+        "total_queries": 14,
+        "scored_queries": 14
+      }
+    }
+  },
+  "overall": {
+    "route_id": "sqlite_fts5_bm25",
+    "case_count": 75,
+    "missing_result_case_ids": [],
+    "mean_reciprocal_rank": 0.8731010101010102,
+    "mean_recall_at_k": {
+      "1": 0.69,
+      "3": 0.8344444444444444,
+      "5": 0.9,
+      "10": 0.9377777777777777
+    },
+    "hit_rate_at_k": {
+      "1": 0.8133333333333334,
+      "3": 0.9066666666666666,
+      "5": 0.9466666666666667,
+      "10": 0.9733333333333334
+    },
+    "mean_ndcg_at_k": {
+      "1": 0.8133333333333334,
+      "3": 0.8150570001579223,
+      "5": 0.8450927042075858,
+      "10": 0.8590461141105123
+    },
+    "cases": [
+      {
+        "case_id": "docbench:103:1",
+        "ranked_count": 5,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 0.5,
+          "3": 0.5,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 0.6131471927654584,
+          "5": 0.8772153153380493,
+          "10": 0.8772153153380493
+        }
+      },
+      {
+        "case_id": "docbench:104:0",
+        "ranked_count": 22,
+        "first_relevant_rank": 8,
+        "reciprocal_rank": 0.125,
+        "recall_at_k": {
+          "1": 0.0,
+          "3": 0.0,
+          "5": 0.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 0.0,
+          "3": 0.0,
+          "5": 0.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 0.0,
+          "3": 0.0,
+          "5": 0.0,
+          "10": 0.31546487678572877
+        }
+      },
+      {
+        "case_id": "docbench:105:2",
+        "ranked_count": 29,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        }
+      },
+      {
+        "case_id": "docbench:106:0",
+        "ranked_count": 366,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        }
+      },
+      {
+        "case_id": "docbench:109:3",
+        "ranked_count": 40,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 0.5,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 0.9197207891481876,
+          "5": 0.9197207891481876,
+          "10": 0.9197207891481876
+        }
+      },
+      {
+        "case_id": "docbench:10:3",
+        "ranked_count": 9,
+        "first_relevant_rank": 2,
+        "reciprocal_rank": 0.5,
+        "recall_at_k": {
+          "1": 0.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 0.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 0.0,
+          "3": 0.6309297535714575,
+          "5": 0.6309297535714575,
+          "10": 0.6309297535714575
+        }
+      },
+      {
+        "case_id": "docbench:113:4",
+        "ranked_count": 30,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 0.3333333333333333,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        }
+      },
+      {
+        "case_id": "docbench:122:3",
+        "ranked_count": 52,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        }
+      },
+      {
+        "case_id": "docbench:123:0",
+        "ranked_count": 16,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        }
+      },
+      {
+        "case_id": "docbench:129:0",
+        "ranked_count": 292,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        }
+      },
+      {
+        "case_id": "docbench:132:2",
+        "ranked_count": 16,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        }
+      },
+      {
+        "case_id": "docbench:137:1",
+        "ranked_count": 323,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        }
+      },
+      {
+        "case_id": "docbench:13:3",
+        "ranked_count": 9,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        }
+      },
+      {
+        "case_id": "docbench:140:0",
+        "ranked_count": 23,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        }
+      },
+      {
+        "case_id": "docbench:149:0",
+        "ranked_count": 68,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 0.5,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        }
+      },
+      {
+        "case_id": "docbench:158:1",
+        "ranked_count": 132,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 0.5,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        }
+      },
+      {
+        "case_id": "docbench:161:0",
+        "ranked_count": 105,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 0.5,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        }
+      },
+      {
+        "case_id": "docbench:164:1",
+        "ranked_count": 22,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        }
+      },
+      {
+        "case_id": "docbench:165:0",
+        "ranked_count": 17,
+        "first_relevant_rank": 3,
+        "reciprocal_rank": 0.3333333333333333,
+        "recall_at_k": {
+          "1": 0.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 0.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 0.0,
+          "3": 0.5,
+          "5": 0.5,
+          "10": 0.5
+        }
+      },
+      {
+        "case_id": "docbench:166:2",
+        "ranked_count": 41,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        }
+      },
+      {
+        "case_id": "docbench:167:0",
+        "ranked_count": 110,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 0.5,
+          "3": 0.5,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 0.6131471927654584,
+          "5": 0.8772153153380493,
+          "10": 0.8772153153380493
+        }
+      },
+      {
+        "case_id": "docbench:170:3",
+        "ranked_count": 315,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        }
+      },
+      {
+        "case_id": "docbench:176:1",
+        "ranked_count": 85,
+        "first_relevant_rank": 2,
+        "reciprocal_rank": 0.5,
+        "recall_at_k": {
+          "1": 0.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 0.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 0.0,
+          "3": 0.6934264036172708,
+          "5": 0.6934264036172708,
+          "10": 0.6934264036172708
+        }
+      },
+      {
+        "case_id": "docbench:178:1",
+        "ranked_count": 76,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        }
+      },
+      {
+        "case_id": "docbench:179:5",
+        "ranked_count": 23,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        }
+      },
+      {
+        "case_id": "docbench:183:0",
+        "ranked_count": 17,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        }
+      },
+      {
+        "case_id": "docbench:187:0",
+        "ranked_count": 16,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        }
+      },
+      {
+        "case_id": "docbench:189:2",
+        "ranked_count": 19,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 0.3333333333333333,
+          "3": 0.6666666666666666,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 0.7039180890341347,
+          "5": 0.9060254355346823,
+          "10": 0.9060254355346823
+        }
+      },
+      {
+        "case_id": "docbench:190:2",
+        "ranked_count": 1,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        }
+      },
+      {
+        "case_id": "docbench:191:1",
+        "ranked_count": 21,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        }
+      },
+      {
+        "case_id": "docbench:192:4",
+        "ranked_count": 25,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        }
+      },
+      {
+        "case_id": "docbench:193:1",
+        "ranked_count": 22,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        }
+      },
+      {
+        "case_id": "docbench:194:1",
+        "ranked_count": 24,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        }
+      },
+      {
+        "case_id": "docbench:198:4",
+        "ranked_count": 23,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        }
+      },
+      {
+        "case_id": "docbench:199:8",
+        "ranked_count": 26,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 0.5,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 0.9197207891481876,
+          "5": 0.9197207891481876,
+          "10": 0.9197207891481876
+        }
+      },
+      {
+        "case_id": "docbench:19:4",
+        "ranked_count": 7,
+        "first_relevant_rank": 2,
+        "reciprocal_rank": 0.5,
+        "recall_at_k": {
+          "1": 0.0,
+          "3": 0.5,
+          "5": 0.5,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 0.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 0.0,
+          "3": 0.38685280723454163,
+          "5": 0.38685280723454163,
+          "10": 0.6052602440527057
+        }
+      },
+      {
+        "case_id": "docbench:1:1",
+        "ranked_count": 29,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 0.3333333333333333,
+          "3": 0.6666666666666666,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 0.7653606369886217,
+          "5": 0.9674679834891693,
+          "10": 0.9674679834891693
+        }
+      },
+      {
+        "case_id": "docbench:202:2",
+        "ranked_count": 28,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        }
+      },
+      {
+        "case_id": "docbench:203:1",
+        "ranked_count": 24,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        }
+      },
+      {
+        "case_id": "docbench:206:0",
+        "ranked_count": 16,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        }
+      },
+      {
+        "case_id": "docbench:20:4",
+        "ranked_count": 10,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        }
+      },
+      {
+        "case_id": "docbench:21:0",
+        "ranked_count": 43,
+        "first_relevant_rank": 4,
+        "reciprocal_rank": 0.25,
+        "recall_at_k": {
+          "1": 0.0,
+          "3": 0.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 0.0,
+          "3": 0.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 0.0,
+          "3": 0.0,
+          "5": 0.43067655807339306,
+          "10": 0.43067655807339306
+        }
+      },
+      {
+        "case_id": "docbench:29:0",
+        "ranked_count": 54,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        }
+      },
+      {
+        "case_id": "docbench:2:0",
+        "ranked_count": 7,
+        "first_relevant_rank": 2,
+        "reciprocal_rank": 0.5,
+        "recall_at_k": {
+          "1": 0.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 0.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 0.0,
+          "3": 0.6309297535714575,
+          "5": 0.6309297535714575,
+          "10": 0.6309297535714575
+        }
+      },
+      {
+        "case_id": "docbench:30:2",
+        "ranked_count": 7,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        }
+      },
+      {
+        "case_id": "docbench:32:1",
+        "ranked_count": 9,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        }
+      },
+      {
+        "case_id": "docbench:36:2",
+        "ranked_count": 7,
+        "first_relevant_rank": 4,
+        "reciprocal_rank": 0.25,
+        "recall_at_k": {
+          "1": 0.0,
+          "3": 0.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 0.0,
+          "3": 0.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 0.0,
+          "3": 0.0,
+          "5": 0.43067655807339306,
+          "10": 0.43067655807339306
+        }
+      },
+      {
+        "case_id": "docbench:38:4",
+        "ranked_count": 2,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        }
+      },
+      {
+        "case_id": "docbench:40:0",
+        "ranked_count": 10,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 0.5,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        }
+      },
+      {
+        "case_id": "docbench:42:5",
+        "ranked_count": 16,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        }
+      },
+      {
+        "case_id": "docbench:4:0",
+        "ranked_count": 20,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        }
+      },
+      {
+        "case_id": "docbench:50:1",
+        "ranked_count": 98,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 0.25,
+          "3": 0.25,
+          "5": 0.5,
+          "10": 0.5
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 0.46927872602275644,
+          "5": 0.5413996682199069,
+          "10": 0.5413996682199069
+        }
+      },
+      {
+        "case_id": "docbench:51:3",
+        "ranked_count": 167,
+        "first_relevant_rank": 2,
+        "reciprocal_rank": 0.5,
+        "recall_at_k": {
+          "1": 0.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 0.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 0.0,
+          "3": 0.6309297535714575,
+          "5": 0.6309297535714575,
+          "10": 0.6309297535714575
+        }
+      },
+      {
+        "case_id": "docbench:53:3",
+        "ranked_count": 1746,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        }
+      },
+      {
+        "case_id": "docbench:54:4",
+        "ranked_count": 188,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        }
+      },
+      {
+        "case_id": "docbench:55:2",
+        "ranked_count": 221,
+        "first_relevant_rank": 2,
+        "reciprocal_rank": 0.5,
+        "recall_at_k": {
+          "1": 0.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 0.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 0.0,
+          "3": 0.6309297535714575,
+          "5": 0.6309297535714575,
+          "10": 0.6309297535714575
+        }
+      },
+      {
+        "case_id": "docbench:60:2",
+        "ranked_count": 228,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 0.3333333333333333,
+          "3": 0.3333333333333333,
+          "5": 0.3333333333333333,
+          "10": 0.6666666666666666
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 0.46927872602275644,
+          "5": 0.46927872602275644,
+          "10": 0.6257049680303419
+        }
+      },
+      {
+        "case_id": "docbench:61:6",
+        "ranked_count": 252,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        }
+      },
+      {
+        "case_id": "docbench:63:2",
+        "ranked_count": 678,
+        "first_relevant_rank": 5,
+        "reciprocal_rank": 0.2,
+        "recall_at_k": {
+          "1": 0.0,
+          "3": 0.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 0.0,
+          "3": 0.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 0.0,
+          "3": 0.0,
+          "5": 0.38685280723454163,
+          "10": 0.38685280723454163
+        }
+      },
+      {
+        "case_id": "docbench:64:1",
+        "ranked_count": 635,
+        "first_relevant_rank": 11,
+        "reciprocal_rank": 0.09090909090909091,
+        "recall_at_k": {
+          "1": 0.0,
+          "3": 0.0,
+          "5": 0.0,
+          "10": 0.0
+        },
+        "hit_at_k": {
+          "1": 0.0,
+          "3": 0.0,
+          "5": 0.0,
+          "10": 0.0
+        },
+        "ndcg_at_k": {
+          "1": 0.0,
+          "3": 0.0,
+          "5": 0.0,
+          "10": 0.0
+        }
+      },
+      {
+        "case_id": "docbench:66:3",
+        "ranked_count": 836,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        }
+      },
+      {
+        "case_id": "docbench:67:4",
+        "ranked_count": 296,
+        "first_relevant_rank": 6,
+        "reciprocal_rank": 0.16666666666666666,
+        "recall_at_k": {
+          "1": 0.0,
+          "3": 0.0,
+          "5": 0.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 0.0,
+          "3": 0.0,
+          "5": 0.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 0.0,
+          "3": 0.0,
+          "5": 0.0,
+          "10": 0.3562071871080222
+        }
+      },
+      {
+        "case_id": "docbench:6:0",
+        "ranked_count": 51,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        }
+      },
+      {
+        "case_id": "docbench:75:0",
+        "ranked_count": 137,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        }
+      },
+      {
+        "case_id": "docbench:7:2",
+        "ranked_count": 20,
+        "first_relevant_rank": 15,
+        "reciprocal_rank": 0.06666666666666667,
+        "recall_at_k": {
+          "1": 0.0,
+          "3": 0.0,
+          "5": 0.0,
+          "10": 0.0
+        },
+        "hit_at_k": {
+          "1": 0.0,
+          "3": 0.0,
+          "5": 0.0,
+          "10": 0.0
+        },
+        "ndcg_at_k": {
+          "1": 0.0,
+          "3": 0.0,
+          "5": 0.0,
+          "10": 0.0
+        }
+      },
+      {
+        "case_id": "docbench:80:5",
+        "ranked_count": 161,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        }
+      },
+      {
+        "case_id": "docbench:81:2",
+        "ranked_count": 1052,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        }
+      },
+      {
+        "case_id": "docbench:82:3",
+        "ranked_count": 158,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        }
+      },
+      {
+        "case_id": "docbench:83:3",
+        "ranked_count": 948,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 0.3333333333333333,
+          "3": 0.3333333333333333,
+          "5": 0.3333333333333333,
+          "10": 0.3333333333333333
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 0.46927872602275644,
+          "5": 0.46927872602275644,
+          "10": 0.46927872602275644
+        }
+      },
+      {
+        "case_id": "docbench:85:0",
+        "ranked_count": 20,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        }
+      },
+      {
+        "case_id": "docbench:87:9",
+        "ranked_count": 144,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 0.5,
+          "3": 0.5,
+          "5": 0.5,
+          "10": 0.5
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 0.6131471927654584,
+          "5": 0.6131471927654584,
+          "10": 0.6131471927654584
+        }
+      },
+      {
+        "case_id": "docbench:88:9",
+        "ranked_count": 286,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        }
+      },
+      {
+        "case_id": "docbench:92:1",
+        "ranked_count": 60,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        }
+      },
+      {
+        "case_id": "docbench:93:3",
+        "ranked_count": 404,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        }
+      },
+      {
+        "case_id": "docbench:94:0",
+        "ranked_count": 47,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
+        "recall_at_k": {
+          "1": 0.3333333333333333,
+          "3": 0.3333333333333333,
+          "5": 0.3333333333333333,
+          "10": 0.3333333333333333
+        },
+        "hit_at_k": {
+          "1": 1.0,
+          "3": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "ndcg_at_k": {
+          "1": 1.0,
+          "3": 0.46927872602275644,
+          "5": 0.46927872602275644,
+          "10": 0.46927872602275644
+        }
+      }
+    ]
+  },
+  "by_question_type": {
+    "text-only": {
+      "route_id": "sqlite_fts5_bm25",
+      "case_count": 50,
+      "missing_result_case_ids": [],
+      "mean_reciprocal_rank": 0.9281666666666666,
+      "mean_recall_at_k": {
+        "1": 0.735,
+        "3": 0.8516666666666667,
+        "5": 0.93,
+        "10": 0.9566666666666667
+      },
+      "hit_rate_at_k": {
+        "1": 0.9,
+        "3": 0.94,
+        "5": 0.98,
+        "10": 1.0
+      },
+      "mean_ndcg_at_k": {
+        "1": 0.9,
+        "3": 0.852111119951167,
+        "5": 0.8885511448641941,
+        "10": 0.8979889672400604
+      },
+      "cases": [
+        {
+          "case_id": "docbench:103:1",
+          "ranked_count": 5,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 0.6131471927654584,
+            "5": 0.8772153153380493,
+            "10": 0.8772153153380493
+          }
+        },
+        {
+          "case_id": "docbench:104:0",
+          "ranked_count": 22,
+          "first_relevant_rank": 8,
+          "reciprocal_rank": 0.125,
+          "recall_at_k": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.31546487678572877
+          }
+        },
+        {
+          "case_id": "docbench:105:2",
+          "ranked_count": 29,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        {
+          "case_id": "docbench:106:0",
+          "ranked_count": 366,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        {
+          "case_id": "docbench:109:3",
+          "ranked_count": 40,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 0.5,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 0.9197207891481876,
+            "5": 0.9197207891481876,
+            "10": 0.9197207891481876
+          }
+        },
+        {
+          "case_id": "docbench:113:4",
+          "ranked_count": 30,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 0.3333333333333333,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        {
+          "case_id": "docbench:122:3",
+          "ranked_count": 52,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        {
+          "case_id": "docbench:123:0",
+          "ranked_count": 16,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        {
+          "case_id": "docbench:129:0",
+          "ranked_count": 292,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        {
+          "case_id": "docbench:132:2",
+          "ranked_count": 16,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        {
+          "case_id": "docbench:137:1",
+          "ranked_count": 323,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        {
+          "case_id": "docbench:140:0",
+          "ranked_count": 23,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        {
+          "case_id": "docbench:149:0",
+          "ranked_count": 68,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 0.5,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        {
+          "case_id": "docbench:158:1",
+          "ranked_count": 132,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 0.5,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        {
+          "case_id": "docbench:161:0",
+          "ranked_count": 105,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 0.5,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        {
+          "case_id": "docbench:164:1",
+          "ranked_count": 22,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        {
+          "case_id": "docbench:165:0",
+          "ranked_count": 17,
+          "first_relevant_rank": 3,
+          "reciprocal_rank": 0.3333333333333333,
+          "recall_at_k": {
+            "1": 0.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 0.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 0.0,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          }
+        },
+        {
+          "case_id": "docbench:166:2",
+          "ranked_count": 41,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        {
+          "case_id": "docbench:167:0",
+          "ranked_count": 110,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 0.6131471927654584,
+            "5": 0.8772153153380493,
+            "10": 0.8772153153380493
+          }
+        },
+        {
+          "case_id": "docbench:170:3",
+          "ranked_count": 315,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        {
+          "case_id": "docbench:176:1",
+          "ranked_count": 85,
+          "first_relevant_rank": 2,
+          "reciprocal_rank": 0.5,
+          "recall_at_k": {
+            "1": 0.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 0.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 0.0,
+            "3": 0.6934264036172708,
+            "5": 0.6934264036172708,
+            "10": 0.6934264036172708
+          }
+        },
+        {
+          "case_id": "docbench:178:1",
+          "ranked_count": 76,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        {
+          "case_id": "docbench:179:5",
+          "ranked_count": 23,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        {
+          "case_id": "docbench:183:0",
+          "ranked_count": 17,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        {
+          "case_id": "docbench:187:0",
+          "ranked_count": 16,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        {
+          "case_id": "docbench:189:2",
+          "ranked_count": 19,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 0.3333333333333333,
+            "3": 0.6666666666666666,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 0.7039180890341347,
+            "5": 0.9060254355346823,
+            "10": 0.9060254355346823
+          }
+        },
+        {
+          "case_id": "docbench:191:1",
+          "ranked_count": 21,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        {
+          "case_id": "docbench:192:4",
+          "ranked_count": 25,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        {
+          "case_id": "docbench:193:1",
+          "ranked_count": 22,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        {
+          "case_id": "docbench:194:1",
+          "ranked_count": 24,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        {
+          "case_id": "docbench:198:4",
+          "ranked_count": 23,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        {
+          "case_id": "docbench:199:8",
+          "ranked_count": 26,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 0.5,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 0.9197207891481876,
+            "5": 0.9197207891481876,
+            "10": 0.9197207891481876
+          }
+        },
+        {
+          "case_id": "docbench:1:1",
+          "ranked_count": 29,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 0.3333333333333333,
+            "3": 0.6666666666666666,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 0.7653606369886217,
+            "5": 0.9674679834891693,
+            "10": 0.9674679834891693
+          }
+        },
+        {
+          "case_id": "docbench:202:2",
+          "ranked_count": 28,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        {
+          "case_id": "docbench:203:1",
+          "ranked_count": 24,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        {
+          "case_id": "docbench:206:0",
+          "ranked_count": 16,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        {
+          "case_id": "docbench:21:0",
+          "ranked_count": 43,
+          "first_relevant_rank": 4,
+          "reciprocal_rank": 0.25,
+          "recall_at_k": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.43067655807339306,
+            "10": 0.43067655807339306
+          }
+        },
+        {
+          "case_id": "docbench:29:0",
+          "ranked_count": 54,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        {
+          "case_id": "docbench:4:0",
+          "ranked_count": 20,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        {
+          "case_id": "docbench:50:1",
+          "ranked_count": 98,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 0.25,
+            "3": 0.25,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 0.46927872602275644,
+            "5": 0.5413996682199069,
+            "10": 0.5413996682199069
+          }
+        },
+        {
+          "case_id": "docbench:60:2",
+          "ranked_count": 228,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 0.3333333333333333,
+            "3": 0.3333333333333333,
+            "5": 0.3333333333333333,
+            "10": 0.6666666666666666
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 0.46927872602275644,
+            "5": 0.46927872602275644,
+            "10": 0.6257049680303419
+          }
+        },
+        {
+          "case_id": "docbench:63:2",
+          "ranked_count": 678,
+          "first_relevant_rank": 5,
+          "reciprocal_rank": 0.2,
+          "recall_at_k": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.38685280723454163,
+            "10": 0.38685280723454163
+          }
+        },
+        {
+          "case_id": "docbench:6:0",
+          "ranked_count": 51,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        {
+          "case_id": "docbench:75:0",
+          "ranked_count": 137,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        {
+          "case_id": "docbench:81:2",
+          "ranked_count": 1052,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        {
+          "case_id": "docbench:83:3",
+          "ranked_count": 948,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 0.3333333333333333,
+            "3": 0.3333333333333333,
+            "5": 0.3333333333333333,
+            "10": 0.3333333333333333
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 0.46927872602275644,
+            "5": 0.46927872602275644,
+            "10": 0.46927872602275644
+          }
+        },
+        {
+          "case_id": "docbench:85:0",
+          "ranked_count": 20,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        {
+          "case_id": "docbench:92:1",
+          "ranked_count": 60,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        {
+          "case_id": "docbench:93:3",
+          "ranked_count": 404,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        {
+          "case_id": "docbench:94:0",
+          "ranked_count": 47,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 0.3333333333333333,
+            "3": 0.3333333333333333,
+            "5": 0.3333333333333333,
+            "10": 0.3333333333333333
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 0.46927872602275644,
+            "5": 0.46927872602275644,
+            "10": 0.46927872602275644
+          }
+        }
+      ]
+    },
+    "multimodal-t": {
+      "route_id": "sqlite_fts5_bm25",
+      "case_count": 11,
+      "missing_result_case_ids": [],
+      "mean_reciprocal_rank": 0.7582644628099174,
+      "mean_recall_at_k": {
+        "1": 0.5909090909090909,
+        "3": 0.7727272727272727,
+        "5": 0.8636363636363636,
+        "10": 0.8636363636363636
+      },
+      "hit_rate_at_k": {
+        "1": 0.6363636363636364,
+        "3": 0.8181818181818182,
+        "5": 0.9090909090909091,
+        "10": 0.9090909090909091
+      },
+      "mean_ndcg_at_k": {
+        "1": 0.6363636363636364,
+        "3": 0.7159096999916703,
+        "5": 0.7550621143619787,
+        "10": 0.7550621143619787
+      },
+      "cases": [
+        {
+          "case_id": "docbench:10:3",
+          "ranked_count": 9,
+          "first_relevant_rank": 2,
+          "reciprocal_rank": 0.5,
+          "recall_at_k": {
+            "1": 0.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 0.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 0.0,
+            "3": 0.6309297535714575,
+            "5": 0.6309297535714575,
+            "10": 0.6309297535714575
+          }
+        },
+        {
+          "case_id": "docbench:13:3",
+          "ranked_count": 9,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        {
+          "case_id": "docbench:20:4",
+          "ranked_count": 10,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        {
+          "case_id": "docbench:2:0",
+          "ranked_count": 7,
+          "first_relevant_rank": 2,
+          "reciprocal_rank": 0.5,
+          "recall_at_k": {
+            "1": 0.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 0.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 0.0,
+            "3": 0.6309297535714575,
+            "5": 0.6309297535714575,
+            "10": 0.6309297535714575
+          }
+        },
+        {
+          "case_id": "docbench:36:2",
+          "ranked_count": 7,
+          "first_relevant_rank": 4,
+          "reciprocal_rank": 0.25,
+          "recall_at_k": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.43067655807339306,
+            "10": 0.43067655807339306
+          }
+        },
+        {
+          "case_id": "docbench:53:3",
+          "ranked_count": 1746,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        {
+          "case_id": "docbench:54:4",
+          "ranked_count": 188,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        {
+          "case_id": "docbench:64:1",
+          "ranked_count": 635,
+          "first_relevant_rank": 11,
+          "reciprocal_rank": 0.09090909090909091,
+          "recall_at_k": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "hit_at_k": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "ndcg_at_k": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          }
+        },
+        {
+          "case_id": "docbench:80:5",
+          "ranked_count": 161,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        {
+          "case_id": "docbench:82:3",
+          "ranked_count": 158,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        {
+          "case_id": "docbench:87:9",
+          "ranked_count": 144,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 0.6131471927654584,
+            "5": 0.6131471927654584,
+            "10": 0.6131471927654584
+          }
+        }
+      ]
+    },
+    "multimodal-f": {
+      "route_id": "sqlite_fts5_bm25",
+      "case_count": 14,
+      "missing_result_case_ids": [],
+      "mean_reciprocal_rank": 0.7666666666666666,
+      "mean_recall_at_k": {
+        "1": 0.6071428571428571,
+        "3": 0.8214285714285714,
+        "5": 0.8214285714285714,
+        "10": 0.9285714285714286
+      },
+      "hit_rate_at_k": {
+        "1": 0.6428571428571429,
+        "3": 0.8571428571428571,
+        "5": 0.8571428571428571,
+        "10": 0.9285714285714286
+      },
+      "mean_ndcg_at_k": {
+        "1": 0.6428571428571429,
+        "3": 0.7606223081698184,
+        "5": 0.7606223081698184,
+        "10": 0.8016662098788316
+      },
+      "cases": [
+        {
+          "case_id": "docbench:190:2",
+          "ranked_count": 1,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        {
+          "case_id": "docbench:19:4",
+          "ranked_count": 7,
+          "first_relevant_rank": 2,
+          "reciprocal_rank": 0.5,
+          "recall_at_k": {
+            "1": 0.0,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 0.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 0.0,
+            "3": 0.38685280723454163,
+            "5": 0.38685280723454163,
+            "10": 0.6052602440527057
+          }
+        },
+        {
+          "case_id": "docbench:30:2",
+          "ranked_count": 7,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        {
+          "case_id": "docbench:32:1",
+          "ranked_count": 9,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        {
+          "case_id": "docbench:38:4",
+          "ranked_count": 2,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        {
+          "case_id": "docbench:40:0",
+          "ranked_count": 10,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 0.5,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        {
+          "case_id": "docbench:42:5",
+          "ranked_count": 16,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        {
+          "case_id": "docbench:51:3",
+          "ranked_count": 167,
+          "first_relevant_rank": 2,
+          "reciprocal_rank": 0.5,
+          "recall_at_k": {
+            "1": 0.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 0.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 0.0,
+            "3": 0.6309297535714575,
+            "5": 0.6309297535714575,
+            "10": 0.6309297535714575
+          }
+        },
+        {
+          "case_id": "docbench:55:2",
+          "ranked_count": 221,
+          "first_relevant_rank": 2,
+          "reciprocal_rank": 0.5,
+          "recall_at_k": {
+            "1": 0.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 0.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 0.0,
+            "3": 0.6309297535714575,
+            "5": 0.6309297535714575,
+            "10": 0.6309297535714575
+          }
+        },
+        {
+          "case_id": "docbench:61:6",
+          "ranked_count": 252,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        {
+          "case_id": "docbench:66:3",
+          "ranked_count": 836,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        {
+          "case_id": "docbench:67:4",
+          "ranked_count": 296,
+          "first_relevant_rank": 6,
+          "reciprocal_rank": 0.16666666666666666,
+          "recall_at_k": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.3562071871080222
+          }
+        },
+        {
+          "case_id": "docbench:7:2",
+          "ranked_count": 20,
+          "first_relevant_rank": 15,
+          "reciprocal_rank": 0.06666666666666667,
+          "recall_at_k": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "hit_at_k": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "ndcg_at_k": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          }
+        },
+        {
+          "case_id": "docbench:88:9",
+          "ranked_count": 286,
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "recall_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "hit_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "ndcg_at_k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          }
+        }
+      ]
+    }
+  },
+  "dataset_sha256": "b0d7a0befcafa0e4653985376f0421422faf208708160ebdbd07842eeea49d95",
+  "manifest_sha256": "31471731b99242aca1006d0f1bf7876b852529dacbfba1f38a29b36d5450cb7b",
+  "retrieval": {
+    "engine": "SQLite FTS5",
+    "sqlite_version": "3.53.1",
+    "tokenizer": "unicode61 remove_diacritics 2",
+    "query_operator": "OR over unique literal alphanumeric tokens",
+    "indexed_fields": [
+      "units.content"
+    ],
+    "ranking": "ascending bm25 distance; ties by unit_id",
+    "statistics_scope": "global IDF and length statistics over all snapshot units before scope filtering",
+    "rank_limit": null,
+    "unit_count": 23048,
+    "empty_result_case_ids": []
+  },
+  "origin_dataset_sha256": "7921b057d9a6b1b6d8974da956ed0da9f7acd85048645c9fcbd2505b237c66eb",
+  "origin_manifest_sha256": "34d64fa59df6ccd8731ead35710d13c563ea80307d54e4c1e8c70beabf6cb9ea",
+  "origin_report_sha256": "42bad02badbb43416f44eace51f1a89c25fabfe480324acd1304b38aa5a1e73a",
+  "publication_projection": "Public path-metadata projection of the original frozen artifact. Corpus text, questions, answers, evidence, qrels, assets, scores and vectors are unchanged; no model or evaluation was rerun. Original artifact hashes are retained as origin_*."
+}

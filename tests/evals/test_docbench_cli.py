@@ -34,6 +34,20 @@ CURRENT_CONFIG_IDS = (
 )
 
 
+@pytest.mark.parametrize("command", ("build-retrieval", "annotate-retrieval", "evaluate-retrieval"))
+def test_retrieval_commands_have_moved_to_the_independent_package(
+    command: str, capsys: pytest.CaptureFixture[str],
+) -> None:
+    with pytest.raises(SystemExit) as raised:
+        cli.main([command])
+    assert raised.value.code == 2
+    assert "invalid choice" in capsys.readouterr().err
+    assert not hasattr(cli, "retrieval_dataset")
+    assert not hasattr(cli, "retrieval_eval")
+    for module in ("retrieval_dataset.py", "retrieval_eval.py"):
+        assert not (PROJECT_ROOT / "evals/docbench/reproduce_or_run_script" / module).exists()
+
+
 @pytest.mark.parametrize("root_value", (None, "", "relative-directory"))
 @pytest.mark.parametrize("command", ((), ("prepare-data",), ("build-selection",)))
 def test_help_does_not_resolve_benchmark_root(

@@ -777,6 +777,42 @@ def test_text_secret_scan_rejects_real_home_paths_but_allows_test_markers() -> N
     )
 
 
+@pytest.mark.parametrize("url", [
+    "www.six-exchange-regulation.com/en/home/publications/significant-shareholders.html",
+    "https://eng.yidaiyilu.gov.cn/home/rolling/70834.htm",
+    "http://example.com/Users/" + "alice/profile",
+])
+def test_home_path_scan_allows_public_website_path_sections(url) -> None:
+    assert not text_secret_violations("corpus.txt", url.encode())
+
+
+@pytest.mark.parametrize("text", [
+    "file:///Users/" + "alice/private/file",
+    "file://www.example.com/home/" + "alice/private",
+    "https://example.com/home/publications/page /home/" + "alice/private/file",
+    "https://example.com/?path=/Users/" + "alice/private/file",
+    "https://example.com/#path=/home/" + "alice/private/file",
+    "https:///home/" + "alice/private/file",
+])
+def test_public_url_exception_does_not_hide_local_paths(text) -> None:
+    assert any("user home path" in item.reason for item in text_secret_violations("corpus.txt", text.encode()))
+
+
+def test_public_url_exception_keeps_query_token_detection() -> None:
+    text = "https://example.com/home/publications/page?token=" + "hf_" + "A1b2C3d4E5f6G7h8I9j0K1l2"
+    assert any("secret content pattern" in item.reason for item in text_secret_violations("corpus.txt", text.encode()))
+
+
+@pytest.mark.parametrize("whitespace", ["\n", "\r", "\t"])
+def test_public_url_path_handles_json_escaped_whitespace_without_hiding_next_path(whitespace) -> None:
+    url = "www.six-exchange-regulation.com/en/home/publications/significant-shareholders.html"
+    content = json.dumps("source" + whitespace + url).encode()
+    assert not text_secret_violations("corpus.jsonl", content)
+    local_path = "/home/" + "alice/private/file"
+    content = json.dumps("source" + whitespace + url + whitespace + local_path).encode()
+    assert any("user home path" in item.reason for item in text_secret_violations("corpus.jsonl", content))
+
+
 def test_structured_config_rejects_unprefixed_real_credentials_only() -> None:
     school_key = "campus-school-key-" + "A7b9C2d4E6f8G1h3"
     private_configs = {
@@ -1087,3 +1123,225 @@ def test_pre_push_rejects_a_ref_that_does_not_resolve_to_a_commit(
 
     assert result.returncode == 1
     assert "does not resolve to a commit" in result.stderr
+
+
+def _retrieval_publication(monkeypatch, payloads: dict[str, bytes]) -> dict[str, bytes]:
+    root = "/".join(privacy.RETRIEVAL_ARTIFACT_ROOT)
+    manifest = json.dumps({
+        "kind": "reviewed_public_retrieval_artifacts",
+        "files": {
+            relative: {"sha256": hashlib.sha256(content).hexdigest(), "bytes": len(content)}
+            for relative, content in payloads.items()
+        },
+    }, sort_keys=True).encode()
+    monkeypatch.setattr(privacy, "REVIEWED_RETRIEVAL_MANIFEST_SHA256", hashlib.sha256(manifest).hexdigest())
+    return {
+        privacy.REVIEWED_RETRIEVAL_MANIFEST: manifest,
+        **{f"{root}/{relative}": content for relative, content in payloads.items()},
+    }
+
+
+def test_retrieval_publication_requires_pinned_manifest_and_exact_membership(monkeypatch) -> None:
+    files = _retrieval_publication(monkeypatch, {"dataset/snapshot/cases.json": b'{"question":"synthetic","answer":"yes","case_id":"fixture"}'})
+    assert not inspect_snapshot(files, files.__getitem__)
+    missing_manifest = {key: value for key, value in files.items() if key != privacy.REVIEWED_RETRIEVAL_MANIFEST}
+    assert inspect_snapshot(missing_manifest, missing_manifest.__getitem__)
+    changed_manifest = dict(files)
+    changed_manifest[privacy.REVIEWED_RETRIEVAL_MANIFEST] += b"\n"
+    assert any("manifest is not the reviewed snapshot" in item.reason for item in inspect_snapshot(changed_manifest, changed_manifest.__getitem__))
+    extra = "/".join((*privacy.RETRIEVAL_ARTIFACT_ROOT, "results/extra.json"))
+    files[extra] = b"{}"
+    assert any(item.path == extra for item in inspect_snapshot(files, files.__getitem__))
+
+
+def test_retrieval_publication_rejects_missing_and_changed_files(monkeypatch) -> None:
+    for relative in ("dataset/a.sqlite", "dataset/assets/a.jpg", "indexes/vectors.npz", "results/rankings.jsonl"):
+        payload = b'{"rank":1}\n' if relative.endswith(".jsonl") else b"\x00\xffsynthetic binary"
+        files = _retrieval_publication(monkeypatch, {relative: payload})
+        artifact = next(path for path in files if path != privacy.REVIEWED_RETRIEVAL_MANIFEST)
+        assert not inspect_snapshot(files, files.__getitem__)
+        original = files.pop(artifact)
+        assert any("artifact is missing" in item.reason for item in inspect_snapshot(files, files.__getitem__))
+        files[artifact] = original[:-1] + b"X"
+        assert any("hash/size mismatch" in item.reason for item in inspect_snapshot(files, files.__getitem__))
+
+
+@pytest.mark.parametrize("relative", ["../docbench/results/raw.json", "dataset/../../src/leak.json", "src/leak.json", "dataset//raw.json", "/dataset/raw.json", "dataset/a/../raw.json"])
+def test_retrieval_manifest_cannot_authorize_other_roots_or_noncanonical_paths(monkeypatch, relative) -> None:
+    files = _retrieval_publication(monkeypatch, {relative: b"{}"})
+    assert any("outside approved retrieval directories" in item.reason for item in inspect_snapshot(files, files.__getitem__))
+
+
+@pytest.mark.parametrize("record", [{"sha256": "not-a-hash", "bytes": 2}, {"sha256": "a" * 64, "bytes": True}, {"sha256": "a" * 64, "bytes": -1}, {"sha256": "a" * 64}])
+def test_retrieval_manifest_validates_hash_and_size_records(monkeypatch, record) -> None:
+    files = _retrieval_publication(monkeypatch, {"dataset/raw.json": b"{}"})
+    manifest = json.loads(files[privacy.REVIEWED_RETRIEVAL_MANIFEST])
+    manifest["files"]["dataset/raw.json"] = record
+    raw = json.dumps(manifest).encode()
+    files[privacy.REVIEWED_RETRIEVAL_MANIFEST] = raw
+    monkeypatch.setattr(privacy, "REVIEWED_RETRIEVAL_MANIFEST_SHA256", hashlib.sha256(raw).hexdigest())
+    assert any("invalid publication hash/size record" in item.reason for item in inspect_snapshot(files, files.__getitem__))
+
+
+def test_retrieval_qa_approval_preserves_credentials_and_legacy_boundaries(monkeypatch) -> None:
+    raw = b'{"question":"synthetic","answer":"yes","case_id":"fixture"}'
+    files = _retrieval_publication(monkeypatch, {"dataset/queries.jsonl": raw + b"\n", "results/raw.json": raw})
+    assert not inspect_snapshot(files, files.__getitem__)
+    assert structured_privacy_violations("notes/archive.json", raw, reviewed_retrieval=True)
+    for relative, payload in {
+        "dataset/credential.json": b'{"api_key":"real-school-credential"}',
+        "dataset/credential.jsonl": b'{"nested":{"password":"real-school-credential"}}\n',
+        "dataset/a.sqlite": b"\x00hf_" + b"A1b2C3d4E5f6G7h8I9j0K1l2" + b"\x00",
+        "dataset/paths.sqlite": b"\x00/Users/" + b"actual-person/private/file\x00",
+        "results/credentials.json": b"{}",
+    }.items():
+        files = _retrieval_publication(monkeypatch, {relative: payload})
+        assert inspect_snapshot(files, files.__getitem__), relative
+
+
+@pytest.mark.parametrize("suffix", [".jpg", ".jpeg", ".png", ".npz"])
+def test_pinned_compressed_artifacts_still_require_exact_bytes(monkeypatch, suffix) -> None:
+    files = _retrieval_publication(monkeypatch, {f"dataset/asset{suffix}": b"\x00\x81\xff\x12\x00"})
+    artifact = next(path for path in files if path != privacy.REVIEWED_RETRIEVAL_MANIFEST)
+    scanned = []
+    scan = privacy.text_secret_violations
+
+    def record_scan(path, content, **kwargs):
+        scanned.append(path)
+        return scan(path, content, **kwargs)
+
+    monkeypatch.setattr(privacy, "text_secret_violations", record_scan)
+    assert not inspect_snapshot(files, files.__getitem__)
+    assert artifact not in scanned
+    assert privacy.REVIEWED_RETRIEVAL_MANIFEST in scanned
+    files[artifact] = files[artifact][:-1] + b"\x01"
+    assert any("hash/size mismatch" in item.reason for item in inspect_snapshot(files, files.__getitem__))
+    files.pop(privacy.REVIEWED_RETRIEVAL_MANIFEST)
+    assert any("not in the reviewed publication" in item.reason for item in inspect_snapshot(files, files.__getitem__))
+
+
+def test_large_pinned_jsonl_is_scanned_past_ordinary_limit_and_block_boundary(monkeypatch) -> None:
+    safe = b'{"text":"synthetic"}\n'
+    prefix = safe * (privacy.MAX_TEXT_SCAN_BYTES // len(safe) + 1)
+    payload = prefix + b'{"password":"real-school-credential"}\n'
+    files = _retrieval_publication(monkeypatch, {"dataset/large.jsonl": payload})
+    assert any("structured credential" in item.reason for item in inspect_snapshot(files, files.__getitem__))
+    payload = b"\x00" * (1024 * 1024 - 3) + b"hf_" + b"A1b2C3d4E5f6G7h8I9j0K1l2"
+    files = _retrieval_publication(monkeypatch, {"dataset/a.sqlite": payload})
+    assert any("secret content pattern" in item.reason for item in inspect_snapshot(files, files.__getitem__))
+
+
+def test_retrieval_staged_and_tree_views_use_their_own_binary_snapshot(monkeypatch, tmp_path) -> None:
+    files = _retrieval_publication(monkeypatch, {"dataset/a.sqlite": b"\x00synthetic database", "results/rankings.jsonl": b'{"case_id":"fixture","rank":1}\n'})
+    _git(tmp_path, "init", "--quiet")
+    for relative, content in files.items():
+        target = tmp_path / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(content)
+    _git(tmp_path, "add", ".")
+    _git(tmp_path, "-c", "user.name=Privacy Test", "-c", "user.email=privacy@example.invalid", "commit", "--quiet", "-m", "synthetic retrieval fixture")
+    artifact = tmp_path / "/".join((*privacy.RETRIEVAL_ARTIFACT_ROOT, "dataset/a.sqlite"))
+    artifact.write_bytes(b"changed worktree database")
+    (tmp_path / privacy.REVIEWED_RETRIEVAL_MANIFEST).write_bytes(b"changed worktree manifest")
+    for paths, read in (privacy.staged_snapshot(tmp_path), privacy.tree_snapshot(tmp_path, "HEAD")):
+        assert not inspect_snapshot(paths, read)
+    paths, read = privacy.worktree_snapshot(tmp_path)
+    assert inspect_snapshot(paths, read)
+    (tmp_path / privacy.REVIEWED_RETRIEVAL_MANIFEST).write_bytes(files[privacy.REVIEWED_RETRIEVAL_MANIFEST])
+    _git(tmp_path, "add", ".")
+    paths, read = privacy.staged_snapshot(tmp_path)
+    assert any("hash/size mismatch" in item.reason for item in inspect_snapshot(paths, read))
+
+
+def _retrieval_release_publication(monkeypatch) -> dict[str, bytes]:
+    files = _retrieval_publication(monkeypatch, {"results/report.json": b'{"completed":true}'})
+    catalogue = json.dumps({
+        "schema_version": "docbench-retrieval-release-assets-v1",
+        "repository": "Rising404/entelecheia_agent",
+        "tag": "docbench-retrieval-fixture",
+        "assets": {
+            "corpus": {
+                "filename": "corpus.tar.gz",
+                "url": "https://github.com/Rising404/entelecheia_agent/releases/download/docbench-retrieval-fixture/corpus.tar.gz",
+                "sha256": "a" * 64,
+                "bytes": 42,
+                "root": "dataset/fixture",
+                "files": {"dataset.sqlite": {"sha256": hashlib.sha256(b"fixture").hexdigest(), "bytes": 7}},
+            },
+        },
+    }).encode()
+    files[privacy.REVIEWED_RETRIEVAL_RELEASE_ASSETS] = catalogue
+    monkeypatch.setattr(privacy, "REVIEWED_RETRIEVAL_RELEASE_ASSETS_SHA256", hashlib.sha256(catalogue).hexdigest())
+    manifest = json.loads(files[privacy.REVIEWED_RETRIEVAL_MANIFEST])
+    manifest["release_assets"] = "release_assets.json"
+    raw = json.dumps(manifest).encode()
+    files[privacy.REVIEWED_RETRIEVAL_MANIFEST] = raw
+    monkeypatch.setattr(privacy, "REVIEWED_RETRIEVAL_MANIFEST_SHA256", hashlib.sha256(raw).hexdigest())
+    return files
+
+
+def test_retrieval_release_catalogue_is_required_when_referenced_and_cannot_be_replaced(monkeypatch) -> None:
+    files = _retrieval_release_publication(monkeypatch)
+    assert not inspect_snapshot(files, files.__getitem__)
+    catalogue = files.pop(privacy.REVIEWED_RETRIEVAL_RELEASE_ASSETS)
+    assert any("referenced release catalogue is missing" in item.reason for item in inspect_snapshot(files, files.__getitem__))
+    files[privacy.REVIEWED_RETRIEVAL_RELEASE_ASSETS] = catalogue + b"\n"
+    assert any("catalogue is not the reviewed snapshot" in item.reason for item in inspect_snapshot(files, files.__getitem__))
+
+
+def test_retrieval_release_catalogue_does_not_authorize_artifacts_or_missing_git_files(monkeypatch) -> None:
+    files = _retrieval_release_publication(monkeypatch)
+    root = "/".join(privacy.RETRIEVAL_ARTIFACT_ROOT)
+    corpus_path = f"{root}/dataset/fixture/dataset.sqlite"
+    files[corpus_path] = b"fixture"
+    assert any(item.path == corpus_path and "not in the reviewed publication" in item.reason for item in inspect_snapshot(files, files.__getitem__))
+    del files[corpus_path]
+    del files[f"{root}/results/report.json"]
+    assert any("reviewed retrieval artifact is missing" in item.reason for item in inspect_snapshot(files, files.__getitem__))
+
+
+@pytest.mark.parametrize("reference", ["elsewhere.json", "../release_assets.json", None])
+def test_retrieval_release_reference_has_one_canonical_target(monkeypatch, reference) -> None:
+    files = _retrieval_release_publication(monkeypatch)
+    manifest = json.loads(files[privacy.REVIEWED_RETRIEVAL_MANIFEST])
+    manifest["release_assets"] = reference
+    raw = json.dumps(manifest).encode()
+    files[privacy.REVIEWED_RETRIEVAL_MANIFEST] = raw
+    monkeypatch.setattr(privacy, "REVIEWED_RETRIEVAL_MANIFEST_SHA256", hashlib.sha256(raw).hexdigest())
+    assert any("unexpected release catalogue reference" in item.reason for item in inspect_snapshot(files, files.__getitem__))
+
+
+@pytest.mark.parametrize("tail,reason", [
+    ({"password": "real-school-credential"}, "structured credential"),
+    ({"path": "/Users/" + "actual-person/private/file"}, "user home path"),
+    ({"question": "synthetic", "answer": "yes", "case_id": "fixture"}, "raw per-case evaluation payload"),
+])
+def test_retrieval_release_catalogue_scans_all_metadata_without_corpus_exemptions(monkeypatch, tail, reason) -> None:
+    files = _retrieval_release_publication(monkeypatch)
+    catalogue = json.loads(files[privacy.REVIEWED_RETRIEVAL_RELEASE_ASSETS])
+    catalogue["padding"] = "x" * privacy.MAX_TEXT_SCAN_BYTES
+    catalogue["tail"] = tail
+    raw = json.dumps(catalogue).encode()
+    assert len(raw) > privacy.MAX_TEXT_SCAN_BYTES
+    files[privacy.REVIEWED_RETRIEVAL_RELEASE_ASSETS] = raw
+    monkeypatch.setattr(privacy, "REVIEWED_RETRIEVAL_RELEASE_ASSETS_SHA256", hashlib.sha256(raw).hexdigest())
+    assert any(reason in item.reason for item in inspect_snapshot(files, files.__getitem__))
+
+
+def test_retrieval_release_catalogue_uses_the_selected_git_snapshot(monkeypatch, tmp_path) -> None:
+    files = _retrieval_release_publication(monkeypatch)
+    _git(tmp_path, "init", "--quiet")
+    for relative, content in files.items():
+        target = tmp_path / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(content)
+    _git(tmp_path, "add", ".")
+    _git(tmp_path, "-c", "user.name=Privacy Test", "-c", "user.email=privacy@example.invalid", "commit", "--quiet", "-m", "synthetic release fixture")
+    (tmp_path / privacy.REVIEWED_RETRIEVAL_RELEASE_ASSETS).write_bytes(b"unreviewed worktree catalogue")
+    for paths, read in (privacy.staged_snapshot(tmp_path), privacy.tree_snapshot(tmp_path, "HEAD")):
+        assert not inspect_snapshot(paths, read)
+    paths, read = privacy.worktree_snapshot(tmp_path)
+    assert any("catalogue is not the reviewed snapshot" in item.reason for item in inspect_snapshot(paths, read))
+    _git(tmp_path, "add", ".")
+    paths, read = privacy.staged_snapshot(tmp_path)
+    assert any("catalogue is not the reviewed snapshot" in item.reason for item in inspect_snapshot(paths, read))

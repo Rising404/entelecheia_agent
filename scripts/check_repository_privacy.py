@@ -53,6 +53,16 @@ FORBIDDEN_ROOTS = frozenset(
 )
 LOCAL_CONFIG_ROOT = ("configs", "local")
 LOCAL_CONFIG_EXCEPTIONS = frozenset({("configs", "local", "README.md")})
+RETRIEVAL_ARTIFACT_ROOT = ("evals", "docbench_hybrid_retrieval_optimize")
+RETRIEVAL_ARTIFACT_DIRECTORIES = frozenset({"dataset", "indexes", "results"})
+REVIEWED_RETRIEVAL_MANIFEST = "/".join((*RETRIEVAL_ARTIFACT_ROOT, "publication_manifest.json"))
+# The user approved this exact retrieval corpus and its results for publication.
+# Editing a manifest does not approve a different corpus or another directory.
+REVIEWED_RETRIEVAL_MANIFEST_SHA256 = "645fd900cd1f4d07326116f27384f4d472ae7e98dcbf9a876363988e4a4e43ea"
+REVIEWED_RETRIEVAL_RELEASE_ASSETS = "/".join((*RETRIEVAL_ARTIFACT_ROOT, "release_assets.json"))
+# This catalogue authenticates downloadable metadata only. Its file list never
+# authorizes corpus files in a Git snapshot or relaxes the publication manifest.
+REVIEWED_RETRIEVAL_RELEASE_ASSETS_SHA256 = "203de87554d726dfd49b637b4b5a1b8cee994e60802751d4850e850844c53b7a"
 REVIEWED_EVALUATION_MARKDOWN_PATHS = frozenset(
     {
         # Earlier standalone analysis publications retain their original policy.
@@ -575,6 +585,15 @@ HOME_PATH_PATTERNS = (
     re.compile(r"/(?:Users|home)/([^/\\\s\"']+)(?:[/\\])"),
     re.compile(r"\b[A-Za-z]:[/\\]+Users[/\\]+([^/\\\s\"']+)(?:[/\\])"),
 )
+# A public website can legitimately use home-directory-like URL path sections.
+# Query and fragment values are deliberately outside the span: they may contain
+# an actual local filename. file:// and malformed/empty authorities are excluded.
+WEB_URL_PATH = re.compile(
+    r"(?:(?<![\w:/])|(?<=\\[nrt]))(?:https?://|www\.)"
+    r"[A-Za-z0-9](?:[A-Za-z0-9.-]*[A-Za-z0-9])?(?::[0-9]+)?"
+    r"(?:/[^\\\s<>\"'?#\x00-\x20]*)?",
+    re.IGNORECASE,
+)
 TEST_HOME_ACCOUNT_MARKERS = frozenset(
     {"ci", "dev", "example", "private", "runner", "test", "user"}
 )
@@ -732,6 +751,10 @@ def staged_snapshot(repo: Path) -> tuple[list[str], Callable[[str], bytes]]:
         try:
             return content[path]
         except KeyError as error:
+            if _retrieval_artifact_path(path) and path in object_ids_by_path:
+                # A corpus can exceed a gigabyte. Hash one pinned blob at a time,
+                # rather than retaining every image/database in the text cache.
+                return _run_git(repo, ("cat-file", "blob", object_ids_by_path[path]))
             raise CheckError("staged blob is unavailable") from error
 
     return sorted(paths), read
@@ -762,6 +785,8 @@ def tree_snapshot(
         try:
             return content[path]
         except KeyError as error:
+            if _retrieval_artifact_path(path) and path in object_ids_by_path:
+                return _run_git(repo, ("cat-file", "blob", object_ids_by_path[path]))
             raise CheckError("tree blob is unavailable") from error
 
     return paths, read
@@ -771,8 +796,21 @@ def _parts(path: str) -> tuple[str, ...]:
     return tuple(part for part in PurePosixPath(path).parts if part not in {"", "."})
 
 
+def _retrieval_artifact_path(path: str) -> bool:
+    parts = PurePosixPath(path).parts
+    return (
+        len(parts) >= 4
+        and parts[:2] == RETRIEVAL_ARTIFACT_ROOT
+        and parts[2] in RETRIEVAL_ARTIFACT_DIRECTORIES
+        and ".." not in parts
+        and "\\" not in path
+        and str(PurePosixPath(path)) == path
+    )
+
+
 def path_violations(
     path: str, *, reviewed_evidence: bool = False, reviewed_screenshot: bool = False,
+    reviewed_retrieval: bool = False,
 ) -> list[Violation]:
     parts = _parts(path)
     if not parts:
@@ -782,6 +820,16 @@ def path_violations(
     lowered_parts = tuple(part.casefold() for part in parts)
     if lowered_parts[0] in FORBIDDEN_ROOTS:
         violations.append(Violation(path, f"private repository root: {parts[0]}/"))
+
+    if (
+        lowered_parts[:2] == RETRIEVAL_ARTIFACT_ROOT
+        and len(lowered_parts) > 2
+        and lowered_parts[2] in RETRIEVAL_ARTIFACT_DIRECTORIES
+        and not (reviewed_retrieval and _retrieval_artifact_path(path))
+    ):
+        violations.append(Violation(path, "retrieval artifact is not in the reviewed publication"))
+
+    reviewed_retrieval = reviewed_retrieval and _retrieval_artifact_path(path)
 
     if lowered_parts[:2] == LOCAL_CONFIG_ROOT and parts not in LOCAL_CONFIG_EXCEPTIONS:
         violations.append(Violation(path, "private local configuration (only configs/local/README.md is allowed)"))
@@ -801,7 +849,7 @@ def path_violations(
     if FORBIDDEN_DIAGNOSTIC_FILENAME.fullmatch(filename):
         violations.append(Violation(path, "local diagnostic artifact filename"))
     if filename.endswith(FORBIDDEN_SUFFIXES) and not (
-        reviewed_screenshot and path in REVIEWED_SCREENSHOT_FILES
+        reviewed_retrieval or (reviewed_screenshot and path in REVIEWED_SCREENSHOT_FILES)
     ):
         violations.append(Violation(path, "private data/database/key material file type"))
 
@@ -833,6 +881,8 @@ def path_violations(
                 lambda name: name == "readme.md",
             ),
         ):
+            if reviewed_retrieval:
+                continue
             if directory == "previous_results" and reviewed_evidence:
                 # Only inspect_snapshot can establish exact manifest membership.
                 continue
@@ -970,9 +1020,11 @@ def _looks_like_raw_evaluation_mapping(mapping: dict[object, object]) -> bool:
 
 def structured_privacy_violations(
     path: str, content: bytes, *, max_bytes: int = MAX_TEXT_SCAN_BYTES,
+    reviewed_retrieval: bool = False,
 ) -> list[Violation]:
     """Detect credentials and raw per-case eval payloads after path renaming."""
 
+    reviewed_retrieval = reviewed_retrieval and _retrieval_artifact_path(path)
     suffix = PurePosixPath(path).suffix.casefold()
     if suffix not in STRUCTURED_CONFIG_SUFFIXES or len(content) > max_bytes:
         return []
@@ -1001,7 +1053,7 @@ def structured_privacy_violations(
                         f"non-placeholder structured credential at: {'.'.join(location)}",
                     )
                 )
-        if suffix in RAW_EVALUATION_SUFFIXES and any(
+        if not reviewed_retrieval and suffix in RAW_EVALUATION_SUFFIXES and any(
             _looks_like_raw_evaluation_mapping(mapping)
             for mapping in _walk_mappings(document)
         ):
@@ -1022,7 +1074,7 @@ def structured_privacy_violations(
                 Violation(path, f"non-placeholder structured credential at: {key}")
             )
 
-    if suffix in RAW_EVALUATION_SUFFIXES:
+    if not reviewed_retrieval and suffix in RAW_EVALUATION_SUFFIXES:
         scalar_keys = {
             key
             for key, value in assignments
@@ -1061,8 +1113,10 @@ def text_secret_violations(
         for category, pattern in TEXT_SECRET_PATTERNS
         if pattern.search(text)
     ]
+    web_paths = [match.span() for match in WEB_URL_PATH.finditer(text)]
     if any(
         match.group(1).casefold() not in TEST_HOME_ACCOUNT_MARKERS
+        and not any(start <= match.start() and match.end() <= end for start, end in web_paths)
         for pattern in HOME_PATH_PATTERNS
         for match in pattern.finditer(text)
     ):
@@ -1398,6 +1452,105 @@ def _reviewed_screenshot_violations(path: str, content: bytes) -> list[Violation
     return []
 
 
+def _reviewed_retrieval_entries(
+    paths: set[str], read: Callable[[str], bytes],
+) -> tuple[dict[str, tuple[str, int]], list[Violation]]:
+    path = REVIEWED_RETRIEVAL_MANIFEST
+    if path not in paths:
+        return {}, []
+    try:
+        raw = read(path)
+        digest = hashlib.sha256(raw).hexdigest()
+        if digest != REVIEWED_RETRIEVAL_MANIFEST_SHA256:
+            raise ValueError("manifest is not the reviewed snapshot")
+        manifest = json.loads(raw, object_pairs_hook=_unique_json_object)
+        if manifest["kind"] != "reviewed_public_retrieval_artifacts":
+            raise ValueError("unexpected publication kind")
+        if not isinstance(manifest["files"], dict) or not manifest["files"]:
+            raise ValueError("publication files must be a nonempty object")
+        if "release_assets" in manifest:
+            if manifest["release_assets"] != PurePosixPath(REVIEWED_RETRIEVAL_RELEASE_ASSETS).name:
+                raise ValueError("unexpected release catalogue reference")
+            if REVIEWED_RETRIEVAL_RELEASE_ASSETS not in paths:
+                raise ValueError("referenced release catalogue is missing")
+        entries = {path: (digest, len(raw))}
+        root = "/".join(RETRIEVAL_ARTIFACT_ROOT)
+        for relative, record in manifest["files"].items():
+            target = f"{root}/{relative}"
+            if not _retrieval_artifact_path(target):
+                raise ValueError("publication path is outside approved retrieval directories")
+            if (
+                not isinstance(record, dict)
+                or set(record) != {"sha256", "bytes"}
+                or not isinstance(record["sha256"], str)
+                or re.fullmatch(r"[0-9a-f]{64}", record["sha256"]) is None
+                or type(record["bytes"]) is not int
+                or record["bytes"] < 0
+            ):
+                raise ValueError("invalid publication hash/size record")
+            entries[target] = (record["sha256"], record["bytes"])
+        violations = [
+            Violation(target, "reviewed retrieval artifact is missing")
+            for target in entries if target not in paths
+        ]
+        return entries, violations
+    except (OSError, CheckError, ValueError, KeyError, TypeError) as error:
+        return {}, [Violation(path, f"invalid reviewed retrieval manifest: {error}")]
+
+
+def _reviewed_retrieval_release_violations(content: bytes) -> list[Violation]:
+    path = REVIEWED_RETRIEVAL_RELEASE_ASSETS
+    if hashlib.sha256(content).hexdigest() != REVIEWED_RETRIEVAL_RELEASE_ASSETS_SHA256:
+        return [Violation(path, "release catalogue is not the reviewed snapshot")]
+    # A complete catalogue can exceed the ordinary text bound. Authenticate it
+    # first, then scan all metadata without the retrieval QA/content exception.
+    return [
+        *text_secret_violations(path, content, max_bytes=len(content)),
+        *structured_privacy_violations(path, content, max_bytes=len(content)),
+    ]
+
+
+def _retrieval_content_violations(path: str, content: bytes) -> list[Violation]:
+    """Scan an authenticated artifact without exempting credentials or home paths.
+
+    JSONL is parsed one record at a time. SQLite pages retain the high-confidence
+    text scan. Overlap protects tokens split by bounded scan blocks; it is not a
+    binary decoder or OCR for images.
+    """
+    suffix = PurePosixPath(path).suffix.casefold()
+    if suffix in {".jpg", ".jpeg", ".png", ".npz"}:
+        # Called only after exact manifest membership, SHA and size validation.
+        # The reviewer approves image/vector content; its pinned hash prevents
+        # changes. Applying text regexes to compressed bytes cannot inspect it.
+        return []
+    violations: set[Violation] = set()
+    block_size = 1024 * 1024
+    for offset in range(0, len(content), block_size):
+        block = content[max(0, offset - 4096):offset + block_size]
+        violations.update(text_secret_violations(path, block, max_bytes=len(block)))
+    if suffix in {".jsonl", ".ndjson"}:
+        structured_path = str(PurePosixPath(path).with_suffix(".json"))
+        for line_number, line in enumerate(io.BytesIO(content), 1):
+            if not line.strip():
+                continue
+            try:
+                json.loads(line, object_pairs_hook=_unique_json_object)
+            except (ValueError, UnicodeDecodeError):
+                violations.add(Violation(path, f"invalid JSONL record at line {line_number}"))
+                continue
+            violations.update(
+                Violation(path, violation.reason)
+                for violation in structured_privacy_violations(
+                    structured_path, line, max_bytes=len(line), reviewed_retrieval=True,
+                )
+            )
+    elif _is_text_candidate(path):
+        violations.update(structured_privacy_violations(
+            path, content, max_bytes=len(content), reviewed_retrieval=True,
+        ))
+    return sorted(violations)
+
+
 def inspect_snapshot(
     paths: Iterable[str], read: Callable[[str], bytes], *, committed_history: bool = False,
 ) -> list[Violation]:
@@ -1405,9 +1558,11 @@ def inspect_snapshot(
     evidence, manifest_violations = _reviewed_evidence_entries(
         set(paths), read, committed_history=committed_history,
     )
-    violations: set[Violation] = set(manifest_violations)
+    retrieval, retrieval_manifest_violations = _reviewed_retrieval_entries(set(paths), read)
+    violations: set[Violation] = set((*manifest_violations, *retrieval_manifest_violations))
     for path in paths:
-        expected = evidence.get(path)
+        expected = retrieval.get(path) or evidence.get(path)
+        is_retrieval = path in retrieval
         reviewed_screenshot = False
         if path in REVIEWED_SCREENSHOT_FILES:
             try:
@@ -1418,26 +1573,34 @@ def inspect_snapshot(
                 violations.update(screenshot_errors)
                 reviewed_screenshot = not screenshot_errors
         current_path_violations = path_violations(
-            path, reviewed_evidence=expected is not None, reviewed_screenshot=reviewed_screenshot,
+            path, reviewed_evidence=path in evidence, reviewed_screenshot=reviewed_screenshot,
+            reviewed_retrieval=is_retrieval,
         )
         violations.update(current_path_violations)
         is_summary = _is_eval_summary(path)
         is_text = _is_text_candidate(path)
-        if not current_path_violations and (is_summary or is_text):
+        if not current_path_violations and (is_summary or is_text or is_retrieval):
             try:
                 content = read(path)
             except (OSError, CheckError):
                 violations.add(Violation(path, "privacy-scanned file could not be read"))
             else:
+                if path == REVIEWED_RETRIEVAL_RELEASE_ASSETS:
+                    violations.update(_reviewed_retrieval_release_violations(content))
+                    continue
                 scan_limit = MAX_TEXT_SCAN_BYTES
                 if expected is not None:
                     actual = (hashlib.sha256(content).hexdigest(), len(content))
                     if actual != expected:
-                        violations.add(Violation(path, "reviewed evidence hash/size mismatch"))
+                        kind = "retrieval artifact" if is_retrieval else "evidence"
+                        violations.add(Violation(path, f"reviewed {kind} hash/size mismatch"))
                         continue
                     # Large approved trajectories still receive a complete scan;
                     # this is not a generic size-limit exemption for raw artifacts.
                     scan_limit = max(scan_limit, expected[1])
+                if is_retrieval:
+                    violations.update(_retrieval_content_violations(path, content))
+                    continue
                 if is_text:
                     violations.update(text_secret_violations(path, content, max_bytes=scan_limit))
                     violations.update(structured_privacy_violations(path, content, max_bytes=scan_limit))

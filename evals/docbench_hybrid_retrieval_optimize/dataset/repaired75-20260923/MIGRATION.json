@@ -1,0 +1,40 @@
+{
+  "origin_artifact": "docbench-artifact://datasets/retrieval/repaired75-20260923",
+  "origin_dataset_sha256": "7921b057d9a6b1b6d8974da956ed0da9f7acd85048645c9fcbd2505b237c66eb",
+  "origin_manifest_sha256": "34d64fa59df6ccd8731ead35710d13c563ea80307d54e4c1e8c70beabf6cb9ea",
+  "dataset_sha256": "b0d7a0befcafa0e4653985376f0421422faf208708160ebdbd07842eeea49d95",
+  "manifest_sha256": "31471731b99242aca1006d0f1bf7876b852529dacbfba1f38a29b36d5450cb7b",
+  "description": "Public path-metadata projection of the original frozen artifact. Corpus text, questions, answers, evidence, qrels, assets, scores and vectors are unchanged; no model or evaluation was rerun. Original artifact hashes are retained as origin_*.",
+  "updated_metadata_fields": {
+    "documents.pdf_path": 75,
+    "documents.source_db": 75
+  },
+  "unchanged_table_projection_checks": {
+    "documents": {
+      "rows": 75,
+      "sha256": "e8dd1461f1d4f245ec873db348a601b8575027f8d3b57902aa25e2a57f1b3ed8"
+    },
+    "units": {
+      "rows": 23048,
+      "sha256": "d5f6f54622fa7242169d43ba0168481fa4cf7a0b0d9de82c313d2aed3a614d6e"
+    },
+    "queries": {
+      "rows": 75,
+      "sha256": "2ee5f16916b1336b0102d505e52f52b251b7c4923cfa04e9e73a8837212c7876"
+    },
+    "qrels": {
+      "rows": 113,
+      "sha256": "1273992c04d5c3a264ab8030e6a731877fad2d7a143c616dad923645c32d60c4"
+    },
+    "curation_events": {
+      "rows": 19,
+      "sha256": "981dab81355c68dfc2117483a165d82e3e3d75f9f516b71e227a51c79cf04a31"
+    }
+  },
+  "unchanged_assets": {
+    "count": 6526,
+    "path_and_sha256_map_sha256": "3a5e7d11fcb19c565b1a85f1ca487ae83ad4e1a6e8cd1ff5cd5d5dd2b6c32523"
+  },
+  "sqlite_integrity_check": "ok",
+  "sqlite_freelist_count": 0
+}

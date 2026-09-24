@@ -1,0 +1,40 @@
+{
+  "database": {
+    "bytes": 308203520,
+    "sha256": "06f16c872723fe6f275b7d62cf9d8b1680cf58cd0813b7b393dd987680f3e1ce"
+  },
+  "format": "raw-byte-parts",
+  "index_manifest": {
+    "bytes": 56045,
+    "sha256": "7319546f81259ba7aa45145512ab10fb26f50a8b9e1356bd92adadf10f901511"
+  },
+  "part_bytes": 67108864,
+  "parts": [
+    {
+      "bytes": 67108864,
+      "name": "retrieval.sqlite.part-00000",
+      "sha256": "b0c41afdca8cc30ec09d7ea864398a9838a3776d2de7990ad671d7a90f287eeb"
+    },
+    {
+      "bytes": 67108864,
+      "name": "retrieval.sqlite.part-00001",
+      "sha256": "0ab1cd259be35510cb6b6d7a545e59eed1da0e9cb66eec9e98651c38cfdbc9f8"
+    },
+    {
+      "bytes": 67108864,
+      "name": "retrieval.sqlite.part-00002",
+      "sha256": "420e3d5788b71678f957cb5144e69b2240a3a3e346ba96432cd2e840c23b4932"
+    },
+    {
+      "bytes": 67108864,
+      "name": "retrieval.sqlite.part-00003",
+      "sha256": "f6f34a392cfff918adfc7ad54f324cf95172f7a934a2b3d5fdbc77fc7999ed09"
+    },
+    {
+      "bytes": 39768064,
+      "name": "retrieval.sqlite.part-00004",
+      "sha256": "061d9220861333bac0a94683f773844c2f1dc202e49a8676ab1f905e199a5cc2"
+    }
+  ],
+  "schema_version": "docbench-hybrid-index-archive-v1"
+}

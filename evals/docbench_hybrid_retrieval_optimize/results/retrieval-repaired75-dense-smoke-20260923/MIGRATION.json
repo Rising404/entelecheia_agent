@@ -1,0 +1,18 @@
+{
+  "origin_artifact": "docbench-artifact://reports/retrieval-repaired75-dense-smoke-20260923",
+  "origin_report_sha256": "03fcfebef6cad08f0983952ebad12a422208539d38e11f135652907b8d0c9ff9",
+  "report_sha256": "e669a27954aef8e749a1521f80315956c06244a9c4dfe8ad8b84b34353ab7ff0",
+  "dataset_sha256": "b0d7a0befcafa0e4653985376f0421422faf208708160ebdbd07842eeea49d95",
+  "manifest_sha256": "31471731b99242aca1006d0f1bf7876b852529dacbfba1f38a29b36d5450cb7b",
+  "description": "Public path-metadata projection of the original frozen artifact. Corpus text, questions, answers, evidence, qrels, assets, scores and vectors are unchanged; no model or evaluation was rerun. Original artifact hashes are retained as origin_*.",
+  "unchanged_result_files": {
+    "units.jsonl": "a5f2bbf362ebb9bfd449c8fbd975f7e4a3d315112a4d31a023bf0b2e2b08e0a6",
+    "queries.jsonl": "c4100e9aaea241b20e5604e72b2ec7f8e697334717a5bc153412b90c38f7dd9a",
+    "subset_qrels.jsonl": "679c098570c8e0eac4d505852b10683940fb670ac0986fa1578295f3ee7c01cd",
+    "query_vectors.npz": "2fb79ee87073caae01646adb381470a2124d0417e5d72c8e9f1a2fdcc8cdcdec",
+    "rankings.jsonl": "797ec9cd33a223be6d37447de9dcb8b25edfd185caa1bceb8ff209c9ff0482d4",
+    "unit_vectors.npz": "87a7915e67b337ed7891c091802084a72462230a9aacf35f56ba677f5d62dc06"
+  },
+  "origin_reproduce_smoke_sha256": "2275a68dcb8c3e12dc77ec33fa610bc7810cbfbe500b1721ce289d2242230372",
+  "reproduce_smoke_sha256": "996effd4f56188cc61921a2f58b488076c791e45a9eb8b7f288ceb4d601d43f1"
+}
