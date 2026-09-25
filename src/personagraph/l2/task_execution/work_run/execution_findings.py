@@ -22,7 +22,7 @@ from ....persistent_turn_content.findings import (
     derive_execution_findings_ledger_id,
     sha256_json,
 )
-from ....tools.findings.contracts import EXECUTION_FINDINGS_TOOL_IDS
+from ....persistent_turn_content.findings import EXECUTION_FINDINGS_TOOL_IDS
 from ..tool_bridge.persistence_contracts import (
     ToolBridgeCallPersistence,
     ToolBridgePersistencePlan,

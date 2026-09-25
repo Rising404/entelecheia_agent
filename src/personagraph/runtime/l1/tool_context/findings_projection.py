@@ -7,9 +7,13 @@ import hashlib
 import json
 from typing import Any
 
-from pydantic import ValidationError
-
-from ....output_protocol.l1 import L1AttemptDecisionProposal, L1_ATTEMPT_PROTOCOL_VERSION
+from ....output_protocol.l1 import L1AttemptDecision, L1_ATTEMPT_PROTOCOL_VERSION
+from ....output_protocol.l1_persistence import (
+    SUPPORTED_L1_DECISION_PROTOCOLS,
+    decode_l1_decision,
+    resolve_legacy_l1_result,
+)
+from ....persistent_turn_content.evidence import l1_call_refs_by_id
 from ....persistent_turn_content.findings import (
     derive_execution_finding_entry_id,
     derive_execution_findings_mutation_id,
@@ -32,6 +36,10 @@ def project_execution_findings_for_model(
         raise FindingsProjectionError("execution findings active entries have the wrong shape")
     ledger_id = _string(raw, "ledger_id")
     attempts = _attempt_context(execution)
+    try:
+        call_refs = l1_call_refs_by_id(execution)
+    except ValueError as exc:
+        raise FindingsProjectionError("persisted L1 call coordinates are invalid") from exc
     notes = []
     for entry in entries:
         if not isinstance(entry, Mapping):
@@ -44,14 +52,17 @@ def project_execution_findings_for_model(
             "entry_id": _string(entry, "entry_id"),
             "summary": _string(entry, "claim"),
             "attempt_ordinal": attempt["ordinal"],
-            "context_tool_result_ids": [],
+            "context_call_refs": [],
         }
         if _string(entry, "writer_tool_call_id").startswith("l1notes:"):
             _require_fixed_note(entry, ledger_id=ledger_id, attempt=attempt)
-            item["context_tool_result_ids"] = attempt["context_tool_result_ids"]
+            item["context_call_refs"] = attempt["context_call_refs"]
         else:
             # Explicit notes retain their own submitted references, not inferred support.
-            item["source_refs"] = list(entry.get("source_refs", ()))
+            item["source_refs"] = [
+                _project_source_ref(source, execution=execution, call_refs=call_refs)
+                for source in entry.get("source_refs", ())
+            ]
         notes.append(item)
     return {
         "ledger_id": ledger_id,
@@ -69,6 +80,10 @@ def _attempt_context(execution: Mapping[str, object]) -> dict[str, dict]:
     attempts = execution.get("attempts")
     if not isinstance(attempts, list):
         raise FindingsProjectionError("persisted L1 Attempts have the wrong shape")
+    try:
+        call_refs = l1_call_refs_by_id(execution)
+    except ValueError as exc:
+        raise FindingsProjectionError("persisted L1 call coordinates are invalid") from exc
     result = {}
     for attempt in attempts:
         if not isinstance(attempt, Mapping):
@@ -77,14 +92,18 @@ def _attempt_context(execution: Mapping[str, object]) -> dict[str, dict]:
         if attempt_id in result:
             raise FindingsProjectionError("persisted L1 Attempt identity is duplicated")
         request = _verified_json(attempt, "request_json", "request_hash")
-        if request.get("schema_version") != L1_ATTEMPT_PROTOCOL_VERSION:
+        if request.get("schema_version") not in SUPPORTED_L1_DECISION_PROTOCOLS:
             raise FindingsProjectionError("unsupported frozen L1 note protocol; start a new turn")
         proposal = None
         if attempt.get("decision_json") is not None:
             decision = _verified_json(attempt, "decision_json", "decision_hash")
             try:
-                proposal = L1AttemptDecisionProposal.model_validate(decision)
-            except ValidationError as exc:
+                proposal = decode_l1_decision(
+                    decision,
+                    request_schema_version=request["schema_version"],
+                    tool_calls=execution.get("tool_calls", []),
+                )
+            except ValueError as exc:
                 raise FindingsProjectionError("persisted L1 decision violates its contract") from exc
         prior = request.get("prior_tool_results", [])
         if not isinstance(prior, list) or any(not isinstance(item, Mapping) for item in prior):
@@ -93,8 +112,11 @@ def _attempt_context(execution: Mapping[str, object]) -> dict[str, dict]:
             "attempt_id": attempt_id,
             "ordinal": _integer(attempt, "ordinal", minimum=1),
             "proposal": proposal,
-            "context_tool_result_ids": list(dict.fromkeys(
-                _string(item, "tool_result_id") for item in prior
+            "context_call_refs": list(dict.fromkeys(
+                _context_call_ref(
+                    item, schema_version=request["schema_version"],
+                    execution=execution, call_refs=call_refs,
+                ) for item in prior
             )),
         }
     return result
@@ -102,7 +124,7 @@ def _attempt_context(execution: Mapping[str, object]) -> dict[str, dict]:
 
 def _require_fixed_note(entry: Mapping, *, ledger_id: str, attempt: Mapping) -> None:
     proposal = attempt["proposal"]
-    if not isinstance(proposal, L1AttemptDecisionProposal):
+    if not isinstance(proposal, L1AttemptDecision):
         raise FindingsProjectionError("fixed note has no frozen decision")
     writer = l1_execution_note_writer_id(attempt["attempt_id"])
     mutation_id = derive_execution_findings_mutation_id(writer_tool_call_id=writer)
@@ -117,6 +139,63 @@ def _require_fixed_note(entry: Mapping, *, ledger_id: str, attempt: Mapping) -> 
         entry.get("source_refs") not in ([], ()) or entry.get("scope_keys") not in ([], ())
     ):
         raise FindingsProjectionError("fixed note disagrees with its frozen L1 decision")
+
+
+def _context_call_ref(
+    item: Mapping, *, schema_version: str, execution: Mapping, call_refs: Mapping,
+) -> str:
+    if schema_version == L1_ATTEMPT_PROTOCOL_VERSION:
+        call_id = _string(item, "tool_call_id")
+        digest = _string(item, "result_sha256")
+        ref = _checked_call_ref(call_id, digest=digest, execution=execution, call_refs=call_refs)
+        if item.get("call_ref") != ref:
+            raise FindingsProjectionError("frozen L1 context has inconsistent call coordinates")
+        return ref
+    try:
+        call = resolve_legacy_l1_result(
+            _string(item, "tool_result_id"), tool_calls=execution.get("tool_calls", []),
+        )
+    except ValueError as exc:
+        raise FindingsProjectionError("legacy L1 context result cannot be resolved") from exc
+    return _checked_call_ref(
+        call["tool_call_id"], digest=call["outcome_hash"], execution=execution, call_refs=call_refs,
+    )
+
+
+def _project_source_ref(source: object, *, execution: Mapping, call_refs: Mapping) -> dict:
+    if not isinstance(source, Mapping):
+        raise FindingsProjectionError("finding source reference is not an object")
+    identity = _string(source, "tool_result_id")
+    digest = source.get("result_sha256")
+    if identity.startswith("l1result_"):
+        try:
+            call = resolve_legacy_l1_result(identity, tool_calls=execution.get("tool_calls", []))
+        except ValueError as exc:
+            raise FindingsProjectionError("legacy finding source cannot be resolved") from exc
+        if digest is not None and digest != call["outcome_hash"]:
+            raise FindingsProjectionError("legacy finding source digest changed")
+        identity, digest = call["tool_call_id"], call["outcome_hash"]
+    projected = {"call_ref": _checked_call_ref(
+        identity, digest=digest, execution=execution, call_refs=call_refs,
+    )}
+    if source.get("chunk_id") is not None:
+        projected["chunk_id"] = _string(source, "chunk_id")
+    return projected
+
+
+def _checked_call_ref(
+    identity: str, *, digest: object, execution: Mapping, call_refs: Mapping,
+) -> str:
+    ref = call_refs.get(identity)
+    call = next((
+        item for item in execution.get("tool_calls", []) if item["tool_call_id"] == identity
+    ), None)
+    if ref is None or call is None or not isinstance(digest, str):
+        raise FindingsProjectionError("finding context has no matching L1 call")
+    _verified_json(call, "outcome_json", "outcome_hash")
+    if call.get("outcome_hash") != digest:
+        raise FindingsProjectionError("finding context result digest changed")
+    return ref
 
 
 def _verified_json(values: Mapping, json_key: str, hash_key: str) -> dict:

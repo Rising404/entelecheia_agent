@@ -50,7 +50,7 @@ from personagraph.workspace.files.turn_inputs import (
     TurnInputFileAuthorityError,
 )
 from .identity import canonical_json, sha256_json
-from ...tools.findings.contracts import EXECUTION_FINDINGS_TOOL_IDS
+from ...persistent_turn_content.findings import EXECUTION_FINDINGS_TOOL_IDS
 from .tool_catalog_snapshot import (
     L1CatalogSnapshotRestoreError,
     _l1_tool_catalog_descriptor,

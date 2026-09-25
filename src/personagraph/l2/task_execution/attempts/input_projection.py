@@ -36,7 +36,7 @@ from ....persistent_turn_content.findings import (
     derive_execution_findings_ledger_id,
     sha256_json,
 )
-from ....tools.findings.contracts import EXECUTION_FINDINGS_TOOL_IDS
+from ....persistent_turn_content.findings import EXECUTION_FINDINGS_TOOL_IDS
 from ....tools.findings.projection import (
     project_execution_findings_tool_output_for_model,
 )

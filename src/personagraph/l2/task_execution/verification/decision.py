@@ -12,7 +12,7 @@ from typing import Any, Callable, Literal, Protocol
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, model_validator
 
-from ....tools.findings.contracts import EXECUTION_FINDINGS_TOOL_IDS
+from ....persistent_turn_content.findings import EXECUTION_FINDINGS_TOOL_IDS
 
 from ...task_graph.contracts import InSessionTaskAcceptanceProposal
 from ....model_io.gateway import ModelResult

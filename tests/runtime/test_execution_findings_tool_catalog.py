@@ -43,7 +43,9 @@ def test_findings_catalog_uses_native_refs_and_optional_host_revision_and_scopes
         assert "expected_ledger_revision" not in schema["required"]
         source_schema = dict(schema["$defs"]["sourceRef"])
         assert source_schema == ExecutionFindingSourceRef.model_json_schema()
-        for field in ("document_alias", "result_sha256", "ref_type", "producing_tool_call_id"):
+        assert "result_sha256" in source_schema["properties"]
+        assert "result_sha256" not in source_schema["required"]
+        for field in ("document_alias", "ref_type", "producing_tool_call_id"):
             assert field not in json.dumps(schema)
     Draft202012Validator(record.spec.to_dict()["input_schema"]).validate({
         "items": [{

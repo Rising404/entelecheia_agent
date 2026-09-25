@@ -5,7 +5,6 @@ import json
 import pytest
 
 from personagraph.model_io.gateway import ModelResult
-from personagraph.persistent_turn_content.evidence import l1_tool_result_id
 from personagraph.runtime import entry
 from personagraph.runtime.entry.routing.policy import TurnRoutingPolicy, freeze_turn_routing_policy
 from personagraph.session import store as session_store
@@ -43,6 +42,8 @@ def test_history_read_keeps_original_evidence_after_body_eviction(
         payload = json.loads(user_content)
         payloads.append(payload)
         prior = payload["prior_tool_results"]
+        for prior_result in prior:
+            assert not {"tool_result_id", "tool_call_id", "result_sha256"} & prior_result.keys()
         call = None
         if payload["plan"] is None:
             assert prior == []
@@ -65,9 +66,10 @@ def test_history_read_keeps_original_evidence_after_body_eviction(
             assert original["result"] not in [r["result"] for r in prior]
             assert payload["tool_result_projection"]["omitted_tool_result_count"] == 1
             rows = prior[0]["result"]["results"]
-            assert rows[0]["source"]["tool_result_id"] == original["tool_result_id"]
+            assert rows[0]["source"]["call_ref"] == original["call_ref"]
+            assert set(rows[0]["source"]) == {"call_ref", "tool_id", "status"}
             call = ("read_tool_result", {
-                "tool_result_id": rows[0]["source"]["tool_result_id"], "path": "/result",
+                "call_ref": rows[0]["source"]["call_ref"], "path": "/result",
             })
             note = _note(
                 observation_summary="历史目录给出了原始日期结果的读取身份。",
@@ -77,7 +79,7 @@ def test_history_read_keeps_original_evidence_after_body_eviction(
         else:
             assert len(prior) == 1 and prior[0]["tool_id"] == "read_tool_result"
             response = prior[0]["result"]
-            assert response["source"]["tool_result_id"] == original["tool_result_id"]
+            assert response["source"]["call_ref"] == original["call_ref"]
             assert response["partial"] is False
             original["readback_value"] = response["value"]
             assert response["value"] == original["result"]
@@ -94,7 +96,7 @@ def test_history_read_keeps_original_evidence_after_body_eviction(
             if call else {"kind": "submit_final_reply", "reply": f"今天是 {original['result']['date']}。"},
         }
         if call is None:
-            decision["references"] = [{"tool_result_id": original["tool_result_id"]}]
+            decision["references"] = [{"call_ref": original["call_ref"]}]
         if call and call[0] == "read_tool_result":
             feedback = repair_feedback_from_provider_kwargs(kwargs)
             if feedback is None:
@@ -110,7 +112,7 @@ def test_history_read_keeps_original_evidence_after_body_eviction(
         payload = json.loads(user_content)
         submitted = payload["durable_evidence"]["results"]
         assert len(submitted) == 1
-        assert submitted[0]["tool_result_id"] == original["tool_result_id"]
+        assert submitted[0]["call_ref"] == original["call_ref"]
         assert submitted[0]["result"] == original["result"]
         reject = reject_first_answer and review_count == 1
         return _result({
@@ -130,15 +132,22 @@ def test_history_read_keeps_original_evidence_after_body_eviction(
                                                 source="request_override"),
         store=session_store,
     )
-    assert result.status == "completed", (result.error_code, len(payloads))
+    assert result.status == "completed", (result, len(payloads))
     execution = session_store.get_l1_turn_execution(session_id=session_id, turn_id=result.turn_id)
     assert [c["tool_id"] for c in execution["tool_calls"]].count("get_today") == 1
     assert len(execution["tool_calls"]) == 3
     original_call = next(call for call in execution["tool_calls"] if call["tool_id"] == "get_today")
     assert json.loads(original_call["outcome_json"])["result"] == original["readback_value"]
-    assert l1_tool_result_id(
-        tool_call_id=original_call["tool_call_id"], result_sha256=original_call["outcome_hash"],
-    ) == original["tool_result_id"]
+    assert original["call_ref"] == "c1.1"
+    final_decisions = [json.loads(attempt["decision_json"]) for attempt in execution["attempts"]
+                       if attempt["decision_json"] and attempt["action_kind"] == "submit_final_reply"]
+    assert final_decisions
+    for decision in final_decisions:
+        assert len(decision["references"]) == 1
+        reference = decision["references"][0]
+        assert reference["tool_call_id"] == original_call["tool_call_id"]
+        assert reference["result_sha256"] == original_call["outcome_hash"]
+        assert not {"call_ref", "tool_result_id"} & reference.keys()
     assert len(execution["attempts"]) == 4 + int(reject_first_answer)
     assert repair_count == 1
     assert review_count == 1 + int(reject_first_answer)

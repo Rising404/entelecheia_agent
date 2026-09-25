@@ -14,9 +14,9 @@ from personagraph.persistent_turn_content import (
     AcceptanceProgressItem,
     EmptySupportJustification,
 )
-from personagraph.persistent_turn_content.evidence import l1_tool_result_id
 from personagraph.output_protocol.l1 import L1ResultReference
 from personagraph.runtime.l1.verification import verify_l1_final_reply
+from personagraph.runtime.l1.identity import canonical_json, sha256_json
 
 
 def _justification() -> EmptySupportJustification:
@@ -98,14 +98,10 @@ def test_l1_internal_receipt_is_not_admissible_evidence(tool_id, issue) -> None:
     )
     action = SubmitFinalReplyAction(reply="The answer is complete.")
     outcome_hash = "a" * 64
-    result_id = l1_tool_result_id(
-        tool_call_id="findings-call",
-        result_sha256=outcome_hash,
-    )
     result = verify_l1_final_reply(
         plan=plan,
         reply=action.reply,
-        references=(L1ResultReference(tool_result_id=result_id),),
+        references=(L1ResultReference(tool_call_id="findings-call", result_sha256=outcome_hash),),
         execution={
             "tool_calls": [
                 {
@@ -120,3 +116,43 @@ def test_l1_internal_receipt_is_not_admissible_evidence(tool_id, issue) -> None:
 
     assert result.passed is False
     assert [item.code for item in result.issues] == [issue]
+
+
+@pytest.mark.parametrize("changed", ["digest", "body"])
+def test_l1_supporting_call_identity_does_not_remove_result_integrity_check(changed):
+    text = "Answer from the read result"
+    plan = materialize_l1_plan(
+        L1PlanProposal(objective=text, acceptances=({"criterion": text},)),
+        input_message_id="message-1",
+        user_text=text,
+    )
+    outcome = {"result": {"text": "original"}, "error": None}
+    digest = sha256_json(outcome)
+    call = {
+        "tool_call_id": "read-call",
+        "attempt_id": "attempt-1",
+        "call_ordinal": 1,
+        "tool_id": "read_text",
+        "status": "succeeded",
+        "outcome_hash": digest,
+        "outcome_json": canonical_json(outcome),
+    }
+    replacement = {"result": {"text": "changed"}, "error": None}
+    call["outcome_json"] = canonical_json(replacement)
+    if changed == "digest":
+        call["outcome_hash"] = sha256_json(replacement)
+    result = verify_l1_final_reply(
+        plan=plan,
+        reply="The answer is original.",
+        references=(L1ResultReference(tool_call_id="read-call", result_sha256=digest),),
+        execution={
+            "tool_calls": [call],
+            "attempts": [{"attempt_id": "attempt-1", "ordinal": 1}],
+        },
+    )
+    assert result.passed is False
+    assert [issue.code for issue in result.issues] == [
+        "supporting_tool_result_hash_mismatch"
+        if changed == "digest"
+        else "durable_result_hash_mismatch"
+    ]

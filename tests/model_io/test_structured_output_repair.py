@@ -301,8 +301,8 @@ def test_structured_projection_fails_safe_without_reflecting_exception_payload()
 @pytest.mark.parametrize(
     ("reference", "expected_path", "expected_explanation"),
     [
-        ({"tool_result_id": ""}, "/references/0/tool_result_id", "该位置至少需要 1 个字符。"),
-        ({"tool_result_id": "result-a", "chunk_id": "private-" * 30},
+        ({"call_ref": "c0.1"}, "/references/0/call_ref", "该位置不符合目标结构化合同。"),
+        ({"call_ref": "c1.1", "chunk_id": "private-" * 30},
          "/references/0/chunk_id", "该位置最多允许 200 个字符。"),
     ],
 )

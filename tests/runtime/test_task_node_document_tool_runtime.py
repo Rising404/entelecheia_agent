@@ -16,7 +16,7 @@ from personagraph.l2.task_execution.tool_bridge.attempt_contracts import (
 from personagraph.l2.auxiliary_execution.planning.mounted_visual_resource import (
     MountedVisualPlanningAuthorityError,
 )
-from personagraph.tools.findings.contracts import EXECUTION_FINDINGS_TOOL_IDS
+from personagraph.persistent_turn_content.findings import EXECUTION_FINDINGS_TOOL_IDS
 from personagraph.l2.task_execution.tool_bridge.mounted_visual_adapter import (
     SessionMountedVisualToolRuntime,
 )

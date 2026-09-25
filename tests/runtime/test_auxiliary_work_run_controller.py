@@ -73,7 +73,7 @@ from personagraph.l2.task_execution.tool_bridge.persistence_contracts import (
     ToolBridgePersistencePlan,
 )
 from personagraph.l2.task_execution.tool_bridge.work_run_bridge import SqliteWorkRunToolBridge
-from personagraph.tools.findings.contracts import EXECUTION_FINDINGS_TOOL_IDS
+from personagraph.persistent_turn_content.findings import EXECUTION_FINDINGS_TOOL_IDS
 from personagraph.l2.task_execution.verification.decision import NodeVerificationInputLimits
 from personagraph.l2.task_execution.task_node.dependencies import (
     TaskNodeDependencyDeliveries,

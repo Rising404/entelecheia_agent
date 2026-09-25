@@ -11,7 +11,7 @@ import sqlite3
 from typing import Literal
 
 from personagraph.l2.task_graph.contracts import InSessionTaskAcceptanceProposal
-from .....tools.findings.contracts import EXECUTION_FINDINGS_TOOL_IDS
+from .....persistent_turn_content.findings import EXECUTION_FINDINGS_TOOL_IDS
 from personagraph.l2.work_run import (
     AcceptanceProgressSnapshot,
     AttemptStatus,

@@ -1,7 +1,7 @@
 """从现有 L1 ToolCall 行读取当前执行的历史；不建表、不迁移、不重执行。
 
 绑定时冻结数据库及 Session/Run 范围；每次访问用 mode=ro 连接并复核 owner。
-结果 ID 是调用 ID 与持久 outcome_hash 的派生值，不新增结果表或索引副本。
+短引用由持久步骤序号与批内调用序号组成；保留调用身份与 outcome_hash 的完整性校验。
 """
 
 from __future__ import annotations
@@ -11,10 +11,15 @@ from dataclasses import dataclass
 import hashlib
 import json
 from pathlib import Path
-import re
 import sqlite3
 
-from personagraph.persistent_turn_content.evidence import l1_tool_result_id
+from personagraph.persistent_turn_content.evidence import (
+    format_l1_call_ref,
+    parse_l1_call_ref,
+    project_findings_arguments,
+)
+from personagraph.output_protocol.l1_persistence import normalize_l1_finding_arguments
+from personagraph.persistent_turn_content.findings import EXECUTION_FINDINGS_TOOL_IDS
 from personagraph.persistent_turn_content.tool_results import (
     DEFAULT_HISTORY_LIST_LIMIT,
     MAX_HISTORY_LIST_LIMIT,
@@ -34,6 +39,7 @@ _SCOPE = """
     WHERE c.l1_turn_run_id=? AND c.session_id=? AND c.status!='pending'
       AND c.outcome_json IS NOT NULL AND c.outcome_hash IS NOT NULL
 """
+_UNSUCCESSFUL_FINDINGS_ARGUMENTS = "Arguments omitted for unsuccessful findings call; read its error."
 
 
 @dataclass(frozen=True, slots=True)
@@ -93,7 +99,16 @@ class L1ToolHistoryReader:
                     + " ORDER BY s.ordinal,c.call_ordinal,c.tool_call_id LIMIT ? OFFSET ?",
                     (*params, limit, offset),
                 ).fetchall()
-                items = tuple(_history_item(row) for row in rows)
+                # 仅 findings 参数含持久来源引用；先核验原参数，再投影为当前 Run 短引用。
+                # 查询仍在同一只读快照中，不改写历史参数或其摘要。
+                reference_calls = None
+                if any(row["tool_id"] in EXECUTION_FINDINGS_TOOL_IDS and row["status"] == "succeeded" for row in rows):
+                    reference_calls = [dict(row) for row in conn.execute(
+                        "SELECT c.tool_call_id,c.status,c.outcome_hash,c.outcome_json,"
+                        "s.ordinal attempt_ordinal,c.call_ordinal " + _SCOPE,
+                        params,
+                    ).fetchall()]
+                items = tuple(_history_item(row, reference_calls=reference_calls) for row in rows)
                 end = offset + len(items)
                 return ToolResultHistoryPage(
                     results=items,
@@ -108,55 +123,31 @@ class L1ToolHistoryReader:
     def read_result(
         self,
         *,
-        tool_result_id: str,
+        call_ref: str,
     ) -> ToolResultRecord:
-        if not isinstance(tool_result_id, str) or not re.fullmatch(
-            r"l1result_[0-9a-f]{64}", tool_result_id
-        ):
-            raise ToolHistoryError("invalid_history_request")
+        try:
+            attempt_ordinal, call_ordinal = parse_l1_call_ref(call_ref)
+        except (TypeError, ValueError):
+            raise ToolHistoryError("invalid_history_request") from None
         try:
             with closing(self._connect()) as conn:
                 conn.execute("BEGIN")
                 self._require_scope(conn)
-                # 原表无独立结果 ID 列；只按本执行的轻量身份匹配，再读取命中项的正文。
-                identities = conn.execute(
-                    "SELECT c.tool_call_id,c.outcome_hash " + _SCOPE,
-                    (self.l1_turn_run_id, self.session_id),
-                ).fetchall()
-                call_id = next(
-                    (
-                        row["tool_call_id"]
-                        for row in identities
-                        if _result_id(row) == tool_result_id
-                    ),
-                    None,
-                )
-                if call_id is None:
-                    raise ToolHistoryError("tool_result_unavailable")
+                # 已有 (Run, step, call ordinal) 唯一约束就是短引用的 authority。
                 row = conn.execute(
-                    "SELECT c.tool_call_id,c.tool_id,c.status,c.outcome_hash,c.outcome_json "
+                    "SELECT c.tool_call_id,c.tool_id,c.status,c.outcome_hash,c.outcome_json,"
+                    "s.ordinal attempt_ordinal,c.call_ordinal "
                     + _SCOPE
-                    + " AND c.tool_call_id=?",
-                    (self.l1_turn_run_id, self.session_id, call_id),
+                    + " AND s.ordinal=? AND c.call_ordinal=?",
+                    (self.l1_turn_run_id, self.session_id, attempt_ordinal, call_ordinal),
                 ).fetchone()
                 source = _source(row)
-                if source.tool_result_id != tool_result_id:
-                    raise ToolHistoryError("tool_result_integrity_invalid")
                 outcome = validate_canonical_result(row["outcome_json"], source.result_sha256)
                 if outcome.get("status") != source.status:
                     raise ToolHistoryError("tool_result_integrity_invalid")
                 return ToolResultRecord(source=source, outcome=outcome)
         except sqlite3.Error:
             raise ToolHistoryError("tool_history_unavailable") from None
-
-
-def _result_id(row: sqlite3.Row) -> str:
-    try:
-        return l1_tool_result_id(
-            tool_call_id=row["tool_call_id"], result_sha256=row["outcome_hash"]
-        )
-    except (ValueError, TypeError):
-        raise ToolHistoryError("tool_result_integrity_invalid") from None
 
 
 def _source(row: sqlite3.Row | None) -> ToolResultSource:
@@ -168,15 +159,35 @@ def _source(row: sqlite3.Row | None) -> ToolResultSource:
             tool_id=row["tool_id"],
             status=row["status"],
             result_sha256=row["outcome_hash"],
-            tool_result_id=_result_id(row),
+            call_ref=format_l1_call_ref(
+                attempt_ordinal=row["attempt_ordinal"],
+                call_ordinal=row["call_ordinal"],
+            ),
         )
     except (ValueError, TypeError):
         raise ToolHistoryError("tool_result_integrity_invalid") from None
 
 
-def _history_item(row: sqlite3.Row) -> ToolResultHistoryItem:
+def _history_item(row: sqlite3.Row, *, reference_calls: list[dict] | None) -> ToolResultHistoryItem:
     arguments = row["arguments_json"]
-    validate_canonical_result(arguments, row["arguments_hash"])
+    parsed = validate_canonical_result(arguments, row["arguments_hash"])
+    unavailable = row["tool_id"] in EXECUTION_FINDINGS_TOOL_IDS and row["status"] != "succeeded"
+    if unavailable:
+        arguments = _UNSUCCESSFUL_FINDINGS_ARGUMENTS
+    elif row["tool_id"] in EXECUTION_FINDINGS_TOOL_IDS:
+        try:
+            calls = reference_calls or []
+            normalized = normalize_l1_finding_arguments(parsed, tool_calls=calls)
+            call_refs = {
+                call["tool_call_id"]: format_l1_call_ref(
+                    attempt_ordinal=call["attempt_ordinal"], call_ordinal=call["call_ordinal"],
+                ) for call in calls
+            }
+            projected = project_findings_arguments(normalized, call_refs=call_refs)
+            arguments = json.dumps(projected, ensure_ascii=False, allow_nan=False,
+                                   sort_keys=True, separators=(",", ":"))
+        except (ValueError, TypeError, KeyError):
+            raise ToolHistoryError("tool_result_integrity_invalid") from None
     return ToolResultHistoryItem(
         source=_source(row),
         attempt_ordinal=row["attempt_ordinal"],
@@ -184,5 +195,7 @@ def _history_item(row: sqlite3.Row) -> ToolResultHistoryItem:
         arguments_summary=arguments[:MAX_ARGUMENT_SUMMARY_CHARACTERS],
         arguments_sha256=row["arguments_hash"],
         arguments_truncated=len(arguments) > MAX_ARGUMENT_SUMMARY_CHARACTERS,
+        arguments_unavailable=unavailable,
+        arguments_unavailable_reason="unsuccessful_findings_call" if unavailable else None,
         total_characters=row["total_characters"],
     )

@@ -19,11 +19,18 @@ from pydantic import (
     ConfigDict,
     Field,
     field_validator,
+    model_serializer,
     model_validator,
 )
 
 EXECUTION_FINDINGS_CONTRACT_VERSION = "execution-findings-v1"
 EXECUTION_FINDING_CLAIM_MAX_CHARACTERS = 4_096
+RECORD_EXECUTION_FINDINGS_TOOL_ID = "record_execution_findings"
+REVISE_EXECUTION_FINDING_TOOL_ID = "revise_execution_finding"
+EXECUTION_FINDINGS_TOOL_IDS = frozenset({
+    RECORD_EXECUTION_FINDINGS_TOOL_ID,
+    REVISE_EXECUTION_FINDING_TOOL_ID,
+})
 _ID_PATTERN = r"^[A-Za-z0-9][A-Za-z0-9._:/-]{0,199}$"
 _SHA256_PATTERN = r"^[0-9a-f]{64}$"
 
@@ -137,10 +144,19 @@ class ExecutionFindingsQuota(_Contract):
 
 
 class ExecutionFindingSourceRef(_Contract):
-    """引用当前运行中已返回的 tool_result_id；可选 chunk_id 必须属于该结果。"""
+    """Host 来源身份；L1 使用调用 ID 和摘要，L2 保留其结果行 ID。"""
 
     tool_result_id: str = Field(pattern=_ID_PATTERN)
+    result_sha256: str | None = Field(default=None, pattern=_SHA256_PATTERN)
     chunk_id: str | None = Field(default=None, pattern=_ID_PATTERN)
+
+    @model_serializer(mode="wrap")
+    def _preserve_unpinned_wire(self, handler):
+        value = handler(self)
+        if self.result_sha256 is None:
+            # Existing L2 and legacy L1 records participate in immutable hashes.
+            value.pop("result_sha256", None)
+        return value
 
 
 class RecordExecutionFinding(_Contract):
@@ -706,6 +722,9 @@ __all__ = [
     "validate_execution_finding_source_refs",
     "EXECUTION_FINDING_CLAIM_MAX_CHARACTERS",
     "EXECUTION_FINDINGS_CONTRACT_VERSION",
+    "EXECUTION_FINDINGS_TOOL_IDS",
+    "RECORD_EXECUTION_FINDINGS_TOOL_ID",
+    "REVISE_EXECUTION_FINDING_TOOL_ID",
     'ExecutionFindingEntry',
     'ExecutionFindingKind',
     'ExecutionFindingMutationItem',

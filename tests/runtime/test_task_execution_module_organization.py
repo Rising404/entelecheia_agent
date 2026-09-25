@@ -224,6 +224,7 @@ def test_shared_execution_findings_contract_has_persistent_content_ownership() -
     assert not (source_dir / "runtime/execution_findings.py").exists()
     assert not (source_dir / "runtime/execution_findings_tool_runtime.py").exists()
     assert (source_dir / "persistent_turn_content/findings.py").is_file()
+    assert not (source_dir / "tools/findings/contracts.py").exists()
     assert (source_dir / "tools/findings/dispatcher.py").is_file()
 
     protocol_contract_users = {
@@ -257,6 +258,6 @@ def test_shared_execution_findings_contract_has_persistent_content_ownership() -
         ),
     }
     for path, module_name in tool_id_users.items():
-        assert "personagraph.tools.findings.contracts" in _imports_for(
+        assert "personagraph.persistent_turn_content.findings" in _imports_for(
             path, module_name
         )

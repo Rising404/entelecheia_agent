@@ -9,6 +9,7 @@ controller 返回已验证答复，正式 assistant 消息与窗口收尾由 Ent
 from __future__ import annotations
 
 import json
+from collections.abc import Mapping
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from typing import Any, Literal
@@ -38,18 +39,18 @@ from ...output_protocol import (
     SubmitFinalReplyAction,
     materialize_l1_plan,
 )
-from ...output_protocol.l1 import L1PlanProposal, L1ResultReference, L1_ATTEMPT_PROTOCOL_VERSION
+from ...output_protocol.l1 import L1AttemptDecision, L1PlanProposal, L1ResultReference, L1_ATTEMPT_PROTOCOL_VERSION
+from ...output_protocol.l1_persistence import decode_l1_decision
+from ...persistent_turn_content.evidence import l1_call_refs_by_id
+from .model_view.references import L1ReferenceAdmissionError, materialize_decision_references
 from ...persistent_turn_content import (
     L1Plan,
-    l1_tool_result_id,
 )
 from ...persistent_turn_content.findings import (
     ExecutionFindingsLedgerCreateResult,
     ExecutionFindingsOwnerKind,
     ExecutionFindingsSnapshot,
 )
-from ...tools.findings.contracts import EXECUTION_FINDINGS_TOOL_IDS
-from ...tools.tool_history.definitions import TOOL_HISTORY_TOOL_IDS
 from ...tools.findings.dispatcher import execute_execution_findings_tool
 from ..turn.contracts import AcceptedEntryTurn
 from ..model_calls.authority import RuntimeModelCallWaitingExternal
@@ -128,7 +129,7 @@ class L1ControllerResult:
 
 @dataclass(frozen=True, slots=True)
 class _AdmittedL1AttemptDecision:
-    decision: L1AttemptDecisionProposal
+    decision: L1AttemptDecision
     materialized_plan: L1Plan
     mechanical_verification: L1VerificationResult | None
     semantic_verification: L1SemanticVerificationReceipt | None
@@ -428,7 +429,7 @@ def _run_l1_turn_impl(
             current_plan = _load_plan(state.get("plan_json"))
             current_attempt = _current_attempt(execution)
             if current_attempt is not None:
-                _record_execution_notes(store, findings_ledger_id, current_attempt)
+                _record_execution_notes(store, findings_ledger_id, current_attempt, execution=execution)
                 attempt_status = str(current_attempt.get("status") or "")
                 action_kind = str(current_attempt.get("action_kind") or "")
                 if (
@@ -440,10 +441,11 @@ def _run_l1_turn_impl(
                         accepted=accepted,
                         attempt=current_attempt,
                         revision=revision,
+                        execution=execution,
                     )
                 # 决定已提交但批次尚未关闭：续做原批次，已结算工具由 reservation 复用。
                 if attempt_status == "active" and action_kind == "call_tools":
-                    decision = _load_decision(current_attempt.get("decision_json"))
+                    decision = _load_decision(current_attempt, execution=execution)
                     action = decision.action
                     if not isinstance(action, CallToolsAction):
                         raise L1ControllerFailure(
@@ -713,7 +715,7 @@ def _run_l1_turn_impl(
                 )
                 revision = _turn_window_revision(rejected)
                 _record_execution_notes(
-                    store, findings_ledger_id, _mapping(rejected, "attempt")
+                    store, findings_ledger_id, _mapping(rejected, "attempt"), execution=execution
                 )
                 continue
             final_reply_action = (
@@ -832,7 +834,7 @@ def _run_l1_turn_impl(
             )
             revision = _turn_window_revision(accepted_decision)
             _record_execution_notes(
-                store, findings_ledger_id, _mapping(accepted_decision, "attempt")
+                store, findings_ledger_id, _mapping(accepted_decision, "attempt"), execution=execution
             )
             if final_reply_action is not None:
                 return L1ControllerResult(
@@ -939,7 +941,7 @@ def _model_payload(
 
     Entry 输入/历史/摘要与附件目录，加上当前 Plan、工具结果、
     findings、验证反馈和执行限制，经 model_view 的白名单投影后才发送给模型；
-    原始身份直接复用；Host 诊断不发送。system prompt 在 l1/model.py。
+    完整身份留在 Host；模型使用固定调用短引用。system prompt 在 l1/model.py。
     工具正文只投影紧邻前一步的批次，原始 ToolCall outcome 仍在 Store；corpus manifest
     留在 Host 校验侧。这里的 UTF-8 容量检查之后，Provider 仍会按完整 wire 请求准入。
     """
@@ -953,6 +955,13 @@ def _model_payload(
         )
     except ToolResultProjectionError as exc:
         raise L1ControllerFailure(RuntimeErrorCode.INTERNAL_FAILURE, str(exc)) from exc
+    if isinstance(verification_feedback, dict):
+        call_refs = l1_call_refs_by_id(execution)
+        for issue in (verification_feedback.get("details") or {}).get("issues", []):
+            if isinstance(issue, dict) and "tool_call_id" in issue:
+                identity = issue.pop("tool_call_id")
+                if identity is not None:
+                    issue["call_ref"] = call_refs[identity]
     payload = {
         "schema_version": L1_ATTEMPT_PROTOCOL_VERSION,
         "execution_notes_required": True,
@@ -1063,49 +1072,17 @@ def _record_execution_notes(
     store: L1StorePort,
     ledger_id: str,
     attempt: dict[str, object],
+    *, execution: Mapping[str, object],
 ) -> None:
     try:
         record_committed_execution_notes(
-            store=store, ledger_id=ledger_id, attempt=attempt
+            store=store, ledger_id=ledger_id, attempt=attempt, execution=execution
         )
     except (KeyError, TypeError, ValueError, RuntimeError) as exc:
         raise L1ControllerFailure(
             RuntimeErrorCode.INTERNAL_FAILURE,
             str(exc),
         ) from exc
-
-
-def _known_tool_result_ids(execution: dict[str, object]) -> frozenset[str]:
-    """返回可供下一个 Attempt 使用的成功普通 ToolResult ID。"""
-
-    raw_calls = execution.get("tool_calls")
-    if not isinstance(raw_calls, list):
-        return frozenset()
-    result_ids: set[str] = set()
-    for raw_call in raw_calls:
-        if not isinstance(raw_call, dict):
-            continue
-        if raw_call.get("status") != "succeeded":
-            continue
-        if raw_call.get("tool_id") in (
-            *EXECUTION_FINDINGS_TOOL_IDS,
-            *TOOL_HISTORY_TOOL_IDS,
-        ):
-            continue
-        tool_call_id = raw_call.get("tool_call_id")
-        result_sha256 = raw_call.get("outcome_hash")
-        if not isinstance(tool_call_id, str) or not isinstance(
-            result_sha256,
-            str,
-        ):
-            continue
-        result_ids.add(
-            l1_tool_result_id(
-                tool_call_id=tool_call_id,
-                result_sha256=result_sha256,
-            )
-        )
-    return frozenset(result_ids)
 
 
 def _admit_decision(
@@ -1119,7 +1096,7 @@ def _admit_decision(
     finalization_required: bool,
     max_tool_calls_per_attempt: int,
 ) -> tuple[
-    L1AttemptDecisionProposal,
+    L1AttemptDecision,
     L1Plan,
 ]:
     """Host admission：把不可信 Plan / Acceptance / Action 提案校验为可提交的决定。
@@ -1190,23 +1167,27 @@ def _admit_decision(
                     str(exc),
                     repair_issue=exc.repair_issue,
                 ) from exc
-    known_tool_result_ids = _known_tool_result_ids(execution)
-    for index, ref in enumerate(decision.references):
-        if ref.tool_result_id not in known_tool_result_ids:
-            raise L1ControllerFailure(
-                RuntimeErrorCode.MODEL_OUTPUT_INVALID,
-                "L1 references contain an unavailable ToolResult",
-                repair_issue=RuntimeModelOutputRepairIssue(
-                    category="host_guard",
-                    code="host_guard.l1_unavailable_reference",
-                    paths=(f"/references/{index}/tool_result_id",),
-                    safe_explanation=(
-                        "此 tool_result_id 不属于当前已成功执行的普通工具结果；"
-                        "请使用当前 prior_tool_results 中可用的 tool_result_id，"
-                        "或移除无法绑定的引用，不要编造 ID。"
-                    ),
+    try:
+        canonical_decision = materialize_decision_references(decision, execution=execution)
+    except L1ReferenceAdmissionError as exc:
+        available = ", ".join(exc.available) or "当前没有可用的成功普通工具结果"
+        raise L1ControllerFailure(
+            RuntimeErrorCode.MODEL_OUTPUT_INVALID,
+            "L1 references contain an unavailable call",
+            repair_issue=RuntimeModelOutputRepairIssue(
+                category="host_guard", code="host_guard.l1_unavailable_reference",
+                paths=(exc.path,),
+                safe_explanation=(
+                    "引用须使用当前 Run 的成功普通工具 call_ref；"
+                    f"可用引用包括：{available}。references 放在顶层，与 action 同级；"
+                    "不得编造引用或把 references 放入 action。"
                 ),
-            )
+            ),
+        ) from exc
+    except (KeyError, TypeError, ValueError) as exc:
+        raise L1ControllerFailure(
+            RuntimeErrorCode.INTERNAL_FAILURE, "persisted L1 call coordinates are invalid",
+        ) from exc
 
     action = decision.action
     if isinstance(action, CallToolsAction):
@@ -1275,7 +1256,7 @@ def _admit_decision(
                     ),
                 ),
             )
-    return decision, materialized_plan
+    return canonical_decision, materialized_plan
 
 
 def _materialize_proposed_plan(
@@ -1367,7 +1348,7 @@ def _verify_final_reply(
 
 def _semantic_receipt_for_final_reply(
     *,
-    decision: L1AttemptDecisionProposal,
+    decision: L1AttemptDecision,
     plan: L1Plan,
     reply: str,
     mechanical_verification: L1VerificationResult,
@@ -1480,7 +1461,7 @@ def _verification_feedback(
 def _require_current_semantic_receipt(
     receipt: L1SemanticVerificationReceipt,
     *,
-    decision: L1AttemptDecisionProposal,
+    decision: L1AttemptDecision,
     plan: L1Plan,
     mechanical_verification: L1VerificationResult,
     execution_features: dict[str, Any],
@@ -1743,11 +1724,8 @@ def _execute_tool_batch(
         result_sha256 = str(stored_call.get("outcome_hash") or "")
         tool_results.append(
             {
-                "tool_result_id": l1_tool_result_id(
-                    tool_call_id=tool_call_id,
-                    result_sha256=result_sha256,
-                ),
                 "tool_call_id": tool_call_id,
+                "call_ordinal": stored_call["call_ordinal"],
                 "tool_id": str(stored_call["tool_id"]),
                 "status": str(stored_call["status"]),
                 "result_sha256": result_sha256,
@@ -1773,7 +1751,7 @@ def _execute_tool_batch(
         )
     )
     return {
-        "schema_version": "l1-attempt-tool-results-v1",
+        "schema_version": "l1-attempt-tool-results-v2",
         "attempt_id": attempt_id,
         "tool_results": tool_results,
     }
@@ -1802,13 +1780,14 @@ def _submitted_final_reply_result(
     accepted: AcceptedEntryTurn,
     attempt: dict[str, Any],
     revision: int,
+    execution: Mapping[str, object],
 ) -> L1ControllerResult:
     if str(attempt.get("turn_id") or "") != accepted.turn_id:
         raise L1ControllerFailure(
             RuntimeErrorCode.INTERNAL_FAILURE,
             "persisted L1 final reply crossed Turn ownership",
         )
-    decision = _load_decision(attempt.get("decision_json"))
+    decision = _load_decision(attempt, execution=execution)
     action = decision.action
     if not isinstance(action, SubmitFinalReplyAction):
         raise L1ControllerFailure(
@@ -1821,18 +1800,16 @@ def _submitted_final_reply_result(
     )
 
 
-def _load_decision(value: object) -> L1AttemptDecisionProposal:
-    if not isinstance(value, str):
-        raise L1ControllerFailure(
-            RuntimeErrorCode.INTERNAL_FAILURE,
-            "persisted L1 decision has the wrong representation",
-        )
+def _load_decision(attempt: Mapping[str, object], *, execution: Mapping[str, object]) -> L1AttemptDecision:
     try:
-        return L1AttemptDecisionProposal.model_validate_json(value)
-    except Exception as exc:
+        request = _required_json_mapping(attempt.get("request_json"), label="persisted L1 request")
+        return decode_l1_decision(
+            attempt.get("decision_json"), request_schema_version=request.get("schema_version"),
+            tool_calls=execution.get("tool_calls", []),
+        )
+    except (KeyError, TypeError, ValueError) as exc:
         raise L1ControllerFailure(
-            RuntimeErrorCode.INTERNAL_FAILURE,
-            "persisted L1 decision failed validation",
+            RuntimeErrorCode.INTERNAL_FAILURE, "persisted L1 decision failed validation",
         ) from exc
 
 

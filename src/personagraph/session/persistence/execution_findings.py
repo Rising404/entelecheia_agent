@@ -48,15 +48,16 @@ from ...persistent_turn_content.findings import (
     validate_persisted_execution_findings_mutation_result_json,
     validate_persisted_execution_findings_quota_json,
 )
-from ...persistent_turn_content.evidence import l1_tool_result_id
+from ...output_protocol.l1_persistence import (
+    L1StoredResultIntegrityError,
+    decode_l1_decision,
+    resolve_legacy_l1_result,
+)
 from ...persistent_turn_content.tool_results import (
     ToolHistoryError,
     select_tool_result_chunk,
 )
-from ...output_protocol.l1 import (
-    L1AttemptDecisionProposal,
-)
-from ...tools.findings.contracts import (
+from ...persistent_turn_content.findings import (
     EXECUTION_FINDINGS_TOOL_IDS,
     RECORD_EXECUTION_FINDINGS_TOOL_ID,
     REVISE_EXECUTION_FINDING_TOOL_ID,
@@ -703,7 +704,14 @@ def _require_committed_l1_note_authority(
         decision = json.loads(row["decision_json"])
         if request.get("execution_notes_required") is not True:
             raise ValueError("the frozen request does not authorize fixed notes")
-        proposal = L1AttemptDecisionProposal.model_validate(decision)
+        calls = [dict(call) for call in conn.execute(
+            "SELECT tool_call_id, status, outcome_json, outcome_hash "
+            "FROM l1_turn_tool_calls WHERE l1_turn_run_id=?",
+            (owner_id,),
+        ).fetchall()]
+        proposal = decode_l1_decision(
+            decision, request_schema_version=request.get("schema_version"), tool_calls=calls,
+        )
         expected = (RecordExecutionFinding(kind="decision", claim=proposal.note),)
         revision = request["execution_findings"]["ledger_revision"]
     except (KeyError, TypeError, ValueError) as exc:
@@ -805,24 +813,31 @@ def _validate_source_ref(
     owner_kind = ExecutionFindingsOwnerKind(str(ledger_row["owner_kind"]))
     owner_id = str(ledger_row["execution_owner_id"])
     if owner_kind is ExecutionFindingsOwnerKind.L1_TURN_RUN:
-        # 原生结果 ID 从已存调用和 outcome hash 派生，不新增别名或第二份结果表。
-        identities = conn.execute(
-            "SELECT tool_call_id, outcome_hash FROM l1_turn_tool_calls "
-            "WHERE l1_turn_run_id=? AND status='succeeded' AND outcome_hash IS NOT NULL",
-            (owner_id,),
-        ).fetchall()
-        try:
-            tool_call_id = next((
-                str(identity["tool_call_id"]) for identity in identities
-                if l1_tool_result_id(
-                    tool_call_id=str(identity["tool_call_id"]),
-                    result_sha256=str(identity["outcome_hash"]),
-                ) == source_ref.tool_result_id
-            ), None)
-        except ValueError as exc:
-            raise ExecutionFindingsStoredAuthorityCorrupt(
-                "stored L1 ToolResult identity is invalid"
-            ) from exc
+        tool_call_id = source_ref.tool_result_id
+        expected_digest = source_ref.result_sha256
+        if tool_call_id.startswith("l1result_"):
+            # 只在持久旧记录边界解析旧引用；不再生成该身份供当前模型抄写。
+            identities = [dict(row) for row in conn.execute(
+                "SELECT tool_call_id, status, outcome_json, outcome_hash "
+                "FROM l1_turn_tool_calls WHERE l1_turn_run_id=? AND status='succeeded'",
+                (owner_id,),
+            ).fetchall()]
+            try:
+                legacy = resolve_legacy_l1_result(tool_call_id, tool_calls=identities)
+            except L1StoredResultIntegrityError as exc:
+                raise ExecutionFindingsStoredAuthorityCorrupt(
+                    "stored L1 source outcome is corrupt"
+                ) from exc
+            except ValueError as exc:
+                raise ExecutionFindingsSourceReferenceInvalid(
+                    "legacy L1 source result has no valid matching call"
+                ) from exc
+            tool_call_id = legacy["tool_call_id"]
+            if expected_digest is not None and expected_digest != legacy["outcome_hash"]:
+                raise ExecutionFindingsSourceReferenceInvalid("L1 source result digest changed")
+            expected_digest = legacy["outcome_hash"]
+        elif expected_digest is None:
+            raise ExecutionFindingsSourceReferenceInvalid("L1 source call requires a result digest")
         row = conn.execute(
             "SELECT tool_id, status, outcome_json, outcome_hash "
             "FROM l1_turn_tool_calls "
@@ -845,6 +860,8 @@ def _validate_source_ref(
             )
         result_json = str(row["outcome_json"] or "")
         result_hash = str(row["outcome_hash"] or "")
+        if result_hash != expected_digest:
+            raise ExecutionFindingsSourceReferenceInvalid("L1 source result digest changed")
         payload = _canonical_stored_json(result_json, label="L1 ToolCall outcome")
         if hashlib.sha256(result_json.encode("utf-8")).hexdigest() != result_hash:
             raise ExecutionFindingsStoredAuthorityCorrupt(
@@ -871,6 +888,11 @@ def _validate_source_ref(
                 "an execution-findings result cannot support another finding"
             )
         result_json = str(row["result_json"])
+        if (
+            source_ref.result_sha256 is not None
+            and hashlib.sha256(result_json.encode("utf-8")).hexdigest() != source_ref.result_sha256
+        ):
+            raise ExecutionFindingsSourceReferenceInvalid("WorkRun source result digest changed")
         payload = _canonical_stored_json(result_json, label="WorkRun ToolResult")
         output = payload.get("output") if isinstance(payload, dict) else None
 

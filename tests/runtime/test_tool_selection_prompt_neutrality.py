@@ -70,12 +70,19 @@ def test_l1_guidance_is_a_neutral_assistant_role_not_an_internal_runtime_role() 
         assert tool_id not in guidance
 
 
-def test_l1_prompt_uses_native_references_without_retired_model_bookkeeping() -> None:
+def test_l1_prompt_uses_short_references_without_retired_model_bookkeeping() -> None:
     prompt = l1_model._L1_SYSTEM_PROMPT
 
-    assert "tool_result_id" in prompt and "chunk_id" in prompt
+    assert "call_ref" in prompt and "chunk_id" in prompt
     assert "acceptance_id" in prompt
+    assert '"call_ref":"c1.1"' in prompt
+    assert "JSON 顶层" in prompt
+    assert "本次执行内固定" in prompt
+    assert "其他会话或历史 Turn 中的同名短编号" in prompt
     for retired_field in (
+        "tool_result_id",
+        "tool_call_id",
+        "result_sha256",
         "acceptance_progress",
         "scope_keys",
         "execution_notes",

@@ -24,10 +24,10 @@ def _attempt(ordinal, *, action="call_tools", results=None):
     }
 
 
-def _result(name):
+def _result(name, *, call_ordinal=1):
     return {
         "tool_call_id": f"call-{name}",
-        "tool_result_id": f"result-{name}",
+        "call_ordinal": call_ordinal,
         "tool_id": "source",
         "status": "succeeded",
         "result_sha256": "a" * 64,
@@ -44,7 +44,7 @@ def _project(attempts):
 def test_only_immediately_previous_batch_is_automatically_injected():
     attempts = [
         _attempt(1, results=[_result("old")]),
-        _attempt(2, results=[_result("new-a"), _result("new-b")]),
+        _attempt(2, results=[_result("new-a"), _result("new-b", call_ordinal=2)]),
     ]
     before = json.dumps(attempts)
     results, report = _project(attempts)
@@ -54,6 +54,7 @@ def test_only_immediately_previous_batch_is_automatically_injected():
     ]
     assert report["durable_tool_result_count"] == 3
     assert report["omitted_tool_result_count"] == 1
+    assert [result["call_ref"] for result in results] == ["c2.1", "c2.2"]
     assert json.dumps(attempts) == before
 
 
@@ -76,7 +77,7 @@ def test_latest_failures_and_partial_results_keep_diagnostics():
         "result": None,
         "error": {"code": "NOT_FOUND"},
     }
-    partial = _result("partial") | {
+    partial = _result("partial", call_ordinal=2) | {
         "metadata": {
             "partial": True,
             "cursor": "next-page",
@@ -97,6 +98,7 @@ def test_latest_failures_and_partial_results_keep_diagnostics():
 
 def test_public_model_projection_retains_content_gaps_without_audit_hashes():
     raw = _result("partial") | {
+        "call_ref": "c4.2", "attempt_ordinal": 4, "call_ordinal": 2,
         "metadata": {"partial": True, "cursor": "next-page", "contract_version": "1"},
         "result_partially_compacted": True,
         "arguments": {"path": "<absolute-path-redacted>"},
@@ -119,14 +121,46 @@ def test_public_model_projection_retains_content_gaps_without_audit_hashes():
         "redacted_value_count": 1,
         "truncated_value_count": 0,
     }
-    assert "result_sha256" not in projected
-    assert projected["tool_result_id"] == raw["tool_result_id"]
+    assert not {"tool_call_id", "tool_result_id", "result_sha256"} & projected.keys()
+    assert projected["call_ref"] == "c4.2"
     assert json.dumps(raw) == before
 
 
 def test_repeated_projection_is_stable_without_consumption_state():
     attempts = [_attempt(1, results=[_result("same")])]
     assert _project(attempts) == _project(attempts)
+
+
+@pytest.mark.parametrize("arguments", [
+    {"items": "invalid"},
+    {"items": [{"source_refs": [{"tool_result_id": "l1result_" + "f" * 64}]}]},
+])
+def test_rejected_findings_arguments_remain_readable_without_becoming_evidence(arguments):
+    import hashlib
+
+    raw_arguments = json.dumps(arguments, sort_keys=True, separators=(",", ":"))
+    result = _result("bad-finding") | {
+        "tool_id": "record_execution_findings", "status": "rejected",
+        "result": None, "error": {"code": "invalid_tool_input"},
+    }
+    call = {
+        "tool_call_id": result["tool_call_id"], "attempt_id": "attempt-1",
+        "call_ordinal": 1, "tool_id": result["tool_id"], "status": "rejected",
+        "outcome_hash": result["result_sha256"], "arguments_json": raw_arguments,
+        "arguments_hash": hashlib.sha256(raw_arguments.encode()).hexdigest(),
+    }
+    execution = {"attempts": [_attempt(1, results=[result])], "tool_calls": [call]}
+    before = json.dumps(execution)
+    projected, _ = project_recent_tool_results(execution)
+    model_result = project_result_record(projected[0])
+    assert model_result["error"] == {"code": "invalid_tool_input"}
+    assert model_result["arguments_unavailable"] is True
+    assert model_result["arguments_unavailable_reason"] == "unsuccessful_findings_call"
+    assert "arguments" not in model_result and "arguments_projection" not in model_result
+    assert json.dumps(execution) == before
+    call["arguments_hash"] = "f" * 64
+    with pytest.raises(ToolResultProjectionError, match="authority validation"):
+        project_recent_tool_results(execution)
 
 
 def test_first_decision_has_no_tool_body_or_omitted_results():
@@ -234,6 +268,7 @@ def test_recent_results_bind_arguments_from_the_same_persisted_tool_call():
         "tool_calls": [
             {
                 "attempt_id": "attempt-1",
+                "call_ordinal": 1,
                 "tool_call_id": "call-read",
                 "tool_id": "source",
                 "status": "succeeded",
@@ -248,6 +283,7 @@ def test_recent_results_bind_arguments_from_the_same_persisted_tool_call():
 
     assert results[0]["arguments"] == {"max_characters": 8000, "pages": [2, 10]}
     assert results[0]["arguments_projection"]["complete"] is True
+    assert results[0]["call_ref"] == "c1.1"
     assert report["arguments_projected_tool_result_count"] == 1
 
 
@@ -260,6 +296,7 @@ def test_recent_results_fail_closed_when_persisted_call_disagrees_with_batch():
         "tool_calls": [
             {
                 "attempt_id": "attempt-1",
+                "call_ordinal": 1,
                 "tool_call_id": "call-read",
                 "tool_id": "different-tool",
                 "status": "succeeded",

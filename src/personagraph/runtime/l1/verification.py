@@ -8,9 +8,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Mapping
 
-from ...tools.findings.contracts import EXECUTION_FINDINGS_TOOL_IDS
+from ...persistent_turn_content.findings import EXECUTION_FINDINGS_TOOL_IDS
 from ...tools.tool_history.definitions import TOOL_HISTORY_TOOL_IDS
-from ...persistent_turn_content import L1Plan, l1_tool_result_id
+from ...persistent_turn_content import L1Plan
 from ...output_protocol.l1 import L1ResultReference
 from .semantic_evidence import L1EvidenceProjectionError, project_referenced_results
 
@@ -26,13 +26,13 @@ class L1VerificationStateError(RuntimeError):
 class L1VerificationIssue:
     code: str
     acceptance_id: str | None = None
-    tool_result_id: str | None = None
+    tool_call_id: str | None = None
 
     def to_dict(self) -> dict[str, str | None]:
         return {
             "code": self.code,
             "acceptance_id": self.acceptance_id,
-            "tool_result_id": self.tool_result_id,
+            "tool_call_id": self.tool_call_id,
         }
 
 
@@ -66,8 +66,8 @@ class L1VerificationResult:
 
 @dataclass(frozen=True, slots=True)
 class _ToolResultEvidence:
-    tool_result_id: str
     tool_call_id: str
+    result_sha256: str | None
     tool_id: str
     status: str
 
@@ -102,7 +102,7 @@ def verify_l1_final_reply(
     if len(sources) != 1:
         issues.append(L1VerificationIssue("plan_message_source_mismatch"))
     for reference in references:
-        result_id = reference.tool_result_id
+        result_id = reference.tool_call_id
         if result_id:
             result = evidence.get(result_id)
             if result is None:
@@ -114,6 +114,14 @@ def verify_l1_final_reply(
                     )
                 )
                 continue
+            if result.result_sha256 != reference.result_sha256:
+                issues.append(
+                    L1VerificationIssue(
+                        "supporting_tool_result_hash_mismatch",
+                        None,
+                        result_id,
+                    )
+                )
             if result.status != "succeeded":
                 issues.append(
                     L1VerificationIssue(
@@ -197,23 +205,19 @@ def _load_tool_result_evidence(
                 "L1 ToolCall projection omitted verification facts"
             )
         if status == "pending":
-            result_id = f"pending:{tool_call_id}"
+            result_sha256 = None
         else:
             if not isinstance(result_sha256, str) or len(result_sha256) != 64:
                 raise L1VerificationStateError(
                     "settled L1 ToolCall omitted its result sha256"
                 )
-            result_id = l1_tool_result_id(
-                tool_call_id=tool_call_id,
-                result_sha256=result_sha256,
-            )
-        if result_id in evidence:
+        if tool_call_id in evidence:
             raise L1VerificationStateError(
-                "L1 execution projection contains duplicate ToolResult IDs"
+                "L1 execution projection contains duplicate ToolCall IDs"
             )
-        evidence[result_id] = _ToolResultEvidence(
-            tool_result_id=result_id,
+        evidence[tool_call_id] = _ToolResultEvidence(
             tool_call_id=tool_call_id,
+            result_sha256=result_sha256,
             tool_id=tool_id,
             status=status,
         )

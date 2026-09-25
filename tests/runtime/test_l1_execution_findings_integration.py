@@ -28,6 +28,7 @@ def test_l1_previous_document_result_keeps_all_chunk_bodies() -> None:
         "tool_results": [
             {
                 "tool_call_id": "call-read",
+                "call_ordinal": 1,
                 "tool_id": "read_document_chunks",
                 "status": "succeeded",
                 "result_sha256": "c" * 64,
@@ -86,6 +87,7 @@ def test_l1_findings_receipt_is_bounded_and_older_source_is_omitted() -> None:
         "tool_results": [
             {
                 "tool_call_id": "call-source",
+                "call_ordinal": 1,
                 "tool_id": "source-tool",
                 "status": "succeeded",
                 "result_sha256": "a" * 64,
@@ -99,6 +101,7 @@ def test_l1_findings_receipt_is_bounded_and_older_source_is_omitted() -> None:
         "tool_results": [
             {
                 "tool_call_id": "call-findings",
+                "call_ordinal": 1,
                 "tool_id": "record_execution_findings",
                 "status": "succeeded",
                 "result_sha256": "b" * 64,
@@ -160,6 +163,7 @@ def test_l1_non_tool_previous_attempt_does_not_resurrect_older_results() -> None
         "tool_results": [
             {
                 "tool_call_id": "call-source",
+                "call_ordinal": 1,
                 "tool_id": "source-tool",
                 "status": "succeeded",
                 "result_sha256": "a" * 64,
@@ -206,6 +210,7 @@ def test_l1_findings_history_suppresses_malformed_unbounded_output() -> None:
         "tool_results": [
             {
                 "tool_call_id": "call-findings",
+                "call_ordinal": 1,
                 "tool_id": "record_execution_findings",
                 "status": "succeeded",
                 "result_sha256": "b" * 64,
@@ -280,6 +285,13 @@ def test_l1_records_and_reinjects_execution_findings(
         payload = json.loads(user_content)
         model_payloads.append(payload)
         if len(model_payloads) == 1:
+            findings_schema = next(
+                item["input_schema"] for item in payload["tool_catalog"]
+                if item["tool_id"] == "record_execution_findings"
+            )
+            assert set(findings_schema["$defs"]["sourceRef"]["properties"]) == {
+                "call_ref", "chunk_id",
+            }
             decision: dict[str, object] = {
                 "plan": {
                     "objective": "查询日期并持久化本轮发现",
@@ -301,7 +313,7 @@ def test_l1_records_and_reinjects_execution_findings(
             }
         elif len(model_payloads) == 2:
             result = payload["prior_tool_results"][0]
-            source_result_ref = result["tool_result_id"]
+            source_result_ref = result["call_ref"]
             assert "tool_call_id" not in result and "result_sha256" not in result
             findings = payload["execution_findings"]
             assert "ledger_revision" not in findings
@@ -321,7 +333,7 @@ def test_l1_records_and_reinjects_execution_findings(
                                         "kind": "finding",
                                         "claim": "The date tool returned a current date.",
                                         "source_refs": [
-                                            {"tool_result_id": source_result_ref}
+                                            {"call_ref": source_result_ref}
                                         ],
                                     }
                                 ],
@@ -341,11 +353,16 @@ def test_l1_records_and_reinjects_execution_findings(
                 )
                 == 1
             )
+            explicit_note = next(
+                item for item in findings["notes"]
+                if item["summary"] == "The date tool returned a current date."
+            )
+            assert explicit_note["source_refs"] == [{"call_ref": source_result_ref}]
             prior_tool_results = payload["prior_tool_results"]
             assert len(prior_tool_results) == 1
             findings_receipt = prior_tool_results[0]
             assert findings_receipt["tool_id"] == "record_execution_findings"
-            assert findings_receipt["tool_result_id"] != source_result_ref
+            assert findings_receipt["call_ref"] != source_result_ref
             assert findings_receipt["result"]["active_projection"]["compacted"] is True
             assert "The date tool returned a current date." not in json.dumps(
                 findings_receipt["result"]
@@ -353,6 +370,9 @@ def test_l1_records_and_reinjects_execution_findings(
             assert findings_receipt["arguments"]["items"][0]["claim"] == (
                 "The date tool returned a current date."
             )
+            assert findings_receipt["arguments"]["items"][0]["source_refs"] == [
+                {"call_ref": source_result_ref},
+            ]
             assert payload["tool_result_projection"] == {
                 "durable_tool_result_count": 2,
                 "projected_tool_result_count": 1,
@@ -360,7 +380,7 @@ def test_l1_records_and_reinjects_execution_findings(
             }
             decision = {
                 "plan": None,
-                "references": [{"tool_result_id": source_result_ref}],
+                "references": [{"call_ref": source_result_ref}],
                 "action": {
                     "kind": "submit_final_reply",
                     "reply": "日期已查询，且本轮发现已记录。",
@@ -384,7 +404,7 @@ def test_l1_records_and_reinjects_execution_findings(
         semantic_payloads.append(payload)
         supporting_results = payload["durable_evidence"]["results"]
         assert len(supporting_results) == 1
-        assert supporting_results[0]["tool_result_id"] == source_result_ref
+        assert supporting_results[0]["call_ref"] == source_result_ref
         assert "tool_call_id" not in supporting_results[0]
         assert supporting_results[0]["result"] is not None
         return _model_result(
@@ -422,6 +442,7 @@ def test_l1_records_and_reinjects_execution_findings(
                     store=session_store,
                     ledger_id=snapshot.ledger.ledger_id,
                     attempt=attempt,
+                    execution=execution,
                 )
             replayed = session_store.get_execution_findings_ledger_for_owner(
                 owner_kind=ExecutionFindingsOwnerKind.L1_TURN_RUN,
@@ -480,13 +501,17 @@ def test_l1_records_and_reinjects_execution_findings(
     assert (
         calls_by_tool["record_execution_findings"]["execution_class"] == "runtime_state"
     )
-    # 模型只引用原生结果，Host 保存真实 CAS；不要求模型抄写调用 ID 或摘要。
+    # 模型只提交短坐标；Host 保存真实调用、结果摘要和 CAS。
     recorded_arguments = json.loads(
         calls_by_tool["record_execution_findings"]["arguments_json"]
     )
     assert recorded_arguments["expected_ledger_revision"] == 2
     source = recorded_arguments["items"][0]["source_refs"][0]
-    assert source == {"tool_result_id": source_result_ref}
+    assert source == {
+        "tool_result_id": calls_by_tool["get_today"]["tool_call_id"],
+        "result_sha256": calls_by_tool["get_today"]["outcome_hash"],
+        "chunk_id": None,
+    }
 
 
 def _model_result(payload: dict[str, object], model_call_id: object) -> ModelResult:

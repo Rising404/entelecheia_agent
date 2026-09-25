@@ -110,6 +110,7 @@ def test_background_preparation_settles_original_call_without_polling_model_atte
             assert len(model_inputs) == 2, "后台等待不应新增模型轮询或格式修复调用"
             results = payload["prior_tool_results"]
             assert len(results) == 1 and results[0]["tool_id"] == "prepare_files"
+            assert results[0]["call_ref"] == "c1.1"
             assert results[0]["status"] == "succeeded", results
             prepared = results[0]["result"]
             assert prepared["ready_indices"] == [0], prepared
@@ -118,7 +119,7 @@ def test_background_preparation_settles_original_call_without_polling_model_atte
             assert prepared["results"][0]["document_version_id"]
             decision = {
                 "note": "已收到同一工具调用返回的准备完成结果。",
-                "references": [{"tool_result_id": results[0]["tool_result_id"]}],
+                "references": [{"call_ref": results[0]["call_ref"]}],
                 "action": {
                     "kind": "submit_final_reply",
                     "reply": "northstar.txt 已准备完成，可以检索。",
@@ -219,6 +220,12 @@ def test_background_preparation_settles_original_call_without_polling_model_atte
     assert settled_call["attempt_id"] == pending_call["attempt_id"]
     assert settled_call["physical_attempt_id"] == pending_call["physical_attempt_id"]
     assert after["state"]["deadline_at"] == before["state"]["deadline_at"]
+    for field in ("request_json", "request_hash", "decision_json", "decision_hash"):
+        assert after["attempts"][0][field] == before["attempts"][0][field]
+    assert json.loads(after["attempts"][1]["decision_json"])["references"] == [{
+        "tool_call_id": settled_call["tool_call_id"],
+        "result_sha256": settled_call["outcome_hash"], "chunk_id": None,
+    }]
     assert settled_call["status"] == "succeeded"
     outcome = json.loads(settled_call["outcome_json"])
     assert outcome["result"]["ready_indices"] == [0]

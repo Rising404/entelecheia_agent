@@ -333,11 +333,11 @@ def test_l1_executes_a_durable_tool_loop_and_commits_one_formal_reply(
             }
         else:
             tool_result = payload["prior_tool_results"][0]
-            tool_result_id = tool_result["tool_result_id"]
+            call_ref = tool_result["call_ref"]
             date = tool_result["result"]["date"]
             decision = {
                 "plan": None,
-                "references": [{"tool_result_id": tool_result_id}],
+                "references": [{"call_ref": call_ref}],
                 "action": {
                     "kind": "submit_final_reply",
                     "reply": f"今天是 {date}。",

@@ -15,6 +15,8 @@ from typing import Any, Literal, Protocol
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from .evidence import L1_CALL_REF_PATTERN
+
 DEFAULT_HISTORY_LIST_LIMIT = 20
 MAX_HISTORY_LIST_LIMIT = 100
 DEFAULT_HISTORY_READ_LIMIT = 16_000
@@ -36,7 +38,7 @@ class ToolResultSource(_Contract):
     tool_call_id: str = Field(min_length=1, max_length=200)
     tool_id: str = Field(min_length=1, max_length=200)
     status: str = Field(min_length=1, max_length=64)
-    tool_result_id: str = Field(pattern=r"^l1result_[0-9a-f]{64}$")
+    call_ref: str = Field(pattern=L1_CALL_REF_PATTERN)
     result_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
 
 
@@ -47,12 +49,14 @@ class ToolResultHistoryItem(_Contract):
     arguments_summary: str = Field(max_length=MAX_ARGUMENT_SUMMARY_CHARACTERS)
     arguments_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     arguments_truncated: bool
+    arguments_unavailable: bool = False
+    arguments_unavailable_reason: Literal["unsuccessful_findings_call"] | None = None
     total_characters: int = Field(ge=0)
 
 
 class ToolResultHistoryPage(_Contract):
-    contract_version: Literal["tool-result-history-page-v1"] = (
-        "tool-result-history-page-v1"
+    contract_version: Literal["tool-result-history-page-v2"] = (
+        "tool-result-history-page-v2"
     )
     results: tuple[ToolResultHistoryItem, ...] = Field(
         max_length=MAX_HISTORY_LIST_LIMIT
@@ -71,7 +75,7 @@ class ToolResultRecord(_Contract):
 
 
 class ToolResultContentPage(_Contract):
-    contract_version: Literal["tool-result-content-page-v1"] = "tool-result-content-page-v1"
+    contract_version: Literal["tool-result-content-page-v2"] = "tool-result-content-page-v2"
     source: ToolResultSource
     path: str
     kind: Literal["object", "array", "string", "scalar"]
@@ -81,6 +85,7 @@ class ToolResultContentPage(_Contract):
     next_offset: int | None = Field(default=None, ge=0)
     expand_paths: tuple[str, ...] = ()
     partial: bool
+    source_content_compacted: bool = False
 
 
 class ToolHistoryReadPort(Protocol):
@@ -97,7 +102,7 @@ class ToolHistoryReadPort(Protocol):
     def read_result(
         self,
         *,
-        tool_result_id: str,
+        call_ref: str,
     ) -> ToolResultRecord: ...
 
 

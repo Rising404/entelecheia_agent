@@ -26,7 +26,7 @@ from personagraph.l2.task_execution.task_graph.controller import (
     run_task_graph_work_runs,
 )
 from personagraph.l2.task_execution.tool_bridge.work_run_bridge import SqliteWorkRunToolBridge
-from personagraph.tools.findings.contracts import EXECUTION_FINDINGS_TOOL_IDS
+from personagraph.persistent_turn_content.findings import EXECUTION_FINDINGS_TOOL_IDS
 from personagraph.l2.task_execution.work_run.turn_controller import WorkRunTurnStableIdPlan
 from personagraph.l2.task_execution.work_run.model_providers import (
     WorkRunStructuredModelProfile,

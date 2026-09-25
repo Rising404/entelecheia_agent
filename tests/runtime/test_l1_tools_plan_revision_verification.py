@@ -10,6 +10,8 @@ from personagraph.input_processing.vision.contracts import (
     VisionPurpose,
 )
 from personagraph.model_io.gateway import ModelResult, PreparedModelCall
+from personagraph.output_protocol.l1 import L1ResultReference
+from personagraph.persistent_turn_content.evidence import l1_calls_by_ref
 from personagraph.model_io.output_repair_contracts import (
     RuntimeModelOutputRepairFeedback,
     RuntimeModelOutputRepairIssue,
@@ -389,22 +391,28 @@ def test_l1_mechanical_rejection_identifies_the_exact_bad_support_binding(
     user_text = "读取 brief.txt，然后给出一句概括。"
     _install_l1_classifier(monkeypatch)
     payloads: list[dict[str, object]] = []
-    tool_result_id = ""
-    rejected_tool_result_id = ""
-    original_known_tool_result_ids = l1_controller._known_tool_result_ids
+    call_ref = ""
+    rejected_call_ref = ""
+    original_materialize = l1_controller.materialize_decision_references
 
-    def admit_rejected_result_for_gate_test(execution):
-        known = set(original_known_tool_result_ids(execution))
-        if rejected_tool_result_id:
-            known.add(rejected_tool_result_id)
-        return frozenset(known)
+    def admit_rejected_result_for_gate_test(proposal, *, execution):
+        # Bypass only the admission eligibility check to exercise the independent gate.
+        bound = original_materialize(proposal.model_copy(update={"references": ()}), execution=execution)
+        calls = l1_calls_by_ref(execution)
+        return bound.model_copy(update={"references": tuple(
+            L1ResultReference(
+                tool_call_id=calls[ref.call_ref]["tool_call_id"],
+                result_sha256=calls[ref.call_ref]["outcome_hash"],
+                chunk_id=ref.chunk_id,
+            ) for ref in proposal.references
+        )})
 
     monkeypatch.setattr(
-        l1_controller, "_known_tool_result_ids", admit_rejected_result_for_gate_test
+        l1_controller, "materialize_decision_references", admit_rejected_result_for_gate_test
     )
 
     def decide(_system: str, user_content: str, **kwargs: object) -> ModelResult:
-        nonlocal tool_result_id, rejected_tool_result_id
+        nonlocal call_ref, rejected_call_ref
         payload = json.loads(user_content)
         payloads.append(payload)
         if len(payloads) == 1:
@@ -435,11 +443,11 @@ def test_l1_mechanical_rejection_identifies_the_exact_bad_support_binding(
             rejected = next(
                 (item for item in tool_results if item["status"] != "succeeded")
             )
-            tool_result_id = result["tool_result_id"]
-            rejected_tool_result_id = rejected["tool_result_id"]
+            call_ref = result["call_ref"]
+            rejected_call_ref = rejected["call_ref"]
             decision = {
                 "plan": None,
-                "references": [{"tool_result_id": rejected_tool_result_id}],
+                "references": [{"call_ref": rejected_call_ref}],
                 "action": {"kind": "submit_final_reply", "reply": "已读取并概括文件。"},
             }
         else:
@@ -448,7 +456,7 @@ def test_l1_mechanical_rejection_identifies_the_exact_bad_support_binding(
             assert (
                 rejection["issues"][0]["code"] == "supporting_tool_result_not_succeeded"
             )
-            assert rejection["issues"][0]["tool_result_id"] == rejected_tool_result_id
+            assert rejection["issues"][0]["call_ref"] == rejected_call_ref
             repair_projection = {
                 "feedback": rejection["feedback"],
                 "issues": rejection["issues"],
@@ -458,7 +466,7 @@ def test_l1_mechanical_rejection_identifies_the_exact_bad_support_binding(
             )
             decision = {
                 "plan": None,
-                "references": [{"tool_result_id": tool_result_id}],
+                "references": [{"call_ref": call_ref}],
                 "action": {"kind": "submit_final_reply", "reply": "已读取并概括文件。"},
             }
         return _model_result(decision, kwargs["model_call_id"])

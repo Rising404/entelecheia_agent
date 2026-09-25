@@ -63,14 +63,31 @@ def test_chunk_body_user_dictionary_is_not_recursively_scrubbed():
     assert result["unavailable_targets"] == raw["unavailable_targets"]
 
 
-def test_history_preserves_native_source_but_never_rewrites_selected_user_value():
-    source = {"tool_call_id": "call", "tool_result_id": "result", "result_sha256": "a" * 64,
+def test_history_exposes_short_source_but_never_rewrites_selected_user_value():
+    source = {"tool_call_id": "call", "call_ref": "c1.1", "result_sha256": "a" * 64,
               "tool_id": "read_text", "status": "succeeded"}
     raw = {"source": source, "value": {"result_sha256": "user value"},
            "path": "/result", "next_offset": 1, "partial": True}
     result = project_tool_result("read_tool_result", raw)
-    assert result["source"] == {"tool_result_id": "result", "tool_id": "read_text", "status": "succeeded"}
+    assert result["source"] == {"call_ref": "c1.1", "tool_id": "read_text", "status": "succeeded"}
     assert result["value"] == raw["value"] and result["next_offset"] == 1
+
+
+def test_history_directory_exposes_short_source_and_preserves_original_coordinates():
+    item = {
+        "source": {"tool_call_id": "call", "call_ref": "c4.2", "result_sha256": "a" * 64,
+                   "tool_id": "read_text", "status": "failed"},
+        "attempt_ordinal": 4, "call_ordinal": 2, "arguments_summary": "{}",
+        "arguments_sha256": "b" * 64, "arguments_truncated": False,
+    }
+    raw = {"results": [item], "offset": 9, "next_offset": None, "partial": True}
+    before = deepcopy(raw)
+    result = project_tool_result("list_tool_results", raw)
+    projected = result["results"][0]
+    assert projected["source"] == {"call_ref": "c4.2", "tool_id": "read_text", "status": "failed"}
+    assert projected["attempt_ordinal"] == 4 and projected["call_ordinal"] == 2
+    assert "arguments_sha256" not in projected
+    assert raw == before
 
 
 def test_format_and_unknown_tool_body_stay_intact():

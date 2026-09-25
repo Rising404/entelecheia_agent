@@ -27,7 +27,7 @@ from personagraph.session.persistence import execution_findings as records
 from personagraph.session.persistence import schema
 from personagraph.session.persistence.current_schema import CURRENT_SCHEMA_SQL
 from personagraph.session.persistence.deps import StoreDeps
-from personagraph.persistent_turn_content.evidence import l1_tool_result_id
+from personagraph.output_protocol.l1_persistence import legacy_l1_tool_result_id
 
 
 L1_RUN_ID = "l1-run"
@@ -805,12 +805,17 @@ def _record_command(
     )
 
 
-def test_l1_tool_result_identity_is_preserved_and_replayed(findings_deps):
+@pytest.mark.parametrize("legacy", [False, True])
+def test_l1_tool_result_identity_is_preserved_and_replayed(findings_deps, legacy):
     created = records.create_execution_findings_ledger(
         findings_deps, session_id="session", owner_kind=ExecutionFindingsOwnerKind.L1_TURN_RUN,
         execution_owner_id=L1_RUN_ID,
     )
-    ref = ExecutionFindingSourceRef(tool_result_id=_l1_chunk_ref(findings_deps).tool_result_id)
+    ref = _l1_chunk_ref(findings_deps).model_copy(update={"chunk_id": None})
+    if legacy:
+        ref = ExecutionFindingSourceRef(tool_result_id=legacy_l1_tool_result_id(
+            tool_call_id=ref.tool_result_id, result_sha256=ref.result_sha256,
+        ))
     command = _record_command(
         ledger_id=created.ledger.ledger_id, writer_unit_id=L1_STEP_ID,
         writer_tool_call_id="l1-record-call", expected_revision=0,
@@ -827,18 +832,62 @@ def test_l1_tool_result_identity_is_preserved_and_replayed(findings_deps):
     assert len(replayed.ledger.entry_revisions) == 1
 
 
-@pytest.mark.parametrize("corruption", ["result_id", "hash", "call", "scope", "failed", "findings", "history_list", "history_read"])
+@pytest.mark.parametrize("pin", ["omitted", "valid", "invalid"])
+def test_work_run_result_pin_is_optional_and_verified_when_supplied(findings_deps, pin):
+    created = records.create_execution_findings_ledger(
+        findings_deps, session_id="session", owner_kind=ExecutionFindingsOwnerKind.WORK_RUN,
+        execution_owner_id=WORK_RUN_ID,
+    )
+    with findings_deps.connect() as conn:
+        result_json = conn.execute(
+            "SELECT result_json FROM insession_work_run_tool_results WHERE tool_result_id='work-source-result'",
+        ).fetchone()[0]
+    source = {"tool_result_id": "work-source-result", "chunk_id": "chunk-a"}
+    if pin != "omitted":
+        source["result_sha256"] = (
+            hashlib.sha256(result_json.encode()).hexdigest() if pin == "valid" else "0" * 64
+        )
+    command = _record_command(
+        ledger_id=created.ledger.ledger_id, writer_unit_id=WORK_ATTEMPT_ID,
+        writer_tool_call_id="work-record-call", expected_revision=0,
+        item=RecordExecutionFinding(kind="finding", claim="The WorkRun result supports this note.",
+                                    source_refs=(ExecutionFindingSourceRef(**source),)),
+    )
+    if pin == "invalid":
+        with pytest.raises(records.ExecutionFindingsSourceReferenceInvalid, match="digest changed"):
+            records.apply_execution_findings_mutation(findings_deps, command=command)
+        unchanged = records.get_execution_findings_ledger(findings_deps, ledger_id=created.ledger.ledger_id)
+        assert unchanged.ledger.revision == 0
+    else:
+        result = records.apply_execution_findings_mutation(findings_deps, command=command)
+        assert result.ledger.entry_revisions[0].source_refs[0].model_dump() == source
+        replayed = records.apply_execution_findings_mutation(findings_deps, command=command)
+        assert replayed.replayed and replayed.ledger == result.ledger
+
+
+@pytest.mark.parametrize("corruption", ["result_id", "hash", "missing_digest", "wrong_digest", "digest_and_body", "call", "scope", "failed", "findings", "history_list", "history_read"])
 def test_l1_tool_result_identity_does_not_weaken_source_authority(findings_deps, corruption):
     created = records.create_execution_findings_ledger(
         findings_deps, session_id="session", owner_kind=ExecutionFindingsOwnerKind.L1_TURN_RUN,
         execution_owner_id=L1_RUN_ID,
     )
-    ref = {"tool_result_id": _l1_chunk_ref(findings_deps).tool_result_id}
+    ref = _l1_chunk_ref(findings_deps).model_dump()
     if corruption == "result_id":
-        ref["tool_result_id"] = "l1result_" + "0" * 64
+        ref["tool_result_id"] = "another-call"
     elif corruption == "hash":
         with findings_deps.connect() as conn:
             conn.execute("UPDATE l1_turn_tool_calls SET outcome_json='{}' WHERE tool_call_id='l1-source-call'")
+    elif corruption == "missing_digest":
+        ref.pop("result_sha256")
+    elif corruption == "wrong_digest":
+        ref["result_sha256"] = "0" * 64
+    elif corruption == "digest_and_body":
+        replacement = canonical_json({"status": "succeeded", "result": {"text": "different"}})
+        with findings_deps.connect() as conn:
+            conn.execute(
+                "UPDATE l1_turn_tool_calls SET outcome_json=?, outcome_hash=? WHERE tool_call_id='l1-source-call'",
+                (replacement, hashlib.sha256(replacement.encode()).hexdigest()),
+            )
     else:
         field, value = {
             "call": ("tool_call_id", "other-call"),
@@ -876,7 +925,8 @@ def _l1_chunk_ref(findings_deps: StoreDeps) -> ExecutionFindingSourceRef:
             ).fetchone()[0]
         )
     return ExecutionFindingSourceRef(
-        tool_result_id=l1_tool_result_id(tool_call_id="l1-source-call", result_sha256=outcome_hash),
+        tool_result_id="l1-source-call",
+        result_sha256=outcome_hash,
         chunk_id="chunk-a",
     )
 

@@ -1,4 +1,4 @@
-"""L1 唯一公开提案：每步笔记、可选计划与原生结果引用、一个动作。"""
+"""L1 模型提案使用短引用；Host 准入后的决定保存完整调用与结果摘要。"""
 
 from __future__ import annotations
 import hashlib
@@ -15,8 +15,9 @@ from ..persistent_turn_content.findings import (
     EXECUTION_FINDING_CLAIM_MAX_CHARACTERS,
     validate_execution_finding_text,
 )
+from ..persistent_turn_content.evidence import L1_CALL_REF_PATTERN, parse_l1_call_ref
 
-L1_ATTEMPT_PROTOCOL_VERSION = "l1-attempt-model-view-v5"
+L1_ATTEMPT_PROTOCOL_VERSION = "l1-attempt-model-view-v6"
 
 
 class _Contract(BaseModel):
@@ -36,10 +37,22 @@ class SubmitFinalReplyAction(_Contract):
 
 
 class L1ResultReference(_Contract):
-    """引用已经执行的真实结果；可选块 ID 必须属于该结果。"""
+    """Host 持久引用；摘要固定所引用的结果内容，块必须属于该结果。"""
 
-    tool_result_id: str = Field(min_length=1, max_length=200)
+    tool_call_id: str = Field(min_length=1, max_length=200)
+    result_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     chunk_id: str | None = Field(default=None, min_length=1, max_length=200)
+
+
+class L1CallReferenceProposal(_Contract):
+    call_ref: str = Field(pattern=L1_CALL_REF_PATTERN)
+    chunk_id: str | None = Field(default=None, min_length=1, max_length=200)
+
+    @field_validator("call_ref")
+    @classmethod
+    def _canonical_call_ref(cls, value: str) -> str:
+        parse_l1_call_ref(value)
+        return value
 
 
 class L1AcceptanceProposal(_Contract):
@@ -73,11 +86,10 @@ L1AttemptActionProposal = Annotated[
 ]
 
 
-class L1AttemptDecisionProposal(_Contract):
+class _L1DecisionFields(_Contract):
     note: str = Field(min_length=1, max_length=EXECUTION_FINDING_CLAIM_MAX_CHARACTERS)
     action: L1AttemptActionProposal
     plan: L1PlanProposal | None = None
-    references: tuple[L1ResultReference, ...] = Field(default=(), max_length=24)
 
     @field_validator("note")
     @classmethod
@@ -85,6 +97,14 @@ class L1AttemptDecisionProposal(_Contract):
         if not value.strip():
             raise ValueError("a public execution note must not be empty")
         return validate_execution_finding_text(value.strip())
+
+
+class L1AttemptDecisionProposal(_L1DecisionFields):
+    references: tuple[L1CallReferenceProposal, ...] = Field(default=(), max_length=24)
+
+
+class L1AttemptDecision(_L1DecisionFields):
+    references: tuple[L1ResultReference, ...] = Field(default=(), max_length=24)
 
 
 def materialize_l1_plan(
@@ -133,6 +153,8 @@ __all__ = [
     "L1AcceptanceProposal",
     "L1AttemptActionProposal",
     "L1AttemptDecisionProposal",
+    "L1AttemptDecision",
+    "L1CallReferenceProposal",
     "L1PlanProposal",
     "L1ResultReference",
     "SubmitFinalReplyAction",

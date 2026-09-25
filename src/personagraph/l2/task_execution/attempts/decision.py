@@ -53,7 +53,7 @@ from .input_projection import (
     select_bounded_prior_tool_results,
     serialize_attempt_prompt_payload,
 )
-from ....tools.findings.contracts import EXECUTION_FINDINGS_TOOL_IDS
+from ....persistent_turn_content.findings import EXECUTION_FINDINGS_TOOL_IDS
 from ....model_io.output_validation import ModelOutputValidationError
 from ....model_io.prepared_request_contracts import PreparedModelRequest
 from ....runtime.model_calls.requests import (

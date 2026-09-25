@@ -1,10 +1,12 @@
-"""模型业务结果投影：保留原生身份和正文，审计字段不重复注入。"""
+"""模型业务结果投影：保留业务身份和正文，工具历史只展示 Host 短引用。"""
 
 from __future__ import annotations
 
 from collections.abc import Mapping
 from copy import deepcopy
 
+from ...persistent_turn_content.findings import EXECUTION_FINDINGS_TOOL_IDS
+from ..findings.projection import project_execution_findings_tool_output_for_model
 
 _FILE_LIST_TOOLS = {
     "check_files_state", "prepare_files", "read_file_chunks", "inspect_file_chunks",
@@ -39,7 +41,8 @@ def project_file_record(record: dict) -> dict:
 
 def project_tool_result(tool_id: str, result: object) -> object:
     """每种工具只处理已知协议位置；任意用户字典和正文不做递归删字段。"""
-    value = deepcopy(result)
+    value = (project_execution_findings_tool_output_for_model(result)
+             if tool_id in EXECUTION_FINDINGS_TOOL_IDS else deepcopy(result))
     if not isinstance(value, dict):
         return value
     if (
@@ -70,7 +73,7 @@ def project_tool_result(tool_id: str, result: object) -> object:
         for item in value.get("images", []):
             if isinstance(item, dict):
                 _drop(item, {"sent_sha256", "source_sha256"})
-    elif tool_id in {"record_execution_findings", "revise_execution_finding"}:
+    elif tool_id in EXECUTION_FINDINGS_TOOL_IDS:
         _drop(value, {"schema_version", "source_schema_version", "replayed"})
     else:
         return value
@@ -131,7 +134,7 @@ def _selected_chunk(value: dict) -> dict:
 def _history_source(source: dict) -> dict:
     return {
         key: deepcopy(source[key])
-        for key in ("tool_result_id", "tool_id", "status") if key in source
+        for key in ("call_ref", "tool_id", "status") if key in source
     }
 
 

@@ -11,7 +11,7 @@ import json
 from typing import TYPE_CHECKING, Any, Mapping
 
 from ...tools.catalog.binding import BoundToolRegistration, ToolDefinition
-from ...tools.findings.contracts import EXECUTION_FINDINGS_TOOL_IDS
+from ...persistent_turn_content.findings import EXECUTION_FINDINGS_TOOL_IDS
 from .identity import canonical_json, sha256_json
 
 if TYPE_CHECKING:

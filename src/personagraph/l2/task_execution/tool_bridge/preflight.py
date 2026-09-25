@@ -37,7 +37,7 @@ from .preflight_contracts import (
     ToolBridgeRejected,
     ToolBridgeRejectionCode,
 )
-from ....tools.findings.contracts import EXECUTION_FINDINGS_TOOL_IDS
+from ....persistent_turn_content.findings import EXECUTION_FINDINGS_TOOL_IDS
 
 
 @dataclass(frozen=True)

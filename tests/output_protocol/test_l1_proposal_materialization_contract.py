@@ -22,7 +22,7 @@ def decision():
 
 def test_schema_is_prompt_and_parser_single_source():
     prompt = _l1_system_prompt()
-    schema = json.loads(prompt[prompt.index("{") :])
+    schema = json.loads(prompt.rsplit("\n", 1)[1])
     assert schema == L1AttemptDecisionProposal.model_json_schema()
     assert set(schema["required"]) == {"note", "action"}
     assert schema["properties"]["note"]["maxLength"] == EXECUTION_FINDING_CLAIM_MAX_CHARACTERS == 4_096

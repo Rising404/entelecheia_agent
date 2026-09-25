@@ -2,11 +2,14 @@
 
 from __future__ import annotations
 
+import hashlib
+import json
 from types import SimpleNamespace
 
 import pytest
 
 from personagraph.output_protocol.l1 import (
+    L1AttemptDecision,
     L1AttemptDecisionProposal,
     L1PlanProposal,
     materialize_l1_plan,
@@ -64,6 +67,23 @@ def _admit(decision, **overrides):
     )
 
 
+def _execution_with_result(*, tool_id="read_text", status="succeeded"):
+    outcome = json.dumps({
+        "status": status,
+        "result": {"text": "source"} if status == "succeeded" else None,
+        "error": None if status == "succeeded" else {"code": "file_unavailable"},
+    }, sort_keys=True, separators=(",", ":")) if status != "pending" else None
+    return {
+        "attempts": [{"attempt_id": "attempt_private_identity", "ordinal": 4}],
+        "tool_calls": [{
+            "tool_call_id": "l1tool_" + "a" * 64,
+            "attempt_id": "attempt_private_identity", "call_ordinal": 2,
+            "tool_id": tool_id, "status": status, "outcome_json": outcome,
+            "outcome_hash": hashlib.sha256(outcome.encode()).hexdigest() if outcome else None,
+        }],
+    }
+
+
 @pytest.mark.parametrize(
     ("decision", "overrides", "code", "path", "expected_text"),
     [
@@ -89,9 +109,9 @@ def _admit(decision, **overrides):
             {}, "host_guard.l1_unavailable_tool", "/action/calls/1/tool_id", ("tool_catalog",),
         ),
         (
-            _decision(references=[{"tool_result_id": "PRIVATE_SENTINEL"}]),
-            {}, "host_guard.l1_unavailable_reference", "/references/0/tool_result_id",
-            ("成功", "tool_result_id"),
+            _decision(references=[{"call_ref": "c99.1"}]),
+            {}, "host_guard.l1_unavailable_reference", "/references/0/call_ref",
+            ("成功", "call_ref"),
         ),
         (
             _decision(calls=[{"tool_id": "findings_write", "arguments": {}}] * 2),
@@ -153,8 +173,36 @@ def test_valid_plan_and_tool_batch_remain_admissible():
     admitted, materialized = _admit(
         decision, current_plan=current, max_tool_calls_per_attempt=2,
     )
-    assert admitted is decision
+    assert isinstance(admitted, L1AttemptDecision)
+    assert admitted.model_dump() == decision.model_dump()
     assert materialized is current
+
+
+def test_short_reference_admission_pins_exact_call_and_result_digest():
+    execution = _execution_with_result()
+    admitted, _ = _admit(_decision(references=[{"call_ref": "c4.2"}]), execution=execution)
+    original = execution["tool_calls"][0]
+    assert isinstance(admitted, L1AttemptDecision)
+    assert admitted.references[0].model_dump() == {
+        "tool_call_id": original["tool_call_id"],
+        "result_sha256": original["outcome_hash"],
+        "chunk_id": None,
+    }
+
+
+@pytest.mark.parametrize(("tool_id", "status"), [
+    ("read_text", "failed"), ("read_text", "pending"),
+    ("list_tool_results", "succeeded"), ("read_tool_result", "succeeded"),
+    ("record_execution_findings", "succeeded"),
+])
+def test_short_reference_cannot_turn_failed_or_bookkeeping_calls_into_evidence(tool_id, status):
+    with pytest.raises(L1ControllerFailure) as raised:
+        _admit(_decision(references=[{"call_ref": "c4.2"}]),
+               execution=_execution_with_result(tool_id=tool_id, status=status))
+    issue = raised.value.repair_issue
+    assert issue.code == "host_guard.l1_unavailable_reference"
+    assert issue.paths == ("/references/0/call_ref",)
+    assert "l1tool_" not in issue.model_dump_json()
 
 
 def test_simultaneous_violations_keep_the_first_host_rule():

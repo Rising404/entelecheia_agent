@@ -15,6 +15,7 @@ from ..execution import ToolBusinessFailure
 from ..policy import AuthorityFacts, ScopeGrant
 from ..catalog.binding import ToolBinding
 from ..registration import ToolRegistration
+from ...persistent_turn_content.findings import EXECUTION_FINDINGS_TOOL_IDS
 from ..model_interface.results import project_tool_result
 from .catalog import bind_tool_history_registrations
 from .definitions import (
@@ -71,12 +72,15 @@ class ToolHistoryRuntime:
 
     def read_result(self, payload: dict[str, Any]) -> dict[str, Any]:
         def read(**arguments):
-            record = self.port.read_result(tool_result_id=arguments.pop("tool_result_id"))
+            record = self.port.read_result(call_ref=arguments.pop("call_ref"))
             content = {
                 "result": project_tool_result(record.source.tool_id, record.outcome.get("result")),
                 "error": record.outcome.get("error"),
             }
-            return project_tool_result_content(source=record.source, content=content, **arguments)
+            page = project_tool_result_content(source=record.source, content=content, **arguments)
+            if record.source.tool_id in EXECUTION_FINDINGS_TOOL_IDS and content["result"] is not None:
+                page = page.model_copy(update={"partial": True, "source_content_compacted": True})
+            return page
 
         return self._read(payload, ReadToolResultInput, read)
 

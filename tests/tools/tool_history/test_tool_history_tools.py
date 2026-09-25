@@ -63,12 +63,12 @@ def test_history_tools_use_bound_port_and_stable_catalog_definitions():
             result
             if registration.tool_id == "list_tool_results"
             else {
-                "contract_version": "tool-result-content-page-v1",
+                "contract_version": "tool-result-content-page-v2",
                 "source": {
                     "tool_call_id": "call",
                     "tool_id": "read_pdf_text",
                     "status": "failed",
-                    "tool_result_id": "l1result_" + "b" * 64,
+                    "call_ref": "c1.1",
                     "result_sha256": "a" * 64,
                 },
                 "path": "", "kind": "object", "value": {}, "expand_paths": [],
@@ -99,7 +99,21 @@ def test_history_owner_and_invalid_list_parameters_never_reach_port(payload):
 def test_unknown_history_result_has_public_bounded_failure():
     runtime, _ = _runtime()
     with pytest.raises(ToolBusinessFailure, match="tool_result_unavailable"):
-        runtime.registrations[1].handler({"tool_result_id": "l1result_" + "b" * 64})
+        runtime.registrations[1].handler({"call_ref": "c1.1"})
+
+
+@pytest.mark.parametrize("payload", [
+    {"tool_result_id": "l1result_" + "b" * 64},
+    {"call_ref": "c1.1", "session_id": "other"},
+    {"call_ref": "c1.1", "l1_turn_run_id": "other"},
+    {"call_ref": "c01.1"},
+    {"call_ref": "c1.0"},
+    {"call_ref": "c1.1\n"},
+])
+def test_history_read_contract_rejects_old_identity_noncanonical_refs_and_owner(payload):
+    runtime, _ = _runtime()
+    with pytest.raises(ToolBusinessFailure, match="历史读取参数无效"):
+        runtime.read_result(payload)
 
 
 @pytest.mark.parametrize("effect_scope", ["", " ", "*"])

@@ -5,13 +5,14 @@ import json
 from collections.abc import Mapping
 from ...model_io.output_repair_contracts import RuntimeModelOutputRepairIssue
 from ...output_protocol.actions import CallToolsAction, ToolCallProposal
-from ...output_protocol.l1 import L1AttemptDecisionProposal, L1_ATTEMPT_PROTOCOL_VERSION
+from ...output_protocol.l1 import L1AttemptDecision
+from ...output_protocol.l1_persistence import decode_l1_decision
 from ...persistent_turn_content.findings import (
     RecordExecutionFinding,
     l1_execution_note_writer_id,
 )
 from ...tools.contracts import ExecutionStatus
-from ...tools.findings.contracts import (
+from ...persistent_turn_content.findings import (
     EXECUTION_FINDINGS_TOOL_IDS,
     RECORD_EXECUTION_FINDINGS_TOOL_ID,
 )
@@ -38,10 +39,10 @@ class L1FindingsRevisionError(ValueError):
 
 
 def bind_explicit_findings_revision(
-    decision: L1AttemptDecisionProposal,
+    decision: L1AttemptDecision,
     *,
     request: Mapping[str, object],
-) -> L1AttemptDecisionProposal:
+) -> L1AttemptDecision:
     """Host 将显式台账调用绑定到冻结快照及固定笔记写入后的版本。
 
     模型可省略 CAS 版本；显式提供时仍拒绝错误或过期值。
@@ -77,15 +78,18 @@ def record_committed_execution_notes(
     store: L1StorePort,
     ledger_id: str,
     attempt: Mapping[str, object],
+    execution: Mapping[str, object],
 ) -> None:
     """存储失败显式终止；不把 Host 配额故障交给模型重写答复。"""
     raw = attempt.get("decision_json")
     if not isinstance(raw, str):
         return
     request = json.loads(str(attempt["request_json"]))
-    if request.get("schema_version") != L1_ATTEMPT_PROTOCOL_VERSION:
-        raise RuntimeError("unsupported frozen L1 note protocol; start a new turn")
-    decision = L1AttemptDecisionProposal.model_validate_json(raw)
+    decision = decode_l1_decision(
+        raw,
+        request_schema_version=request.get("schema_version"),
+        tool_calls=execution.get("tool_calls", []),
+    )
     projection = request.get("execution_findings")
     if not isinstance(projection, dict):
         raise RuntimeError("L1 notes have no frozen ledger revision")

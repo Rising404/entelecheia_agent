@@ -41,7 +41,13 @@ Electron / Vue → 本地 API → Turn 入口 → L1 决策循环
 
 模型看到的是任务内容与可用工具，并不直接选择数据库、Session 路由或任意私有目录。
 Host 将动作绑定到当前授权范围，检查参数、来源身份、调用预算和状态，再执行并保存结果。
-文件 ID、版本 ID 与工具结果 ID 各有用途；模型提到某个 ID，不等于它获得了对应权限。
+文件与版本身份由 Host 管理；模型提到某个路径或引用，不等于它获得了对应权限。
+
+L1 模型使用当前 Run 内的短调用引用，例如 `c2.1` 表示第 2 次 attempt 的第 1 个工具调用。
+编号取自持久账本，不按当前展示列表重新排序；结果退出上下文、历史回读或恢复执行都不改变编号。
+Host 将短引用解析为完整 `tool_call_id` 与结果 `result_sha256`，并核对归属、结果内容及证据资格。
+模型提案、工具历史和 findings 来源展示短引用；持久决定保存完整身份与摘要。
+当前 L1 路径不再额外生成 `l1result_*` 身份，摘要完整性校验仍保留。
 
 | 决策或状态 | 责任所在 |
 | --- | --- |
@@ -60,6 +66,9 @@ Host 将动作绑定到当前授权范围，检查参数、来源身份、调用
 [工具调用状态](src/personagraph/runtime/tool_calls/authority.py)。
 对应测试：[输入边界](tests/runtime/test_attempt_input_projection_boundary.py)、
 [工具调用权威与重复分派](tests/runtime/test_runtime_tool_call_authority.py)。
+短引用边界：[提案与持久决定合同](src/personagraph/output_protocol/l1.py)、
+[模型引用准入](src/personagraph/runtime/l1/model_view/references.py)、
+[引用与持久内容校验测试](tests/output_protocol/test_l1_persistence.py)。
 
 ## 设计二：缩小当前上下文，保留可回读的记录
 
@@ -123,6 +132,12 @@ Host 将动作绑定到当前授权范围，检查参数、来源身份、调用
 
 TurnRun、Attempt 和调用账本记录执行事实，内存变量只是当前投影，trajectory 用于诊断。
 恢复需要重新核对执行身份和租约，并沿用原有预算；重新进入控制器不能获得一份新的整轮额度。
+
+现行 L1 模型协议为 `l1-attempt-model-view-v6`。持久读取边界支持已提交的 v5 决定、笔记和旧来源引用，
+保留原始 JSON/hash，读取时归一化为现行调用与摘要合同，并核验所引用结果的摘要，不改写冻结原件。
+这不表示旧运行可完整续跑：尚未完成的 v5 冻结模型请求不能换成 v6 提示继续发送，必须开始新的 Turn；
+旧工具目录等冻结身份不匹配时也会显式停止。v6 的恢复沿用原请求、预算与已结算调用。
+读取兼容入口：[L1 持久决定边界](src/personagraph/output_protocol/l1_persistence.py)。
 
 | 已保存的情况 | 恢复边界 |
 | --- | --- |

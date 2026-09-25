@@ -21,7 +21,8 @@ if TYPE_CHECKING:
         EMPTY_SUPPORT_JUSTIFICATION_CONTRACT_VERSION,  # noqa: F401
         EmptySupportJustification,  # noqa: F401
         EmptySupportReason,  # noqa: F401
-        l1_tool_result_id,  # noqa: F401
+        format_l1_call_ref,  # noqa: F401
+        parse_l1_call_ref,  # noqa: F401
     )
     from .output_window import (
         OutputWindow,  # noqa: F401
@@ -52,9 +53,11 @@ _EXPORTS = {
         "personagraph.persistent_turn_content.evidence",
         "EmptySupportReason",
     ),
-    "l1_tool_result_id": (
-        "personagraph.persistent_turn_content.evidence",
-        "l1_tool_result_id",
+    "format_l1_call_ref": (
+        "personagraph.persistent_turn_content.evidence", "format_l1_call_ref",
+    ),
+    "parse_l1_call_ref": (
+        "personagraph.persistent_turn_content.evidence", "parse_l1_call_ref",
     ),
     "OutputWindow": (
         "personagraph.persistent_turn_content.output_window",

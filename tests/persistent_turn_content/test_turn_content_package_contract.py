@@ -10,7 +10,8 @@ from personagraph.output_protocol import (
 from personagraph.persistent_turn_content import (
     L1Plan,
     OutputWindow,
-    l1_tool_result_id,
+    format_l1_call_ref,
+    parse_l1_call_ref,
 )
 from personagraph.persistent_turn_content.findings import (
     ExecutionFindingsActiveProjection,
@@ -30,10 +31,10 @@ def test_public_symbols_have_one_canonical_owner() -> None:
     assert ExecutionFindingsActiveProjection.__module__ == (
         "personagraph.persistent_turn_content.findings"
     )
-    assert l1_tool_result_id.__module__ == "personagraph.persistent_turn_content.evidence"
+    assert format_l1_call_ref.__module__ == "personagraph.persistent_turn_content.evidence"
+    assert parse_l1_call_ref.__module__ == "personagraph.persistent_turn_content.evidence"
 
 
-def test_l1_tool_result_identity_preserves_persisted_hash_algorithm() -> None:
-    assert l1_tool_result_id(tool_call_id="call-1", result_sha256="a" * 64) == (
-        "l1result_24fe5ee8f6eea97b3d0196f5f25e5669bf6a5943d60667632cfc6086a421c805"
-    )
+def test_l1_call_reference_preserves_durable_coordinates() -> None:
+    assert format_l1_call_ref(attempt_ordinal=4, call_ordinal=2) == "c4.2"
+    assert parse_l1_call_ref("c4.2") == (4, 2)

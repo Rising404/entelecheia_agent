@@ -1,4 +1,4 @@
-"""L1 模型输入的业务投影；使用原生身份，不创建短引用表。"""
+"""L1 模型输入的业务投影；调用使用 Host 已绑定的固定短坐标。"""
 
 from __future__ import annotations
 from copy import deepcopy
@@ -9,6 +9,7 @@ from ....tools.model_interface import (
     project_tool_result,
     project_tool_result_metadata,
 )
+from .references import project_findings_tool_schema
 
 
 def project_attempt_view(payload: dict) -> dict:
@@ -32,7 +33,10 @@ def project_attempt_view(payload: dict) -> dict:
         project_result_record(item) for item in payload.get("prior_tool_results", [])
     ]
     view["execution_findings"] = project_findings(payload.get("execution_findings"))
-    view["tool_catalog"] = project_model_tool_catalog(payload.get("tool_catalog", []))
+    view["tool_catalog"] = [
+        project_findings_tool_schema(entry)
+        for entry in project_model_tool_catalog(payload.get("tool_catalog", []))
+    ]
     report = payload.get("tool_result_projection") or {}
     view["tool_result_projection"] = {
         key: report[key]
@@ -86,13 +90,15 @@ def project_result_record(result: dict) -> dict:
     projected = {
         key: deepcopy(result[key])
         for key in (
-            "tool_result_id",
+            "call_ref",
             "tool_id",
             "status",
             "attempt_ordinal",
             "call_ordinal",
             "error",
             "result_partially_compacted",
+            "arguments_unavailable",
+            "arguments_unavailable_reason",
         )
         if key in result
     }

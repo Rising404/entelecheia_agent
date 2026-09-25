@@ -6,12 +6,13 @@ import hashlib
 import json
 
 from ...output_protocol.l1 import L1ResultReference
-from ...persistent_turn_content.evidence import l1_tool_result_id
+from ...output_protocol.l1_persistence import normalize_l1_finding_arguments
+from ...persistent_turn_content.evidence import l1_calls_by_ref, project_findings_arguments
 from ...persistent_turn_content.tool_results import (
     ToolHistoryError,
     select_tool_result_chunk,
 )
-from ...tools.findings.contracts import EXECUTION_FINDINGS_TOOL_IDS
+from ...persistent_turn_content.findings import EXECUTION_FINDINGS_TOOL_IDS
 from ...tools.tool_history.definitions import TOOL_HISTORY_TOOL_IDS
 from .identity import canonical_json
 
@@ -33,7 +34,7 @@ def project_referenced_results(
     execution: Mapping[str, object],
 ) -> list[dict[str, object]]:
     """验证原生结果身份及可选 chunk 归属，再投影真实正文。"""
-    calls = _calls_by_result_id(execution)
+    calls = _calls_by_call_id(execution)
     return [_reference_record(reference, calls) for reference in references]
 
 
@@ -44,12 +45,12 @@ def project_review_evidence(
     max_utf8_bytes: int = REVIEW_EVIDENCE_MAX_UTF8_BYTES,
 ) -> dict[str, object]:
     """显式引用优先，随后补充最近成功结果；省略有显式标记，不冒充完整语料。"""
-    calls = _calls_by_result_id(execution)
+    calls = _calls_by_call_id(execution)
     records = [_reference_record(reference, calls) for reference in references]
     used = len(canonical_json(records).encode("utf-8"))
     if used > max_utf8_bytes:
         raise L1EvidenceProjectionError("referenced_evidence_exceeds_budget")
-    selected_ids = {reference.tool_result_id for reference in references}
+    selected_ids = {reference.tool_call_id for reference in references}
     recent = [
         (result_id, call)
         for result_id, call in calls.items()
@@ -76,28 +77,22 @@ def project_review_evidence(
     }
 
 
-def _calls_by_result_id(
+def _calls_by_call_id(
     execution: Mapping[str, object],
 ) -> dict[str, Mapping[str, object]]:
-    raw_calls = execution.get("tool_calls")
-    if not isinstance(raw_calls, list):
-        raise L1EvidenceProjectionError("tool_call_history_missing")
+    try:
+        raw_calls = l1_calls_by_ref(execution)
+    except ValueError as exc:
+        raise L1EvidenceProjectionError("tool_call_coordinates_invalid") from exc
     calls: dict[str, Mapping[str, object]] = {}
-    seen_calls: set[str] = set()
-    for call in raw_calls:
-        if not isinstance(call, Mapping):
-            raise L1EvidenceProjectionError("tool_call_record_invalid")
+    for call_ref, call in raw_calls.items():
         call_id = call.get("tool_call_id")
-        if not isinstance(call_id, str) or not call_id or call_id in seen_calls:
-            raise L1EvidenceProjectionError("tool_call_identity_invalid")
-        seen_calls.add(call_id)
         if call.get("status") != "succeeded":
             continue
         digest = call.get("outcome_hash")
         if not isinstance(digest, str) or len(digest) != 64:
             raise L1EvidenceProjectionError("tool_result_identity_invalid")
-        result_id = l1_tool_result_id(tool_call_id=call_id, result_sha256=digest)
-        calls[result_id] = call
+        calls[call_id] = {**call, "call_ref": call_ref}
     return calls
 
 
@@ -105,10 +100,12 @@ def _reference_record(
     reference: L1ResultReference,
     calls: Mapping[str, Mapping[str, object]],
 ) -> dict[str, object]:
-    call = calls.get(reference.tool_result_id)
+    call = calls.get(reference.tool_call_id)
     if call is None:
         raise L1EvidenceProjectionError("referenced_result_unavailable")
-    record = _result_record(reference.tool_result_id, call)
+    if call.get("outcome_hash") != reference.result_sha256:
+        raise L1EvidenceProjectionError("referenced_result_hash_mismatch")
+    record = _result_record(reference.tool_call_id, call)
     if reference.chunk_id is not None:
         try:
             record["result"] = select_tool_result_chunk(
@@ -121,7 +118,7 @@ def _reference_record(
     return record
 
 
-def _result_record(result_id: str, call: Mapping[str, object]) -> dict[str, object]:
+def _result_record(call_id: str, call: Mapping[str, object]) -> dict[str, object]:
     tool_id = call.get("tool_id")
     if not isinstance(tool_id, str) or not tool_id or tool_id in _NON_EVIDENCE_TOOL_IDS:
         raise L1EvidenceProjectionError("internal_receipt_is_not_task_evidence")
@@ -140,7 +137,9 @@ def _result_record(result_id: str, call: Mapping[str, object]) -> dict[str, obje
     if not isinstance(outcome, Mapping) or digest != call.get("outcome_hash"):
         raise L1EvidenceProjectionError("durable_result_hash_mismatch")
     return {
-        "tool_result_id": result_id,
+        "tool_call_id": call_id,
+        "result_sha256": call.get("outcome_hash"),
+        "call_ref": call["call_ref"],
         "tool_id": tool_id,
         "status": "succeeded",
         "result": deepcopy(outcome.get("result")),
@@ -155,9 +154,11 @@ def project_review_execution_history(
     """执行经过只证明调用发生；失败也可解释限制，但不提供失败正文作为事实。"""
     from .tool_context.projection import project_tool_call_arguments
 
-    calls = execution.get("tool_calls")
-    if not isinstance(calls, list):
-        raise L1EvidenceProjectionError("tool_call_history_missing")
+    try:
+        calls = l1_calls_by_ref(execution)
+    except ValueError as exc:
+        raise L1EvidenceProjectionError("tool_call_coordinates_invalid") from exc
+    call_refs = {str(call["tool_call_id"]): ref for ref, call in calls.items()}
     attempts = execution.get("attempts")
     ordinals = {
         item.get("attempt_id"): item.get("ordinal")
@@ -165,15 +166,14 @@ def project_review_execution_history(
         if isinstance(item, Mapping)
     }
     history = []
-    for call in calls:
-        if not isinstance(call, Mapping):
-            raise L1EvidenceProjectionError("tool_call_record_invalid")
+    for call_ref, call in calls.items():
         raw = call.get("outcome_json")
         outcome = json.loads(raw) if isinstance(raw, str) else raw or {}
         if not isinstance(outcome, Mapping):
             raise L1EvidenceProjectionError("durable_result_invalid")
         error, result = outcome.get("error"), outcome.get("result")
         item = {
+            "call_ref": call_ref,
             "tool_id": call.get("tool_id"),
             "attempt_ordinal": ordinals.get(call.get("attempt_id")),
             "call_ordinal": call.get("call_ordinal"),
@@ -187,6 +187,30 @@ def project_review_execution_history(
             call.get("arguments"), Mapping
         ):
             item.update(project_tool_call_arguments(call))
+            failed_finding = (
+                call.get("tool_id") in EXECUTION_FINDINGS_TOOL_IDS
+                and call.get("status") != "succeeded"
+            )
+            if failed_finding:
+                # Schema-rejected calls intentionally retain their original invalid
+                # arguments. Verify the stored bytes above, but do not interpret
+                # those diagnostic arguments as valid source-reference contracts.
+                item.pop("arguments")
+                item.pop("arguments_projection")
+                item["arguments_unavailable"] = True
+                item["arguments_unavailable_reason"] = "unsuccessful_findings_call"
+            elif call.get("tool_id") in EXECUTION_FINDINGS_TOOL_IDS:
+                item["arguments"] = project_findings_arguments(
+                    normalize_l1_finding_arguments(
+                        item["arguments"], tool_calls=list(calls.values()),
+                    ),
+                    call_refs=call_refs,
+                )
+            if not failed_finding:
+                item["arguments_projection"] = {
+                    key: value for key, value in item["arguments_projection"].items()
+                    if key in {"complete", "redacted_value_count", "truncated_value_count"}
+                }
         else:
             item["arguments_unavailable"] = True
         history.append(item)

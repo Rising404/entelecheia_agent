@@ -21,6 +21,7 @@ from personagraph.persistent_turn_content.findings import (
     reduce_execution_findings_active_queue,
     validate_persisted_execution_finding_entry,
     validate_persisted_execution_findings_quota_json,
+    canonical_json,
 )
 
 
@@ -44,6 +45,18 @@ def test_finding_source_uses_only_native_result_and_optional_chunk_id(chunk_id):
         "tool_result_id": "result-a", "chunk_id": chunk_id,
     }
     assert finding.scope_keys == ()
+
+
+def test_optional_l1_result_pin_preserves_old_nested_wire_hash_input():
+    original = {"operation": "record", "kind": "finding", "claim": "Read source",
+                "source_refs": [{"tool_result_id": "result-a", "chunk_id": None}], "scope_keys": []}
+    finding = RecordExecutionFinding.model_validate(original)
+    assert canonical_json(finding) == canonical_json(original)
+    pinned = RecordExecutionFinding.model_validate({
+        **original, "source_refs": [{"tool_result_id": "call-a", "result_sha256": "a" * 64}],
+    })
+    assert pinned.source_refs[0].result_sha256 == "a" * 64
+    assert pinned.model_dump(mode="json")["source_refs"][0]["result_sha256"] == "a" * 64
 
 
 @pytest.mark.parametrize("source", [

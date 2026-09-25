@@ -12,7 +12,11 @@ import re
 from collections.abc import Mapping
 from typing import Any
 
-from ....tools.findings.contracts import EXECUTION_FINDINGS_TOOL_IDS
+from ....persistent_turn_content.findings import EXECUTION_FINDINGS_TOOL_IDS
+from ....persistent_turn_content.evidence import (
+    format_l1_call_ref, l1_call_refs_by_id, project_findings_arguments,
+)
+from ....output_protocol.l1_persistence import normalize_l1_finding_arguments
 from ....tools.findings.projection import project_execution_findings_tool_output_for_model
 
 
@@ -196,13 +200,32 @@ def project_recent_tool_results(
                     "persisted L1 ToolCall disagrees with its result batch"
                 )
             result.update(project_tool_call_arguments(call))
+            result["call_ordinal"] = call["call_ordinal"]
             arguments_projected += 1
     omitted_audit_metadata_fields = sum(
         _project_tool_result_metadata(result) for result in latest
     )
     compacted_count = 0
     for result in latest:
+        result["call_ref"] = format_l1_call_ref(
+            attempt_ordinal=result["attempt_ordinal"],
+            call_ordinal=result["call_ordinal"],
+        )
+        result.pop("tool_result_id", None)
         if result.get("tool_id") in EXECUTION_FINDINGS_TOOL_IDS:
+            if result.get("status") != "succeeded":
+                # 被拒参数可能根本不符合 findings 协议；已核验原件摘要，不把它解析成证据。
+                result.pop("arguments", None)
+                result.pop("arguments_projection", None)
+                result["arguments_unavailable"] = True
+                result["arguments_unavailable_reason"] = "unsuccessful_findings_call"
+            elif "arguments" in result:
+                result["arguments"] = project_findings_arguments(
+                    normalize_l1_finding_arguments(
+                        result["arguments"], tool_calls=execution["tool_calls"],
+                    ),
+                    call_refs=l1_call_refs_by_id(execution),
+                )
             # 台账正文由当前 active projection 唯一提供，旧写入回执不能绕过其有界工作集。
             result["result"] = project_execution_findings_tool_output_for_model(result.get("result"))
             result["result_partially_compacted"] = True

@@ -23,7 +23,7 @@ from ..catalog.binding import (
 from ..contracts import ToolSourceKind, ToolSpec
 from ..effects import ToolEffectProfile
 from ..registration import ToolExecutionProfile, ToolRegistration
-from .contracts import (
+from ...persistent_turn_content.findings import (
     RECORD_EXECUTION_FINDINGS_TOOL_ID,
     REVISE_EXECUTION_FINDING_TOOL_ID,
 )

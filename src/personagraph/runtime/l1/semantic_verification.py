@@ -81,10 +81,10 @@ _L1_SEMANTIC_SYSTEM_PROMPT = """一、审查职责
 | plan.acceptances[].acceptance_id / plan.acceptances[].criterion | 必有，列表非空 | 已有验收项的 ID 与要求；描述目标，不证明目标已经完成。 |
 | candidate_final_reply | 必有，非空 | 本次实际待交付的答复，是你审查的对象。 |
 | execution_context.stop | 必有，子字段可为 null | 候选生成时冻结的执行额度与停止状态；must_finalize 表示是否必须收尾，stop_reason 说明停止原因，其他额度和时间字段不代表事实正确性。 |
-| execution_context.tool_calls | 必有，可为空列表 | 实际工具调用经过：tool_id、attempt_ordinal、call_ordinal、status、error_code、result_status。可附 arguments 与 arguments_projection；参数可能经过脱敏或截断，arguments_unavailable=true 表示参数未提供。调用记录不是结果正文。 |
+| execution_context.tool_calls | 必有，可为空列表 | 实际工具调用经过：call_ref、tool_id、attempt_ordinal、call_ordinal、status、error_code、result_status。call_ref 是当前执行内固定的调用坐标。可附 arguments 与 arguments_projection；参数可能经过脱敏或截断，arguments_unavailable=true 表示参数未提供。调用记录不是结果正文。 |
 | execution_context.model_notes | 必有，可为空列表 | 模型此前记录的笔记文本，用于理解过程，不是笔记中结论的独立证据。 |
 | execution_context.candidate_note | 必有，可为 null | 模型对本次提交的说明，不是候选正确性的证明。 |
-| durable_evidence.results | 必有，可为空列表 | 本次实际提供的工具结果；每项含 tool_result_id、tool_id、status 和 result，result 才是可审查正文。 |
+| durable_evidence.results | 必有，可为空列表 | 本次实际提供的工具结果；每项含 call_ref、tool_id、status 和 result，result 才是可审查正文。call_ref 仅标识当前执行内的调用，不替代结果正文。 |
 | durable_evidence.results[].chunk_id / durable_evidence.results[].result_scope | 可省略 | 若 result_scope=selected_chunk_only，该正文仅覆盖指定片段；未出现此标记也不代表提供了整个文件。 |
 | durable_evidence.results[].metadata | 可省略 | 结果的范围、截断等说明；结合正文判断其能支持多大范围的结论。 |
 | durable_evidence.selection / durable_evidence.evidence_scope | 必有 | 证据选取方式与可见范围：优先显式引用，再补充部分近期成功结果；不是全部历史或全部文档。 |
@@ -420,7 +420,7 @@ def _review_result(record: Mapping[str, object]) -> dict[str, object]:
     """完整结果先经 Host 校验，模型正文再复用工具域的统一阅读投影。"""
     view = {
         key: record[key]
-        for key in ("tool_result_id", "tool_id", "status", "chunk_id", "result_scope")
+        for key in ("call_ref", "tool_id", "status", "chunk_id", "result_scope")
         if key in record
     }
     view["result"] = project_tool_result(str(record["tool_id"]), record["result"])

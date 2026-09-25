@@ -24,6 +24,7 @@ from personagraph.model_io.tier_bindings import (
     ModelTier,
     ModelTierBinding,
 )
+from personagraph.output_protocol.l1 import L1_ATTEMPT_PROTOCOL_VERSION
 from personagraph.runtime.l1.identity import canonical_json
 from personagraph.runtime.l1.model_authority import (
     L1_SEMANTIC_RESULT_CONTRACT,
@@ -276,7 +277,7 @@ def test_ordinary_l1_attempt_does_not_gain_prompt_drift_permission():
         "state_guard_hash": _GUARD,
         "system_prompt": "original",
         "model_payload": {
-            "schema_version": "l1-attempt-model-view-v5",
+            "schema_version": L1_ATTEMPT_PROTOCOL_VERSION,
             "attempt_id": "attempt-review",
             "attempt_ordinal": 1,
         },

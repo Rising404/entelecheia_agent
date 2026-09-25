@@ -74,7 +74,7 @@ def _install(monkeypatch, requests, *, missing_first=False, first_note="查询�
             source = request["prior_tool_results"][0]
             value = {
                 "note": "已取得日期，提交答复。",
-                "references": [{"tool_result_id": source["tool_result_id"]}],
+                "references": [{"call_ref": source["call_ref"]}],
                 "action": {
                     "kind": "submit_final_reply",
                     "reply": source["result"]["date"],
@@ -156,10 +156,10 @@ def test_committed_note_recovers_before_tool_without_regenerating(
     _install(monkeypatch, requests)
     original = controller._record_execution_notes
 
-    def crash(store, ledger_id, attempt):
+    def crash(store, ledger_id, attempt, *, execution):
         if attempt.get("decision_json"):
             raise KeyboardInterrupt("after decision before note")
-        return original(store, ledger_id, attempt)
+        return original(store, ledger_id, attempt, execution=execution)
 
     monkeypatch.setattr(controller, "_record_execution_notes", crash)
     with pytest.raises(KeyboardInterrupt):

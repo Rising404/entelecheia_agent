@@ -102,10 +102,13 @@ def serial_batch(monkeypatch, tmp_path, bound_partitioned_session):
                     call["tool_id"] for call in calls
                 ]
                 assert [item["status"] for item in results] == expected_statuses
+                assert [item["call_ref"] for item in results] == [
+                    f"c1.{index}" for index in range(1, len(calls) + 1)
+                ]
                 decision = {
                     "note": "已收到全部工具结果；保留失败信息，不把失败当成功。",
                     "references": [
-                        {"tool_result_id": item["tool_result_id"]}
+                        {"call_ref": item["call_ref"]}
                         for item in results
                         if item["status"] == "succeeded"
                     ],
@@ -336,6 +339,8 @@ def test_serial_batch_resumes_after_settled_tool_without_repeating_it(
     assert (workspace / "second.txt").read_text() == "second"
     after = session_store.get_l1_turn_execution(session_id=session_id, turn_id=turn_id)
     first_before, first_after = before["tool_calls"][0], after["tool_calls"][0]
+    for field in ("request_json", "request_hash", "decision_json", "decision_hash"):
+        assert before["attempts"][0][field] == after["attempts"][0][field]
     for key in (
         "tool_call_id",
         "arguments_hash",
