@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { ref } from "vue";
+import { effectScope, ref } from "vue";
 import { flushPromises } from "@vue/test-utils";
 import { useChatFeature } from "./useChatFeature";
 
@@ -525,6 +525,144 @@ describe("useChatFeature", () => {
     expect(feature.chatReadOnlyReason.value).toContain("历史检索索引更新失败");
     expect(feature.chatReadOnlyReason.value).not.toContain("摘要");
     expect(feature.chatInputPlaceholder.value).toBe("历史检索索引更新失败");
+  });
+
+  it("shows the accepted user message before the answer stream completes", async () => {
+    vi.useFakeTimers();
+    const session = { id: "session-a", title: "发送中", status: "active" };
+    const stream = deferred();
+    const userTurn = { turn_idx: 0, role: "user", content: "请读取本轮附件" };
+    let storedDetail = {
+      session,
+      turns: [userTurn],
+      runtime_routing: turnRuntimeRouting,
+      turn_window: { window_state: "active", window_revision: 1 }
+    };
+    const api = {
+      chatTurnStream: vi.fn(() => stream.promise),
+      getSession: vi.fn(async () => storedDetail)
+    };
+    const feature = useChatFeature({
+      api,
+      mode: ref("chat"), loading: ref(false), saving: ref(false), notice: ref(""), workspace: null,
+      sessions: ref([session]), selectedSessionId: ref(session.id), confirmDiscardChanges: () => true,
+      clearMessage: vi.fn(), showError: vi.fn()
+    });
+    feature.sessionDetail.value = {
+      session, turns: [], runtime_routing: turnRuntimeRouting,
+      turn_window: { window_state: "empty", window_revision: 0 }
+    };
+    feature.chatInput.value = userTurn.content;
+    const sending = feature.sendChat();
+    await flushPromises();
+
+    await vi.advanceTimersByTimeAsync(2_000);
+    expect(feature.chatBusy.value).toBe(true);
+    expect(feature.turns.value).toEqual([userTurn]);
+    expect(feature.turnWindow.value.state).toBe("active");
+
+    storedDetail = {
+      ...storedDetail,
+      turns: [userTurn, { turn_idx: 1, role: "assistant", content: "已读取" }],
+      turn_window: { window_state: "empty", window_revision: 2 }
+    };
+    stream.resolve({ result: { status: "completed", reply: "已读取" } });
+    await sending;
+    expect(feature.turns.value).toEqual(storedDetail.turns);
+    expect(feature.chatBusy.value).toBe(false);
+    const readsAfterCompletion = api.getSession.mock.calls.length;
+    await vi.advanceTimersByTimeAsync(4_000);
+    expect(api.getSession).toHaveBeenCalledTimes(readsAfterCompletion);
+  });
+
+  it("discards an old send refresh and continues refreshing the new session", async () => {
+    vi.useFakeTimers();
+    const sessionA = { id: "session-a", status: "active" };
+    const sessionB = { id: "session-b", status: "active" };
+    const streamA = deferred();
+    const streamB = deferred();
+    const oldRefresh = deferred();
+    let detailB = {
+      session: sessionB, turns: [{ turn_idx: 0, role: "user", content: "B 的消息" }],
+      runtime_routing: turnRuntimeRouting,
+      turn_window: { window_state: "empty", window_revision: 0 }
+    };
+    const api = {
+      chatTurnStream: vi.fn((payload) => payload.session_id === sessionA.id ? streamA.promise : streamB.promise),
+      getSession: vi.fn((id) => id === sessionA.id ? oldRefresh.promise : Promise.resolve(detailB))
+    };
+    const feature = useChatFeature({
+      api,
+      mode: ref("chat"), loading: ref(false), saving: ref(false), notice: ref(""), workspace: null,
+      sessions: ref([sessionA, sessionB]), selectedSessionId: ref(sessionA.id), confirmDiscardChanges: () => true,
+      clearMessage: vi.fn(), showError: vi.fn()
+    });
+    feature.sessionDetail.value = {
+      session: sessionA, turns: [], runtime_routing: turnRuntimeRouting,
+      turn_window: { window_state: "empty", window_revision: 0 }
+    };
+    feature.chatInput.value = "A 的消息";
+    const sending = feature.sendChat();
+    await flushPromises();
+    await vi.advanceTimersByTimeAsync(2_000);
+    expect(api.getSession).toHaveBeenCalledWith(sessionA.id);
+
+    await feature.selectSession(sessionB.id);
+    feature.chatInput.value = "B 的下一条消息";
+    const sendingB = feature.sendChat();
+    await flushPromises();
+    oldRefresh.resolve({
+      session: sessionA, turns: [{ turn_idx: 0, role: "user", content: "A 的消息" }],
+      turn_window: { window_state: "active", window_revision: 1 }
+    });
+    streamA.resolve({ result: { status: "completed", reply: "A 的回复" } });
+    await sending;
+    await flushPromises();
+    expect(feature.selectedSession.value.id).toBe(sessionB.id);
+    expect(feature.turns.value).toEqual(detailB.turns);
+    expect(feature.chatBusy.value).toBe(true);
+
+    detailB = {
+      ...detailB,
+      turns: [...detailB.turns, { turn_idx: 1, role: "user", content: "B 的下一条消息" }],
+      turn_window: { window_state: "active", window_revision: 1 }
+    };
+    await vi.advanceTimersByTimeAsync(2_000);
+    expect(feature.turns.value).toEqual(detailB.turns);
+    detailB = { ...detailB, turn_window: { window_state: "empty", window_revision: 2 } };
+    streamB.resolve({ result: { status: "completed", reply: "B 的回复" } });
+    await sendingB;
+    expect(feature.chatBusy.value).toBe(false);
+  });
+
+  it("does not restart send refreshes after their Vue scope is disposed", async () => {
+    vi.useFakeTimers();
+    const session = { id: "session-a", status: "active" };
+    const refresh = deferred();
+    const api = { getSession: vi.fn(() => refresh.promise) };
+    const scope = effectScope();
+    const feature = scope.run(() => useChatFeature({
+      api,
+      mode: ref("chat"), loading: ref(false), saving: ref(false), notice: ref(""), workspace: null,
+      sessions: ref([session]), selectedSessionId: ref(session.id), confirmDiscardChanges: () => true,
+      clearMessage: vi.fn(), showError: vi.fn()
+    }));
+    const initialDetail = {
+      session, turns: [], runtime_routing: turnRuntimeRouting,
+      turn_window: { window_state: "empty", window_revision: 0 }
+    };
+    feature.sessionDetail.value = initialDetail;
+    feature.chatBusy.value = true;
+    await flushPromises();
+    await vi.advanceTimersByTimeAsync(2_000);
+    expect(api.getSession).toHaveBeenCalledTimes(1);
+    scope.stop();
+
+    refresh.resolve({ ...initialDetail, turns: [{ turn_idx: 0, role: "user", content: "迟到的消息" }] });
+    await flushPromises();
+    await vi.advanceTimersByTimeAsync(4_000);
+    expect(feature.turns.value).toEqual([]);
+    expect(api.getSession).toHaveBeenCalledTimes(1);
   });
 
   it("refreshes a pending execution window until the durable slot is released", async () => {

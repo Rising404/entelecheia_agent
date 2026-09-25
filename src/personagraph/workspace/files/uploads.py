@@ -28,6 +28,9 @@ from .observation import (
 )
 
 
+_MAX_UPLOAD_NAME_ATTEMPTS = 10_000
+
+
 class ProjectUploadError(RuntimeError):
     """无法安全落盘并注册上传内容。"""
 
@@ -37,7 +40,7 @@ class ProjectUploadPathError(ProjectUploadError):
 
 
 class ProjectUploadConflict(ProjectUploadError):
-    """上传的最终目标已经存在。"""
+    """无法为上传分配安全且未占用的目标。"""
 
 
 @dataclass(frozen=True, slots=True)
@@ -83,7 +86,7 @@ class ProjectUploadService:
         file_id: str | None = None,
         created_at: datetime | str | None = None,
     ) -> StoredProjectUpload:
-        """在 ``project_root/附件`` 下原子发布字节并完成登记。"""
+        """按 UTC 日期在 ``project_root/附件/YYYY-MM-DD`` 原子发布并登记。"""
 
         if not isinstance(payload, bytes):
             raise TypeError("payload must be bytes")
@@ -100,14 +103,13 @@ class ProjectUploadService:
             safe_name = f"{safe_name}{detected.extension}"
         try:
             _validate_path_component(safe_name, label="sanitized_name")
-            directory_name = (
-                f"{timestamp.strftime('%Y%m%dT%H%M%S%fZ')}_{resolved_file_id}"
-            )
+            directory_name = timestamp.date().isoformat()
             _validate_path_component(directory_name, label="upload directory")
         except ProjectFilePathError as exc:
             raise ProjectUploadPathError(str(exc)) from exc
 
-        relative_path = f"附件/{directory_name}/{safe_name}"
+        relative_directory = f"附件/{directory_name}"
+        relative_path = f"{relative_directory}/{safe_name}"
         root_fd: int | None = None
         attachments_fd: int | None = None
         destination_fd: int | None = None
@@ -148,28 +150,23 @@ class ProjectUploadService:
             os.close(temporary_fd)
             temporary_fd = None
 
-            try:
-                os.link(
-                    temporary_name,
-                    safe_name,
-                    src_dir_fd=destination_fd,
-                    dst_dir_fd=destination_fd,
-                    follow_symlinks=False,
-                )
-            except FileExistsError as exc:
-                raise ProjectUploadConflict(
-                    "project upload destination already exists"
-                ) from exc
+            safe_name = self._publish_upload(
+                destination_fd, temporary_name, relative_directory, safe_name,
+            )
+            relative_path = f"{relative_directory}/{safe_name}"
+            published_identity = (int(temporary_stat.st_dev), int(temporary_stat.st_ino))
             published = os.stat(
                 safe_name,
                 dir_fd=destination_fd,
                 follow_symlinks=False,
             )
-            if not stat.S_ISREG(published.st_mode):
+            if (
+                not stat.S_ISREG(published.st_mode)
+                or (int(published.st_dev), int(published.st_ino)) != published_identity
+            ):
                 raise ProjectUploadPathError(
-                    "published upload destination is not a regular file"
+                    "published upload destination changed before registration"
                 )
-            published_identity = (int(published.st_dev), int(published.st_ino))
             os.unlink(temporary_name, dir_fd=destination_fd)
             temporary_exists = False
             os.fsync(destination_fd)
@@ -221,6 +218,54 @@ class ProjectUploadService:
             size_bytes=registration.version.size_bytes,
             content_sha256=registration.version.content_sha256,
         )
+
+    def _publish_upload(
+        self, destination_fd: int, temporary_name: str,
+        relative_directory: str, original_name: str,
+    ) -> str:
+        for ordinal in range(1, _MAX_UPLOAD_NAME_ATTEMPTS + 1):
+            candidate = _numbered_upload_name(original_name, ordinal)
+            # 已登记路径即使原文件已删除，也不能被另一 File 身份重新占用。
+            if self._authority.get_file_by_relative_path(
+                f"{relative_directory}/{candidate}",
+            ) is not None:
+                continue
+            try:
+                # 不先检查 exists 再覆盖：并发上传由原子 link 竞争独立名称。
+                os.link(
+                    temporary_name, candidate,
+                    src_dir_fd=destination_fd, dst_dir_fd=destination_fd,
+                    follow_symlinks=False,
+                )
+            except FileExistsError:
+                try:
+                    occupied = os.stat(
+                        candidate, dir_fd=destination_fd, follow_symlinks=False,
+                    )
+                except FileNotFoundError:
+                    continue
+                if not stat.S_ISREG(occupied.st_mode):
+                    raise ProjectUploadConflict(
+                        "project upload destination is not a regular file"
+                    ) from None
+                continue
+            return candidate
+        raise ProjectUploadConflict("project upload filename candidates are exhausted")
+
+
+def _numbered_upload_name(original_name: str, ordinal: int) -> str:
+    if ordinal == 1:
+        return original_name
+    stem, extension = os.path.splitext(original_name)
+    suffix = f"_{ordinal}{extension}"
+    stem_budget = 255 - len(suffix.encode("utf-8"))
+    if stem_budget < 1:
+        raise ProjectUploadPathError("upload extension leaves no room for a unique name")
+    # 仅丢弃截断处不完整的 UTF-8 字符，保留扩展名与 Host 分配的序号。
+    stem = stem.encode("utf-8")[:stem_budget].decode("utf-8", errors="ignore")
+    if not stem:
+        raise ProjectUploadPathError("upload filename leaves no room for a unique name")
+    return _validate_path_component(f"{stem}{suffix}", label="upload filename")
 
 
 def _same_database(

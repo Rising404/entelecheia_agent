@@ -3,7 +3,7 @@ import { watch } from "vue";
 export const TURN_WINDOW_REFRESH_INTERVAL_MS = 2_000;
 
 /**
- * 在持久提交后 Window 收尾期间刷新当前选中的 Session。
+ * 在发送、执行与持久提交后 Window 收尾期间刷新当前选中的 Session。
  *
  * 正式回复可以在隐藏的派生状态工作（当前为会话摘要）完成前展示。这个轻量生命周期
  * 所有者让编辑器与存储拥有的 Window 保持一致，不会根据 SSE 或模型事件推断完成状态。
@@ -19,6 +19,7 @@ export function useTurnWindowRefresh({
   let timer = null;
   let inFlight = false;
   let generation = 0;
+  let observing = false;
 
   function clearTimer() {
     if (timer !== null) {
@@ -29,7 +30,8 @@ export function useTurnWindowRefresh({
 
   function eligible() {
     return Boolean(
-      shouldRefresh.value
+      observing
+      && shouldRefresh.value
       && selectedSessionId.value
       && typeof api?.getSession === "function"
     );
@@ -56,7 +58,8 @@ export function useTurnWindowRefresh({
         // 继续作为权威状态，下一次计划读取可以自行恢复。
       } finally {
         inFlight = false;
-        if (refreshGeneration === generation) schedule();
+        // 旧 Session 的读取可能阻挡了新 Session 安排轮询；释放后由当前所有者接续。
+        schedule();
       }
     }, intervalMs);
   }
@@ -64,12 +67,14 @@ export function useTurnWindowRefresh({
   const stop = watch(
     [() => selectedSessionId.value, () => shouldRefresh.value],
     (_values, _previousValues, onCleanup) => {
+      observing = true;
       generation += 1;
       clearTimer();
       schedule();
       // 所属 Vue 作用域销毁时，watcher 清理无需依赖组件专用生命周期钩子即可运行，
       // 同时也让该 composable 能在未挂载组件的情况下直接测试。
       onCleanup(() => {
+        observing = false;
         generation += 1;
         clearTimer();
       });

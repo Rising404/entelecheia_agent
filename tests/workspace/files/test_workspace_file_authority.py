@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 import hashlib
 import json
 import os
+from threading import Barrier
 
 import pytest
 
@@ -47,9 +49,7 @@ def test_upload_lands_once_in_project_root_and_registers_user_source(tmp_path):
         created_at=FIXED_TIME,
     )
 
-    assert stored.relative_path == (
-        "附件/20260830T123456123456Z_file-a/研究_笔记.txt"
-    )
+    assert stored.relative_path == "附件/2026-08-30/研究_笔记.txt"
     assert stored.absolute_path == database.project_root / stored.relative_path
     assert stored.absolute_path.read_bytes() == payload
     assert stored.file_id == "file-a"
@@ -67,6 +67,139 @@ def test_upload_lands_once_in_project_root_and_registers_user_source(tmp_path):
     assert version_row["producer"] == "user_upload"
     assert event_row["origin"] == "user_upload"
     assert file_row["current_version_id"] == version_row["id"]
+
+
+def test_same_day_same_name_uploads_keep_separate_bytes_and_identities(tmp_path):
+    database = _database(tmp_path)
+    service = ProjectUploadService(database)
+    uploads = [
+        service.store_upload(
+            original_name="notes.txt",
+            payload=f"independent upload {number}".encode(),
+            file_id=f"file-{number}",
+            created_at=FIXED_TIME,
+        )
+        for number in range(3)
+    ]
+
+    assert [upload.relative_path for upload in uploads] == [
+        "附件/2026-08-30/notes.txt",
+        "附件/2026-08-30/notes_2.txt",
+        "附件/2026-08-30/notes_3.txt",
+    ]
+    assert len({upload.file_id for upload in uploads}) == 3
+    assert len({upload.file_version_id for upload in uploads}) == 3
+    for number, upload in enumerate(uploads):
+        assert upload.absolute_path.read_bytes() == f"independent upload {number}".encode()
+        assert upload.registration.version.version_number == 1
+        assert upload.content_sha256 == hashlib.sha256(upload.absolute_path.read_bytes()).hexdigest()
+
+
+def test_different_days_keep_original_name_in_separate_date_directories(tmp_path):
+    database = _database(tmp_path)
+    service = ProjectUploadService(database)
+    first = service.store_upload(
+        original_name="notes.txt",
+        payload=b"day one",
+        file_id="file-a",
+        created_at=FIXED_TIME,
+    )
+    second = service.store_upload(
+        original_name="notes.txt",
+        payload=b"day two",
+        file_id="file-b",
+        created_at=FIXED_TIME.replace(day=31),
+    )
+
+    assert first.relative_path == "附件/2026-08-30/notes.txt"
+    assert second.relative_path == "附件/2026-08-31/notes.txt"
+    assert first.absolute_path.read_bytes() == b"day one"
+    assert second.absolute_path.read_bytes() == b"day two"
+
+
+def test_same_name_suffix_respects_utf8_filename_limit(tmp_path):
+    database = _database(tmp_path)
+    service = ProjectUploadService(database)
+    original_name = "研" * 83 + "aa.txt"
+    assert len(original_name.encode("utf-8")) == 255
+    first = service.store_upload(
+        original_name=original_name,
+        payload=b"first upload",
+        file_id="file-a",
+        created_at=FIXED_TIME,
+    )
+    second = service.store_upload(
+        original_name=original_name,
+        payload=b"second upload",
+        file_id="file-b",
+        created_at=FIXED_TIME,
+    )
+
+    assert first.absolute_path.name == original_name
+    assert second.absolute_path.name.endswith("_2.txt")
+    assert len(second.absolute_path.name.encode("utf-8")) <= 255
+    assert first.absolute_path.read_bytes() == b"first upload"
+    assert second.absolute_path.read_bytes() == b"second upload"
+
+
+def test_concurrent_same_name_uploads_publish_independent_registered_files(tmp_path):
+    database = _database(tmp_path)
+    with database.connect():
+        pass
+    count = 4
+    start = Barrier(count)
+
+    def upload(number):
+        start.wait(timeout=10)
+        return ProjectUploadService(database).store_upload(
+            original_name="notes.txt",
+            payload=f"concurrent upload {number}".encode(),
+            file_id=f"file-{number}",
+            created_at=FIXED_TIME,
+        )
+
+    with ThreadPoolExecutor(max_workers=count) as executor:
+        stored = list(executor.map(upload, range(count)))
+
+    assert {item.relative_path for item in stored} == {
+        "附件/2026-08-30/notes.txt",
+        "附件/2026-08-30/notes_2.txt",
+        "附件/2026-08-30/notes_3.txt",
+        "附件/2026-08-30/notes_4.txt",
+    }
+    authority = WorkspaceFileAuthority(database)
+    for number, item in enumerate(stored):
+        assert item.absolute_path.read_bytes() == f"concurrent upload {number}".encode()
+        assert authority.get_file_by_relative_path(item.relative_path) == item.registration.file
+        assert authority.list_versions(item.file_id) == (item.registration.version,)
+    assert not tuple(database.project_root.rglob("*.part"))
+
+
+def test_upload_does_not_reuse_a_deleted_but_registered_path(tmp_path):
+    database = _database(tmp_path)
+    service = ProjectUploadService(database)
+    first = service.store_upload(
+        original_name="notes.txt",
+        payload=b"original",
+        file_id="file-a",
+        created_at=FIXED_TIME,
+    )
+    first.absolute_path.unlink()
+
+    second = service.store_upload(
+        original_name="notes.txt",
+        payload=b"replacement upload",
+        file_id="file-b",
+        created_at=FIXED_TIME,
+    )
+
+    assert second.relative_path == "附件/2026-08-30/notes_2.txt"
+    assert not first.absolute_path.exists()
+    assert second.absolute_path.read_bytes() == b"replacement upload"
+    authority = WorkspaceFileAuthority(database)
+    assert authority.get_file(first.file_id) == first.registration.file
+    assert authority.list_versions(first.file_id) == (first.registration.version,)
+    assert second.file_id != first.file_id
 
 
 def test_same_relative_path_appends_version_and_old_version_remains_queryable(
@@ -359,13 +492,13 @@ def test_upload_rejects_symlinked_attachment_bucket_without_writing_outside(
     assert list(outside.iterdir()) == []
 
 
-def test_upload_rejects_symlinked_timestamp_directory(tmp_path):
+def test_upload_rejects_symlinked_date_directory(tmp_path):
     database = _database(tmp_path)
     outside = tmp_path / "outside"
     outside.mkdir()
     attachments = database.project_root / "附件"
     attachments.mkdir()
-    directory = "20260830T123456123456Z_file-a"
+    directory = "2026-08-30"
     (attachments / directory).symlink_to(outside, target_is_directory=True)
 
     with pytest.raises(ProjectUploadPathError):
@@ -383,9 +516,7 @@ def test_upload_never_overwrites_a_preplanted_final_symlink(tmp_path):
     database = _database(tmp_path)
     outside = tmp_path / "outside.txt"
     outside.write_bytes(b"outside")
-    destination = (
-        database.project_root / "附件" / "20260830T123456123456Z_file-a"
-    )
+    destination = database.project_root / "附件" / "2026-08-30"
     destination.mkdir(parents=True)
     (destination / "notes.txt").symlink_to(outside)
 
@@ -418,6 +549,12 @@ def test_unsafe_file_id_is_rejected_before_project_write(tmp_path):
 
 def test_upload_removes_published_file_when_database_registration_fails(tmp_path):
     database = _database(tmp_path)
+    first = ProjectUploadService(database).store_upload(
+        original_name="notes.txt",
+        payload=b"already registered",
+        file_id="file-a",
+        created_at=FIXED_TIME,
+    )
 
     class FailingAuthority(WorkspaceFileAuthority):
         def register_path(self, *args, **kwargs):
@@ -427,11 +564,12 @@ def test_upload_removes_published_file_when_database_registration_fails(tmp_path
         ProjectUploadService(database, FailingAuthority(database)).store_upload(
             original_name="notes.txt",
             payload=b"payload",
-            file_id="file-a",
+            file_id="file-b",
             created_at=FIXED_TIME,
         )
 
-    upload_directory = (
-        database.project_root / "附件" / "20260830T123456123456Z_file-a"
-    )
-    assert list(upload_directory.iterdir()) == []
+    assert list(first.absolute_path.parent.iterdir()) == [first.absolute_path]
+    assert first.absolute_path.read_bytes() == b"already registered"
+    authority = WorkspaceFileAuthority(database)
+    assert authority.get_file(first.file_id) == first.registration.file
+    assert authority.get_file("file-b") is None

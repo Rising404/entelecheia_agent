@@ -101,7 +101,8 @@ describe("ChatWorkspace", () => {
         canSend: true,
         pendingAttachments: [
           { attachment_id: "att_1", name: "shot.png", size_bytes: 2048, kind: "image", readable: true },
-          { attachment_id: "att_2", name: "voice.mp3", size_bytes: 4096, kind: "audio", readable: false }
+          { attachment_id: "att_2", name: "voice.mp3", size_bytes: 4096, kind: "audio", readable: false },
+          { attachment_id: "draft_1", name: "draft.png", size_bytes: 2048 }
         ]
       }
     });
@@ -111,6 +112,12 @@ describe("ChatWorkspace", () => {
     expect(text).toContain("voice.mp3");
     // 不可读文件不仅要在模型 manifest 中标记，也要在编辑器中标记，避免回答让用户意外。
     expect(text).toContain("仅记录");
+    const attachments = wrapper.findAll("li");
+    expect(attachments[1].text()).toContain("仅记录");
+    expect(attachments[1].classes()).toContain("border-warn-line");
+    expect(attachments[2].text()).toContain("draft.png");
+    expect(attachments[2].text()).not.toContain("仅记录");
+    expect(attachments[2].classes()).not.toContain("border-warn-line");
   });
 
   it("emits the removal of a staged attachment without handling it locally", async () => {
@@ -178,6 +185,16 @@ describe("ChatWorkspace", () => {
       }
     });
     expect(wrapper.get('[aria-label="模型正在回复"]').text()).toContain("正在逐字回复");
+    expect(wrapper.text()).not.toContain("开始一轮真实会话");
+  });
+
+  it("withdraws the empty conversation prompt while a send is pending", async () => {
+    const wrapper = mount(ChatWorkspace, {
+      props: { session: { id: "s1", status: "active" }, chatBusy: true }
+    });
+    expect(wrapper.text()).not.toContain("开始一轮真实会话");
+    await wrapper.setProps({ chatBusy: false });
+    expect(wrapper.text()).toContain("开始一轮真实会话");
   });
 
   it("does not expose internal runtime lifecycle cards in the conversation", () => {

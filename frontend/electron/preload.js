@@ -11,11 +11,13 @@ function sidecarInfo() {
   }
 }
 
+const sidecar = sidecarInfo();
+
 contextBridge.exposeInMainWorld("personagraphDesktop", {
-  apiBase: "http://127.0.0.1:8765",
+  apiBase: sidecar?.apiBase || "http://127.0.0.1:8765",
   platform: process.platform,
   shell: "electron",
-  sidecar: sidecarInfo(),
+  sidecar,
   version: process.versions.electron,
   chooseDocumentPath: () => ipcRenderer.invoke("personagraph:choose-document"),
   chooseDirectory: () => ipcRenderer.invoke("personagraph:choose-directory"),

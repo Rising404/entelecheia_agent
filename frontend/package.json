@@ -18,8 +18,8 @@
     "start:electron": "electron .",
     "launcher:mac": "node electron/macos-launcher.js",
     "test": "vitest run",
-    "test:electron": "node --test electron/api-sidecar.test.cjs electron/runtime-recovery.test.cjs electron/window-wakeup.test.cjs electron/macos-launcher.test.cjs electron/windows-launcher.test.cjs electron/user-data-paths.test.cjs",
-    "check": "vitest run && node --test electron/api-sidecar.test.cjs electron/runtime-recovery.test.cjs electron/window-wakeup.test.cjs electron/macos-launcher.test.cjs electron/windows-launcher.test.cjs electron/user-data-paths.test.cjs && vite build && node --check electron/main.js && node --check electron/preload.js && node --check electron/api-sidecar.js && node --check electron/runtime-recovery.js && node --check electron/window-wakeup.js && node --check electron/macos-launcher.js && node --check electron/user-data-paths.js"
+    "test:electron": "node --test electron/api-sidecar.test.cjs electron/preload.test.cjs electron/runtime-recovery.test.cjs electron/window-wakeup.test.cjs electron/macos-launcher.test.cjs electron/windows-launcher.test.cjs electron/user-data-paths.test.cjs",
+    "check": "vitest run && node --test electron/api-sidecar.test.cjs electron/preload.test.cjs electron/runtime-recovery.test.cjs electron/window-wakeup.test.cjs electron/macos-launcher.test.cjs electron/windows-launcher.test.cjs electron/user-data-paths.test.cjs && vite build && node --check electron/main.js && node --check electron/preload.js && node --check electron/api-sidecar.js && node --check electron/runtime-recovery.js && node --check electron/window-wakeup.js && node --check electron/macos-launcher.js && node --check electron/user-data-paths.js"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.2",

@@ -172,9 +172,12 @@ export function useChatFeature({
     };
   });
   const shouldRefreshTurnWindow = computed(() =>
+    // 发送开始时仍保留上一份 Session 快照，Window 可能还是 empty。先启动同一条
+    // 权威读取链路，才能在答案返回前展示已被服务端接受的用户消息与运行状态。
     // 刷新运行中 Turn 的原因与刷新收尾中 Turn 相同：Window 由服务端拥有；若不轮询，
     // 即便等待的 Turn 已推进或终止，编辑器仍会长时间保持禁用。
-    turnWindow.value.state === "active"
+    chatBusy.value
+    || turnWindow.value.state === "active"
     || (
       turnWindow.value.state === "post_commit_pending"
       && turnWindow.value.postCommitStatus !== "failed"

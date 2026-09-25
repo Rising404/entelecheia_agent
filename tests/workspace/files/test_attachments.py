@@ -1,9 +1,12 @@
 from __future__ import annotations
 
+from datetime import date, datetime, timezone
+
 import pytest
 
 from personagraph.input_processing.files import detection
 from personagraph.workspace.files import attachments as storage
+from personagraph.workspace.files import uploads
 from personagraph.workspace.storage.context import current
 from personagraph.workspace.files import (
     FileSource,
@@ -73,6 +76,11 @@ def test_upload_lands_once_in_project_and_registers_immutable_identity(project_s
     )
 
     assert stored.absolute_path.is_relative_to(project_root / "附件")
+    bucket, uploaded_date, filename = stored.absolute_path.relative_to(project_root).parts
+    assert bucket == "附件"
+    assert date.fromisoformat(uploaded_date).isoformat() == uploaded_date
+    assert filename == "evil.png"
+    assert "att_1" not in stored.stored_rel_path
     assert stored.absolute_path.read_bytes() == PNG
     assert stored.detected.media_type == "image/png"
     assert stored.project_id and stored.file_id == "att_1" and stored.file_version_id
@@ -89,8 +97,13 @@ def test_upload_lands_once_in_project_and_registers_immutable_identity(project_s
     assert record.current_version_id == stored.file_version_id
 
 
-def test_same_name_uploads_cannot_collide(project_session):
+def test_same_name_uploads_cannot_collide(project_session, monkeypatch):
     session_id, _project_root = project_session
+    monkeypatch.setattr(
+        uploads,
+        "_normalize_timestamp",
+        lambda _created_at: datetime(2026, 8, 30, tzinfo=timezone.utc),
+    )
     first = _store(
         session_id,
         attachment_id="att_1",
@@ -105,6 +118,37 @@ def test_same_name_uploads_cannot_collide(project_session):
     )
     assert first.absolute_path != second.absolute_path
     assert first.absolute_path.read_bytes() != second.absolute_path.read_bytes()
+    assert first.stored_rel_path == "附件/2026-08-30/shot.png"
+    assert second.stored_rel_path == "附件/2026-08-30/shot_2.png"
+    assert first.file_id != second.file_id
+    assert first.file_version_id != second.file_version_id
+
+
+def test_previously_registered_uuid_attachment_path_remains_readable(project_session):
+    session_id, project_root = project_session
+    relative_path = "附件/20260830T123456123456Z_att_legacy/shot.png"
+    existing = project_root / relative_path
+    existing.parent.mkdir(parents=True)
+    existing.write_bytes(PNG)
+
+    with session_store.session_database_scope(session_id):
+        database = current()
+        assert database is not None
+        registered = WorkspaceFileAuthority(database).register_path(
+            relative_path,
+            source=FileSource.USER_UPLOAD,
+            file_id="att_legacy",
+            media_type="image/png",
+        )
+
+        assert storage.read_verified_attachment(
+            session_id,
+            relative_path,
+            expected_size_bytes=registered.version.size_bytes,
+            expected_sha256=registered.version.content_sha256,
+        ) == PNG
+        assert storage.classify_session_path(session_id, existing) is storage.SessionStorageArea.INPUT
+        assert registered.file.relative_path == relative_path
 
 
 def test_extension_follows_bytes_not_claimed_name(project_session):

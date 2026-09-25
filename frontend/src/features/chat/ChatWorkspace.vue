@@ -187,7 +187,7 @@ function onDrop(event) {
         <code v-if="incompleteTurn.errorCode" class="mt-2 block text-xs text-warn">{{ incompleteTurn.errorCode }}</code>
       </article>
 
-      <div v-if="turns.length === 0 && !incompleteTurn" class="empty min-h-60"><MessageSquare :size="30" /><span>开始一轮真实会话</span></div>
+      <div v-if="turns.length === 0 && !incompleteTurn && !chatBusy && !streamingReply" class="empty min-h-60"><MessageSquare :size="30" /><span>开始一轮真实会话</span></div>
     </section>
 
     <InSessionTaskCards :tasks="insessionTaskDetails" />
@@ -240,12 +240,12 @@ function onDrop(event) {
           v-for="item in pendingAttachments"
           :key="item.attachment_id"
           class="flex items-center gap-1.5 rounded-md border px-2 py-1 text-xs"
-          :class="item.readable ? 'border-line bg-surface' : 'border-warn-line bg-warn-bg text-warn'"
+          :class="item.readable === false ? 'border-warn-line bg-warn-bg text-warn' : 'border-line bg-surface'"
         >
           <Paperclip :size="13" />
           <span class="max-w-52 truncate">{{ item.name }}</span>
           <span class="text-ink-3">{{ formatAttachmentSize(item.size_bytes) }}</span>
-          <span v-if="!item.readable" title="该类型暂不支持读取内容">· 仅记录</span>
+          <span v-if="item.readable === false" title="该类型暂不支持读取内容">· 仅记录</span>
           <button type="button" class="text-ink-3 hover:text-danger-text" :disabled="chatBusy"
                   @click="$emit('remove-attachment', item.attachment_id)"><X :size="12" /></button>
         </li>

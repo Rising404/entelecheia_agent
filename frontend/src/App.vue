@@ -301,6 +301,7 @@ const {
   guardedSetSessionStatus,
   guardedSelectSession,
   saveSessionTitle,
+  renameSession,
   archiveSession,
   unarchiveSession,
   trashSession,
