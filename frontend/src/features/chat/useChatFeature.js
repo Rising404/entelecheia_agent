@@ -135,19 +135,20 @@ export function useChatFeature({
     );
   });
   const turnWindow = computed(() => {
-    // 将来 Session 重载可能会直接提供这份投影；在此之前，最近一次权威 Turn 结果是
-    // 唯一可用的窗口来源。
+    // 无 ID 的草稿从未运行 Turn，不能继承上一会话仍在收尾的窗口状态。
+    if (!selectedSession.value?.id) {
+      return { state: "empty", revision: null, stage: null, interruptionReason: null };
+    }
+    // 持久详情优先；仅允许本会话最近一次回复补足尚未刷新的窗口。
     const sessionProjection = readTurnWindowProjection(
       sessionDetail.value?.turn_window ?? sessionDetail.value?.turnWindow
     );
     if (sessionProjection) return sessionProjection;
 
     const result = lastTurnResult.value;
-    if (
-      result?.session_id &&
-      selectedSession.value?.id &&
-      result.session_id !== selectedSession.value.id
-    ) return { state: "empty", revision: null, stage: null, interruptionReason: null };
+    if (result?.session_id !== selectedSession.value.id) {
+      return { state: "empty", revision: null, stage: null, interruptionReason: null };
+    }
     return readTurnWindowProjection(result) || {
       state: "empty", revision: null, stage: null, interruptionReason: null
     };

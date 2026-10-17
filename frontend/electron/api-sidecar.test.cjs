@@ -53,7 +53,10 @@ function identityProof(apiToken, challenge) {
 function mockHttpGet(
   expectedToken,
   protectedAuthorizations,
-  { proveOwnership = true } = {}
+  {
+    proveOwnership = true,
+    runtimeIdentity = () => require("./runtime-identity").buildRuntimeIdentity(path.resolve(__dirname, "../.."))
+  } = {}
 ) {
   return (url, options, onResponse) => {
     const request = new EventEmitter();
@@ -77,12 +80,14 @@ function mockHttpGet(
             proof: "A".repeat(43)
           };
         }
-      } else if (target.pathname === "/api/config") {
+      } else if (["/api/config", "/api/runtime-identity"].includes(target.pathname)) {
         const authorization = options?.headers?.Authorization || null;
         protectedAuthorizations.push(authorization);
         if (authorization === `Bearer ${expectedToken}`) {
           statusCode = 200;
-          payload = { config: {}, model_tiers: {}, model_configured: false };
+          payload = target.pathname === "/api/runtime-identity"
+            ? runtimeIdentity()
+            : { config: {}, model_tiers: {}, model_configured: false };
         } else {
           statusCode = 401;
           payload = { error: { code: "API_AUTH_REQUIRED" } };
@@ -130,7 +135,7 @@ test("reuses an existing API only after its Bearer token is accepted", async (t)
   assert.equal(missing.ok, false);
   assert.equal(missing.mode, "existing-incompatible");
   assert.equal(missing.apiToken, null);
-  assert.equal(missing.error, "existing_api_token_unavailable_or_rejected");
+  assert.equal(missing.error, "existing_api_token_or_runtime_identity_rejected");
   assert.equal(protectedAuthorizations.length, 0);
 
   fs.writeFileSync(tokenPath, "wrong-token".padEnd(48, "y"), { mode: 0o600 });
@@ -138,7 +143,7 @@ test("reuses an existing API only after its Bearer token is accepted", async (t)
   assert.equal(mismatched.ok, false);
   assert.equal(mismatched.mode, "existing-incompatible");
   assert.equal(mismatched.apiToken, null);
-  assert.equal(mismatched.error, "existing_api_token_unavailable_or_rejected");
+  assert.equal(mismatched.error, "existing_api_token_or_runtime_identity_rejected");
   assert.deepEqual(protectedAuthorizations, []);
 
   fs.writeFileSync(tokenPath, expectedToken, { mode: 0o600 });
@@ -182,6 +187,43 @@ test("never discloses the Bearer token to a service that only forges health", as
   assert.equal(result.apiToken, null);
   assert.deepEqual(protectedAuthorizations, []);
 });
+
+for (const [label, runtimeIdentity] of [
+  ["old backend without a runtime identity", () => ({})],
+  ["different checkout", () => ({
+    ...require("./runtime-identity").buildRuntimeIdentity(path.resolve(__dirname, "../..")),
+    checkout_sha256: "0".repeat(64)
+  })],
+  ["stale loaded source", () => ({
+    ...require("./runtime-identity").buildRuntimeIdentity(path.resolve(__dirname, "../..")),
+    source_sha256: "0".repeat(64)
+  })]
+]) {
+  test(`does not reuse ${label} even when it owns the same token`, async (t) => {
+    const token = "synthetic-shared-token-".padEnd(48, "x");
+    const authorizations = [];
+    const originalHttpGet = http.get;
+    http.get = mockHttpGet(token, authorizations, { runtimeIdentity });
+    const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), "entelecheia-runtime-identity-"));
+    const tokenPath = path.join(temporaryRoot, "api_secret");
+    fs.writeFileSync(tokenPath, token, { mode: 0o600 });
+    const sidecarPath = require.resolve("./api-sidecar");
+    delete require.cache[sidecarPath];
+    t.after(() => {
+      http.get = originalHttpGet;
+      delete require.cache[sidecarPath];
+      fs.rmSync(temporaryRoot, { recursive: true, force: true });
+    });
+
+    const result = await require("./api-sidecar").startApiSidecar({
+      storage: { stateDir: path.join(temporaryRoot, "state"),
+        configDir: path.join(temporaryRoot, "config"), apiTokenPath: tokenPath }
+    });
+    assert.equal(result.ok, false);
+    assert.equal(result.mode, "existing-incompatible");
+    assert.equal(result.apiToken, null);
+  });
+}
 
 test("rejects direct sidecar storage inside the source checkout", async () => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "entelecheia-source-root-"));

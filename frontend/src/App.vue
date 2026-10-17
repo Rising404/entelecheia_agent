@@ -143,44 +143,7 @@ async function emptyTrash() {
   }
 }
 
-// 中间那栏认的是 sessionDetail，不是 selectedSessionId。草稿还没有会话，
-// 就先给它一个空壳：id 留空，凡是按 id 取数据的地方都会自己短路，
-// 输入框却已经能用了——不然用户要在"还看着上一条会话"的界面里写第一句话。
-const DRAFT_TITLE = "新会话";
-
-function draftSessionDetail() {
-  return {
-    session: {
-      id: "",
-      title: DRAFT_TITLE,
-      status: "active",
-      working_dir: null
-    },
-    turns: [],
-    pending_user_questions: []
-  };
-}
-
 const directoryPickerAvailable = typeof globalThis.personagraphDesktop?.chooseDirectory === "function";
-
-function startDraft(workingDir = "") {
-  if (saving.value || chatBusy.value || !confirmDiscardChanges()) return;
-  projectsStore.startDraft(workingDir);
-  selectedSessionId.value = "";
-  sessionDetail.value = draftSessionDetail();
-  // 标题也要跟着换：留着上一条会话的标题，未保存提示会立刻误报一次。
-  sessionTitleDraft.value = DRAFT_TITLE;
-  chatInput.value = "";
-  mode.value = "chat";
-}
-
-function discardDraft() {
-  if (saving.value || !confirmDiscardChanges()) return;
-  projectsStore.discardDraft();
-  sessionDetail.value = null;
-  sessionTitleDraft.value = "";
-  chatInput.value = "";
-}
 
 async function chooseDraftDirectory() {
   const draft = projectsStore.draft.value;
@@ -294,6 +257,8 @@ const {
   retryPostCommit,
   waivePostCommit,
   clearCurrentChatDraft,
+  startDraft,
+  discardDraft,
   discardChanges: discardChatChanges,
   loadSessions,
   guardedReloadSessionsFromSearch,
@@ -469,6 +434,9 @@ async function wakeLocalApi() {
   try {
     const result = await globalThis.personagraphDesktop.ensureApiSidecar();
     if (!result?.ok) {
+      if (result?.mode === "existing-incompatible" || result?.mode === "spawned-incompatible") {
+        throw new Error("端口上的服务身份或源码与当前项目不一致。请确认旧服务没有运行任务，停止旧后端后重试；应用不会自动结束其他进程。");
+      }
       throw new Error(
         result?.mode === "starting"
           ? "本地服务仍在启动，请稍后再试"

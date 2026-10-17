@@ -37,7 +37,7 @@ from personagraph.tools.workspace.workspace_tools import (
 
 
 _EXPECTED_DECLARATIONS = (
-    ("read_text", "builtin/read_text", "read-text-handler-2"),
+    ("read_text", "builtin/read_text", "read-text-json-lines"),
     (
         "read_pdf_text",
         "builtin/read_pdf_text",

@@ -128,6 +128,9 @@ TEXT_SUFFIXES = frozenset(
         ".csv",
         ".tsv",
         ".json",
+        # JSONL/NDJSON 是逐行文本；读取不需要额外 JSON 解析流程。
+        ".jsonl",
+        ".ndjson",
         ".log",
         ".yaml",
         ".yml",
@@ -249,7 +252,7 @@ def build_format_observation_tool_specs() -> tuple[ToolSpec, ...]:
             contract_version=FORMAT_OBSERVATION_TOOL_CONTRACT_VERSION,
             name="Read a text file",
             description=(
-                "按工作区相对路径读取有界 UTF-8 文本或 Markdown；截断后使用 "
+                "按工作区相对路径读取有界 UTF-8 文本、Markdown 或 JSON/JSONL/NDJSON；截断后使用 "
                 "next_cursor 续读。path 应取 file_catalog.relative_path 或目录工具"
                 "返回的 path，不能仅把显示字段 name 当作路径。"
             ),

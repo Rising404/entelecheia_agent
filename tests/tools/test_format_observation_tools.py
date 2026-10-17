@@ -316,6 +316,20 @@ def test_read_text_has_a_lossless_continuation_cursor_and_explicit_coverage(
     assert "alpha beta gamma" in {item["text"] for item in resumed["elements"]}
 
 
+@pytest.mark.parametrize("suffix", [".jsonl", ".ndjson", ".JSONL"])
+def test_read_text_accepts_line_delimited_json(tmp_path: Path, suffix: str):
+    # 按普通文本读取，不要求每行都是合法 JSON，也不自动执行其中的内容。
+    source = '{"question":"问题一"}\n{"question":"问题二"}\n'
+    name = f"questions{suffix}"
+    (tmp_path / name).write_text(source, encoding="utf-8")
+    result = _execute(_tools(tmp_path)["read_text"], {"path": name})
+
+    assert result["format"] == "text"
+    assert result["coverage"]["source_status"] == "complete"
+    assert "问题一" in str(result["elements"])
+    assert "问题二" in str(result["elements"])
+
+
 def test_default_cursor_can_resume_across_one_maximum_reader_element(tmp_path: Path):
     original = "x" * 20_000
     (tmp_path / "long.txt").write_text(original, encoding="utf-8")

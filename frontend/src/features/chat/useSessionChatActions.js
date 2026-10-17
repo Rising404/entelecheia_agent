@@ -78,6 +78,43 @@ export function useSessionChatActions({
     if (clearTurn) clearTurnSurface();
   }
 
+  function clearSessionSelection() {
+    // 草稿切换也属于会话交接：旧详情、流式回复与附件请求都不得回写新编辑器。
+    sessionSelectionGeneration += 1;
+    invalidateSessionScopedRequests();
+    if (typeof workspace?.selectSession === "function") workspace.selectSession("");
+    selectedSessionId.value = "";
+    clearSessionAuthority();
+    pendingAttachments.value = [];
+    pendingClientRequest.value = null;
+    clearInSessionTaskDetails();
+  }
+
+  function startDraft(workingDir = "") {
+    if (!projects || saving.value || chatBusy.value || attachmentUploading.value || !confirmDiscardChanges()) return;
+    const previousId = sessionDetail.value?.session?.id || selectedSessionId.value;
+    if (previousId) drafts.save(previousId, chatInput.value);
+    clearSessionSelection();
+    projects.startDraft(workingDir);
+    // 尚未落库的草稿没有 Turn 窗口；创建空壳仅供聊天 UI 编辑第一条消息。
+    sessionDetail.value = {
+      session: { id: "", title: "新会话", status: "active", working_dir: null },
+      turns: [], pending_user_questions: []
+    };
+    sessionTitleDraft.value = "新会话";
+    chatInput.value = "";
+    mode.value = "chat";
+    clearMessage();
+  }
+
+  function discardDraft() {
+    if (!projects || saving.value || chatBusy.value || attachmentUploading.value || !confirmDiscardChanges()) return;
+    projects.discardDraft();
+    clearSessionSelection();
+    chatInput.value = "";
+    clearMessage();
+  }
+
   async function loadSessions(preferredId = selectedSessionId.value) {
     const requestGeneration = ++sessionListGeneration;
     const selectionGenerationAtStart = sessionSelectionGeneration;
@@ -98,16 +135,7 @@ export function useSessionChatActions({
       if (projects?.draftActive?.value && !preferredId) return;
       const nextId = sessions.value.some((session) => session.id === preferredId) ? preferredId : sessions.value[0]?.id || "";
       if (nextId) await selectSession(nextId);
-      else {
-        sessionSelectionGeneration += 1;
-        invalidateSessionScopedRequests();
-        if (typeof workspace?.selectSession === "function") workspace.selectSession("");
-        selectedSessionId.value = "";
-        clearSessionAuthority();
-        pendingAttachments.value = [];
-        pendingClientRequest.value = null;
-        clearInSessionTaskDetails();
-      }
+      else clearSessionSelection();
     } catch (err) {
       if (
         requestGeneration === sessionListGeneration &&
@@ -660,6 +688,7 @@ export function useSessionChatActions({
   }
 
   return {
+    startDraft, discardDraft,
     renameSession,
     loadSessions, reloadSessionsFromSearch, guardedReloadSessionsFromSearch, clearSessionSearch,
     guardedClearSessionSearch, guardedSetSessionStatus, selectSession, guardedSelectSession, createSession,

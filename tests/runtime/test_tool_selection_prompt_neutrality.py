@@ -113,6 +113,16 @@ def test_l1_guidance_separates_file_readiness_from_reading_and_reported_failure(
     assert "尚未取得足够正文" in guidance
 
 
+def test_l1_guidance_explains_working_notes_and_result_eviction() -> None:
+    # 验证真实投影策略与提示一致，不把文字断言当成模型必然遵从的证明。
+    guidance = l1_model._L1_GUIDANCE
+    assert "只展示紧邻前一步" in guidance
+    assert "具体待办问题" in guidance
+    assert "已就绪的文件/能力" in guidance
+    assert "call_ref" in guidance
+    assert "未确认结果结构时从 /result" in guidance
+
+
 def test_l1_prompts_do_not_include_benchmark_answers_or_task_specific_strategies() -> (
     None
 ):

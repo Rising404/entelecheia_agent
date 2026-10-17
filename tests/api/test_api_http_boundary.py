@@ -151,6 +151,18 @@ def test_health_is_public_but_origin_policy_still_applies():
     health._require_authorization()
 
 
+def test_runtime_identity_still_requires_bearer_authentication(monkeypatch):
+    from personagraph.api import security
+
+    monkeypatch.setattr(security, "_API_TOKEN", "synthetic-token".ljust(40, "x"))
+    with pytest.raises(service.ApiError) as denied:
+        _security_handler(path="/api/runtime-identity")._require_authorization()
+    assert denied.value.code == "API_AUTH_REQUIRED"
+    _security_handler(
+        {"Authorization": f"Bearer {security._API_TOKEN}"}, path="/api/runtime-identity"
+    )._require_authorization()
+
+
 def test_dev_auth_bypass_is_limited_to_exact_vite_http_origins(monkeypatch):
     from personagraph.api import security
 

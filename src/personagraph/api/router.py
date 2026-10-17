@@ -14,6 +14,7 @@ from urllib.parse import parse_qs, unquote, urlparse
 
 from . import service
 from . import security as api_security
+from .runtime_identity import runtime_identity
 from ..session import store as session_store
 from .contracts import (
     BodySchema,
@@ -129,6 +130,8 @@ def _health_payload(
 
 ROUTES: tuple[Route, ...] = (
     Route("GET", ("api", "health"), _health_payload),
+    # 此路由仍要求 Bearer；公开 health 只负责服务存活与令牌所有权证明。
+    Route("GET", ("api", "runtime-identity"), lambda _p, _b, _q: runtime_identity()),
     Route("GET", ("api", "status"), lambda _p, _b, _q: service.system_status()),
     Route("GET", ("api", "config"), lambda _p, _b, _q: service.get_config()),
     Route("POST", ("api", "config"), lambda _p, b, _q: service.update_config(b), CONFIG_BODY),

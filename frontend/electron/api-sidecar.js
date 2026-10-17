@@ -3,12 +3,13 @@ const crypto = require("node:crypto");
 const fs = require("node:fs");
 const http = require("node:http");
 const path = require("node:path");
+const { buildRuntimeIdentity } = require("./runtime-identity");
 
 const API_HOST = "127.0.0.1";
 const API_PORT = Number(process.env.PERSONAGRAPH_API_PORT || 8765);
 const API_BASE = `http://${API_HOST}:${API_PORT}`;
-// 该路由只读且返回脱敏配置，同时仍经过统一 Bearer 认证。
-const API_AUTH_PROBE_PATH = "/api/config";
+// 先证明令牌所有权，再以受认证的源码身份决定能否复用现有进程。
+const API_AUTH_PROBE_PATH = "/api/runtime-identity";
 const API_IDENTITY_SCHEME = "hmac-sha256-v1";
 const API_IDENTITY_CONTEXT = "entelecheia-loopback-api-ownership-v1\0";
 const API_IDENTITY_PROOF_PATTERN = /^[A-Za-z0-9_-]{43}$/;
@@ -149,7 +150,7 @@ function checkHealth(timeoutMs = 800) {
   });
 }
 
-function checkApiAuthorization(apiToken, timeoutMs = 800) {
+function checkApiRuntimeIdentity(apiToken, expectedRuntime, timeoutMs = 800) {
   if (typeof apiToken !== "string" || apiToken.length < 32) {
     return Promise.resolve(false);
   }
@@ -171,14 +172,21 @@ function checkApiAuthorization(apiToken, timeoutMs = 800) {
         },
         (res) => {
           const contentType = String(res.headers?.["content-type"] || "").toLowerCase();
+          let body = "";
+          res.setEncoding("utf8");
+          res.on("data", (chunk) => { body += chunk.slice(0, Math.max(0, 4096 - body.length)); });
           res.on("end", () => {
-            finish(
-              res.statusCode === 200 &&
-              contentType.startsWith("application/json")
-            );
+            try {
+              const identity = JSON.parse(body);
+              finish(
+                res.statusCode === 200 &&
+                contentType.startsWith("application/json") &&
+                identity?.checkout_sha256 === expectedRuntime.checkout_sha256 &&
+                identity?.source_sha256 === expectedRuntime.source_sha256
+              );
+            } catch { finish(false); }
           });
           res.on("error", () => finish(false));
-          res.resume();
         }
       );
     } catch {
@@ -269,18 +277,18 @@ function checkApiOwnership(apiToken, timeoutMs = 800) {
   });
 }
 
-async function readAuthorizedApiToken(apiTokenPath, timeoutMs = 800) {
+async function readAuthorizedApiToken(apiTokenPath, expectedRuntime, timeoutMs = 800) {
   const apiToken = readApiToken(apiTokenPath);
   if (!apiToken) return null;
   if (!await checkApiOwnership(apiToken, timeoutMs)) return null;
-  return await checkApiAuthorization(apiToken, timeoutMs) ? apiToken : null;
+  return await checkApiRuntimeIdentity(apiToken, expectedRuntime, timeoutMs) ? apiToken : null;
 }
 
-async function waitForAuthorizedApi(apiTokenPath, timeoutMs = 5000) {
+async function waitForAuthorizedApi(apiTokenPath, expectedRuntime, timeoutMs = 5000) {
   const started = Date.now();
   while (Date.now() - started < timeoutMs) {
     if (await checkHealth(500)) {
-      const apiToken = await readAuthorizedApiToken(apiTokenPath, 500);
+      const apiToken = await readAuthorizedApiToken(apiTokenPath, expectedRuntime, 500);
       if (apiToken) return apiToken;
     }
     await new Promise((resolve) => setTimeout(resolve, 200));
@@ -315,15 +323,22 @@ async function _startApiSidecar(options = {}) {
   const root = options.root || repoRoot();
   const storage = options.storage;
   validateStorageBoundary(storage, root);
+  let expectedRuntime;
+  try {
+    expectedRuntime = buildRuntimeIdentity(root);
+  } catch {
+    return { apiBase: API_BASE, apiToken: null, mode: "spawn-failed", ok: false,
+      error: "local_runtime_identity_unavailable" };
+  }
   if (await checkHealth()) {
-    const apiToken = await readAuthorizedApiToken(storage.apiTokenPath);
+    const apiToken = await readAuthorizedApiToken(storage.apiTokenPath, expectedRuntime);
     const ok = Boolean(apiToken);
     return {
       apiBase: API_BASE,
       apiToken,
       mode: ok ? "existing" : "existing-incompatible",
       ok,
-      error: ok ? null : "existing_api_token_unavailable_or_rejected"
+      error: ok ? null : "existing_api_token_or_runtime_identity_rejected"
     };
   }
 
@@ -340,6 +355,7 @@ async function _startApiSidecar(options = {}) {
   if (apiProcess) {
     const apiToken = await waitForAuthorizedApi(
       storage.apiTokenPath,
+      expectedRuntime,
       options.waitTimeoutMs || 5000
     );
     const ok = Boolean(apiToken);
@@ -352,7 +368,7 @@ async function _startApiSidecar(options = {}) {
       python,
       error: ok
         ? null
-        : (healthy ? "sidecar_token_unavailable_or_rejected" : "sidecar_not_healthy_yet")
+        : (healthy ? "sidecar_token_or_runtime_identity_rejected" : "sidecar_not_healthy_yet")
     };
   }
 
@@ -406,7 +422,7 @@ async function _startApiSidecar(options = {}) {
     apiProcess = null;
   });
 
-  const apiToken = await waitForAuthorizedApi(storage.apiTokenPath);
+  const apiToken = await waitForAuthorizedApi(storage.apiTokenPath, expectedRuntime);
   const ok = Boolean(apiToken);
   const healthy = ok || await checkHealth(500);
   return {
@@ -416,7 +432,7 @@ async function _startApiSidecar(options = {}) {
     ok,
     python,
     error: spawnError?.message || (
-      healthy ? "sidecar_token_unavailable_or_rejected" : "sidecar_not_healthy"
+      healthy ? "sidecar_token_or_runtime_identity_rejected" : "sidecar_not_healthy"
     )
   };
 }

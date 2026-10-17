@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { effectScope, ref } from "vue";
 import { flushPromises } from "@vue/test-utils";
 import { useChatFeature } from "./useChatFeature";
+import { useProjects } from "../workspace/useProjects";
 
 const relatedInSessionTask = {
   insession_task_id: "insession_task_alpha",
@@ -44,6 +45,61 @@ function deferred() {
 }
 
 describe("useChatFeature", () => {
+  it("does not inherit a previous session window when the selected draft has no id", () => {
+    const scope = effectScope();
+    const feature = scope.run(() => useChatFeature({
+      api: {}, mode: ref("chat"), loading: ref(false), saving: ref(false), notice: ref(""),
+      runtimeRoutingStatus: ref(turnRuntimeRouting),
+      sessions: ref([]), selectedSessionId: ref(""), confirmDiscardChanges: () => true,
+      clearMessage: vi.fn(), showError: vi.fn()
+    }));
+    try {
+      feature.sessionDetail.value = { session: { id: "", title: "新会话", status: "active" } };
+      feature.lastTurnResult.value = {
+        session_id: "old-session", window_state: "post_commit_pending", window_revision: 8
+      };
+      expect(feature.turnWindow.value.state).toBe("empty");
+      expect(feature.canSendChat.value).toBe(true);
+    } finally { scope.stop(); }
+  });
+
+  it("clears turn state and ignores late session reads when opening or discarding a draft", async () => {
+    const scope = effectScope();
+    const pending = deferred();
+    const projects = useProjects({ apiClient: {} });
+    const feature = scope.run(() => useChatFeature({
+      api: { getSession: vi.fn(() => pending.promise) },
+      projects, mode: ref("chat"), loading: ref(false), saving: ref(false), notice: ref(""),
+      runtimeRoutingStatus: ref(turnRuntimeRouting),
+      sessions: ref([]), selectedSessionId: ref("old-session"), confirmDiscardChanges: () => true,
+      clearMessage: vi.fn(), showError: vi.fn()
+    }));
+    try {
+      feature.sessionDetail.value = { session: { id: "old-session", title: "旧会话", status: "active" } };
+      const selecting = feature.selectSession("old-session");
+      feature.lastTurnResult.value = {
+        session_id: "old-session", window_state: "post_commit_pending", window_revision: 8
+      };
+      feature.streamingReply.value = "旧回复";
+      feature.pendingAttachments.value = [{ attachment_id: "old-attachment" }];
+      feature.startDraft("/workspace/new");
+
+      expect(feature.lastTurnResult.value).toBeNull();
+      expect(feature.streamingReply.value).toBe("");
+      expect(feature.pendingAttachments.value).toEqual([]);
+      expect(feature.sessionTitleDirty.value).toBe(false);
+      expect(projects.draftWorkingDir.value).toBe("/workspace/new");
+      expect(feature.canSendChat.value).toBe(true);
+      pending.resolve({ session: { id: "old-session", status: "active" }, turns: [] });
+      await selecting;
+      expect(feature.selectedSession.value.id).toBe("");
+      feature.discardDraft();
+      expect(projects.draftActive.value).toBe(false);
+      expect(feature.sessionDetail.value).toBeNull();
+      expect(feature.lastTurnResult.value).toBeNull();
+    } finally { scope.stop(); }
+  });
+
   it("starts in the L1-backed turn mode before routing projections arrive", () => {
     const feature = useChatFeature({
       api: {},

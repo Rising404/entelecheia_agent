@@ -114,6 +114,10 @@ macOS 启动器只使用仓库 `.runtime/node`，用本地 `node_modules` 构建
 Electron，**不依赖全局 Node 或 pnpm**。
 Electron 复用已有本地 API 前，会先向 `http://127.0.0.1:8765/api/health` 发送一次性随机挑战，
 并验证监听者用本地 API token 生成的 HMAC 所有权证明；证明通过前不会向该端口发送 Bearer token。
+随后通过受认证的 `/api/runtime-identity` 核对 checkout 路径摘要及源码摘要（Python 源码、
+`pyproject.toml` 与 `uv.lock`）。后端启动时冻结摘要，未提交修改也会影响匹配；健康且持有相同
+令牌的旧仓库、旧源码或缺少身份接口的后端都不会被复用。此处不返回绝对路径，也不自动终止
+旧进程：确认其没有在运行任务后，再手动停止并重启。源码身份一致不等于依赖与模型调用已通过验证。
 没有后端在跑就自动从仓库 `.venv` 拉起 Python API sidecar；身份不匹配则失败关闭。
 模型 Key 在应用内「设置」里填，无需命令行。
 

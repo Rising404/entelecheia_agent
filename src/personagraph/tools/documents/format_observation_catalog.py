@@ -101,7 +101,7 @@ _DECLARATIONS = (
     _FormatObservationDeclaration(
         "read_text",
         "builtin/read_text",
-        "read-text-handler-2",
+        "read-text-json-lines",
         FORMAT_OBSERVATION_TOOL_IMPLEMENTATION_VERSION,
     ),
     _FormatObservationDeclaration(
