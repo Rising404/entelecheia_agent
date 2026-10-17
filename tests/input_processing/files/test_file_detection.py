@@ -148,3 +148,17 @@ def test_binary_payloads_are_not_admitted_as_text(head):
 
 def test_an_empty_payload_is_treated_as_empty_text_not_as_binary():
     assert _detect(b"", "notes.txt").kind is FileKind.TEXT
+
+
+@pytest.mark.parametrize("suffix", (".jsonl", ".ndjson", ".JSONL", ".NDJSON"))
+def test_json_lines_keep_their_format_instead_of_becoming_txt(suffix):
+    detected = _detect('{"内容":"第一条"}\n{"内容":"第二条"}\n'.encode(), f"records{suffix}")
+
+    assert detected.kind is FileKind.TEXT
+    assert detected.extension == suffix.lower()
+    assert detected.media_type == "application/x-ndjson"
+
+
+@pytest.mark.parametrize("suffix", (".jsonl", ".ndjson"))
+def test_json_lines_suffix_cannot_override_binary_bytes(suffix):
+    assert _detect(b"\x00binary", f"records{suffix}").kind is FileKind.UNKNOWN

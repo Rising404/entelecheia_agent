@@ -43,6 +43,13 @@ from personagraph.workspace.ingestion.storage import (
 )
 from personagraph.session.workspace_authority import validate_current_session_workspace_authority
 from personagraph.session import store as session_store
+from personagraph.session.attachments.application import accept_upload
+from personagraph.workspace.files.turn_inputs import resolve_turn_input_files
+from personagraph.session.local_file_authority import SqliteSessionFileAuthority
+from personagraph.tools.composition.file_tools import build_file_tool_source
+from personagraph.tools.workspace.workspace_tools import FrozenWorkspaceToolBoundary
+from personagraph.tools.execution import ResolvedInvocation, ToolExecutor
+from personagraph.tools.contracts import ExecutionStatus
 
 
 def _write_markdown(path: Path, text: str) -> None:
@@ -183,19 +190,47 @@ def _active_catalog_manifest(session_id: str) -> set[
     }
 
 
+@pytest.mark.parametrize("suffix", (".md", ".json", ".jsonl", ".ndjson", ".JSONL"))
+@pytest.mark.parametrize("entry", ("workspace", "upload"))
 def test_workspace_file_is_synchronously_indexed_and_exact_replay_is_ready(
     tmp_path: Path,
     partitioned_project_state,
+    suffix: str,
+    entry: str,
 ) -> None:
     del partitioned_project_state
     workspace = tmp_path / "workspace"
     workspace.mkdir()
-    source = workspace / "evidence.md"
-    _write_markdown(source, "# Evidence\n\nThe blue whale result is 73 percent.")
     session_id = session_store.create_session(
         "Entelecheia",
         working_dir=str(workspace.resolve()),
+        require_workspace_read_authority=True,
     )
+    turn_id = "format-ingestion-test"
+    name = f"evidence{suffix}"
+    content = '{"evidence":"The blue whale result is 73 percent."}\n'
+    source = workspace / name
+    if entry == "workspace":
+        source.write_text(content, encoding="utf-8")
+    else:
+        # 使用当前 Turn 的文件身份链，不走旧附件挂载桥，也不伪造路径/授权记录。
+        with session_store.session_database_scope(session_id):
+            upload = accept_upload(
+                session_id=session_id, raw_name=name, declared_media_type=None,
+                payload=content.encode("utf-8"), store=session_store,
+            )
+            accepted = session_store.accept_turn_execution(
+                session_id=session_id, client_request_id="format-ingestion-test",
+                source="runtime_test", user_text="Read the uploaded evidence.",
+                attachment_ids=(upload.attachment_id,), lease_owner="format-ingestion-test",
+            )
+            turn_id = str(accepted["turn"]["turn_id"])
+            (bound,) = resolve_turn_input_files(
+                session_store.list_turn_attachments(session_id, turn_id),
+                session_id=session_id, turn_id=turn_id,
+            )
+            source = bound.canonical_path
+            assert source.name == name
     frozen = fingerprint_file(source.resolve())
 
     first = prepare_file(
@@ -217,6 +252,21 @@ def test_workspace_file_is_synchronously_indexed_and_exact_replay_is_ready(
     assert not hasattr(first, "canonical_path")
     assert str(source.resolve()) not in repr(first)
     assert _active_catalog_manifest(session_id) == _current_authority_manifest(session_id)
+    with session_store.session_database_scope(session_id):
+        (grant,) = SqliteSessionFileAuthority().list_grants(session_id=session_id)
+        # 走产品组合根，连同图片来源权限一起装配，避免测试自行接线制造假 partial。
+        source_tools = build_file_tool_source(
+            session_id=session_id, turn_id=turn_id, workspace_grant_id=grant.grant_id,
+            workspace_boundary=FrozenWorkspaceToolBoundary(session_id=session_id, root=workspace),
+        )
+        retrieve = next(item for item in source_tools.registrations if item.tool_id == "retrieve_files")
+        outcome = ToolExecutor().execute(ResolvedInvocation(
+            retrieve, {"queries": ["blue whale"], "file_ids": [first.file_id]},
+        ))
+    assert outcome.status is ExecutionStatus.SUCCEEDED
+    assert not outcome.result["gaps"], outcome.result["gaps"]
+    assert outcome.result["status"] == "complete"
+    assert any("73 percent" in item["snippet"] for item in outcome.result["evidence"])
 
 
 def test_sessions_share_processing_but_receive_independent_delivery(

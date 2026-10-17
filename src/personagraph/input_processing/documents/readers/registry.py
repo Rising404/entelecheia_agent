@@ -30,6 +30,7 @@ from ..contracts import (
     ProcessorFingerprint,
 )
 from ...files import MAX_DOCUMENT_FILE_BYTES
+from ...files.text_formats import TEXT_SUFFIXES
 from .docling_reader import (
     assess_pdf_ingest_geometry,
     configured_docling_recipe,
@@ -66,14 +67,8 @@ ENGINE_ENV_VAR = "PERSONAGRAPH_DOCUMENT_ENGINE"
 NATIVE_ENGINE = "native"
 DOCLING_ENGINE = "docling"
 
-_TEXT_SUFFIXES = (
-    ".txt", ".md", ".markdown", ".csv", ".tsv", ".json", ".log", ".yaml", ".yml",
-    ".py", ".js", ".ts", ".html", ".css", ".sql", ".sh", ".toml", ".xml", ".ini",
-    ".rs", ".go", ".java", ".c", ".h", ".cpp", ".rb",
-)
-
 _NATIVE_READERS: dict[str, DocumentReader] = {
-    **{suffix: read_plain_text for suffix in _TEXT_SUFFIXES},
+    **{suffix: read_plain_text for suffix in TEXT_SUFFIXES},
     ".png": read_image,
     ".jpg": read_image,
     ".jpeg": read_image,

@@ -28,6 +28,7 @@ from ...input_processing.documents.readers import (
 )
 from ...input_processing.documents.readers.image import read_image
 from ...input_processing.documents.readers.plain_text import read_plain_text
+from ...input_processing.files.text_formats import TEXT_SUFFIXES
 from ...input_processing.vision.contracts import (
     PixelSize,
     VisionDetail,
@@ -120,39 +121,6 @@ MAX_DIAGNOSTIC_CODE_BYTES = 128
 MAX_DIAGNOSTIC_FIELD_BYTES = 768
 MAX_OBSERVATION_TEXT_BYTES = 4_096
 
-TEXT_SUFFIXES = frozenset(
-    {
-        ".txt",
-        ".md",
-        ".markdown",
-        ".csv",
-        ".tsv",
-        ".json",
-        # JSONL/NDJSON 是逐行文本；读取不需要额外 JSON 解析流程。
-        ".jsonl",
-        ".ndjson",
-        ".log",
-        ".yaml",
-        ".yml",
-        ".py",
-        ".js",
-        ".ts",
-        ".html",
-        ".css",
-        ".sql",
-        ".sh",
-        ".toml",
-        ".xml",
-        ".ini",
-        ".rs",
-        ".go",
-        ".java",
-        ".c",
-        ".h",
-        ".cpp",
-        ".rb",
-    }
-)
 PDF_SUFFIXES = frozenset({".pdf"})
 WORD_SUFFIXES = frozenset({".docx", ".doc"})
 SLIDE_SUFFIXES = frozenset({".pptx", ".ppt"})

@@ -11,6 +11,7 @@ import unicodedata
 
 from .contracts import DetectedType, FileKind
 from .ooxml import OoxmlKind, probe_ooxml_kind
+from .text_formats import TEXT_MEDIA_TYPES
 
 
 MAX_STORED_NAME_LENGTH = 120
@@ -54,17 +55,6 @@ _OOXML_TYPES: dict[OoxmlKind, tuple[str, FileKind, str]] = {
 
 _TYPE_HEAD_BYTES = 8192
 _ZIP_EOCD_WINDOW_BYTES = 65_535 + 22
-
-_TEXT_EXTENSIONS: dict[str, str] = {
-    ".txt": "text/plain", ".md": "text/markdown", ".markdown": "text/markdown",
-    ".csv": "text/csv", ".tsv": "text/tab-separated-values", ".json": "application/json",
-    ".log": "text/plain", ".yaml": "application/yaml", ".yml": "application/yaml",
-    ".py": "text/x-python", ".js": "text/javascript", ".ts": "text/typescript",
-    ".html": "text/html", ".css": "text/css", ".sql": "application/sql",
-    ".sh": "application/x-sh", ".toml": "application/toml", ".xml": "application/xml",
-    ".ini": "text/plain", ".rs": "text/x-rust", ".go": "text/x-go", ".java": "text/x-java",
-    ".c": "text/x-c", ".h": "text/x-c", ".cpp": "text/x-c++", ".rb": "text/x-ruby",
-}
 
 
 def sanitize_original_name(raw: str) -> str:
@@ -141,8 +131,8 @@ def detect_type(payload: bytes, sanitized_name: str) -> DetectedType:
         return DetectedType("application/zip", FileKind.UNKNOWN, ".zip")
 
     suffix = _suffix_of(sanitized_name)
-    if suffix in _TEXT_EXTENSIONS and _looks_like_text(head):
-        return DetectedType(_TEXT_EXTENSIONS[suffix], FileKind.TEXT, suffix)
+    if suffix in TEXT_MEDIA_TYPES and _looks_like_text(head):
+        return DetectedType(TEXT_MEDIA_TYPES[suffix], FileKind.TEXT, suffix)
     if _looks_like_text(head):
         # 已被内容证伪的后缀不能进入 reader 路由。存储路径以此扩展名为键，因此在此保留
         # `.pdf`、`.doc` 或 `.png` 会把已确认为文本的内容送入错误解析器。

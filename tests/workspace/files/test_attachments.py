@@ -176,6 +176,21 @@ def test_proven_plain_text_cannot_keep_a_richer_spoofed_suffix(project_session):
     assert stored.absolute_path.suffix == ".txt"
 
 
+@pytest.mark.parametrize("suffix", (".jsonl", ".ndjson", ".JSONL"))
+def test_json_lines_upload_preserves_name_bytes_and_type(project_session, suffix):
+    session_id, _project_root = project_session
+    payload = '{"内容":"上传文件原文"}\n'.encode()
+    stored = _store(
+        session_id, attachment_id="att_json_lines",
+        raw_name=f"records{suffix}", payload=payload,
+    )
+
+    assert stored.absolute_path.name == f"records{suffix}"
+    assert stored.absolute_path.read_bytes() == payload
+    assert stored.detected.kind.value == "text"
+    assert stored.detected.media_type == "application/x-ndjson"
+
+
 def test_oversized_payload_is_refused_before_touching_disk(project_session):
     session_id, project_root = project_session
     with session_store.session_database_scope(session_id):

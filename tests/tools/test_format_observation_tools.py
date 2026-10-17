@@ -21,6 +21,7 @@ from personagraph.tools.execution import (
     ToolExecutor,
 )
 from personagraph.input_processing.vision.providers import UnavailableVisionModelAdapter
+from personagraph.input_processing.files.text_formats import TEXT_SUFFIXES
 from personagraph.input_processing.vision.imaging import (
     build_prepared_visual_artifact_receipt,
 )
@@ -316,8 +317,8 @@ def test_read_text_has_a_lossless_continuation_cursor_and_explicit_coverage(
     assert "alpha beta gamma" in {item["text"] for item in resumed["elements"]}
 
 
-@pytest.mark.parametrize("suffix", [".jsonl", ".ndjson", ".JSONL"])
-def test_read_text_accepts_line_delimited_json(tmp_path: Path, suffix: str):
+@pytest.mark.parametrize("suffix", [*sorted(TEXT_SUFFIXES), ".JSONL"])
+def test_read_text_accepts_registered_text_formats(tmp_path: Path, suffix: str):
     # 按普通文本读取，不要求每行都是合法 JSON，也不自动执行其中的内容。
     source = '{"question":"问题一"}\n{"question":"问题二"}\n'
     name = f"questions{suffix}"
