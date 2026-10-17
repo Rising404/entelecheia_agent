@@ -99,6 +99,7 @@ def _parser(
         default=True,
     )
     score.add_argument("--allow-live", action="store_true")
+
     return parser
 
 
@@ -179,6 +180,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         DocBenchScoringError,
         SelectionValidationError,
         runner.DocBenchRunnerError,
+        OSError,
     ) as exc:
         print(f"DocBench error: {exc}")
         return 2
