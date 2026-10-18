@@ -16,7 +16,7 @@ function deferred() {
 }
 
 function tier({
-  key = "architect",
+  key = "l1",
   origin = "profile",
   profileId = "profile-old",
   thinking = true,
@@ -69,23 +69,23 @@ describe("useConfig", () => {
     const config = useConfig();
 
     await config.loadConfig();
-    expect(config.tierForm.architect.profile_id).toBe("profile-old");
+    expect(config.tierForm.l1.profile_id).toBe("profile-old");
     expect(config.tierLoaded.value).toBe(true);
 
     const loading = config.loadConfig();
     expect(config.tierLoaded.value).toBe(false);
     await config.saveConfig();
-    expect(update.mock.calls[0][0]).not.toHaveProperty("tier_architect_profile_id");
-    expect(update.mock.calls[0][0]).not.toHaveProperty("tier_architect_thinking");
-    expect(update.mock.calls[0][0]).not.toHaveProperty("tier_architect_reasoning_effort");
+    expect(update.mock.calls[0][0]).not.toHaveProperty("tier_l1_profile_id");
+    expect(update.mock.calls[0][0]).not.toHaveProperty("tier_l1_thinking");
+    expect(update.mock.calls[0][0]).not.toHaveProperty("tier_l1_reasoning_effort");
 
     reload.reject(new Error("configuration unavailable"));
     await loading;
     expect(config.tierLoaded.value).toBe(false);
     await config.saveConfig();
-    expect(update.mock.calls[1][0]).not.toHaveProperty("tier_architect_profile_id");
-    expect(update.mock.calls[1][0]).not.toHaveProperty("tier_architect_thinking");
-    expect(update.mock.calls[1][0]).not.toHaveProperty("tier_architect_reasoning_effort");
+    expect(update.mock.calls[1][0]).not.toHaveProperty("tier_l1_profile_id");
+    expect(update.mock.calls[1][0]).not.toHaveProperty("tier_l1_thinking");
+    expect(update.mock.calls[1][0]).not.toHaveProperty("tier_l1_reasoning_effort");
   });
 
   it("keeps a successful save result when the follow-up status refresh fails", async () => {
@@ -131,12 +131,12 @@ describe("useConfig", () => {
     });
     const config = useConfig();
     await config.loadConfig();
-    config.updateTier({ tier: "architect", field: "profile_id", value: "profile-draft" });
+    config.updateTier({ tier: "l1", field: "profile_id", value: "profile-draft" });
 
     await config.saveConfig();
 
     expect(config.tierEffective.value).toEqual([confirmed]);
-    expect(config.tierForm.architect).toEqual({
+    expect(config.tierForm.l1).toEqual({
       profile_id: "profile-confirmed",
       thinking: true,
       reasoning_effort: ""
@@ -159,12 +159,12 @@ describe("useConfig", () => {
     const config = useConfig();
 
     await config.loadConfig();
-    expect(config.tierForm.architect.reasoning_effort).toBe("high");
-    config.updateTier({ tier: "architect", field: "reasoning_effort", value: "xhigh" });
+    expect(config.tierForm.l1.reasoning_effort).toBe("high");
+    config.updateTier({ tier: "l1", field: "reasoning_effort", value: "xhigh" });
 
     await config.saveConfig();
 
-    expect(update.mock.calls[0][0].tier_architect_reasoning_effort).toBe("xhigh");
+    expect(update.mock.calls[0][0].tier_l1_reasoning_effort).toBe("xhigh");
   });
 
   it("submits auto to clear a previously selected reasoning effort", async () => {
@@ -183,9 +183,9 @@ describe("useConfig", () => {
     const config = useConfig();
 
     await config.loadConfig();
-    config.updateTier({ tier: "architect", field: "reasoning_effort", value: "" });
+    config.updateTier({ tier: "l1", field: "reasoning_effort", value: "" });
     await config.saveConfig();
 
-    expect(update.mock.calls[0][0].tier_architect_reasoning_effort).toBe("auto");
+    expect(update.mock.calls[0][0].tier_l1_reasoning_effort).toBe("auto");
   });
 });

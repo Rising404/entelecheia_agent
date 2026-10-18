@@ -22,6 +22,7 @@ def project_attempt_view(payload: dict) -> dict:
             "execution_limits",
             "attempt_ordinal",
             "attachments",
+            "reading_progress",
         )
         if key in payload
     }

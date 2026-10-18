@@ -191,8 +191,6 @@ def _has_recoverable_l1_turn(
             or str(window.get("window_state") or "") != "active"
             or not window.get("turn_id")
             or not window.get("current_l1_turn_run_id")
-            or window.get("current_work_run_id") is not None
-            or window.get("current_attempt_id") is not None
         ):
             return False
         execution = store.get_l1_turn_execution(

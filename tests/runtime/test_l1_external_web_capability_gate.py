@@ -96,7 +96,6 @@ def test_docbench_runtime_features_hard_disable_l1_external_web(
 ) -> None:
     features = config.load_features(str(DOCBENCH_RUNTIME_FEATURES))
 
-    assert features["user_interaction_mode"] == "closed_world"
     assert features["l1_external_web_tools_enabled"] is False
 
     workspace = tmp_path / "workspace"

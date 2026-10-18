@@ -67,7 +67,6 @@ from .deps import StoreDeps
 
 _IDENTIFIER = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:/-]{0,199}$")
 _TERMINAL_L1_STATUSES = frozenset({"completed", "failed", "cancelled"})
-_TERMINAL_WORK_RUN_STATUSES = frozenset({"completed", "failed", "cancelled"})
 
 
 def create_execution_findings_ledger(
@@ -78,7 +77,7 @@ def create_execution_findings_ledger(
     execution_owner_id: str,
     quota: ExecutionFindingsQuota | None = None,
 ) -> ExecutionFindingsLedgerCreateResult:
-    """创建或重放由 L1 TurnRun 或 L2 WorkRun 所有的唯一账本。"""
+    """创建或重放由 L1 TurnRun 所有的唯一账本。"""
 
     deps.init_db()
     now = deps.now()
@@ -105,7 +104,7 @@ def create_execution_findings_ledger_in_transaction(
 ) -> ExecutionFindingsLedgerCreateResult:
     """在执行所有者的打开事务内创建或重放账本。
 
-    所有者持久化在插入 L1 TurnRun 或 L2 WorkRun 行后立即调用此函数。因此，之后任何
+    所有者持久化在插入 L1 TurnRun 行后立即调用此函数。因此，之后任何
     所有者初始化失败都会让伴随账本与所有者一同回滚，而不会留下分裂提交。
     """
 
@@ -171,23 +170,14 @@ def create_execution_findings_ledger_in_transaction(
         owner_kind=parsed_owner_kind,
         execution_owner_id=execution_owner_id,
     )
-    l1_turn_run_id = (
-        execution_owner_id
-        if parsed_owner_kind is ExecutionFindingsOwnerKind.L1_TURN_RUN
-        else None
-    )
-    work_run_id = (
-        execution_owner_id
-        if parsed_owner_kind is ExecutionFindingsOwnerKind.WORK_RUN
-        else None
-    )
+    l1_turn_run_id = execution_owner_id
     try:
         conn.execute(
             "INSERT INTO execution_findings_ledgers "
             "(ledger_id, session_id, originating_turn_id, owner_kind, "
-            "execution_owner_id, l1_turn_run_id, work_run_id, status, "
+            "execution_owner_id, l1_turn_run_id, status, "
             "revision, quota_json, quota_hash, created_at, updated_at) "
-            "VALUES (?, ?, ?, ?, ?, ?, ?, 'open', 0, ?, ?, ?, ?)",
+            "VALUES (?, ?, ?, ?, ?, ?, 'open', 0, ?, ?, ?, ?)",
             (
                 ledger_id,
                 session_id,
@@ -195,7 +185,6 @@ def create_execution_findings_ledger_in_transaction(
                 parsed_owner_kind.value,
                 execution_owner_id,
                 l1_turn_run_id,
-                work_run_id,
                 quota_json,
                 quota_hash,
                 now,
@@ -581,32 +570,18 @@ def _require_create_owner(
     owner_kind: ExecutionFindingsOwnerKind,
     execution_owner_id: str,
 ) -> str:
-    if owner_kind is ExecutionFindingsOwnerKind.L1_TURN_RUN:
-        row = conn.execute(
-            "SELECT session_id, turn_id, status FROM l1_turn_runs "
-            "WHERE l1_turn_run_id=?",
-            (execution_owner_id,),
-        ).fetchone()
-        if row is None or str(row["session_id"]) != session_id:
-            raise ExecutionFindingsPersistenceError(
-                "findings ledger has no owning L1 TurnRun"
-            )
-        if str(row["status"]) in _TERMINAL_L1_STATUSES:
-            raise ExecutionFindingsOwnerClosed("owning L1 TurnRun is terminal")
-        return str(row["turn_id"])
-
     row = conn.execute(
-        "SELECT session_id, created_turn_id, status FROM insession_work_runs "
-        "WHERE work_run_id=?",
+        "SELECT session_id, turn_id, status FROM l1_turn_runs "
+        "WHERE l1_turn_run_id=?",
         (execution_owner_id,),
     ).fetchone()
     if row is None or str(row["session_id"]) != session_id:
         raise ExecutionFindingsPersistenceError(
-            "findings ledger has no owning WorkRun"
+            "findings ledger has no owning L1 TurnRun"
         )
-    if str(row["status"]) in _TERMINAL_WORK_RUN_STATUSES:
-        raise ExecutionFindingsOwnerClosed("owning WorkRun is terminal")
-    return str(row["created_turn_id"])
+    if str(row["status"]) in _TERMINAL_L1_STATUSES:
+        raise ExecutionFindingsOwnerClosed("owning L1 TurnRun is terminal")
+    return str(row["turn_id"])
 
 
 def _require_writer_authority(
@@ -617,62 +592,36 @@ def _require_writer_authority(
     writer_tool_call_id: str,
     command: ExecutionFindingsMutationCommand,
 ) -> str:
-    owner_kind = ExecutionFindingsOwnerKind(str(ledger_row["owner_kind"]))
     owner_id = str(ledger_row["execution_owner_id"])
-    if owner_kind is ExecutionFindingsOwnerKind.L1_TURN_RUN:
-        if writer_tool_call_id == l1_execution_note_writer_id(writer_unit_id):
-            _require_committed_l1_note_authority(
-                conn, owner_id=owner_id, command=command,
-            )
-            return RECORD_EXECUTION_FINDINGS_TOOL_ID
-        row = conn.execute(
-            "SELECT call.step_id, call.tool_id, call.execution_class, "
-            "call.status AS call_status, "
-            "run.status AS run_status, state.stage AS run_stage "
-            "FROM l1_turn_tool_calls AS call "
-            "JOIN l1_turn_runs AS run "
-            "ON run.l1_turn_run_id=call.l1_turn_run_id "
-            "JOIN l1_turn_run_states AS state "
-            "ON state.l1_turn_run_id=call.l1_turn_run_id "
-            "WHERE call.tool_call_id=? AND call.l1_turn_run_id=?",
-            (writer_tool_call_id, owner_id),
-        ).fetchone()
-        if (
-            row is None
-            or str(row["step_id"]) != writer_unit_id
-            or str(row["execution_class"]) != "runtime_state"
-            or str(row["call_status"]) != "pending"
-            or str(row["run_status"]) != "running"
-            or str(row["run_stage"]) != "tool"
-        ):
-            raise ExecutionFindingsPersistenceError(
-                "findings mutation has no current L1 ToolCall authority"
-            )
-        tool_id = str(row["tool_id"])
-    else:
-        row = conn.execute(
-            "SELECT call.attempt_id, call.tool_id, attempt.status AS attempt_status, "
-            "run.status AS run_status, run.current_attempt_id "
-            "FROM insession_work_run_tool_calls AS call "
-            "JOIN insession_work_run_attempts AS attempt "
-            "ON attempt.work_run_id=call.work_run_id "
-            "AND attempt.attempt_id=call.attempt_id "
-            "JOIN insession_work_runs AS run "
-            "ON run.work_run_id=call.work_run_id "
-            "WHERE call.tool_call_id=? AND call.work_run_id=?",
-            (writer_tool_call_id, owner_id),
-        ).fetchone()
-        if (
-            row is None
-            or str(row["attempt_id"]) != writer_unit_id
-            or str(row["attempt_status"]) != "active"
-            or str(row["run_status"]) != "active"
-            or str(row["current_attempt_id"] or "") != writer_unit_id
-        ):
-            raise ExecutionFindingsPersistenceError(
-                "findings mutation has no current WorkRun ToolCall authority"
-            )
-        tool_id = str(row["tool_id"])
+    if writer_tool_call_id == l1_execution_note_writer_id(writer_unit_id):
+        _require_committed_l1_note_authority(
+            conn, owner_id=owner_id, command=command,
+        )
+        return RECORD_EXECUTION_FINDINGS_TOOL_ID
+    row = conn.execute(
+        "SELECT call.step_id, call.tool_id, call.execution_class, "
+        "call.status AS call_status, "
+        "run.status AS run_status, state.stage AS run_stage "
+        "FROM l1_turn_tool_calls AS call "
+        "JOIN l1_turn_runs AS run "
+        "ON run.l1_turn_run_id=call.l1_turn_run_id "
+        "JOIN l1_turn_run_states AS state "
+        "ON state.l1_turn_run_id=call.l1_turn_run_id "
+        "WHERE call.tool_call_id=? AND call.l1_turn_run_id=?",
+        (writer_tool_call_id, owner_id),
+    ).fetchone()
+    if (
+        row is None
+        or str(row["step_id"]) != writer_unit_id
+        or str(row["execution_class"]) != "runtime_state"
+        or str(row["call_status"]) != "pending"
+        or str(row["run_status"]) != "running"
+        or str(row["run_stage"]) != "tool"
+    ):
+        raise ExecutionFindingsPersistenceError(
+            "findings mutation has no current L1 ToolCall authority"
+        )
+    tool_id = str(row["tool_id"])
     if tool_id not in EXECUTION_FINDINGS_TOOL_IDS:
         raise ExecutionFindingsPersistenceError(
             "writer ToolCall is not an execution-findings tool"
@@ -744,59 +693,32 @@ def _load_authoritative_scope_keys(
     *,
     ledger_row: sqlite3.Row,
 ) -> set[str]:
-    owner_kind = ExecutionFindingsOwnerKind(str(ledger_row["owner_kind"]))
     owner_id = str(ledger_row["execution_owner_id"])
-    if owner_kind is ExecutionFindingsOwnerKind.L1_TURN_RUN:
-        row = conn.execute(
-            "SELECT plan_json FROM l1_turn_run_states WHERE l1_turn_run_id=?",
-            (owner_id,),
-        ).fetchone()
-        if row is None or row["plan_json"] is None:
-            raise ExecutionFindingsScopeInvalid(
-                "L1 findings require an accepted current L1 Plan"
-            )
-        payload = _canonical_stored_json(
-            str(row["plan_json"]),
-            label="L1 Plan",
+    row = conn.execute(
+        "SELECT plan_json FROM l1_turn_run_states WHERE l1_turn_run_id=?",
+        (owner_id,),
+    ).fetchone()
+    if row is None or row["plan_json"] is None:
+        raise ExecutionFindingsScopeInvalid(
+            "L1 findings require an accepted current L1 Plan"
         )
-        acceptances = (
-            payload.get("acceptances") if isinstance(payload, dict) else None
+    payload = _canonical_stored_json(
+        str(row["plan_json"]),
+        label="L1 Plan",
+    )
+    acceptances = (
+        payload.get("acceptances") if isinstance(payload, dict) else None
+    )
+    if not isinstance(acceptances, list):
+        raise ExecutionFindingsStoredAuthorityCorrupt(
+            "stored L1 Plan has no Acceptances"
         )
-        if not isinstance(acceptances, list):
-            raise ExecutionFindingsStoredAuthorityCorrupt(
-                "stored L1 Plan has no Acceptances"
-            )
-        values = {
-            str(item.get("acceptance_id"))
-            for item in acceptances
-            if isinstance(item, dict)
-            and isinstance(item.get("acceptance_id"), str)
-        }
-    else:
-        row = conn.execute(
-            "SELECT snapshot_json FROM insession_work_run_acceptance_progress "
-            "WHERE work_run_id=?",
-            (owner_id,),
-        ).fetchone()
-        if row is None:
-            raise ExecutionFindingsScopeInvalid(
-                "WorkRun findings require Acceptance progress"
-            )
-        payload = _canonical_stored_json(
-            str(row["snapshot_json"]),
-            label="WorkRun Acceptance progress",
-        )
-        items = payload.get("items") if isinstance(payload, dict) else None
-        if not isinstance(items, list):
-            raise ExecutionFindingsStoredAuthorityCorrupt(
-                "stored Acceptance progress has no items"
-            )
-        values = {
-            str(item.get("acceptance_id"))
-            for item in items
-            if isinstance(item, dict)
-            and isinstance(item.get("acceptance_id"), str)
-        }
+    values = {
+        str(item.get("acceptance_id"))
+        for item in acceptances
+        if isinstance(item, dict)
+        and isinstance(item.get("acceptance_id"), str)
+    }
     if not values:
         raise ExecutionFindingsStoredAuthorityCorrupt(
             "execution owner has no authoritative scope keys"
@@ -810,91 +732,61 @@ def _validate_source_ref(
     ledger_row: sqlite3.Row,
     source_ref: ExecutionFindingSourceRef,
 ) -> None:
-    owner_kind = ExecutionFindingsOwnerKind(str(ledger_row["owner_kind"]))
     owner_id = str(ledger_row["execution_owner_id"])
-    if owner_kind is ExecutionFindingsOwnerKind.L1_TURN_RUN:
-        tool_call_id = source_ref.tool_result_id
-        expected_digest = source_ref.result_sha256
-        if tool_call_id.startswith("l1result_"):
-            # 只在持久旧记录边界解析旧引用；不再生成该身份供当前模型抄写。
-            identities = [dict(row) for row in conn.execute(
-                "SELECT tool_call_id, status, outcome_json, outcome_hash "
-                "FROM l1_turn_tool_calls WHERE l1_turn_run_id=? AND status='succeeded'",
-                (owner_id,),
-            ).fetchall()]
-            try:
-                legacy = resolve_legacy_l1_result(tool_call_id, tool_calls=identities)
-            except L1StoredResultIntegrityError as exc:
-                raise ExecutionFindingsStoredAuthorityCorrupt(
-                    "stored L1 source outcome is corrupt"
-                ) from exc
-            except ValueError as exc:
-                raise ExecutionFindingsSourceReferenceInvalid(
-                    "legacy L1 source result has no valid matching call"
-                ) from exc
-            tool_call_id = legacy["tool_call_id"]
-            if expected_digest is not None and expected_digest != legacy["outcome_hash"]:
-                raise ExecutionFindingsSourceReferenceInvalid("L1 source result digest changed")
-            expected_digest = legacy["outcome_hash"]
-        elif expected_digest is None:
-            raise ExecutionFindingsSourceReferenceInvalid("L1 source call requires a result digest")
-        row = conn.execute(
-            "SELECT tool_id, status, outcome_json, outcome_hash "
-            "FROM l1_turn_tool_calls "
-            "WHERE l1_turn_run_id=? AND tool_call_id=?",
-            (owner_id, tool_call_id),
-        ).fetchone()
-        if row is None or str(row["status"]) != "succeeded":
-            raise ExecutionFindingsSourceReferenceInvalid(
-                "L1 source ToolCall is absent or not successful"
-            )
-        from ...tools.tool_history.definitions import TOOL_HISTORY_TOOL_IDS
-
-        if str(row["tool_id"]) in TOOL_HISTORY_TOOL_IDS:
-            raise ExecutionFindingsSourceReferenceInvalid(
-                "a tool-history receipt cannot support a finding; cite its original source"
-            )
-        if str(row["tool_id"]) in EXECUTION_FINDINGS_TOOL_IDS:
-            raise ExecutionFindingsSourceReferenceInvalid(
-                "an execution-findings result cannot support another finding"
-            )
-        result_json = str(row["outcome_json"] or "")
-        result_hash = str(row["outcome_hash"] or "")
-        if result_hash != expected_digest:
-            raise ExecutionFindingsSourceReferenceInvalid("L1 source result digest changed")
-        payload = _canonical_stored_json(result_json, label="L1 ToolCall outcome")
-        if hashlib.sha256(result_json.encode("utf-8")).hexdigest() != result_hash:
+    tool_call_id = source_ref.tool_result_id
+    expected_digest = source_ref.result_sha256
+    if tool_call_id.startswith("l1result_"):
+        # 只在持久旧记录边界解析旧引用；不再生成该身份供当前模型抄写。
+        identities = [dict(row) for row in conn.execute(
+            "SELECT tool_call_id, status, outcome_json, outcome_hash "
+            "FROM l1_turn_tool_calls WHERE l1_turn_run_id=? AND status='succeeded'",
+            (owner_id,),
+        ).fetchall()]
+        try:
+            legacy = resolve_legacy_l1_result(tool_call_id, tool_calls=identities)
+        except L1StoredResultIntegrityError as exc:
             raise ExecutionFindingsStoredAuthorityCorrupt(
-                "stored L1 ToolCall outcome hash changed"
-            )
-        output = payload.get("result") if isinstance(payload, dict) else None
-    else:
-        row = conn.execute(
-            "SELECT result.tool_result_id, result.status, result.result_json, "
-            "call.tool_id "
-            "FROM insession_work_run_tool_results AS result "
-            "JOIN insession_work_run_tool_calls AS call "
-            "ON call.work_run_id=result.work_run_id "
-            "AND call.tool_call_id=result.tool_call_id "
-            "WHERE result.work_run_id=? AND result.tool_result_id=?",
-            (owner_id, source_ref.tool_result_id),
-        ).fetchone()
-        if row is None or str(row["status"]) != "succeeded":
+                "stored L1 source outcome is corrupt"
+            ) from exc
+        except ValueError as exc:
             raise ExecutionFindingsSourceReferenceInvalid(
-                "WorkRun source ToolResult is absent or not successful"
-            )
-        if str(row["tool_id"]) in EXECUTION_FINDINGS_TOOL_IDS:
-            raise ExecutionFindingsSourceReferenceInvalid(
-                "an execution-findings result cannot support another finding"
-            )
-        result_json = str(row["result_json"])
-        if (
-            source_ref.result_sha256 is not None
-            and hashlib.sha256(result_json.encode("utf-8")).hexdigest() != source_ref.result_sha256
-        ):
-            raise ExecutionFindingsSourceReferenceInvalid("WorkRun source result digest changed")
-        payload = _canonical_stored_json(result_json, label="WorkRun ToolResult")
-        output = payload.get("output") if isinstance(payload, dict) else None
+                "legacy L1 source result has no valid matching call"
+            ) from exc
+        tool_call_id = legacy["tool_call_id"]
+        if expected_digest is not None and expected_digest != legacy["outcome_hash"]:
+            raise ExecutionFindingsSourceReferenceInvalid("L1 source result digest changed")
+        expected_digest = legacy["outcome_hash"]
+    elif expected_digest is None:
+        raise ExecutionFindingsSourceReferenceInvalid("L1 source call requires a result digest")
+    row = conn.execute(
+        "SELECT tool_id, status, outcome_json, outcome_hash "
+        "FROM l1_turn_tool_calls "
+        "WHERE l1_turn_run_id=? AND tool_call_id=?",
+        (owner_id, tool_call_id),
+    ).fetchone()
+    if row is None or str(row["status"]) != "succeeded":
+        raise ExecutionFindingsSourceReferenceInvalid(
+            "L1 source ToolCall is absent or not successful"
+        )
+    from ...tools.tool_history.definitions import TOOL_HISTORY_TOOL_IDS
+    if str(row["tool_id"]) in TOOL_HISTORY_TOOL_IDS:
+        raise ExecutionFindingsSourceReferenceInvalid(
+            "a tool-history receipt cannot support a finding; cite its original source"
+        )
+    if str(row["tool_id"]) in EXECUTION_FINDINGS_TOOL_IDS:
+        raise ExecutionFindingsSourceReferenceInvalid(
+            "an execution-findings result cannot support another finding"
+        )
+    result_json = str(row["outcome_json"] or "")
+    result_hash = str(row["outcome_hash"] or "")
+    if result_hash != expected_digest:
+        raise ExecutionFindingsSourceReferenceInvalid("L1 source result digest changed")
+    payload = _canonical_stored_json(result_json, label="L1 ToolCall outcome")
+    if hashlib.sha256(result_json.encode("utf-8")).hexdigest() != result_hash:
+        raise ExecutionFindingsStoredAuthorityCorrupt(
+            "stored L1 ToolCall outcome hash changed"
+        )
+    output = payload.get("result") if isinstance(payload, dict) else None
 
     if not isinstance(payload, dict) or payload.get("status") != "succeeded":
         raise ExecutionFindingsStoredAuthorityCorrupt(

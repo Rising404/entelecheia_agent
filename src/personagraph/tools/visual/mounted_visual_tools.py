@@ -1,9 +1,7 @@
 """Stable model-visible Tool for reading a frozen mounted visual scope.
 
 The owner is lane neutral: callers inject an immutable alias scope, a narrow
-freshness port, and an adapter whose egress behavior is explicit.  L2 remains
-responsible for deriving that scope from planning authority and for wrapping
-external adapters with its durable physical-call ledger.
+freshness port, and an adapter whose egress behavior is explicit.
 """
 
 from __future__ import annotations
@@ -153,7 +151,7 @@ def build_mounted_visual_tool_source(
     freshness: MountedVisualFreshnessPort,
     source_fingerprint: str | None = None,
 ) -> MountedVisualToolSource | None:
-    """Build one registration without discovering Host or L2 state.
+    """Build one registration without discovering Host state.
 
     ``source_fingerprint`` lets the Host commit all private execution facts to a
     contextual Tool Binding.  The legacy scope digest remains the default until

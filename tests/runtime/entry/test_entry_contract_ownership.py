@@ -23,7 +23,7 @@ def test_retired_entry_contract_aggregate_is_absent() -> None:
 def test_entry_contracts_are_owned_by_their_responsibility_packages() -> None:
     assert (ENTRY_ROOT / "ingress" / "model_contracts.py").is_file()
     assert (ENTRY_ROOT / "context" / "contracts.py").is_file()
-    assert (ENTRY_ROOT / "routing" / "contracts.py").is_file()
+    assert not (ENTRY_ROOT / "routing" / "contracts.py").exists()
     assert (ENTRY_ROOT / "lifecycle" / "contracts.py").is_file()
     assert (ENTRY_ROOT / "ports.py").is_file()
 
@@ -56,7 +56,6 @@ def test_entry_application_store_is_only_an_explicit_owner_composition() -> None
     } == {
         "EntryContextAssemblyStorePort",
         "EntryLifecycleStorePort",
-        "EntryRoutingStorePort",
         "L1EntryBootstrapStorePort",
         "L1StorePort",
         "Protocol",
@@ -67,7 +66,7 @@ def test_entry_application_store_is_only_an_explicit_owner_composition() -> None
     )
 
 
-def test_importing_entry_store_composition_does_not_initialize_l2() -> None:
+def test_importing_entry_store_composition_is_importable() -> None:
     source = """
 import json
 import sys
@@ -75,7 +74,7 @@ import personagraph.runtime.entry.ports
 
 print(json.dumps(sorted(
     name for name in sys.modules
-    if name == 'personagraph.l2' or name.startswith('personagraph.l2.')
+    if name == 'torch'
 )))
 """
     completed = subprocess.run(

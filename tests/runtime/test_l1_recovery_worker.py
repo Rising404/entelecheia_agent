@@ -27,8 +27,8 @@ class _RecoveryStore:
                 "window_state": "active",
                 "turn_id": f"turn-{session_id}",
                 "current_l1_turn_run_id": run_id,
-                "current_work_run_id": None,
-                "current_attempt_id": None,
+
+
             }
         }
 

@@ -1,6 +1,6 @@
 """按 API 领域分组的稳定 HTTP 应用服务 facade。
 
-普通 Session/L1 API 导入不得初始化已暂停的 L2 执行栈。
+普通 API 导入保持轻量，具体服务按需加载。
 """
 
 from .errors import ApiError
@@ -42,7 +42,7 @@ from .sessions import (
     empty_session_trash,
     purge_session,
     chat_turn, create_folder, create_session, delete_folder, get_runtime_events,
-    get_insession_task_details, get_session, list_folders,
+    get_session, list_folders,
     list_sessions, patch_folder, patch_session,
 )
 from .session_context import (
@@ -103,7 +103,6 @@ __all__ = [
     "get_config",
     "get_document",
     "get_document_ingest_job",
-    "get_insession_task_details",
     "get_runtime_events",
     "get_session",
     "get_session_context",

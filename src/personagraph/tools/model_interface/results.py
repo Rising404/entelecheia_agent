@@ -68,6 +68,10 @@ def project_tool_result(tool_id: str, result: object) -> object:
             value["source"] = _history_source(value["source"])
         # value 已由 history 工具选择并分页；不能当成当前工具协议再次解释。
     elif tool_id in _FORMAT_TOOLS:
+        _project_rows(value, "elements", _format_element)
+        content = _format_reading_text(value.get("elements", []))
+        if content:
+            value["content"] = content
         if isinstance(value.get("source"), dict):
             value["source"].pop("sha256", None)
         for item in value.get("images", []):
@@ -105,6 +109,39 @@ def _group_file_evidence(rows: list) -> list[dict]:
         collection = "chunks" if kind == "document_chunk" else "observations"
         groups[key].setdefault(collection, []).append(item)
     return list(groups.values())
+
+
+def _format_reading_text(elements: list) -> str:
+    """把已返回文字按页连续展示；不摘要、不补读，不替代原元素和游标。"""
+    if not isinstance(elements, list):
+        return ""
+    parts = []
+    previous_page = None
+    for element in elements:
+        if not isinstance(element, dict) or not isinstance(element.get("text"), str):
+            continue
+        locator = element.get("locator")
+        page = locator.get("page") if isinstance(locator, dict) else None
+        if page is not None and page != previous_page:
+            parts.append(f"[physical page {page}; returned text only]")
+        parts.append(element["text"])
+        previous_page = page
+    return "\n".join(parts)
+
+
+def _format_element(item: dict) -> dict:
+    """原样保留文字、坐标和截断范围，省去不参与调用引用的解析器 ID 与空元信息。"""
+    result = deepcopy(item)
+    if not isinstance(result.get("text"), str) or not isinstance(result.get("locator"), dict):
+        return result
+    result.pop("element_id", None)
+    locator = result["locator"]
+    if result.get("source_pages") == [locator.get("page")]:
+        result.pop("source_pages")
+    result["locator"] = {key: value for key, value in locator.items() if value is not None and value != []}
+    if result.get("text_evidence") is None:
+        result.pop("text_evidence", None)
+    return result
 
 
 def _file_result(item: dict) -> dict:

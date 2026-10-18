@@ -380,7 +380,6 @@ def test_report_gate_rejects_an_execution_with_incomplete_trajectory(
             "case_id": case["case_id"],
             "execution_ok": True,
             "lane_ok": True,
-            "interaction_ok": True,
             "telemetry": {"telemetry_complete": False},
         },
     )
@@ -640,7 +639,6 @@ def test_run_creates_isolated_artifacts_and_resume_skips_finished_case(
             "reply": "answer",
             "execution_ok": True,
             "lane_ok": True,
-            "interaction_ok": True,
             "telemetry": {},
             "retrieval": preflight,
         }
@@ -1221,11 +1219,7 @@ def test_worker_reuses_retrieval_composition_and_classifies_turn_result(
         "session_database_scope",
         lambda _session_id: nullcontext(tmp_path / "session.sqlite"),
     )
-    monkeypatch.setattr(
-        session_store,
-        "list_pending_user_questions",
-        lambda *, session_id: [] if session_id == "eval-session" else None,
-    )
+
     monkeypatch.setattr(
         attachments,
         "upload_attachment",
@@ -1511,7 +1505,6 @@ def test_retry_failed_archives_only_failure_and_preserves_initial_report(
             "processing_level": "L1",
             "reply": "recovered",
             "lane_ok": True,
-            "interaction_ok": True,
             "telemetry": {},
         }
 
@@ -1598,7 +1591,6 @@ def test_retry_failed_can_filter_error_codes_without_rerolling_other_failures(
             "processing_level": "L1",
             "reply": "recovered",
             "lane_ok": True,
-            "interaction_ok": True,
             "telemetry": {},
         }
 
@@ -1888,7 +1880,6 @@ def test_retry_failed_repeated_invocation_increments_attempt_archive(
                 "processing_level": "L1",
                 "reply": "recovered",
                 "lane_ok": True,
-                "interaction_ok": True,
                 "telemetry": {},
             },
         ]

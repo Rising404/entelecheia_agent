@@ -52,7 +52,7 @@ def system_status() -> dict[str, Any]:
         ),
         "runtime_events": _runtime_entry_event_health(),
         "runtime_routing": {
-            "schema_version": 1,
+            "schema_version": 2,
             "available_processing_levels": list(available_processing_levels()),
             "default_policy": default_routing_policy.to_dict(),
             "default_source": "default",
@@ -231,7 +231,7 @@ def update_config(payload: dict[str, Any]) -> dict[str, Any]:
     return _config_response(view)
 
 
-# 六档各三个键：model profile 指针、思考开关与可移植 effort；实际能力
+# 各模型档三个键：model profile 指针、思考开关与可移植 effort；实际能力
 # 由所选 profile 的 request dialect 再校验。
 _TIER_WRITABLE_FIELDS: tuple[str, ...] = tuple(
     key

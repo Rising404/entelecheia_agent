@@ -7,46 +7,13 @@ from __future__ import annotations
 
 from typing import Any, Literal
 
-from pydantic import BaseModel, ConfigDict, Field, ValidationInfo, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
-from ..persistent_turn_content.evidence import EmptySupportJustification
-from ..persistent_turn_content.acceptance import (
-    validate_acceptance_empty_support,
-    validate_acceptance_supporting_result_ids,
-)
 from ..persistent_turn_content.json_values import freeze_json
 
 
 class _Contract(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
-
-
-class AcceptanceUpdate(_Contract):
-    """请求完整替换一个明确标识的验收进度项。"""
-
-    acceptance_id: str = Field(min_length=1)
-    model_claimed_satisfied: bool
-    supporting_tool_result_ids: tuple[str, ...] = ()
-    empty_support_justification: EmptySupportJustification | None = None
-
-    @field_validator("supporting_tool_result_ids")
-    @classmethod
-    def _validate_supporting_ids(
-        cls, values: tuple[str, ...], info: ValidationInfo,
-    ) -> tuple[str, ...]:
-        return validate_acceptance_supporting_result_ids(
-            values, claimed_satisfied=info.data.get("model_claimed_satisfied"),
-        )
-
-    @field_validator("empty_support_justification")
-    @classmethod
-    def _validate_empty_support_shape(
-        cls, value: EmptySupportJustification | None, info: ValidationInfo,
-    ) -> EmptySupportJustification | None:
-        return validate_acceptance_empty_support(
-            value, claimed_satisfied=info.data.get("model_claimed_satisfied"),
-            supporting_ids=info.data.get("supporting_tool_result_ids", ()),
-        )
 
 
 class ToolCallProposal(_Contract):
@@ -67,7 +34,6 @@ class CallToolsAction(_Contract):
 
 
 __all__ = [
-    "AcceptanceUpdate",
     "CallToolsAction",
     "ToolCallProposal",
 ]

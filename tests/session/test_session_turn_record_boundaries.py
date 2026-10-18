@@ -45,18 +45,8 @@ def test_production_does_not_expose_a_non_atomic_single_turn_writer():
 def test_turn_finalization_contract_has_no_retired_history_generation_parameter():
     finalizers = (
         store.finalize_turn_execution,
-        store.finalize_verified_turn_execution,
-        store.finalize_verified_turn_deliveries,
-        store.finalize_referenced_turn_execution,
-        store.finalize_authoritative_referenced_turn_execution,
         turn_execution.finalize_turn_execution,
-        turn_execution.finalize_verified_turn_execution,
-        turn_execution.finalize_verified_turn_deliveries,
-        turn_execution.finalize_referenced_turn_execution,
-        turn_execution.finalize_authoritative_referenced_turn_execution,
         turns.append_assistant_for_accepted_input_in_transaction,
-        turns.append_verified_assistant_deliveries_for_accepted_input_in_transaction,
-        turns.append_referenced_assistant_for_accepted_input_in_transaction,
     )
     assert all(
         "history_retrieval_data_version"

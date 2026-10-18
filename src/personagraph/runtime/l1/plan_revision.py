@@ -62,6 +62,7 @@ def validate_l1_plan_revision(
                     "计划修订不能删除已被执行历史引用的 Acceptance；"
                     "请在完整替换计划中保留这些项目及其原 acceptance_id。"
                     "不修改计划时使用 plan=null。"
+                    f"必须保留的 ID（最多列12项）：{', '.join(sorted(protected)[:12])}。"
                 ),
             ),
         )

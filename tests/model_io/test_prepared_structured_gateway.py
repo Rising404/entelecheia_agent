@@ -20,7 +20,7 @@ from personagraph.model_io.tier_bindings import (
 
 def _openai_binding() -> ModelTierBinding:
     return ModelTierBinding(
-        tier=ModelTier.ATTEMPT,
+        tier=ModelTier.L1,
         provider="openai-compatible",
         base_url="https://api.openai.com/v1",
         model="gpt-5-test",
@@ -372,7 +372,7 @@ def test_global_tier_binding_refreshes_its_active_profile_quota_before_retry(
         api_key="test-key",
         quota={"requests_per_minute": 10},
     )["id"]
-    binding = model_tiers.resolve_tier(ModelTier.ATTEMPT)
+    binding = model_tiers.resolve_tier(ModelTier.L1)
 
     assert binding.origin is EndpointOrigin.GLOBAL
     assert binding.profile_id is None

@@ -8,7 +8,7 @@
 | --- | --- |
 | `pg.document_core.v1` | 原内部文档链路回归集，覆盖 PDF、图片、DOCX、PPTX、表格及迭代式文档任务。 |
 | `pg.taskgraph_revision.v1` | 原内部 TaskGraph 回归集，覆盖规划、修订、语义校验、N→N+1 与交付重放。 |
-| `pg.product_entry.v1` | 原内部产品入口回归集，覆盖上传或挂载、L1/L2 结算、流式中断与重放。 |
+| `pg.product_entry.v1` | 原内部产品入口回归集，覆盖上传或挂载、L1 结算、流式中断与重放。 |
 | MMLongBench-Doc | 长 PDF、多页证据与文本/视觉联合推理候选集。arXiv:2407.01523，NeurIPS 2024 D&B Track；1,062 题 / 130 篇 / 均 49.4 页，33.2% 跨页、22.8% 不可答。无 "V2" 版本。 |
 | DocVQA 2026 | 复杂版面与视觉文档问答候选集；接入前需复核数据条款。 |
 | OfficeComprehensionBench | 原生 DOCX/PPTX 理解候选集；代码与数据许可需分别核实。 |

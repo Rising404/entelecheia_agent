@@ -1,21 +1,12 @@
 import { reactive, ref } from "vue";
 import { api } from "../api";
 
-// 六档调用点位（后端 runtime_config.TIER_SETTING_NAMES）。共享 Router 先决定
-// processing level；随后进入 L2 图链或独立 L1 链。
+// 现行模型调用点位只包含共享路由与 L1 执行。
 export const MODEL_TIERS = [
   { key: "router", label: "入口路由",
-    hint: "共享意图分类器；只决定 processing level 与任务关联，不属于 L1/L2 执行链。" },
-  { key: "architect", label: "建图",
-    hint: "在任务图的可能形状里搜索。L2 中关掉思考风险最高的一档。" },
-  { key: "attempt", label: "执行",
-    hint: "生成节点内容与最终交付正文。" },
-  { key: "node_verification", label: "节点验证",
-    hint: "判定单个节点做完了没有。判错了后面还有质量门兜着。" },
-  { key: "final_gate", label: "最终质量门",
-    hint: "决定这份交付能不能给你。它后面没有任何兜底。" },
+    hint: "共享意图分类器，决定使用 L0 或 L1。" },
   { key: "l1", label: "L1",
-    hint: "L1 链路的每一步。首次调用同时出计划，性质接近建图。" }
+    hint: "L1 链路的每一步，首次调用同时生成计划。" }
 ];
 
 // 清除本档、回到全局配置。空串在后端表示"不改该字段"，所以清除需要一个
@@ -65,7 +56,7 @@ export function useConfig(refreshStatus) {
 
   function applyModelTiers(modelTiers) {
     if (!Array.isArray(modelTiers)) return false;
-    tierEffective.value = modelTiers;
+    tierEffective.value = modelTiers.filter((tier) => Object.hasOwn(tierForm, tier.tier));
     for (const { key } of MODEL_TIERS) {
       tierForm[key].profile_id = "";
       tierForm[key].thinking = false;

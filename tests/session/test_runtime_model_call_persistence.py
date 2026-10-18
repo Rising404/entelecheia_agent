@@ -4,7 +4,6 @@ import hashlib
 
 import pytest
 
-from personagraph.l2.task_graph.task_matching import InSessionTaskMatchesProposal
 from personagraph.runtime.model_calls import (
     RuntimeModelLogicalRequest,
     RuntimeModelPhysicalAttemptRequest,
@@ -21,7 +20,6 @@ from personagraph.model_io.output_repair_contracts import (
     RuntimeModelStructuredPrompt,
 )
 from personagraph.session import store
-from personagraph.session.l2_store import task_graph as task_graph_store
 from personagraph.session.persistence import schema
 
 
@@ -33,8 +31,8 @@ _USER_TEXT = "请读取材料并形成一个受来源约束的计划"
 def _repair_feedback(
     response_text: str,
     *,
-    code: str = "architect_guard_rejected",
-    target_contract: str = "auxiliary-graph-architect-result-v1",
+    code: str = "attempt_guard_rejected",
+    target_contract: str = "l1-attempt-result-v1",
 ) -> RuntimeModelOutputRepairFeedback:
     return RuntimeModelOutputRepairFeedback(
         target_contract=target_contract,
@@ -75,43 +73,6 @@ def _window_revision(session_id: str) -> int:
     return int(window["state_version"])
 
 
-def _seed_task(*, suffix: str = "task") -> tuple[str, str, str]:
-    session_id = store.create_session("Entelecheia")
-    accepted = store.accept_turn_execution(
-        session_id=session_id,
-        client_request_id=f"runtime-model-{suffix}",
-        source="runtime_model_call_persistence_test",
-        user_text=_USER_TEXT,
-        lease_owner="runtime-model-call-test",
-    )
-    turn_id = str(accepted["turn"]["turn_id"])
-    applied = task_graph_store.apply_insession_task_matches(
-        session_id=session_id,
-        source_turn_id=turn_id,
-        apply_id=f"runtime-model-match-{suffix}",
-        proposal=InSessionTaskMatchesProposal.model_validate(
-            {
-                "task_matches": [
-                    {
-                        "match_type": "new_root",
-                        "local_key": "root",
-                        "title": "材料规划",
-                        "objective": "读取材料并形成计划",
-                        "source_excerpt": _USER_TEXT,
-                    }
-                ]
-            }
-        ),
-        exposed_catalog_ids=(),
-        expected_window_revision=_window_revision(session_id),
-    )
-    return (
-        session_id,
-        turn_id,
-        applied.created_insession_task_ids_by_local_key["root"],
-    )
-
-
 def _logical(
     *,
     session_id: str,
@@ -124,19 +85,19 @@ def _logical(
         "logical_call_id": logical_call_id,
         "session_id": session_id,
         "invocation_turn_id": turn_id,
-        "call_kind": "auxiliary_graph_architect",
-        "purpose": "runtime_auxiliary_graph_architect",
+        "call_kind": "l1_attempt",
+        "purpose": "runtime_l1_attempt",
         "provider": "mock",
         "model": "mock-model-v1",
         "endpoint_fingerprint": SHA_A,
-        "request_contract": "auxiliary-graph-architect-request-v1",
-        "typed_result_contract": "auxiliary-graph-architect-result-v1",
+        "request_contract": "l1-attempt-request-v1",
+        "typed_result_contract": "l1-attempt-result-v1",
         "max_physical_attempts": max_physical_attempts,
         "state_guard_sha256": SHA_B,
     }
     values.update(overrides)
     return RuntimeModelLogicalRequest.create(
-        request_payload={"goal": "bounded", "sources": ["task_creation_source"]},
+        request_payload={"goal": "bounded", "sources": ["turn_input"]},
         **values,
     )
 
@@ -201,7 +162,7 @@ def _settlement(
         "error_code": None if succeeded else "provider_failure",
         "typed_result": (
             RuntimeModelTypedResult.create(
-                result_contract="auxiliary-graph-architect-result-v1",
+                result_contract="l1-attempt-result-v1",
                 result_payload={"proposal": "bounded"},
             )
             if succeeded
@@ -249,10 +210,10 @@ def test_current_schema_exposes_complete_runtime_model_ledger() -> None:
             ).fetchall()
         }
         assert {
-            "insession_runtime_model_logical_calls",
-            "insession_runtime_model_physical_attempts",
-            "insession_runtime_model_call_settlement_receipts",
-            "insession_runtime_model_rejected_outputs",
+            "runtime_model_logical_calls",
+            "runtime_model_physical_attempts",
+            "runtime_model_call_settlement_receipts",
+            "runtime_model_rejected_outputs",
         } <= tables
         assert conn.execute("PRAGMA foreign_key_check").fetchall() == []
 
@@ -278,7 +239,7 @@ def test_logical_reservation_exact_replay_and_collision_fail_closed() -> None:
     collision = _logical(
         session_id=session_id,
         turn_id=turn_id,
-        purpose="runtime_auxiliary_graph_architect_changed",
+        purpose="runtime_l1_attempt_changed",
     )
     with pytest.raises(store.RuntimeModelCallIdentityCollision):
         store.reserve_runtime_model_logical_call(request=collision)
@@ -286,7 +247,7 @@ def test_logical_reservation_exact_replay_and_collision_fail_closed() -> None:
     with store._connect() as conn:
         assert int(
             conn.execute(
-                "SELECT COUNT(*) FROM insession_runtime_model_logical_calls"
+                "SELECT COUNT(*) FROM runtime_model_logical_calls"
             ).fetchone()[0]
         ) == 1
 
@@ -464,7 +425,7 @@ def test_rejected_response_is_settled_atomically_and_loaded_by_feedback() -> Non
         rejected_response.encode("utf-8")
     ).hexdigest()
     feedback = RuntimeModelOutputRepairFeedback(
-        target_contract="auxiliary-graph-architect-result-v1",
+        target_contract="l1-attempt-result-v1",
         rejected_physical_ordinal=1,
         rejected_response_sha256=rejected_sha256,
         issue_coverage=RuntimeModelOutputRepairIssueCoverage.COMPLETE,
@@ -531,7 +492,7 @@ def test_rejected_response_is_settled_atomically_and_loaded_by_feedback() -> Non
     assert store.purge_session(session_id) is True
     with store._connect() as conn:
         assert conn.execute(
-            "SELECT COUNT(*) FROM insession_runtime_model_rejected_outputs"
+            "SELECT COUNT(*) FROM runtime_model_rejected_outputs"
         ).fetchone()[0] == 0
         assert conn.execute("PRAGMA foreign_key_check").fetchall() == []
 
@@ -640,10 +601,10 @@ def test_rejected_response_hash_mismatch_rolls_back_whole_settlement() -> None:
     with store._connect() as conn:
         assert conn.execute(
             "SELECT COUNT(*) FROM "
-            "insession_runtime_model_call_settlement_receipts"
+            "runtime_model_call_settlement_receipts"
         ).fetchone()[0] == 0
         assert conn.execute(
-            "SELECT COUNT(*) FROM insession_runtime_model_rejected_outputs"
+            "SELECT COUNT(*) FROM runtime_model_rejected_outputs"
         ).fetchone()[0] == 0
 
 
@@ -718,7 +679,7 @@ def test_rejected_response_tamper_fails_closed_on_recovery() -> None:
     )
     with store._connect() as conn:
         conn.execute(
-            "UPDATE insession_runtime_model_rejected_outputs "
+            "UPDATE runtime_model_rejected_outputs "
             "SET response_text=? WHERE physical_attempt_id=?",
             ('{"forged":true}', physical.physical_attempt_id),
         )
@@ -824,17 +785,17 @@ def test_retryable_outcome_cannot_exceed_logical_attempt_limit() -> None:
     "tamper_sql,tamper_parameters",
     [
         (
-            "UPDATE insession_runtime_model_logical_calls SET purpose=? "
+            "UPDATE runtime_model_logical_calls SET purpose=? "
             "WHERE logical_call_id=?",
             ("forged-purpose", "logical-runtime-tamper"),
         ),
         (
-            "UPDATE insession_runtime_model_physical_attempts "
+            "UPDATE runtime_model_physical_attempts "
             "SET dispatch_authority_sha256=? WHERE physical_attempt_id=?",
             ("0" * 64, "physical-runtime-tamper"),
         ),
         (
-            "UPDATE insession_runtime_model_call_settlement_receipts "
+            "UPDATE runtime_model_call_settlement_receipts "
             "SET receipt_sha256=? WHERE physical_attempt_id=?",
             ("0" * 64, "physical-runtime-tamper"),
         ),
@@ -863,62 +824,16 @@ def test_indexed_projection_tamper_fails_closed(
 
 
 def test_reference_constraints_reject_cross_owner_without_partial_write() -> None:
-    session_id, turn_id, task_id = _seed_task(suffix="references-one")
-    other_session_id, other_turn_id, other_task_id = _seed_task(
-        suffix="references-two"
-    )
-
-    valid_task_request = _logical(
-        session_id=session_id,
-        turn_id=turn_id,
-        logical_call_id="logical-valid-task",
-        task_id=task_id,
-    )
-    assert (
-        store.reserve_runtime_model_logical_call(request=valid_task_request).status
-        == "applied"
-    )
-
-    invalid_requests = (
-        _logical(
-            session_id=session_id,
-            turn_id=other_turn_id,
-            logical_call_id="logical-cross-turn",
-        ),
-        _logical(
-            session_id=session_id,
-            turn_id=turn_id,
-            logical_call_id="logical-cross-task",
-            task_id=other_task_id,
-        ),
-        _logical(
-            session_id=session_id,
-            turn_id=turn_id,
-            logical_call_id="logical-missing-goal",
-            task_id=task_id,
-            auxiliary_graph_id="missing-graph",
-            goal_id="missing-goal",
-        ),
-        _logical(
-            session_id=session_id,
-            turn_id=turn_id,
-            logical_call_id="logical-missing-subject",
-            task_id=task_id,
-            execution_subject_id="missing-subject",
-        ),
-    )
-    for request in invalid_requests:
-        with pytest.raises(store.RuntimeModelCallPersistenceError):
-            store.reserve_runtime_model_logical_call(request=request)
-
+    session_id, turn_id = _seed_session_turn(suffix="references-one")
+    other_session_id, other_turn_id = _seed_session_turn(suffix="references-two")
+    valid_request = _logical(session_id=session_id, turn_id=turn_id)
+    assert store.reserve_runtime_model_logical_call(request=valid_request).status == "applied"
+    invalid_request = _logical(session_id=session_id, turn_id=other_turn_id, logical_call_id="cross-turn")
+    with pytest.raises(store.RuntimeModelCallPersistenceError):
+        store.reserve_runtime_model_logical_call(request=invalid_request)
     with store._connect() as conn:
-        rows = conn.execute(
-            "SELECT logical_call_id FROM insession_runtime_model_logical_calls "
-            "ORDER BY logical_call_id"
-        ).fetchall()
-        assert [str(row["logical_call_id"]) for row in rows] == [
-            "logical-valid-task"
-        ]
+        rows = conn.execute("SELECT logical_call_id FROM runtime_model_logical_calls").fetchall()
+        assert [str(row["logical_call_id"]) for row in rows] == [valid_request.logical_call_id]
         assert conn.execute("PRAGMA foreign_key_check").fetchall() == []
     assert other_session_id != session_id
 
@@ -968,7 +883,7 @@ def test_physical_and_settlement_reference_failures_are_atomic() -> None:
         assert int(
             conn.execute(
                 "SELECT COUNT(*) FROM "
-                "insession_runtime_model_call_settlement_receipts"
+                "runtime_model_call_settlement_receipts"
             ).fetchone()[0]
         ) == 0
 
@@ -986,10 +901,10 @@ def test_session_purge_cascades_complete_runtime_model_ledger() -> None:
     assert store.purge_session(session_id) is True
     with store._connect() as conn:
         for table in (
-            "insession_runtime_model_rejected_outputs",
-            "insession_runtime_model_call_settlement_receipts",
-            "insession_runtime_model_physical_attempts",
-            "insession_runtime_model_logical_calls",
+            "runtime_model_rejected_outputs",
+            "runtime_model_call_settlement_receipts",
+            "runtime_model_physical_attempts",
+            "runtime_model_logical_calls",
         ):
             assert int(conn.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]) == 0
         assert conn.execute("PRAGMA foreign_key_check").fetchall() == []

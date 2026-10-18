@@ -42,8 +42,8 @@ def _active_window(**overrides: object) -> dict[str, object]:
         "window_state": "active",
         "stage": "PERSIST",
         "state_version": 12,
-        "current_work_run_id": None,
-        "current_attempt_id": None,
+
+
         "latest_checkpoint_id": None,
     }
     window.update(overrides)
@@ -56,7 +56,6 @@ class _RecoveryStore:
         *,
         committed: dict[str, Any] | None = None,
         window: object | None = None,
-        work_run_ids: tuple[str, ...] = ("run-1",),
         fail_on: str | None = None,
     ) -> None:
         self.committed = committed or {
@@ -64,7 +63,6 @@ class _RecoveryStore:
             "assistant_content": "durable reply",
         }
         self.window = _active_window() if window is None else window
-        self.work_run_ids = work_run_ids
         self.fail_on = fail_on
         self.calls: list[str] = []
 
@@ -87,16 +85,6 @@ class _RecoveryStore:
         assert session_id == "session-1"
         return {"window": self.window}
 
-    def list_turn_linked_work_run_ids(
-        self,
-        *,
-        session_id: str,
-        turn_id: str,
-    ) -> tuple[str, ...]:
-        self._read("links")
-        assert (session_id, turn_id) == ("session-1", "turn-1")
-        return self.work_run_ids
-
 
 def test_completed_recovery_reads_the_exact_durable_chain_and_preserves_empty_reply() -> (
     None
@@ -108,63 +96,14 @@ def test_completed_recovery_reads_the_exact_durable_chain_and_preserves_empty_re
 
     result = recover_completed_entry_turn_from_commit(
         accepted=_accepted(),
-        processing_level="L2",
-        related_insession_task_ids=("task-1",),
+        processing_level="L1",
         store=store,
     )
 
     assert result is not None
     assert result.status == "completed"
     assert result.reply == ""
-    assert result.processing_level == "L2"
-    assert result.related_insession_task_ids == ("task-1",)
-    assert result.work_run_ids == ("run-1",)
-    assert result.window_state == "post_commit_pending"
-    assert result.window_revision == 14
-    assert store.calls == ["committed", "window", "links"]
-
-
-def test_completed_recovery_keeps_supplied_work_run_ids_without_another_read() -> None:
-    store = _RecoveryStore()
-
-    result = recover_completed_entry_turn_from_commit(
-        accepted=_accepted(),
-        processing_level="L0",
-        related_insession_task_ids=(),
-        store=store,
-        work_run_ids=("supplied-run",),
-    )
-
-    assert result is not None
-    assert result.work_run_ids == ("supplied-run",)
-    assert store.calls == ["committed", "window"]
-
-
-@pytest.mark.parametrize("supplied_work_run_ids", ((), ("old-work-run",)))
-def test_l1_commit_recovery_preserves_reply_without_task_or_work_run_links(
-    supplied_work_run_ids: tuple[str, ...],
-) -> None:
-    reply = "已正式提交的旧答复 task-1，保留原文。"
-    store = _RecoveryStore(
-        committed={"turn_id": "turn-1", "assistant_content": reply},
-        window=_active_window(window_state="post_commit_pending", state_version=14),
-        fail_on="links",
-    )
-
-    result = recover_completed_entry_turn_from_commit(
-        accepted=_accepted(),
-        processing_level="L1",
-        related_insession_task_ids=("old-task",),
-        store=store,
-        work_run_ids=supplied_work_run_ids,
-    )
-
-    assert result is not None
-    assert result.status == "completed"
     assert result.processing_level == "L1"
-    assert result.reply == reply
-    assert result.related_insession_task_ids == ()
-    assert result.work_run_ids == ()
     assert result.window_state == "post_commit_pending"
     assert result.window_revision == 14
     assert store.calls == ["committed", "window"]
@@ -184,7 +123,6 @@ def test_l1_commit_recovery_preserves_reply_without_task_or_work_run_links(
         ),
         (None, None, "committed"),
         (None, None, "window"),
-        (None, None, "links"),
     ),
 )
 def test_completed_recovery_fails_closed_for_missing_malformed_or_unreadable_facts(
@@ -199,8 +137,7 @@ def test_completed_recovery_fails_closed_for_missing_malformed_or_unreadable_fac
     assert (
         recover_completed_entry_turn_from_commit(
             accepted=_accepted(),
-            processing_level="L2",
-            related_insession_task_ids=(),
+            processing_level="L1",
             store=store,
         )
         is None
@@ -246,7 +183,6 @@ def test_recovery_module_has_only_read_projection_authority() -> None:
     assert store_calls == {
         "get_committed_turn_pair",
         "inspect_turn_execution",
-        "list_turn_linked_work_run_ids",
     }
     assert recovery_protocol_methods == store_calls
     assert not {
@@ -254,7 +190,7 @@ def test_recovery_module_has_only_read_projection_authority() -> None:
         for node in tree.body
         if isinstance(node, ast.ImportFrom)
         and node.module is not None
-        and "l2_store" in node.module
+        and "session.persistence" in node.module
     }
     assert (
         not {

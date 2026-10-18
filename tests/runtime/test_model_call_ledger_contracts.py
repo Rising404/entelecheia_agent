@@ -29,19 +29,15 @@ def _logical_request() -> RuntimeModelLogicalRequest:
     return RuntimeModelLogicalRequest.create(
         logical_call_id="logical_01",
         session_id="session_01",
-        task_id="task_01",
-        auxiliary_graph_id="auxiliary_graph_01",
-        goal_id="goal_01",
-        execution_subject_id="subject_01",
         invocation_turn_id="turn_01",
-        call_kind="task_graph_semantic_verification",
-        purpose="runtime_task_graph_semantic_verification",
+        call_kind="l1_semantic_verifier",
+        purpose="runtime_l1_semantic_verifier",
         provider="mock",
         model="mock-model",
         endpoint_fingerprint=SHA_A,
-        request_contract="task-graph-semantic-verification-prompt-v1",
+        request_contract="l1-semantic-verifier-prompt-v1",
         request_payload={"proposal": {"root": "root"}, "facts": ["bounded"]},
-        typed_result_contract="task-graph-semantic-verification-result-v1",
+        typed_result_contract="l1-semantic-verifier-result-v1",
         max_physical_attempts=6,
         state_guard_sha256=SHA_B,
     )
@@ -164,20 +160,6 @@ def test_four_message_request_requires_and_binds_its_prompt() -> None:
         RuntimeModelLogicalRequest.model_validate(
             request.model_dump() | {"request_json": '{"proposal": {"root": "root"}}'}
         )
-    with pytest.raises(ValidationError, match="supplied together"):
-        RuntimeModelLogicalRequest.create(
-            **(
-                request.model_dump(
-                    exclude={
-                        "binding_sha256",
-                        "request_json",
-                        "request_sha256",
-                        "auxiliary_graph_id",
-                    }
-                )
-                | {"request_payload": {"proposal": {"root": "root"}}}
-            )
-        )
 
 
 def test_physical_request_binds_logical_and_provider_facts() -> None:
@@ -192,7 +174,7 @@ def test_physical_request_binds_logical_and_provider_facts() -> None:
 def test_success_settlement_requires_replayable_typed_result() -> None:
     attempt = _physical_request()
     typed = RuntimeModelTypedResult.create(
-        result_contract="task-graph-semantic-verification-result-v1",
+        result_contract="l1-semantic-verifier-result-v1",
         result_payload={"items": [{"dimension": "goal_coverage", "verdict": "pass"}]},
     )
     settlement = RuntimeModelPhysicalAttemptSettlement.create(
@@ -292,7 +274,7 @@ def test_current_settlement_requires_explicit_nullable_repair_feedback() -> None
 def test_physical_dispatch_hash_binds_bounded_repair_feedback() -> None:
     logical = _logical_request()
     feedback = RuntimeModelOutputRepairFeedback(
-        target_contract="task-graph-semantic-verification-result-v1",
+        target_contract="l1-semantic-verifier-result-v1",
         rejected_physical_ordinal=1,
         rejected_response_sha256=SHA_B,
         issue_coverage="first_only",
@@ -300,7 +282,7 @@ def test_physical_dispatch_hash_binds_bounded_repair_feedback() -> None:
         current_issues=(
             RuntimeModelOutputRepairIssue(
                 category="host_guard",
-                code="architect_guard_rejected",
+                code="attempt_guard_rejected",
                 paths=("",),
                 safe_explanation=(
                     "The proposal violates a deterministic frozen Guard."

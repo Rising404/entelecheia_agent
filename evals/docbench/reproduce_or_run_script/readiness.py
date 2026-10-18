@@ -27,13 +27,10 @@ from personagraph.configuration.features import load_features
 READINESS_SCHEMA_VERSION = "personagraph-docbench-readiness-v1"
 
 _REQUIRED_RUNTIME_FEATURES: dict[str, object] = {
-    "user_interaction_mode": "closed_world",
     "l1_external_web_tools_enabled": False,
     "file_retrieval_write_enabled": True,
     "file_retrieval_read_enabled": True,
     "l1_retrieval_tools_enabled": True,
-    "l2_aux_retrieval_tools_enabled": False,
-    "l2_task_retrieval_tools_enabled": False,
 }
 
 

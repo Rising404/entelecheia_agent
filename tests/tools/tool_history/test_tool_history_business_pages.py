@@ -46,6 +46,24 @@ def test_array_pages_keep_full_objects_and_native_ids():
     assert second["value"][0]["chunk_id"] == "c2"
 
 
+def test_history_page_completion_does_not_hide_original_file_continuation():
+    original = {"elements": [{"text": "only the saved prefix"}], "truncated": True,
+                "next_cursor": {"element_offset": 19, "character_offset": 603}}
+    runtime, call_ref, _ = _runtime(original, tool_id="read_pdf_text")
+    page = runtime.read_result({"call_ref": call_ref, "path": "/result/elements"})
+    assert page["partial"] is False and page["next_offset"] is None
+    assert page["source_truncated"] is True
+    assert page["source_next_cursor"] == {"element_offset": 19, "character_offset": 603}
+    assert page["value"] == original["elements"]
+    assert page["source"]["call_ref"] == call_ref
+
+
+def test_unknown_source_scope_does_not_claim_original_file_is_complete():
+    runtime, call_ref, _ = _runtime({"text": "generic body"}, tool_id="other_tool")
+    page = runtime.read_result({"call_ref": call_ref})
+    assert page["source_truncated"] is None and page["source_next_cursor"] is None
+
+
 def test_large_members_provide_expand_paths_instead_of_incomplete_json():
     body = "x" * (MAX_HISTORY_VALUE_BYTES + 1)
     runtime, call_ref, _ = _runtime({"text": body})

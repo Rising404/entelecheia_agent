@@ -88,7 +88,6 @@ import json
 import sys
 import personagraph.runtime.turn.persisted_projection
 blocked_prefixes = (
-    'personagraph.l2',
     'personagraph.model_io',
     'personagraph.runtime.entry',
     'personagraph.runtime.l1',

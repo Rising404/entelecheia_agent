@@ -939,7 +939,7 @@ def _run_worker(
         from personagraph.session import store as session_store
 
         load_dotenv()
-        features = load_features(str(runtime_features))
+        load_features(str(runtime_features))
         if active_provider() == "mock":
             raise RuntimeError("formal DocBench L1 requires a real provider")
         created = sessions.create_session({
@@ -995,9 +995,8 @@ def _run_worker(
                         "client_request_id": f"docbench-formal-l1-{uuid.uuid4().hex}",
                         "config": str(runtime_features),
                         "runtime_policy": {
-                            "schema_version": 1,
+                            "schema_version": 2,
                             "l1_enabled": True,
-                            "l2_enabled": False,
                         },
                     }
                 )
@@ -1014,12 +1013,6 @@ def _run_worker(
                     "reply": reply,
                     "end_reason": result.get("end_reason"),
                     "error_code": result.get("error_code"),
-                    "user_interaction_mode": features.get("user_interaction_mode"),
-                    "pending_user_question_count": len(
-                        session_store.list_pending_user_questions(session_id=session_id)
-                    ),
-                    "related_insession_task_ids": result.get("related_insession_task_ids"),
-                    "work_run_ids": result.get("work_run_ids"),
                     "model": redacted_view(),
                     **pending_post_commit(result.get("turn_id")),
                 })
@@ -1064,7 +1057,6 @@ def _classify_case_completion(item: dict[str, Any]) -> None:
         and not item.get("error_code")
         and item.get("end_reason") != "l1_terminal_notification"
     )
-    item["interaction_ok"] = item.get("pending_user_question_count", 0) == 0
     item["chain_complete"] = (
         item["execution_ok"] and item.get("post_commit_complete") is True
         and not item.get("exception_type")
@@ -1268,9 +1260,6 @@ def _report(
         item.get("chain_complete") is True for item in ordered_cases
     )
     lane_ok = sum(item.get("lane_ok") is True for item in ordered_cases)
-    interaction_ok = sum(
-        item.get("interaction_ok") is True for item in ordered_cases
-    )
     telemetry_complete = sum(
         (item.get("telemetry") or {}).get("telemetry_complete") is True
         for item in ordered_cases
@@ -1300,7 +1289,6 @@ def _report(
         "post_commit_complete": post_commit_complete == len(ordered_cases),
         "chain_complete": chain_complete == len(ordered_cases),
         "lane_ok": lane_ok == len(ordered_cases),
-        "interaction_ok": interaction_ok == len(ordered_cases),
         "telemetry_complete": telemetry_complete == len(ordered_cases),
         "source_stable": not source_changed,
     }
@@ -1363,7 +1351,6 @@ def _report(
             for item in ordered_cases
         )),
         "lane_ok_case_count": lane_ok,
-        "interaction_ok_case_count": interaction_ok,
         "telemetry_complete_case_count": telemetry_complete,
         "totals": {
             "answer_elapsed_s": round(sum(

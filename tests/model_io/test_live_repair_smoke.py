@@ -192,7 +192,7 @@ def test_live_openai_compatible_repair_smoke(
     # 任何持久化或会话存储。
     monkeypatch.setenv("PERSONAGRAPH_TRAJECTORY", "off")
     binding = ModelTierBinding(
-        tier=ModelTier.ATTEMPT,
+        tier=ModelTier.L1,
         provider="openai-compatible",
         base_url=_required_live_setting("PERSONAGRAPH_BASE_URL"),
         model=_required_live_setting("PERSONAGRAPH_MODEL"),

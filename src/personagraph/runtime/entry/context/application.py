@@ -23,17 +23,10 @@ from ..ingress.policy import (
     build_entry_runtime_snapshot,
     entry_capability_ceiling,
     entry_history_budget,
-    entry_task_catalog_budget,
     select_history_within_budget,
     select_session_summary,
 )
-from .task_catalog_projection import project_entry_task_catalog_items
 from ..ingress.contracts import AttachmentRef, TrustedTurnEnvelope
-from .task_catalog import (
-    EntryTaskCatalog,
-    estimate_insession_task_catalog_tokens,
-    pack_insession_task_catalog,
-)
 from ...turn.contracts import AcceptedEntryTurn
 from ...turn_deadline import TurnDeadline, TurnDeadlineExceeded
 
@@ -57,7 +50,7 @@ def build_entry_context(
 
     阅读上下文时区分来源：用户原文来自 accepted Turn；附件仅投影可信元数据，
     正文留给按需工具；历史只选已提交的完整对话对；summary 仅在 OK 状态下使用。
-    history 与 task catalog 都受剩余预算裁剪，这个 EntryContext 也不是最终 Provider
+    history 受剩余预算裁剪，这个 EntryContext 也不是最终 Provider
     wire payload：classifier 和 L1 会继续各自选字段，网关还要做精确请求准入。
     """
 
@@ -116,27 +109,6 @@ def build_entry_context(
         estimate_tokens(pair["user"]) + estimate_tokens(pair["assistant"])
         for pair in history_pairs
     )
-    # L1 模式只处理当前 Turn，不读取长期任务目录或任务等待问题。
-    task_catalog = EntryTaskCatalog()
-    if not accepted.routing_policy.allows("L1"):
-        catalog_items = store.list_insession_task_catalog(accepted.session_id)
-        pending_user_questions = store.list_pending_user_questions(
-            session_id=accepted.session_id
-        )
-        ordered_catalog_items = project_entry_task_catalog_items(
-            catalog_items=catalog_items,
-            pending_user_questions=pending_user_questions,
-        )
-        task_catalog = pack_insession_task_catalog(
-            ordered_catalog_items,
-            token_budget=entry_task_catalog_budget(
-                context_hard_limit=context_hard_limit,
-                user_text_tokens=user_text_tokens,
-                summary_tokens=estimate_tokens(summary) if summary else 0,
-                attachment_tokens=attachment_tokens,
-                history_tokens=history_tokens,
-            ),
-        )
     context = EntryContext(
         envelope=envelope,
         snapshot=build_entry_runtime_snapshot(accepted.session_id),
@@ -146,14 +118,12 @@ def build_entry_context(
             + (estimate_tokens(summary) if summary else 0)
             + attachment_tokens
             + history_tokens
-            + estimate_insession_task_catalog_tokens(task_catalog)
         ),
         history_pairs=history_pairs,
         session_summary=summary,
         session_summary_status=summary_status,
         attachments=attachments,
         recovery_projection=accepted.recovery_projection,
-        task_catalog=task_catalog,
         routing_policy=accepted.routing_policy,
     )
     _require_turn_time(deadline)

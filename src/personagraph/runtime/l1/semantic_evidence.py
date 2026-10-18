@@ -15,10 +15,11 @@ from ...persistent_turn_content.tool_results import (
 from ...persistent_turn_content.findings import EXECUTION_FINDINGS_TOOL_IDS
 from ...tools.tool_history.definitions import TOOL_HISTORY_TOOL_IDS
 from .identity import canonical_json
+from .tool_context.reading_progress import summarize_reading_result
 
 
 REVIEW_EVIDENCE_MAX_UTF8_BYTES = 1_000_000
-REVIEW_RECENT_RESULT_LIMIT = 8
+REVIEW_RECENT_RESULT_LIMIT = 24
 _NON_EVIDENCE_TOOL_IDS = frozenset(
     (*EXECUTION_FINDINGS_TOOL_IDS, *TOOL_HISTORY_TOOL_IDS)
 )
@@ -26,6 +27,10 @@ _NON_EVIDENCE_TOOL_IDS = frozenset(
 
 class L1EvidenceProjectionError(ValueError):
     """来源不存在、损坏或所选片段不属于该结果；不能当作无证据继续。"""
+
+    def __init__(self, code: str, *, reference_index: int | None = None) -> None:
+        super().__init__(code)
+        self.reference_index = reference_index
 
 
 def project_referenced_results(
@@ -35,7 +40,13 @@ def project_referenced_results(
 ) -> list[dict[str, object]]:
     """验证原生结果身份及可选 chunk 归属，再投影真实正文。"""
     calls = _calls_by_call_id(execution)
-    return [_reference_record(reference, calls) for reference in references]
+    records = []
+    for index, reference in enumerate(references):
+        try:
+            records.append(_reference_record(reference, calls))
+        except L1EvidenceProjectionError as exc:
+            raise L1EvidenceProjectionError(str(exc), reference_index=index) from exc
+    return records
 
 
 def project_review_evidence(
@@ -59,22 +70,36 @@ def project_review_evidence(
         and result_id not in selected_ids
     ]
     added = 0
+    seen = {_review_content_key(calls[record["tool_call_id"]], record) for record in records}
     for result_id, call in reversed(recent):
         if added >= REVIEW_RECENT_RESULT_LIMIT:
             break
         record = _result_record(result_id, call)
+        identity = _review_content_key(call, record)
+        if identity in seen:
+            continue
         size = len(canonical_json(record).encode("utf-8")) + 1
         if used + size > max_utf8_bytes:
             continue
         records.append(record)
         used += size
         added += 1
+        seen.add(identity)
     return {
         "results": records,
         "selection": "explicit_references_then_recent_successes",
+        "explicit_reference_count": len(references),
         "omitted_recent_result_count": len(recent) - added,
         "evidence_scope": "Only the supplied result bodies and selected chunks are available for review.",
     }
+
+
+def _review_content_key(call: Mapping, record: Mapping) -> tuple:
+    # 不同文件可能有相同正文；只合并参数与结果均相同的调用。
+    return (
+        record["tool_id"], call.get("arguments_hash") or record["tool_call_id"],
+        canonical_json([record["result"], record["metadata"]]),
+    )
 
 
 def _calls_by_call_id(
@@ -106,6 +131,11 @@ def _reference_record(
     if call.get("outcome_hash") != reference.result_sha256:
         raise L1EvidenceProjectionError("referenced_result_hash_mismatch")
     record = _result_record(reference.tool_call_id, call)
+    result = record["result"]
+    if isinstance(result, Mapping) and (
+        result.get("status") == "blocked" or result.get("outcome") == "not_established"
+    ):
+        raise L1EvidenceProjectionError("blocked_result_is_not_task_evidence")
     if reference.chunk_id is not None:
         try:
             record["result"] = select_tool_result_chunk(
@@ -182,6 +212,7 @@ def project_review_execution_history(
             "result_status": result.get("status")
             if isinstance(result, Mapping)
             else None,
+            "reading_scope": summarize_reading_result(result),
         }
         if call.get("arguments_json") is not None or isinstance(
             call.get("arguments"), Mapping

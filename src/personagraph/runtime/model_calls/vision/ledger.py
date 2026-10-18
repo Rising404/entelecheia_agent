@@ -1,8 +1,6 @@
 """外部传输挂载视觉读取的崩溃安全权威状态。
 
-Host 原语账本能证明已选择视觉资源读取，但无法证明视觉 provider 是否已收到像素。
-普通 Runtime ToolCall 账本无法弥补这一缺口：它有意外键关联到已物化
-WorkRun/Attempt/ToolCall，而挂载视觉读取在 Host 原语之下执行，没有这些标识。
+视觉读取需要持久记录 provider 是否已收到像素，以避免在崩溃恢复时重复发送。
 
 因此本模块持有一个狭窄、独立的物理发送账本。披露 gate 仍位于其外部。只有 gate
 允许调用后，:class:`DurableMountedVisionAdapter` 才会进入此处，持久地预留精确的

@@ -36,7 +36,7 @@ def notes_session(monkeypatch, tmp_path, bound_partitioned_session):
         "complete_structured",
         as_prepared_test_provider(
             lambda *args, **kw: _result(
-                {"processing_level": "L1", "task_matches": []}, kw["model_call_id"]
+                {"processing_level": "L1"}, kw["model_call_id"]
             ),
         ),
     )
@@ -50,7 +50,7 @@ def _run(session_id):
         client_request_id="current-note-flow",
         features={"l1_semantic_verification_mode": "off", "context_guard_limit": 24000},
         routing_policy=freeze_turn_routing_policy(
-            TurnRoutingPolicy(l1_enabled=True, l2_enabled=False),
+            TurnRoutingPolicy(l1_enabled=True),
             source="request_override",
         ),
         store=session_store,

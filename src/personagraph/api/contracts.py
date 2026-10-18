@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from personagraph.configuration.app_settings import TIER_SETTING_NAMES
+
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -111,19 +113,12 @@ MODEL_PROFILE_BODY = BodySchema({
     "quota": dict,
 })
 
-# 六档模型配置（27/002 §4）。profile_id 是指针；thinking 接受布尔或
+# 模型配置中 profile_id 是指针；thinking 接受布尔或
 # on/off 串，reasoning_effort 接受可移植枚举。后端再按 profile 的具体请求
 # 方言校验组合，避免把一个厂商的字段误发给另一个厂商。
 _TIER_CONFIG_FIELDS: dict[str, type | tuple[type, ...]] = {
     key: kind
-    for name in (
-        "router",
-        "architect",
-        "attempt",
-        "node_verification",
-        "final_gate",
-        "l1",
-    )
+    for name in TIER_SETTING_NAMES
     for key, kind in (
         (f"tier_{name}_profile_id", str),
         (f"tier_{name}_thinking", (str, bool)),

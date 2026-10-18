@@ -46,7 +46,7 @@ class ReadToolResultInput(BaseModel):
         pattern=L1_CALL_REF_PATTERN,
         description="当前执行中原调用的短引用，如 c2.1；必须原样使用工具结果或目录提供的 call_ref。",
     )
-    path: str = Field(default="", max_length=2000, description="业务内容的 JSON Pointer；默认根对象，正文如 /result/text。")
+    path: str = Field(default="", max_length=2000, description="业务内容的 JSON Pointer；未知结构先读 /result，再按返回的字段或 expand_paths 深入。")
     offset: int = Field(default=0, ge=0, le=MAX_HISTORY_OFFSET, description="当前 path 内的起始偏移。")
     limit: int = Field(
         default=DEFAULT_HISTORY_READ_LIMIT, ge=1, le=MAX_HISTORY_READ_LIMIT,
@@ -73,8 +73,13 @@ def build_tool_history_registration(
         "引用依据时使用原始source身份，不能把本次目录调用的回执当成原始结果。"
         if listing
         else "按 call_ref（如 c2.1）回读本次执行的结构化业务结果，不重跑工具。path 为 JSON Pointer，"
-        "默认根对象；正文可用 /result/text，错误可用 /error。offset/limit 对字符串按 Unicode 字符，"
+        "未知结构先读 /result；PDF/文本通常为 /result/elements，视觉为 /result/observations，"
+        "仅在结果确有 text 字段时使用 /result/text。错误可用 /error。offset/limit 对字符串按 Unicode 字符，"
         "数组按条目、对象按字段计数。next_offset 续页；expand_paths 指向当前页放不下的完整成员，"
+        "原生阅读的 /result/content 是按页连接的已返回正文，/result/elements 保留精确坐标；两者都不补读原文件。"
+        "source_truncated / source_next_cursor 描述原文件读取的截断，和本次历史分页的 partial / next_offset 不同。"
+        "若原读取被截断，回读历史不能取得原文件尚未读取的后半段；请将 source_next_cursor 的两个字段"
+        "一起交回原读取工具，保持原 path 与页码范围。"
         "可再次指定 path 深入读取。原始 source 身份用于引用；错误不是成功事实证据。"
         "findings 写入工具的历史回执只展示带 compacted 标记的简要回执，不回读旧 active_projection 正文；"
         "该页 source_content_compacted=true 且 partial=true，当前笔记正文由 execution_findings 统一提供。"

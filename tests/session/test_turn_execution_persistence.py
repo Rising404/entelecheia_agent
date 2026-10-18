@@ -618,7 +618,7 @@ def test_post_commit_jobs_gate_window_release_and_support_explicit_stale_waiver(
         session_id=session_id,
         turn_id=turn_id,
         expected_window_revision=1,
-        processing_level="L2",
+        processing_level="L0",
         assistant_content="任务结果已保存。",
         post_commit_job_kinds=("session_summary",),
     )

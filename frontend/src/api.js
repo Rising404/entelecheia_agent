@@ -160,12 +160,6 @@ export const api = {
     );
   },
 
-  getInSessionTaskDetails(sessionId, taskId) {
-    return request(
-      `/api/sessions/${encodeURIComponent(sessionId)}/insession-tasks/${encodeURIComponent(taskId)}`
-    );
-  },
-
   createSession(payload) {
     return request("/api/sessions", {
       method: "POST",

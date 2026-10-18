@@ -343,7 +343,7 @@ def test_binding_facts_require_canonical_hashes() -> None:
         replace(facts, scope_snapshot_sha256="not-a-digest")
 
 
-def test_catalog_owner_has_no_runtime_or_l2_imports() -> None:
+def test_catalog_owner_has_no_runtime_imports() -> None:
     module_path = (
         Path(__file__).resolve().parents[2]
         / "src/personagraph/tools/documents/mounted_document_catalog.py"
@@ -364,7 +364,5 @@ def test_catalog_owner_has_no_runtime_or_l2_imports() -> None:
     assert not any(
         module == "personagraph.runtime"
         or module.startswith("personagraph.runtime.")
-        or module == "personagraph.l2"
-        or module.startswith("personagraph.l2.")
         for module in imported_modules
     )

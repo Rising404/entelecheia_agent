@@ -42,8 +42,8 @@ def test_live_l1_repair_from_recorded_failure(monkeypatch, tmp_path, case_id):
     assert len(databases) == 1
     with sqlite3.connect(databases[0].as_uri() + "?mode=ro", uri=True) as conn:
         row = conn.execute(
-            "SELECT r.response_text, c.request_json FROM insession_runtime_model_rejected_outputs r "
-            "JOIN insession_runtime_model_logical_calls c USING(logical_call_id) "
+            "SELECT r.response_text, c.request_json FROM runtime_model_rejected_outputs r "
+            "JOIN runtime_model_logical_calls c USING(logical_call_id) "
             "ORDER BY c.created_at DESC, r.physical_ordinal LIMIT 1"
         ).fetchone()
     assert row is not None

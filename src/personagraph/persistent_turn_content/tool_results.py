@@ -86,6 +86,8 @@ class ToolResultContentPage(_Contract):
     expand_paths: tuple[str, ...] = ()
     partial: bool
     source_content_compacted: bool = False
+    source_truncated: bool | None = None
+    source_next_cursor: dict[str, int] | None = None
 
 
 class ToolHistoryReadPort(Protocol):

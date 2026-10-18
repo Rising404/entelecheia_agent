@@ -16,7 +16,7 @@ from .persistence.metadata import sessions
 
 
 # 这些仍是原始持久化记录对象。门面只拥有动态 Store 依赖组合，不拥有对话或元数据权威。
-TranscriptDeliveryReferenceError = turns.TranscriptDeliveryReferenceError
+TranscriptIntegrityError = turns.TranscriptIntegrityError
 CommittedTurnPairIndexState = turns.CommittedTurnPairIndexState
 CommittedTurnPairIndexBinding = turns.CommittedTurnPairIndexBinding
 CommittedTurnPairIndexBindingSnapshot = turns.CommittedTurnPairIndexBindingSnapshot

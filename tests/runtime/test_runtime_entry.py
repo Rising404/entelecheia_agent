@@ -19,11 +19,6 @@ import pytest
 
 from personagraph.context_budget import ContextBudgetExceeded
 from personagraph.model_io.gateway import ModelGatewayError, ModelResult
-from personagraph.model_io.tier_bindings import (
-    EndpointOrigin,
-    ModelTierBinding,
-    ModelTier,
-)
 from personagraph.runtime.entry.context.attachments import (
     AttachmentAccess,
     AttachmentKind,
@@ -57,19 +52,7 @@ from personagraph.runtime.entry.ingress.contracts import (
 )
 from tests.helpers.prepared_model_provider import as_prepared_test_provider
 from personagraph.runtime.post_commit.runner import process_due_turn_post_commit_jobs
-from personagraph.l2.task_graph.contracts import (
-    InSessionTaskCatalogItem,
-    InSessionTaskCatalog,
-    InSessionTaskGraphValidationContext,
-    InSessionTaskSourceAnchor,
-    NewInSessionTaskGraphsProposal,
-)
-from personagraph.l2.task_graph.validation import (
-    validate_new_insession_task_graphs,
-)
 from personagraph.session import store as session_store
-from personagraph.session.l2_store import task_graph as task_graph_store
-from personagraph.session.persistence.l2.task_graph import insession_tasks as insession_task_records
 from personagraph.session.session_summary import (
     SessionSummaryState,
     SessionSummaryStatus,
@@ -82,9 +65,9 @@ def test_entry_does_not_expose_a_turn_source_override() -> None:
     assert "ingress_source" not in inspect.signature(entry.accept_entry_turn).parameters
 
 
-def _l2_routing_policy() -> TurnRoutingPolicySnapshot:
+def _direct_routing_policy() -> TurnRoutingPolicySnapshot:
     return freeze_turn_routing_policy(
-        TurnRoutingPolicy(l1_enabled=False, l2_enabled=True),
+        TurnRoutingPolicy(l1_enabled=False),
         source="request_override",
     )
 
@@ -92,7 +75,6 @@ def _l2_routing_policy() -> TurnRoutingPolicySnapshot:
 def _classification_context(
     *,
     user_text: str,
-    task_catalog=(),
 ) -> EntryContext:
     return EntryContext(
         envelope=TrustedTurnEnvelope(
@@ -107,20 +89,7 @@ def _classification_context(
         estimated_input_tokens=1,
         history_pairs=(),
         session_summary=None,
-        task_catalog=InSessionTaskCatalog(items=tuple(task_catalog)),
-        routing_policy=_l2_routing_policy(),
-    )
-
-
-def _entry_attempt_binding() -> ModelTierBinding:
-    return ModelTierBinding(
-        tier=ModelTier.ATTEMPT,
-        provider="anthropic-compatible",
-        base_url="https://example.invalid/anthropic",
-        model="entry-test-model",
-        api_key="test-key",
-        thinking_enabled=False,
-        origin=EndpointOrigin.PROFILE,
+        routing_policy=_direct_routing_policy(),
     )
 
 
@@ -131,12 +100,12 @@ def _entry_execution_snapshot() -> EntryExecutionSnapshot:
     )
 
 
-def test_entry_l2_uses_document_sized_output_budget_by_default(monkeypatch):
+def test_entry_l0_preserves_its_output_budget_by_default(monkeypatch):
     context = _classification_context(user_text="请分析这份文档")
     captured: dict[str, object] = {}
 
     def setting(key, default=None):
-        return "deepseek" if key == "provider" else default
+        return "anthropic-compatible" if key == "provider" else default
 
     def complete(_messages, **kwargs):
         captured.update(kwargs)
@@ -150,14 +119,13 @@ def test_entry_l2_uses_document_sized_output_budget_by_default(monkeypatch):
         )
 
     monkeypatch.setattr(response_model, "get_setting", setting)
-    monkeypatch.setattr(response_model, "resolve_tier", lambda _tier: _entry_attempt_binding())
     monkeypatch.setattr(response_model, "anthropic_compatible_chat", complete)
 
-    result = response_model.generate_response(context, "L2", lambda _event: None)
+    result = response_model.generate_response(context, "L0", lambda _event: None)
 
     assert result.value == "已分析。"
-    assert captured["max_tokens"] == 131_072
-    assert captured["binding"].tier is ModelTier.ATTEMPT
+    assert captured["max_tokens"] == 32_768
+    assert captured["binding"] is None
 
 
 @pytest.mark.parametrize(
@@ -172,7 +140,7 @@ def test_entry_stops_after_one_thinking_only_token_exhaustion(
     calls = 0
 
     def setting(key, default=None):
-        return "deepseek" if key == "provider" else default
+        return "anthropic-compatible" if key == "provider" else default
 
     def complete(_messages, **kwargs):
         nonlocal calls
@@ -188,11 +156,10 @@ def test_entry_stops_after_one_thinking_only_token_exhaustion(
         )
 
     monkeypatch.setattr(response_model, "get_setting", setting)
-    monkeypatch.setattr(response_model, "resolve_tier", lambda _tier: _entry_attempt_binding())
     monkeypatch.setattr(response_model, "anthropic_compatible_chat", complete)
 
     with pytest.raises(ModelGatewayError) as exc:
-        response_model.generate_response(context, "L2", lambda _event: None)
+        response_model.generate_response(context, "L0", lambda _event: None)
 
     assert calls == 1
     assert exc.value.code == "MODEL_BAD_RESPONSE"
@@ -208,7 +175,7 @@ def test_entry_never_commits_a_nonempty_truncated_prefix(monkeypatch, finish_rea
     calls = 0
 
     def setting(key, default=None):
-        return "deepseek" if key == "provider" else default
+        return "anthropic-compatible" if key == "provider" else default
 
     def complete(_messages, **kwargs):
         nonlocal calls
@@ -224,11 +191,10 @@ def test_entry_never_commits_a_nonempty_truncated_prefix(monkeypatch, finish_rea
         )
 
     monkeypatch.setattr(response_model, "get_setting", setting)
-    monkeypatch.setattr(response_model, "resolve_tier", lambda _tier: _entry_attempt_binding())
     monkeypatch.setattr(response_model, "anthropic_compatible_chat", complete)
 
     with pytest.raises(ModelGatewayError) as exc:
-        response_model.generate_response(context, "L2", lambda _event: None)
+        response_model.generate_response(context, "L0", lambda _event: None)
 
     assert calls == 1
     assert exc.value.code == "MODEL_BAD_RESPONSE"
@@ -264,304 +230,6 @@ def _runtime_turn(session_id: str, turn_id: str) -> dict[str, object]:
         ).fetchone()
     assert row is not None
     return dict(row)
-
-
-def _create_task_for_entry(session_id: str, turn_id: str) -> str:
-    proposal = NewInSessionTaskGraphsProposal.model_validate(
-        {
-            "source_turn_id": turn_id,
-            "roots": [
-                {
-                    "root_key": "research",
-                    "nodes": [
-                        {
-                            "node_key": "research",
-                            "node_kind": "root",
-                            "title": "研究先前材料",
-                            "objective": "分析先前材料并提供结论",
-                            "source_anchor_ids": ["request"],
-                            "acceptance_criteria": [
-                                {
-                                    "acceptance_id": "complete",
-                                    "criterion": "结论覆盖材料",
-                                    "source_anchor_ids": ["request"],
-                                }
-                            ],
-                        }
-                    ],
-                }
-            ],
-        }
-    )
-    validation = validate_new_insession_task_graphs(
-        proposal,
-        context=InSessionTaskGraphValidationContext(
-            session_id=session_id,
-            source_turn_id=turn_id,
-            source_anchors=(
-                InSessionTaskSourceAnchor(
-                    anchor_id="request",
-                    source_turn_id=turn_id,
-                    source_kind="current_user_instruction",
-                    start=0,
-                    end=3,
-                    excerpt="请分析",
-                ),
-            ),
-            authorization_anchor_ids=("request",),
-            required_anchor_ids=("request",),
-        ),
-    )
-    assert validation.status == "accepted"
-    assert validation.proposal is not None
-    assert validation.trusted_context is not None
-    window = session_store.get_turn_execution_window(session_id)
-    assert window is not None
-    committed = insession_task_records.commit_new_insession_task_graphs(
-        session_store._deps(),
-        session_id=session_id,
-        source_turn_id=turn_id,
-        apply_id=f"create-{turn_id}",
-        proposal=validation.proposal,
-        trusted_context=validation.trusted_context,
-        expected_window_revision=int(window["state_version"]),
-    )
-    return committed.created_insession_task_ids[0]
-
-
-def _finalize_seed_turn(session_id: str, turn_id: str) -> None:
-    window = session_store.get_turn_execution_window(session_id)
-    assert window is not None
-    finalized = session_store.finalize_turn_execution(
-        session_id=session_id,
-        turn_id=turn_id,
-        expected_window_revision=int(window["state_version"]),
-        processing_level="L2",
-        assistant_content="任务已建立。",
-        post_commit_job_kinds=(),
-    )
-    session_store.release_turn_execution_window(
-        session_id=session_id,
-        turn_id=turn_id,
-        expected_window_revision=int(finalized["window"]["state_version"]),  # type: ignore[index]
-    )
-
-
-def test_classifier_parses_all_task_match_shapes_in_one_typed_result(monkeypatch):
-    context = _classification_context(
-        user_text=(
-            "新建旅行计划，继续论文摘要，并在论文任务下补充局限，"
-            "然后把论文目标改成只比较实验设计。"
-        ),
-        task_catalog=(
-            InSessionTaskCatalogItem(
-                insession_task_id="task-paper",
-                goal_summary="论文摘要",
-                status="active",
-                current_graph_revision=1,
-            ),
-        ),
-    )
-
-    def classify(*_args, **kwargs):
-        return ModelResult(
-            reply=json.dumps({
-                "processing_level": "L2",
-                "task_matches": [
-                    {
-                        "match_type": "new_root",
-                        "local_key": "trip",
-                        "title": "旅行计划",
-                        "objective": "制定旅行计划",
-                        "source_excerpt": "新建旅行计划",
-                    },
-                    {
-                        "match_type": "existing_root",
-                        "insession_task_id": "task-paper",
-                        "source_excerpt": "继续论文摘要",
-                        "execute_current": True,
-                    },
-                    {
-                        "match_type": "existing_root_branch",
-                        "insession_task_id": "task-paper",
-                        "branch_key": "limitations",
-                        "branch_summary": "补充论文局限",
-                        "source_excerpt": "在论文任务下补充局限",
-                        "execute_current": False,
-                    },
-                    {
-                        "match_type": "existing_root_target_change",
-                        "insession_task_id": "task-paper",
-                        "replacement_objective": "只比较论文实验设计",
-                        "source_excerpt": "把论文目标改成只比较实验设计",
-                        "execute_current": True,
-                    },
-                ],
-            }),
-            provider="test",
-            model="test",
-            latency_ms=1,
-            model_call_id=kwargs["model_call_id"],
-        )
-
-    monkeypatch.setattr(
-        ingress_model, "complete_structured", as_prepared_test_provider(classify)
-    )
-    result = ingress_model.classify_turn(context, lambda _event: None)
-
-    assert result.processing_level == "L2"
-    assert [match.match_type for match in result.task_matches] == [
-        "new_root",
-        "existing_root",
-        "existing_root_branch",
-        "existing_root_target_change",
-    ]
-    assert result.task_matches[1].execute_current is True
-    assert result.task_matches[2].execute_current is False
-    assert result.task_matches[3].replacement_objective == "只比较论文实验设计"
-
-
-def test_classifier_prompt_requires_explicit_target_change_discriminator():
-    prompt = ingress_model._classifier_system_prompt(("L0", "L2"))
-    assert "existing_root_target_change" in prompt
-    assert "普通继续" in prompt
-
-
-def test_classifier_retries_a_task_match_rejected_by_the_host_guard(monkeypatch):
-    context = _classification_context(user_text="请新建旅行计划")
-    attempts = 0
-
-    def classify(*_args, **kwargs):
-        nonlocal attempts
-        attempts += 1
-        excerpt = "不存在的原文" if attempts == 1 else "请新建旅行计划"
-        return ModelResult(
-            reply=json.dumps({
-                "processing_level": "L2",
-                "task_matches": [{
-                    "match_type": "new_root",
-                    "local_key": "trip",
-                    "title": "旅行计划",
-                    "objective": "制定旅行计划",
-                    "source_excerpt": excerpt,
-                }],
-            }),
-            provider="test",
-            model="test",
-            latency_ms=1,
-            model_call_id=kwargs["model_call_id"],
-        )
-
-    monkeypatch.setattr(
-        ingress_model, "complete_structured", as_prepared_test_provider(classify)
-    )
-    result = ingress_model.classify_turn(context, lambda _event: None)
-
-    assert attempts == 2
-    assert result.task_matches[0].source_excerpt == "请新建旅行计划"
-
-
-def test_classifier_prompt_discloses_the_host_new_root_limit(monkeypatch):
-    context = _classification_context(user_text="请新建旅行计划")
-    captured_system_prompts: list[str] = []
-
-    def classify(system_prompt, *_args, **kwargs):
-        captured_system_prompts.append(system_prompt)
-        return ModelResult(
-            reply=json.dumps({"processing_level": "L2", "task_matches": []}),
-            provider="test",
-            model="test",
-            latency_ms=1,
-            model_call_id=kwargs["model_call_id"],
-        )
-
-    monkeypatch.setattr(
-        ingress_model, "complete_structured", as_prepared_test_provider(classify)
-    )
-    ingress_model.classify_turn(context, lambda _event: None)
-
-    assert len(captured_system_prompts) == 1
-    assert "最多包含 3 个 new_root" in captured_system_prompts[0]
-
-
-def test_classifier_retries_new_root_proposed_on_l0(monkeypatch):
-    context = _classification_context(user_text="请新建旅行计划")
-    attempts = 0
-
-    def classify(*_args, **kwargs):
-        nonlocal attempts
-        attempts += 1
-        return ModelResult(
-            reply=json.dumps({
-                "processing_level": "L0" if attempts == 1 else "L2",
-                "task_matches": [{
-                    "match_type": "new_root",
-                    "local_key": "trip",
-                    "title": "旅行计划",
-                    "objective": "制定旅行计划",
-                    "source_excerpt": "请新建旅行计划",
-                }],
-            }),
-            provider="test",
-            model="test",
-            latency_ms=1,
-            model_call_id=kwargs["model_call_id"],
-        )
-
-    monkeypatch.setattr(
-        ingress_model, "complete_structured", as_prepared_test_provider(classify)
-    )
-    result = ingress_model.classify_turn(context, lambda _event: None)
-
-    assert attempts == 2
-    assert result.processing_level == "L2"
-
-
-def test_classifier_retries_execute_current_proposed_on_l0(monkeypatch):
-    context = _classification_context(
-        user_text="继续论文摘要",
-        task_catalog=(
-            InSessionTaskCatalogItem(
-                insession_task_id="task-paper",
-                goal_summary="论文摘要",
-                status="active",
-                current_graph_revision=1,
-            ),
-        ),
-    )
-    attempts = 0
-
-    def classify(*_args, **kwargs):
-        nonlocal attempts
-        attempts += 1
-        return ModelResult(
-            reply=json.dumps(
-                {
-                    "processing_level": "L0" if attempts == 1 else "L2",
-                    "task_matches": [
-                        {
-                            "match_type": "existing_root",
-                            "insession_task_id": "task-paper",
-                            "source_excerpt": "继续论文摘要",
-                            "execute_current": True,
-                        }
-                    ],
-                }
-            ),
-            provider="test",
-            model="test",
-            latency_ms=1,
-            model_call_id=kwargs["model_call_id"],
-        )
-
-    monkeypatch.setattr(
-        ingress_model, "complete_structured", as_prepared_test_provider(classify)
-    )
-    result = ingress_model.classify_turn(context, lambda _event: None)
-
-    assert attempts == 2
-    assert result.processing_level == "L2"
-    assert result.task_matches[0].execute_current is True
 
 
 def test_entry_accepts_input_before_execution_and_finalizes_one_formal_pair(tmp_path, monkeypatch):
@@ -655,41 +323,7 @@ def test_history_write_enabled_turn_finalizes_with_a_durable_index_job(
     assert "history_retrieval_data_version" not in pair
 
 
-def test_entry_routes_classifier_l2_without_reintroducing_l1(tmp_path, monkeypatch):
-    _reset_session_store(tmp_path, monkeypatch)
-    session_id = session_store.create_session("Entelecheia")
-
-    def l2_classification(*args, **kwargs):
-        return ModelResult(
-            reply=json.dumps({"processing_level": "L2", "task_matches": []}),
-            provider="test",
-            model="test",
-            latency_ms=1,
-            model_call_id=kwargs["model_call_id"],
-        )
-
-    monkeypatch.setattr(
-        ingress_model,
-        "complete_structured",
-        as_prepared_test_provider(l2_classification),
-    )
-    result = entry.run_entry_turn(
-        user_input="请分析这个任务，并告诉我需要哪些资料。",
-        features={"context_guard_limit": 24000},
-        session_id=session_id,
-        client_request_id="request-l2",
-        routing_policy=_l2_routing_policy(),
-        store=session_store,
-    )
-
-    assert result.status == "completed"
-    assert result.processing_level == "L2"
-    stages = [item["stage"] for item in session_store.list_runtime_turn_events(session_id)["events"]]
-    assert "L2_UNDERSTAND" in stages
-    assert "L1" not in str(stages)
-
-
-def test_l2_routing_authority_failure_stops_before_any_provider(
+def test_l0_routing_authority_failure_stops_before_any_provider(
     tmp_path,
     monkeypatch,
 ) -> None:
@@ -697,9 +331,9 @@ def test_l2_routing_authority_failure_stops_before_any_provider(
     session_id = session_store.create_session("Entelecheia")
     provider_calls = 0
 
-    def l2_classification(*_args, **kwargs):
+    def l0_classification(*_args, **kwargs):
         return ModelResult(
-            reply=json.dumps({"processing_level": "L2", "task_matches": []}),
+            reply=json.dumps({"processing_level": "L0"}),
             provider="test",
             model="test",
             latency_ms=1,
@@ -717,7 +351,7 @@ def test_l2_routing_authority_failure_stops_before_any_provider(
     monkeypatch.setattr(
         ingress_model,
         "complete_structured",
-        as_prepared_test_provider(l2_classification),
+        as_prepared_test_provider(l0_classification),
     )
     monkeypatch.setattr(
         entry_application,
@@ -731,7 +365,7 @@ def test_l2_routing_authority_failure_stops_before_any_provider(
     )
     monkeypatch.setattr(
         entry_application,
-        "_execute_auxiliary_production_chain",
+        "_execute_l1_processing_lane",
         provider_must_not_run,
     )
 
@@ -739,14 +373,14 @@ def test_l2_routing_authority_failure_stops_before_any_provider(
         user_input="继续执行当前任务",
         features={"context_guard_limit": 24_000},
         session_id=session_id,
-        client_request_id="l2-routing-authority-failure",
-        routing_policy=_l2_routing_policy(),
+        client_request_id="l0-routing-authority-failure",
+        routing_policy=_direct_routing_policy(),
         store=session_store,
     )
 
     assert provider_calls == 0
     assert result.status == "incomplete"
-    assert result.processing_level == "L2"
+    assert result.processing_level == "L0"
     assert result.end_reason == "persistence_error"
     assert result.error_code == "PERSIST_FAILED"
     assert result.window_state == "interrupted"
@@ -760,10 +394,6 @@ def test_l2_routing_authority_failure_stops_before_any_provider(
         ("started", None),
         ("failed", "PERSIST_FAILED"),
     ]
-    assert not any(
-        event["stage"] in {"L2_UNDERSTAND", "L2_PLAN"}
-        for event in events
-    )
 
 
 def test_entry_exposes_degraded_summary_status_without_injecting_stale_content(tmp_path, monkeypatch):
@@ -787,7 +417,7 @@ def test_entry_exposes_degraded_summary_status_without_injecting_stale_content(t
     def capture_classification(*args, **kwargs):
         classifier_payloads.append(json.loads(args[1]))
         return ModelResult(
-            reply=json.dumps({"processing_level": "L0", "task_matches": []}),
+            reply=json.dumps({"processing_level": "L0"}),
             provider="test",
             model="test",
             latency_ms=1,
@@ -823,7 +453,7 @@ def test_entry_degrades_when_summary_state_cannot_be_read(tmp_path, monkeypatch)
     def capture_classification(*args, **kwargs):
         classifier_payloads.append(json.loads(args[1]))
         return ModelResult(
-            reply=json.dumps({"processing_level": "L0", "task_matches": []}),
+            reply=json.dumps({"processing_level": "L0"}),
             provider="test",
             model="test",
             latency_ms=1,
@@ -847,275 +477,6 @@ def test_entry_degrades_when_summary_state_cannot_be_read(tmp_path, monkeypatch)
     assert result.status == "completed"
     assert classifier_payloads[0]["session_summary"] is None
     assert classifier_payloads[0]["host_facts"]["session_summary_status"] == "unavailable"  # type: ignore[index]
-
-
-def test_entry_injects_trusted_task_catalog_validates_ids_and_persists_turn_link(tmp_path, monkeypatch):
-    _reset_session_store(tmp_path, monkeypatch)
-    session_id = session_store.create_session("Entelecheia")
-    seed = entry.accept_entry_turn(
-        user_input="请分析先前材料",
-        session_id=session_id,
-        client_request_id="seed-task",
-        attachment_ids=(),
-        execution_snapshot=_entry_execution_snapshot(),
-        store=session_store,
-    )
-    task_id = _create_task_for_entry(session_id, seed.turn_id)
-    _finalize_seed_turn(session_id, seed.turn_id)
-    classifier_payloads: list[dict[str, object]] = []
-
-    def linked_classification(*args, **kwargs):
-        classifier_payloads.append(json.loads(args[1]))
-        return ModelResult(
-            reply=json.dumps({
-                "processing_level": "L2",
-                "task_matches": [{
-                    "match_type": "existing_root",
-                    "insession_task_id": task_id,
-                    "source_excerpt": "继续刚才的材料分析",
-                }],
-            }),
-            provider="test",
-            model="test",
-            latency_ms=1,
-            model_call_id=kwargs["model_call_id"],
-        )
-
-    monkeypatch.setattr(
-        ingress_model,
-        "complete_structured",
-        as_prepared_test_provider(linked_classification),
-    )
-    result = entry.run_entry_turn(
-        user_input="继续刚才的材料分析",
-        features={"context_guard_limit": 24_000},
-        session_id=session_id,
-        client_request_id="related-task",
-        routing_policy=_l2_routing_policy(),
-        store=session_store,
-    )
-
-    assert result.status == "completed"
-    assert result.related_insession_task_ids == (task_id,)
-    assert classifier_payloads[0]["task_catalog"] == [
-        {
-            "insession_task_id": task_id,
-            "goal_summary": "研究先前材料：分析先前材料并提供结论",
-            "status": "proposed",
-            "current_graph_revision": 1,
-        }
-    ]
-    assert classifier_payloads[0]["task_catalog_truncated"] is False
-    details = task_graph_store.get_insession_task_details(session_id, task_id)
-    assert details is not None
-    assert details.related_turn_count == 2
-
-
-def test_entry_applies_mixed_task_matches_and_returns_host_task_ids(tmp_path, monkeypatch):
-    _reset_session_store(tmp_path, monkeypatch)
-    session_id = session_store.create_session("Entelecheia")
-    seed = entry.accept_entry_turn(
-        user_input="请分析先前材料",
-        session_id=session_id,
-        client_request_id="seed-mixed-task",
-        attachment_ids=(),
-        execution_snapshot=_entry_execution_snapshot(),
-        store=session_store,
-    )
-    existing_task_id = _create_task_for_entry(session_id, seed.turn_id)
-    _finalize_seed_turn(session_id, seed.turn_id)
-
-    def mixed_classification(*_args, **kwargs):
-        return ModelResult(
-            reply=json.dumps({
-                "processing_level": "L2",
-                "task_matches": [
-                    {
-                        "match_type": "new_root",
-                        "local_key": "trip",
-                        "title": "上海旅行",
-                        "objective": "制定上海旅行计划",
-                        "source_excerpt": "请新建上海旅行计划",
-                    },
-                    {
-                        "match_type": "existing_root",
-                        "insession_task_id": existing_task_id,
-                        "source_excerpt": "继续材料分析",
-                    },
-                ],
-            }),
-            provider="test",
-            model="test",
-            latency_ms=1,
-            model_call_id=kwargs["model_call_id"],
-        )
-
-    monkeypatch.setattr(
-        ingress_model,
-        "complete_structured",
-        as_prepared_test_provider(mixed_classification),
-    )
-    result = entry.run_entry_turn(
-        user_input="请新建上海旅行计划，并继续材料分析。",
-        features={"context_guard_limit": 24_000},
-        session_id=session_id,
-        client_request_id="mixed-task-matches",
-        routing_policy=_l2_routing_policy(),
-        store=session_store,
-    )
-
-    assert result.status == "completed"
-    assert result.processing_level == "L2"
-    assert existing_task_id in result.related_insession_task_ids
-    new_ids = set(result.related_insession_task_ids) - {existing_task_id}
-    assert len(new_ids) == 1
-    catalog_ids = {
-        item.insession_task_id
-        for item in session_store.list_insession_task_catalog(session_id)
-    }
-    assert new_ids <= catalog_ids
-
-
-def test_entry_does_not_apply_an_empty_task_match_batch(tmp_path, monkeypatch):
-    _reset_session_store(tmp_path, monkeypatch)
-    session_id = session_store.create_session("Entelecheia")
-    calls = 0
-    original_apply = task_graph_store.apply_insession_task_matches
-
-    def count_apply(**kwargs):
-        nonlocal calls
-        calls += 1
-        return original_apply(**kwargs)
-
-    monkeypatch.setattr(task_graph_store, "apply_insession_task_matches", count_apply)
-    result = entry.run_entry_turn(
-        user_input="今天天气真好。",
-        features={"context_guard_limit": 24_000},
-        session_id=session_id,
-        client_request_id="empty-task-matches",
-        store=session_store,
-    )
-
-    assert result.status == "completed"
-    assert result.related_insession_task_ids == ()
-    assert calls == 0
-
-
-def test_entry_classifier_receives_one_pending_question_as_task_context(
-    tmp_path,
-    monkeypatch,
-):
-    _reset_session_store(tmp_path, monkeypatch)
-    session_id = session_store.create_session("Entelecheia")
-    captured: list[dict[str, object]] = []
-    task_id = "insession_task_waiting"
-    monkeypatch.setattr(
-        session_store,
-        "list_insession_task_catalog",
-        lambda _session_id: (
-            InSessionTaskCatalogItem(
-                insession_task_id=task_id,
-                goal_summary="安排旅行",
-                status="awaiting_user",
-                current_graph_revision=1,
-            ),
-        ),
-    )
-    monkeypatch.setattr(
-        session_store,
-        "list_pending_user_questions",
-        lambda **_kwargs: (
-            SimpleNamespace(
-                insession_task_id=task_id,
-                question="你希望哪一天出发？",
-            ),
-        ),
-    )
-
-    def classify(*args, **kwargs):
-        captured.append(json.loads(args[1]))
-        return ModelResult(
-            reply=json.dumps({"processing_level": "L0", "task_matches": []}),
-            provider="test",
-            model="test",
-            latency_ms=1,
-            model_call_id=kwargs["model_call_id"],
-        )
-
-    monkeypatch.setattr(
-        ingress_model, "complete_structured", as_prepared_test_provider(classify)
-    )
-
-    result = entry.run_entry_turn(
-        user_input="20号",
-        features={"context_guard_limit": 24_000},
-        session_id=session_id,
-        client_request_id="pending-question-task-context",
-        routing_policy=_l2_routing_policy(),
-        store=session_store,
-    )
-
-    assert result.status == "completed"
-    assert captured[0]["task_catalog"] == [
-        {
-            "insession_task_id": task_id,
-            "goal_summary": "安排旅行",
-            "status": "awaiting_user",
-            "current_graph_revision": 1,
-            "pending_user_question": "你希望哪一天出发？",
-        }
-    ]
-
-
-def test_truncated_task_catalog_does_not_override_the_model_level(tmp_path, monkeypatch):
-    _reset_session_store(tmp_path, monkeypatch)
-    session_id = session_store.create_session("Entelecheia")
-    captured: list[dict[str, object]] = []
-    catalog_item = SimpleNamespace(
-        insession_task_id="insession_task_hidden",
-        goal_summary="很长的任务" * 500,
-        status=SimpleNamespace(value="proposed"),
-        current_graph_revision=1,
-        model_dump=lambda **_kwargs: {
-            "insession_task_id": "insession_task_hidden",
-            "goal_summary": "很长的任务" * 500,
-            "status": "proposed",
-            "current_graph_revision": 1,
-        },
-    )
-    monkeypatch.setattr(
-        session_store,
-        "list_insession_task_catalog",
-        lambda _session_id: (catalog_item,),
-    )
-
-    def l0_classification(*args, **kwargs):
-        captured.append(json.loads(args[1]))
-        return ModelResult(
-            reply=json.dumps({"processing_level": "L0", "task_matches": []}),
-            provider="test",
-            model="test",
-            latency_ms=1,
-            model_call_id=kwargs["model_call_id"],
-        )
-
-    monkeypatch.setattr(
-        ingress_model,
-        "complete_structured",
-        as_prepared_test_provider(l0_classification),
-    )
-    result = entry.run_entry_turn(
-        user_input="继续",
-        features={"context_guard_limit": 2_200},
-        session_id=session_id,
-        client_request_id="truncated-catalog",
-        routing_policy=_l2_routing_policy(),
-        store=session_store,
-    )
-
-    assert captured[0]["task_catalog"] == []
-    assert captured[0]["task_catalog_truncated"] is True
-    assert result.processing_level == "L0"
 
 
 def test_invalid_classifier_output_marks_the_turn_interrupted_without_a_draft(tmp_path, monkeypatch):

@@ -93,7 +93,7 @@ COMPLETION = {
 
 def _binding(*, dialect: str, effort: ReasoningEffort | None, thinking: bool = True):
     return ModelTierBinding(
-        tier=ModelTier.ATTEMPT,
+        tier=ModelTier.L1,
         provider="openai-compatible",
         base_url=(
             "https://api.openai.com/v1"
@@ -156,7 +156,7 @@ def test_openai_native_binding_uses_native_reasoning_request_shape(monkeypatch):
 def test_blank_bound_model_matches_the_openai_gateway_default(monkeypatch):
     client = _answers(monkeypatch, _Response(COMPLETION))
     binding = ModelTierBinding(
-        tier=ModelTier.ATTEMPT,
+        tier=ModelTier.L1,
         provider="openai-compatible",
         base_url="https://api.openai.com/v1",
         model="",

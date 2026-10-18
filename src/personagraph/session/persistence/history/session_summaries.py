@@ -21,7 +21,6 @@ from ...session_summary import (
     SessionSummaryTurnPair,
     SessionSummaryUpdate,
 )
-from . import turns as transcript_turns
 from ..deps import StoreDeps
 from ..turns.turn_execution import TurnExecutionPersistenceError, TurnPostCommitJobLeaseError
 
@@ -118,19 +117,7 @@ def list_committed_turn_pairs_for_summary(
         return tuple(
             _summary_pair_from_row(
                 row,
-                assistant_content=(
-                    transcript_turns._resolve_commit_assistant_content_in_transaction(
-                        conn,
-                        session_id=session_id,
-                        turn_id=(
-                            str(row["turn_id"])
-                            if row["turn_id"] is not None
-                            else None
-                        ),
-                        commit_run_id=str(row["run_id"]),
-                        inline_content=str(row["assistant_content"]),
-                    )
-                ),
+                assistant_content=str(row["assistant_content"]),
             )
             for row in rows
         )
@@ -456,16 +443,6 @@ def _validate_summary_update_progression(
         """,
         (session_id, int(target["user_turn_idx"])),
     ).fetchall()
-    for pair in newer_pairs:
-        transcript_turns._resolve_commit_assistant_content_in_transaction(
-            conn,
-            session_id=session_id,
-            turn_id=(
-                str(pair["turn_id"]) if pair["turn_id"] is not None else None
-            ),
-            commit_run_id=str(pair["run_id"]),
-            inline_content=str(pair["assistant_content"]),
-        )
     if len(newer_pairs) < SESSION_SUMMARY_MIN_RETAIN_RECENT_PAIRS:
         raise SessionSummaryProgressError(
             "summary boundary would include protected recent transcript pairs"
@@ -502,13 +479,6 @@ def _load_complete_runtime_pair(
     ).fetchone()
     if row is None:
         return None
-    transcript_turns._resolve_commit_assistant_content_in_transaction(
-        conn,
-        session_id=session_id,
-        turn_id=str(row["turn_id"]),
-        commit_run_id=str(row["run_id"]),
-        inline_content=str(row["assistant_content"]),
-    )
     return row
 
 

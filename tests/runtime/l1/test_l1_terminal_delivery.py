@@ -34,7 +34,7 @@ def _setup(monkeypatch, tmp_path, *, verdict="revise", failure_code=None):
         )
 
     def classifier(*_args, **kwargs):
-        return result({"processing_level": "L1", "task_matches": []}, kwargs)
+        return result({"processing_level": "L1"}, kwargs)
 
     def attempt(_system, user, **kwargs):
         view = json.loads(user)
@@ -103,7 +103,7 @@ def _run(session_id, request_id="terminal-notification"):
             "l1_semantic_verification_mode": "always",
         },
         routing_policy=freeze_turn_routing_policy(
-            TurnRoutingPolicy(l1_enabled=True, l2_enabled=False),
+            TurnRoutingPolicy(l1_enabled=True),
             source="request_override",
         ),
         store=store,
@@ -152,10 +152,8 @@ def test_honest_incomplete_reply_can_pass_without_satisfying_acceptance(
     receipt = json.loads(execution["state"]["semantic_verification_report_json"])
     assert receipt["reviewer_result"] == {"issues": []}
     assert len(seen["attempt"]) == len(seen["review"]) == 1
-    assert (
-        seen["review"][0]["execution_context"]["candidate_note"]
-        == "当前材料不足，提交诚实的限制说明。"
-    )
+    assert "candidate_note" not in seen["review"][0]["execution_context"]
+    assert "model_notes" not in seen["review"][0]["execution_context"]
 
 
 @pytest.mark.parametrize(

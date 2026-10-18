@@ -16,6 +16,7 @@ from personagraph.runtime.l1.semantic_contracts import (
     L1_SEMANTIC_RESULT_CONTRACT,
     L1_SEMANTIC_VERIFICATION_FEATURE,
     L1_SEMANTIC_VERIFICATION_RECEIPT_VERSION,
+    L1SemanticReviewUnavailableCode,
     L1SemanticVerificationReceipt,
     derive_l1_semantic_verification_trigger,
     parse_l1_semantic_verification_mode,
@@ -307,8 +308,6 @@ def create_l1_turn_run(
         if any(
             window[field] is not None
             for field in (
-                "current_work_run_id",
-                "current_attempt_id",
                 "current_l1_turn_run_id",
                 "current_l1_attempt_id",
             )
@@ -391,7 +390,6 @@ def create_l1_turn_run(
             "current_l1_attempt_id=NULL, stage='L1_BOOTSTRAP', state_version=?, "
             "heartbeat_at=?, updated_at=? WHERE session_id=? AND turn_id=? "
             "AND window_state='active' AND state_version=? "
-            "AND current_work_run_id IS NULL AND current_attempt_id IS NULL "
             "AND current_l1_turn_run_id IS NULL AND current_l1_attempt_id IS NULL",
             (
                 assigned_l1_turn_run_id,
@@ -484,8 +482,6 @@ def claim_l1_turn_run_resume(
         if any(
             window[field] is not None
             for field in (
-                "current_work_run_id",
-                "current_attempt_id",
                 "latest_checkpoint_id",
                 "pending_operation_id",
             )
@@ -564,7 +560,6 @@ def claim_l1_turn_run_resume(
             "claimed_at=?, updated_at=? WHERE session_id=? AND turn_id=? "
             "AND window_state='active' AND state_version=? "
             "AND current_l1_turn_run_id=? "
-            "AND current_work_run_id IS NULL AND current_attempt_id IS NULL "
             "AND interruption_reason IS NULL",
             (
                 lease_owner,
@@ -625,7 +620,6 @@ def renew_l1_turn_run_resume_lease(
                 "UPDATE turn_execution_windows SET heartbeat_at=?, updated_at=? "
                 "WHERE session_id=? AND turn_id=? AND window_state='active' "
                 "AND current_l1_turn_run_id=? AND lease_owner=? "
-                "AND current_work_run_id IS NULL AND current_attempt_id IS NULL "
                 "AND interruption_reason IS NULL",
                 (
                     now,
@@ -2419,7 +2413,7 @@ def _validate_semantic_receipt_in_transaction(
     tool_result_count: int,
     execution_config_json: object,
 ) -> None:
-    """在最终化过程中重新推导 policy 并认证一次语义通过。"""
+    """重新推导 policy，认证审查结论或绑定当前候选的不可用回执。"""
 
     execution_config = _validate_canonical_json(
         str(execution_config_json or ""),
@@ -2461,7 +2455,7 @@ def _validate_semantic_receipt_in_transaction(
             "semantic verification receipt crossed current delivery facts"
         )
     if expected_trigger.required:
-        _authenticate_semantic_model_pass(
+        _authenticate_semantic_model_review(
             conn,
             receipt=receipt,
             session_id=session_id,
@@ -2475,7 +2469,7 @@ def _validate_semantic_receipt_in_transaction(
         )
 
 
-def _authenticate_semantic_model_pass(
+def _authenticate_semantic_model_review(
     conn: sqlite3.Connection,
     *,
     receipt: L1SemanticVerificationReceipt,
@@ -2484,16 +2478,14 @@ def _authenticate_semantic_model_pass(
     expected_candidate_binding: dict[str, str],
 ) -> None:
     logical_call_id = receipt.reviewer_logical_call_id
-    result_hash = receipt.reviewer_result_hash
-    result = receipt.reviewer_result
-    if logical_call_id is None or result_hash is None or result is None:
+    if logical_call_id is None:
         raise L1TurnRunPersistenceError(
             "triggered semantic receipt omitted its reviewer"
         )
     logical = conn.execute(
         "SELECT invocation_turn_id, call_kind, purpose, request_contract, "
         "typed_result_contract, state_guard_sha256, request_json "
-        "FROM insession_runtime_model_logical_calls "
+        "FROM runtime_model_logical_calls "
         "WHERE session_id=? AND logical_call_id=?",
         (session_id, logical_call_id),
     ).fetchone()
@@ -2533,9 +2525,18 @@ def _authenticate_semantic_model_pass(
         raise L1TurnRunPersistenceError(
             "semantic verifier request crossed candidate authority"
         )
+    if receipt.disposition == "unavailable":
+        _authenticate_semantic_unavailability(
+            conn, receipt=receipt, session_id=session_id,
+            logical_call_id=logical_call_id,
+        )
+        return
+    result_hash = receipt.reviewer_result_hash
+    result = receipt.reviewer_result
+    assert result_hash is not None and result is not None
     settlement = conn.execute(
         "SELECT settlement_json FROM "
-        "insession_runtime_model_call_settlement_receipts "
+        "runtime_model_call_settlement_receipts "
         "WHERE session_id=? AND logical_call_id=? AND outcome='succeeded' "
         "ORDER BY physical_ordinal DESC LIMIT 1",
         (session_id, logical_call_id),
@@ -2565,6 +2566,52 @@ def _authenticate_semantic_model_pass(
     ):
         raise L1TurnRunPersistenceError(
             "semantic verifier receipt differs from its durable typed result"
+        )
+
+
+def _authenticate_semantic_unavailability(
+    conn: sqlite3.Connection,
+    *,
+    receipt: L1SemanticVerificationReceipt,
+    session_id: str,
+    logical_call_id: str,
+) -> None:
+    """有效驳回也是成功审查，不能改称服务不可用；未结算请求也不能降级。"""
+    attempts = conn.execute(
+        "SELECT s.outcome, s.settlement_json FROM runtime_model_physical_attempts p "
+        "LEFT JOIN runtime_model_call_settlement_receipts s "
+        "ON s.session_id=p.session_id AND s.logical_call_id=p.logical_call_id "
+        "AND s.physical_ordinal=p.physical_ordinal "
+        "WHERE p.session_id=? AND p.logical_call_id=? ORDER BY p.physical_ordinal",
+        (session_id, logical_call_id),
+    ).fetchall()
+    if any(
+        row["outcome"] not in ("retryable_failure", "terminal_failure")
+        for row in attempts
+    ):
+        raise L1TurnRunPersistenceError(
+            "unavailable review cannot replace an unsettled request or a valid verdict"
+        )
+    # 配额准入在物理调用之前失败，没有 Provider settlement 可伪造或补写。
+    if receipt.unavailable_error_code in (
+        L1SemanticReviewUnavailableCode.QUOTA_ADMISSION,
+        L1SemanticReviewUnavailableCode.QUOTA_WAIT,
+    ):
+        return
+    last_settlement = (
+        _validate_canonical_json(
+            str(attempts[-1]["settlement_json"]), label="L1 semantic failure settlement"
+        )
+        if attempts else None
+    )
+    if (
+        not attempts
+        or attempts[-1]["outcome"] != "terminal_failure"
+        or not isinstance(last_settlement, dict)
+        or last_settlement.get("error_code") != receipt.unavailable_error_code
+    ):
+        raise L1TurnRunPersistenceError(
+            "unavailable review has no matching durable failure settlement"
         )
 
 
@@ -2661,7 +2708,6 @@ def _advance_l1_window(
         "state_version=?, heartbeat_at=?, updated_at=? "
         "WHERE session_id=? AND turn_id=? AND window_state='active' "
         "AND current_l1_turn_run_id=? AND state_version=? "
-        "AND current_work_run_id IS NULL AND current_attempt_id IS NULL "
         "AND (? IS NULL OR lease_owner=?)",
         (
             current_l1_attempt_id,

@@ -11,7 +11,7 @@ from ....runtime.turn_events import TurnEvent
 
 
 RuntimeTurnStatus = Literal["running", "completed", "failed", "rejected"]
-ProcessingLevelValue = Literal["L0", "L1", "L2"]
+ProcessingLevelValue = Literal["L0", "L1"]
 MAX_RUNTIME_TURN_EVENT_PAGE_SIZE = 500
 
 _RUNTIME_TURN_EVENT_COLUMNS = (
@@ -19,9 +19,6 @@ _RUNTIME_TURN_EVENT_COLUMNS = (
     "session_id",
     "turn_id",
     "parent_event_id",
-    "insession_task_id",
-    "insession_task_node_id",
-    "work_run_id",
     "attempt_id",
     "stage",
     "status",
@@ -294,14 +291,13 @@ def _append_runtime_turn_event_in_transaction(
         return int(existing["sequence"])
     cursor = conn.execute(
         "INSERT INTO runtime_turn_events_v1 "
-        "(event_id, session_id, turn_id, parent_event_id, insession_task_id, insession_task_node_id, "
-        "work_run_id, attempt_id, stage, status, occurred_at, duration_ms, model_call_id, model_attempt, "
+        "(event_id, session_id, turn_id, parent_event_id, "
+        "attempt_id, stage, status, occurred_at, duration_ms, model_call_id, model_attempt, "
         "operation_id, error_code, retryable, diagnostic_ref) "
-        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         (
             payload["event_id"], payload["session_id"], payload["turn_id"],
-            payload["parent_event_id"], payload["insession_task_id"],
-            payload["insession_task_node_id"], payload["work_run_id"], payload["attempt_id"],
+            payload["parent_event_id"], payload["attempt_id"],
             payload["stage"], payload["status"], payload["occurred_at"], payload["duration_ms"],
             payload["model_call_id"], payload["model_attempt"], payload["operation_id"],
             payload["error_code"], int(bool(payload["retryable"])), payload["diagnostic_ref"],

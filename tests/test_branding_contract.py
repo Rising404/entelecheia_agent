@@ -7,10 +7,6 @@ import tomllib
 
 from personagraph.api.router import ROUTES
 from personagraph.api.server import ApiHandler
-from personagraph.l2.task_execution.attempts import decision as attempt_decision
-from personagraph.l2.auxiliary_execution.work_run import (
-    controller as auxiliary_work_run_controller,
-)
 from personagraph.runtime.entry.ingress import model as ingress_model
 from personagraph.runtime.entry.response import model as response_model
 from personagraph.runtime.l1 import model as l1_model
@@ -62,7 +58,6 @@ def test_runtime_brand_changes_without_rotating_compatibility_ids() -> None:
         (
             ingress_model._CLASSIFIER_SYSTEM_PROMPT_BODY,
             response_model._L0_SYSTEM_PROMPT,
-            response_model._L2_SYSTEM_PROMPT,
         )
     )
 
@@ -118,12 +113,6 @@ def test_public_documentation_links_only_to_available_checkout_surfaces() -> Non
 
 
 def test_durable_prompt_branding_matches_each_runtime_contract() -> None:
-    legacy_prompts = (
-        attempt_decision._ATTEMPT_DECISION_SYSTEM_PROMPT,
-        auxiliary_work_run_controller._MODEL_WORK_RUN_SYSTEM_PROMPT,
-    )
-
-    assert all(prompt.startswith("你是 PersonaGraph") for prompt in legacy_prompts)
     assert l1_model._L1_SYSTEM_PROMPT.startswith(
         "你是负责完成当前用户请求的助手"
     )

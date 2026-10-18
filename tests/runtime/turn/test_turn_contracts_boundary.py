@@ -43,7 +43,7 @@ def test_turn_contracts_preserve_public_validation_and_recovery_binding() -> Non
         session_id="session-1",
         turn_id="turn-1",
         status="completed",
-        processing_level="L2",
+        processing_level="L1",
         window_state="post_commit_pending",
         window_revision=4,
         reply="durable reply",
@@ -146,7 +146,6 @@ import json
 import sys
 import personagraph.runtime.turn.contracts
 blocked_prefixes = (
-    'personagraph.l2',
     'personagraph.model_io',
     'personagraph.runtime.entry',
     'personagraph.runtime.l1',

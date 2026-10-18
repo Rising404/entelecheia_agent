@@ -8,7 +8,6 @@ from personagraph.runtime.turn.contracts import (
     AcceptedEntryTurn,
     EntryExecutionSnapshot,
 )
-from personagraph.runtime.turn_deadline import TurnDeadline
 from personagraph.trajectory.scope import current_turn_linkage
 
 
@@ -79,43 +78,6 @@ def test_standalone_l1_resume_binds_and_releases_trajectory_linkage(
     )
 
     assert result is None
-    assert observed[0] is not None
-    assert (observed[0].session_id, observed[0].turn_id) == (
-        accepted.session_id,
-        accepted.turn_id,
-    )
-    assert current_turn_linkage() is None
-
-
-def test_standalone_auxiliary_resume_chain_binds_trajectory_linkage(
-    monkeypatch,
-) -> None:
-    accepted = _accepted(replayed=True)
-    observed = []
-    marker = object()
-
-    def execute(**_kwargs):
-        observed.append(current_turn_linkage())
-        return marker
-
-    monkeypatch.setattr(
-        entry_application,
-        "_execute_auxiliary_production_chain_scoped",
-        execute,
-    )
-
-    result = entry_application._execute_auxiliary_production_chain(
-        accepted=accepted,
-        task_id="task-1",
-        revision=1,
-        related_insession_task_ids=("task-1",),
-        deadline=TurnDeadline.starting_now(60.0),
-        emit=lambda _event: None,
-        store=object(),  # type: ignore[arg-type]
-        features={},
-    )
-
-    assert result is marker
     assert observed[0] is not None
     assert (observed[0].session_id, observed[0].turn_id) == (
         accepted.session_id,

@@ -412,10 +412,6 @@ def test_canonical_hash_ignores_mapping_order_and_yaml_formatting(
             "Additional properties",
         ),
         (
-            lambda value: value.update({"lane": "L2"}),
-            "'L1' was expected",
-        ),
-        (
             lambda value: value["scoring"].update({"mode": "official"}),
             "docbench_prompt_compatible",
         ),
@@ -453,7 +449,7 @@ def test_canonical_hash_ignores_mapping_order_and_yaml_formatting(
         ),
     ],
 )
-def test_rejects_unknown_l2_and_non_protocol_fields(
+def test_rejects_unknown_and_non_protocol_fields(
     tmp_path: Path,
     mutate,
     expected: str,

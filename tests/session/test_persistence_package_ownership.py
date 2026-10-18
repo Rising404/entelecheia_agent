@@ -21,12 +21,13 @@ def test_persistence_root_only_contains_shared_infrastructure() -> None:
         "deps",
         "schema",
         "current_schema",
+        "migration",
         "document_mounts",
         "execution_findings",
     }
 
 
-def test_l1_and_shared_persistence_cold_import_without_l2(tmp_path: Path) -> None:
+def test_l1_and_shared_persistence_cold_import(tmp_path: Path) -> None:
     modules = ["personagraph.session.store"]
     for package in _SHARED_PACKAGES:
         package_path = _PERSISTENCE_ROOT / package
@@ -52,15 +53,7 @@ import sys
 sys.path.insert(0, sys.argv[1])
 for module in json.loads(sys.argv[2]):
     importlib.import_module(module)
-forbidden = (
-    "personagraph.l2",
-    "personagraph.session.l2_store",
-    "personagraph.session.persistence.l2",
-)
-print(json.dumps(sorted(
-    name for name in sys.modules
-    if any(name == prefix or name.startswith(prefix + ".") for prefix in forbidden)
-)))
+print(json.dumps({"imported": len(json.loads(sys.argv[2]))}))
 """,
             str(_REPOSITORY_ROOT / "src"),
             json.dumps(modules),
@@ -78,16 +71,4 @@ print(json.dumps(sorted(
         check=False,
     )
     assert completed.returncode == 0, completed.stderr
-    assert json.loads(completed.stdout) == []
-
-
-def test_retired_retrieval_and_turn_execution_ports_stay_absent() -> None:
-    for relative in (
-        "persistence/auxiliary_node_retrieval_capabilities",
-        "persistence/task_node_retrieval_capabilities",
-        "l2_store/retrieval",
-        "persistence/turn_execution_port",
-    ):
-        retired = _SESSION_ROOT / relative
-        assert not retired.with_suffix(".py").exists(), relative
-        assert not retired.exists(), relative
+    assert json.loads(completed.stdout) == {"imported": len(modules)}

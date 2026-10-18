@@ -19,7 +19,6 @@ class IngressAnalysisFloor(StrEnum):
 
     L0 = "L0"
     L1 = "L1"
-    L2 = "L2"
 
 
 class IngressDisposition(StrEnum):
@@ -286,7 +285,7 @@ def evaluate_ingress(
         return _decision(
             IngressDisposition.HOLD_APPROVAL,
             IngressHandler.NONE,
-            IngressAnalysisFloor.L2,
+            IngressAnalysisFloor.L1,
             capability_ceiling,
             guards,
             reasons,
@@ -298,7 +297,7 @@ def evaluate_ingress(
         return _decision(
             IngressDisposition.RECONCILE,
             IngressHandler.NONE,
-            IngressAnalysisFloor.L2,
+            IngressAnalysisFloor.L1,
             capability_ceiling,
             guards,
             reasons,
@@ -310,7 +309,7 @@ def evaluate_ingress(
         return _decision(
             IngressDisposition.RECONCILE,
             IngressHandler.NONE,
-            IngressAnalysisFloor.L2,
+            IngressAnalysisFloor.L1,
             capability_ceiling,
             guards,
             reasons,

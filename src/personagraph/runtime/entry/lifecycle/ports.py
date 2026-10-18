@@ -54,21 +54,6 @@ class EntryTurnFinalizationStorePort(
 
     def finalize_turn_execution(self, **kwargs: object) -> dict[str, object]: ...
 
-    def finalize_verified_turn_execution(
-        self,
-        **kwargs: object,
-    ) -> dict[str, object]: ...
-
-    def finalize_authoritative_referenced_turn_execution(
-        self,
-        **kwargs: object,
-    ) -> dict[str, object]: ...
-
-    def mark_authoritative_no_public_turn_stop(
-        self,
-        **kwargs: object,
-    ) -> dict[str, object]: ...
-
 
 class EntryReplayStorePort(
     EntryReplayReadPort,

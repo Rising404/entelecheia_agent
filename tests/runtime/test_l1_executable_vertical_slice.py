@@ -167,7 +167,7 @@ def test_l1_workspace_failure_stops_before_l1_model_io(
 ) -> None:
     session_id = _create_l1_session(tmp_path)
     policy = freeze_turn_routing_policy(
-        TurnRoutingPolicy(l1_enabled=True, l2_enabled=False),
+        TurnRoutingPolicy(l1_enabled=True),
         source="request_override",
     )
     monkeypatch.setattr(
@@ -175,7 +175,7 @@ def test_l1_workspace_failure_stops_before_l1_model_io(
         "complete_structured",
         as_prepared_test_provider(
             lambda *_args, **kwargs: _model_result(
-                {"processing_level": "L1", "task_matches": []},
+                {"processing_level": "L1"},
                 kwargs["model_call_id"],
             ),
         ),
@@ -296,13 +296,13 @@ def test_l1_executes_a_durable_tool_loop_and_commits_one_formal_reply(
     session_id = _create_l1_session(tmp_path)
     user_text = "告诉我今天的日期，并说明你确实查询过。"
     policy = freeze_turn_routing_policy(
-        TurnRoutingPolicy(l1_enabled=True, l2_enabled=False),
+        TurnRoutingPolicy(l1_enabled=True),
         source="request_override",
     )
 
     def classify(*_args: object, **kwargs: object) -> ModelResult:
         return _model_result(
-            {"processing_level": "L1", "task_matches": []},
+            {"processing_level": "L1"},
             kwargs["model_call_id"],
         )
 
@@ -414,7 +414,7 @@ def test_l1_executes_a_durable_tool_loop_and_commits_one_formal_reply(
     assert [
         call.physical_attempts[-1].settlement.outcome.value for call in logical_calls
     ] == ["succeeded", "succeeded"]
-    assert session_store.list_insession_task_catalog(session_id) == ()
+
 
     replayed = entry.run_entry_turn(
         user_input=user_text,
@@ -433,7 +433,7 @@ def test_l1_atomic_bootstrap_is_startup_recoverable_before_controller_entry(
     session_id = _create_l1_session(tmp_path)
     user_text = "确认原子初始化后的任务可以恢复。"
     policy = freeze_turn_routing_policy(
-        TurnRoutingPolicy(l1_enabled=True, l2_enabled=False),
+        TurnRoutingPolicy(l1_enabled=True),
         source="request_override",
     )
     classification_calls = 0
@@ -442,7 +442,7 @@ def test_l1_atomic_bootstrap_is_startup_recoverable_before_controller_entry(
         nonlocal classification_calls
         classification_calls += 1
         return _model_result(
-            {"processing_level": "L1", "task_matches": []},
+            {"processing_level": "L1"},
             kwargs["model_call_id"],
         )
 
@@ -542,7 +542,7 @@ def test_l1_recovery_does_not_freeze_unadopted_workspace_files(
     session_id = bound_partitioned_session(working_dir=tmp_path)
     user_text = "确认这次恢复可以继续。"
     policy = freeze_turn_routing_policy(
-        TurnRoutingPolicy(l1_enabled=True, l2_enabled=False),
+        TurnRoutingPolicy(l1_enabled=True),
         source="request_override",
     )
 
@@ -551,7 +551,7 @@ def test_l1_recovery_does_not_freeze_unadopted_workspace_files(
         "complete_structured",
         as_prepared_test_provider(
             lambda *_args, **kwargs: _model_result(
-                {"processing_level": "L1", "task_matches": []},
+                {"processing_level": "L1"},
                 kwargs["model_call_id"],
             ),
         ),
@@ -646,7 +646,7 @@ def test_l1_recovery_rejects_changed_turn_attachment_before_model_io(
         )
     user_text = "读取本轮附件。"
     policy = freeze_turn_routing_policy(
-        TurnRoutingPolicy(l1_enabled=True, l2_enabled=False),
+        TurnRoutingPolicy(l1_enabled=True),
         source="request_override",
     )
     monkeypatch.setattr(
@@ -654,7 +654,7 @@ def test_l1_recovery_rejects_changed_turn_attachment_before_model_io(
         "complete_structured",
         as_prepared_test_provider(
             lambda *_args, **kwargs: _model_result(
-                {"processing_level": "L1", "task_matches": []},
+                {"processing_level": "L1"},
                 kwargs["model_call_id"],
             ),
         ),
@@ -722,7 +722,7 @@ def test_l1_recovery_does_not_invent_missing_historical_corpus_authority(
     session_id = _create_l1_session(tmp_path)
     user_text = "恢复时不要猜测旧语料范围。"
     policy = freeze_turn_routing_policy(
-        TurnRoutingPolicy(l1_enabled=True, l2_enabled=False),
+        TurnRoutingPolicy(l1_enabled=True),
         source="request_override",
     )
     monkeypatch.setattr(
@@ -730,7 +730,7 @@ def test_l1_recovery_does_not_invent_missing_historical_corpus_authority(
         "complete_structured",
         as_prepared_test_provider(
             lambda *_args, **kwargs: _model_result(
-                {"processing_level": "L1", "task_matches": []},
+                {"processing_level": "L1"},
                 kwargs["model_call_id"],
             ),
         ),
@@ -796,7 +796,7 @@ def test_l1_startup_recovery_fails_closed_after_model_endpoint_drift(
     session_id = _create_l1_session(tmp_path)
     user_text = "不要在恢复时偷偷更换模型配置。"
     policy = freeze_turn_routing_policy(
-        TurnRoutingPolicy(l1_enabled=True, l2_enabled=False),
+        TurnRoutingPolicy(l1_enabled=True),
         source="request_override",
     )
 
@@ -828,7 +828,7 @@ def test_l1_startup_recovery_fails_closed_after_model_endpoint_drift(
         "complete_structured",
         as_prepared_test_provider(
             lambda *_args, **kwargs: _model_result(
-                {"processing_level": "L1", "task_matches": []},
+                {"processing_level": "L1"},
                 kwargs["model_call_id"],
             ),
         ),
@@ -893,7 +893,7 @@ def test_l1_repairs_one_host_semantic_rejection_inside_the_same_attempt(
     session_id = _create_l1_session(tmp_path)
     user_text = "直接确认你已经理解这个请求。"
     policy = freeze_turn_routing_policy(
-        TurnRoutingPolicy(l1_enabled=True, l2_enabled=False),
+        TurnRoutingPolicy(l1_enabled=True),
         source="request_override",
     )
     monkeypatch.setattr(
@@ -901,7 +901,7 @@ def test_l1_repairs_one_host_semantic_rejection_inside_the_same_attempt(
         "complete_structured",
         as_prepared_test_provider(
             lambda *_args, **kwargs: _model_result(
-                {"processing_level": "L1", "task_matches": []},
+                {"processing_level": "L1"},
                 kwargs["model_call_id"],
             ),
         ),
@@ -1022,7 +1022,7 @@ def test_l1_exhausted_format_repair_marks_the_run_failed(
 ) -> None:
     session_id = _create_l1_session(tmp_path)
     policy = freeze_turn_routing_policy(
-        TurnRoutingPolicy(l1_enabled=True, l2_enabled=False),
+        TurnRoutingPolicy(l1_enabled=True),
         source="request_override",
     )
     monkeypatch.setattr(
@@ -1030,7 +1030,7 @@ def test_l1_exhausted_format_repair_marks_the_run_failed(
         "complete_structured",
         as_prepared_test_provider(
             lambda *_args, **kwargs: _model_result(
-                {"processing_level": "L1", "task_matches": []},
+                {"processing_level": "L1"},
                 kwargs["model_call_id"],
             ),
         ),
@@ -1088,7 +1088,7 @@ def test_l1_replays_durable_model_success_after_pre_decision_response_loss(
     session_id = _create_l1_session(tmp_path)
     user_text = "确认这次单轮任务已经完成。"
     policy = freeze_turn_routing_policy(
-        TurnRoutingPolicy(l1_enabled=True, l2_enabled=False),
+        TurnRoutingPolicy(l1_enabled=True),
         source="request_override",
     )
     monkeypatch.setattr(
@@ -1096,7 +1096,7 @@ def test_l1_replays_durable_model_success_after_pre_decision_response_loss(
         "complete_structured",
         as_prepared_test_provider(
             lambda *_args, **kwargs: _model_result(
-                {"processing_level": "L1", "task_matches": []},
+                {"processing_level": "L1"},
                 kwargs["model_call_id"],
             ),
         ),
@@ -1203,7 +1203,7 @@ def test_l1_startup_recovery_fails_closed_on_unsettled_model_dispatch(
     session_id = _create_l1_session(tmp_path)
     user_text = "确认这个模型请求只会发送一次。"
     policy = freeze_turn_routing_policy(
-        TurnRoutingPolicy(l1_enabled=True, l2_enabled=False),
+        TurnRoutingPolicy(l1_enabled=True),
         source="request_override",
     )
     monkeypatch.setattr(
@@ -1211,7 +1211,7 @@ def test_l1_startup_recovery_fails_closed_on_unsettled_model_dispatch(
         "complete_structured",
         as_prepared_test_provider(
             lambda *_args, **kwargs: _model_result(
-                {"processing_level": "L1", "task_matches": []},
+                {"processing_level": "L1"},
                 kwargs["model_call_id"],
             ),
         ),
@@ -1281,7 +1281,7 @@ def test_l1_request_replay_fails_closed_on_an_unsettled_tool_call(
     session_id = _create_l1_session(tmp_path)
     user_text = "查询今天日期。"
     policy = freeze_turn_routing_policy(
-        TurnRoutingPolicy(l1_enabled=True, l2_enabled=False),
+        TurnRoutingPolicy(l1_enabled=True),
         source="request_override",
     )
     monkeypatch.setattr(
@@ -1289,7 +1289,7 @@ def test_l1_request_replay_fails_closed_on_an_unsettled_tool_call(
         "complete_structured",
         as_prepared_test_provider(
             lambda *_args, **kwargs: _model_result(
-                {"processing_level": "L1", "task_matches": []},
+                {"processing_level": "L1"},
                 kwargs["model_call_id"],
             ),
         ),
@@ -1373,7 +1373,7 @@ def test_l1_resumes_a_settled_tool_batch_before_attempt_close(
     session_id = _create_l1_session(tmp_path)
     user_text = "查询今天日期后告诉我。"
     policy = freeze_turn_routing_policy(
-        TurnRoutingPolicy(l1_enabled=True, l2_enabled=False),
+        TurnRoutingPolicy(l1_enabled=True),
         source="request_override",
     )
     monkeypatch.setattr(
@@ -1381,7 +1381,7 @@ def test_l1_resumes_a_settled_tool_batch_before_attempt_close(
         "complete_structured",
         as_prepared_test_provider(
             lambda *_args, **kwargs: _model_result(
-                {"processing_level": "L1", "task_matches": []},
+                {"processing_level": "L1"},
                 kwargs["model_call_id"],
             ),
         ),
@@ -1495,7 +1495,7 @@ def test_l1_returns_a_persisted_finalizing_answer_without_another_model_call(
     session_id = _create_l1_session(tmp_path)
     user_text = "给出本轮最终回答。"
     policy = freeze_turn_routing_policy(
-        TurnRoutingPolicy(l1_enabled=True, l2_enabled=False),
+        TurnRoutingPolicy(l1_enabled=True),
         source="request_override",
     )
     monkeypatch.setattr(
@@ -1503,7 +1503,7 @@ def test_l1_returns_a_persisted_finalizing_answer_without_another_model_call(
         "complete_structured",
         as_prepared_test_provider(
             lambda *_args, **kwargs: _model_result(
-                {"processing_level": "L1", "task_matches": []},
+                {"processing_level": "L1"},
                 kwargs["model_call_id"],
             ),
         ),
@@ -1594,7 +1594,7 @@ def test_l1_recovers_durable_host_repair_feedback_after_process_loss(
     session_id = _create_l1_session(tmp_path)
     user_text = "确认你理解这项要求。"
     policy = freeze_turn_routing_policy(
-        TurnRoutingPolicy(l1_enabled=True, l2_enabled=False),
+        TurnRoutingPolicy(l1_enabled=True),
         source="request_override",
     )
     monkeypatch.setattr(
@@ -1602,7 +1602,7 @@ def test_l1_recovers_durable_host_repair_feedback_after_process_loss(
         "complete_structured",
         as_prepared_test_provider(
             lambda *_args, **kwargs: _model_result(
-                {"processing_level": "L1", "task_matches": []},
+                {"processing_level": "L1"},
                 kwargs["model_call_id"],
             ),
         ),

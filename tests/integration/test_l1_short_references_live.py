@@ -89,7 +89,7 @@ def test_live_l1_short_reference_turn(monkeypatch, tmp_path):
                   "l1_max_tool_calls_per_attempt": 4, "turn_wall_clock_budget_s": 300},
         session_id=session_id, client_request_id="short-reference-live-smoke",
         routing_policy=freeze_turn_routing_policy(
-            TurnRoutingPolicy(l1_enabled=True, l2_enabled=False), source="request_override",
+            TurnRoutingPolicy(l1_enabled=True), source="request_override",
         ), store=store,
     )
     execution = store.get_l1_turn_execution(session_id=session_id, turn_id=result.turn_id)

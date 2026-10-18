@@ -19,13 +19,13 @@ describe("FeedbackBanners", () => {
       props: {
         mode: "chat",
         modelConfigured: true,
-        notice: "任务模式当前仍在开发中，暂不提供消息发送功能。"
+        notice: "当前配置尚未就绪，请完成配置后发送消息。"
       }
     });
 
     const notice = wrapper.get('[role="status"]');
     expect(notice.attributes("aria-live")).toBe("polite");
-    expect(notice.text()).toContain("任务模式当前仍在开发中");
+    expect(notice.text()).toContain("当前配置尚未就绪");
   });
 
   it("offers one-click sidecar wake only when the desktop API is unreachable", async () => {

@@ -69,7 +69,7 @@ def test_entry_lazy_facade_exposes_only_public_use_cases() -> None:
     assert not hasattr(entry_package, "TYPE_CHECKING")
     assert not hasattr(entry_package, "import_module")
     try:
-        entry_package.__getattr__("task_catalog")
+        entry_package.__getattr__("context")
     except AttributeError:
         pass
     else:  # pragma: no cover - 失败分支只为给断言提供清楚的错误

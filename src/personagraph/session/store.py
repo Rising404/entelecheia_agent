@@ -37,27 +37,16 @@ from .runtime_call_ledger_store_facade import (
     RuntimeModelLogicalRequest,
     RuntimeModelPhysicalAttemptRequest,
     RuntimeModelPhysicalAttemptSettlement,
-    RuntimeToolCallIdentityCollision,
-    RuntimeToolCallPersistenceError,
-    RuntimeToolCallTerminalState,
-    RuntimeToolCallWaitingExternalState,
-    RuntimeToolLedgerMutationResult,
-    RuntimeToolLogicalRequest,
-    RuntimeToolPhysicalAttemptRequest,
-    RuntimeToolPhysicalAttemptSettlement,
     StoredRuntimeModelLogicalCall,
     StoredRuntimeModelPhysicalAttempt,
     StoredRuntimeModelRejectedOutput,
-    StoredRuntimeToolLogicalCall,
-    StoredRuntimeToolPhysicalAttempt,
 )
 from .turn_input_store_facade import (
     AttachmentBindingError,
     MAX_RUNTIME_TURN_EVENT_PAGE_SIZE,
     UnknownRuntimeTurnEventCursor,
 )
-from .history_store_facade import TranscriptDeliveryReferenceError
-from .persistence.turns import entry_tasks as entry_task_records
+from .history_store_facade import TranscriptIntegrityError
 from .persistence.metadata import sessions as session_records
 from .persistence.metadata import queries as session_queries
 from .persistence.turns import post_commit_jobs as post_commit_job_records
@@ -74,10 +63,6 @@ from .catalog import (
     SessionCatalogError,
     session_db_relative_path,
     validate_session_id,
-)
-from .entry_task_contracts import (
-    EntryPendingTaskQuestion,
-    EntryTaskCatalogItem,
 )
 from ..persistent_turn_content.findings import (
     ExecutionFindingsLedgerCreateResult,
@@ -127,7 +112,6 @@ ExecutionFindingsStoredAuthorityCorrupt = (
 TurnExecutionWindowRevisionConflict = turn_execution_records.TurnExecutionWindowRevisionConflict
 TurnExecutionLeaseConflict = turn_execution_records.TurnExecutionLeaseConflict
 TurnExecutionFinalizationConflict = turn_execution_records.TurnExecutionFinalizationConflict
-FormalTurnReference = turn_execution_records.FormalTurnReference
 TurnPostCommitJobsPending = turn_execution_records.TurnPostCommitJobsPending
 TurnPostCommitJobLeaseError = turn_execution_records.TurnPostCommitJobLeaseError
 
@@ -580,18 +564,6 @@ get_runtime_model_logical_call = (
 )
 get_runtime_model_rejected_output = (
     _RUNTIME_CALL_LEDGER_STORE_FACADE.get_runtime_model_rejected_output
-)
-reserve_runtime_tool_logical_call = (
-    _RUNTIME_CALL_LEDGER_STORE_FACADE.reserve_runtime_tool_logical_call
-)
-append_runtime_tool_physical_attempt = (
-    _RUNTIME_CALL_LEDGER_STORE_FACADE.append_runtime_tool_physical_attempt
-)
-settle_runtime_tool_physical_attempt = (
-    _RUNTIME_CALL_LEDGER_STORE_FACADE.settle_runtime_tool_physical_attempt
-)
-get_runtime_tool_logical_call = (
-    _RUNTIME_CALL_LEDGER_STORE_FACADE.get_runtime_tool_logical_call
 )
 
 _HISTORY_STORE_FACADE = history_store_facade_records.build_history_store_facade(
@@ -1442,52 +1414,6 @@ def _record_workspace_read_authority(
         return
 
 
-def list_turn_linked_work_run_ids(
-    *,
-    session_id: str,
-    turn_id: str,
-) -> tuple[str, ...]:
-    """按持久化链接顺序返回所有精确的 Turn 关联 WorkRun id。"""
-
-    return entry_task_records.list_turn_linked_work_run_ids(
-        _deps(),
-        session_id=session_id,
-        turn_id=turn_id,
-    )
-
-
-def list_pending_user_questions(
-    *,
-    session_id: str,
-) -> tuple[EntryPendingTaskQuestion, ...]:
-    """投影 Entry/UI 可见、仍等待回答的当前任务问题。"""
-
-    return entry_task_records.list_entry_pending_task_questions(
-        _deps(),
-        session_id=session_id,
-    )
-
-
-def list_insession_task_catalog(
-    session_id: str,
-    *,
-    limit: int | None = None,
-) -> tuple[EntryTaskCatalogItem, ...]:
-    return entry_task_records.list_entry_task_catalog(
-        _deps(), session_id, limit=limit
-    )
-
-
-def list_turn_insession_task_ids(
-    session_id: str,
-    turn_id: str,
-) -> tuple[str, ...]:
-    """读取为某 Turn 持久化的有序根 Task 关联。"""
-    return entry_task_records.list_turn_insession_task_ids(
-        _deps(), session_id, turn_id
-    )
-
-
 def accept_turn_execution(
     *,
     session_id: str,
@@ -1881,110 +1807,6 @@ def finalize_turn_execution(
         post_commit_job_kinds=post_commit_job_kinds,
         expected_lease_owner=expected_lease_owner,
         l1_terminal_failure_code=l1_terminal_failure_code,
-    )
-
-
-def finalize_verified_turn_execution(
-    *,
-    session_id: str,
-    turn_id: str,
-    delivery_id: str,
-    expected_window_revision: int,
-    post_commit_job_kinds: tuple[str, ...],
-    expected_lease_owner: str | None = None,
-) -> dict[str, object]:
-    """发布一个已验证 NodeDelivery，而不复制其冻结正文。"""
-
-    return turn_execution_records.finalize_verified_turn_execution(
-        _deps(),
-        session_id=session_id,
-        turn_id=turn_id,
-        delivery_id=delivery_id,
-        expected_window_revision=expected_window_revision,
-        post_commit_job_kinds=post_commit_job_kinds,
-        expected_lease_owner=expected_lease_owner,
-    )
-
-
-def finalize_verified_turn_deliveries(
-    *,
-    session_id: str,
-    turn_id: str,
-    delivery_ids: tuple[str, ...],
-    expected_window_revision: int,
-    post_commit_job_kinds: tuple[str, ...],
-    pending_question_attempt_ids: tuple[str, ...] = (),
-    expected_lease_owner: str | None = None,
-) -> dict[str, object]:
-    """发布有序 Delivery，随后发布所有待处理问题引用。"""
-
-    return turn_execution_records.finalize_verified_turn_deliveries(
-        _deps(),
-        session_id=session_id,
-        turn_id=turn_id,
-        delivery_ids=delivery_ids,
-        pending_question_attempt_ids=pending_question_attempt_ids,
-        expected_window_revision=expected_window_revision,
-        post_commit_job_kinds=post_commit_job_kinds,
-        expected_lease_owner=expected_lease_owner,
-    )
-
-
-def finalize_referenced_turn_execution(
-    *,
-    session_id: str,
-    turn_id: str,
-    reference_items: tuple[FormalTurnReference, ...],
-    expected_window_revision: int,
-    post_commit_job_kinds: tuple[str, ...],
-    expected_lease_owner: str | None = None,
-) -> dict[str, object]:
-    """发布一个精确、按来源排序的混合正式引用元组。"""
-
-    return turn_execution_records.finalize_referenced_turn_execution(
-        _deps(),
-        session_id=session_id,
-        turn_id=turn_id,
-        reference_items=reference_items,
-        expected_window_revision=expected_window_revision,
-        post_commit_job_kinds=post_commit_job_kinds,
-        expected_lease_owner=expected_lease_owner,
-    )
-
-
-def finalize_authoritative_referenced_turn_execution(
-    *,
-    session_id: str,
-    turn_id: str,
-    expected_window_revision: int,
-    post_commit_job_kinds: tuple[str, ...],
-    expected_lease_owner: str | None = None,
-) -> dict[str, object]:
-    """以原子方式推导并发布精确正式引用元组。"""
-
-    return turn_execution_records.finalize_authoritative_referenced_turn_execution(
-        _deps(),
-        session_id=session_id,
-        turn_id=turn_id,
-        expected_window_revision=expected_window_revision,
-        post_commit_job_kinds=post_commit_job_kinds,
-        expected_lease_owner=expected_lease_owner,
-    )
-
-
-def mark_authoritative_no_public_turn_stop(
-    *,
-    session_id: str,
-    turn_id: str,
-    expected_window_revision: int,
-) -> dict[str, object]:
-    """证明所有执行 lane 均已停止且没有公开正文，并予以标记。"""
-
-    return turn_execution_records.mark_authoritative_no_public_turn_stop(
-        _deps(),
-        session_id=session_id,
-        turn_id=turn_id,
-        expected_window_revision=expected_window_revision,
     )
 
 

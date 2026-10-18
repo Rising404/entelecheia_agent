@@ -46,7 +46,6 @@ class _Contract(BaseModel):
 
 class ExecutionFindingsOwnerKind(StrEnum):
     L1_TURN_RUN = "l1_turn_run"
-    WORK_RUN = "work_run"
 
 
 class ExecutionFindingsLedgerStatus(StrEnum):
@@ -144,7 +143,7 @@ class ExecutionFindingsQuota(_Contract):
 
 
 class ExecutionFindingSourceRef(_Contract):
-    """Host 来源身份；L1 使用调用 ID 和摘要，L2 保留其结果行 ID。"""
+    """Host 来源身份，绑定调用 ID 和结果摘要。"""
 
     tool_result_id: str = Field(pattern=_ID_PATTERN)
     result_sha256: str | None = Field(default=None, pattern=_SHA256_PATTERN)
@@ -154,7 +153,7 @@ class ExecutionFindingSourceRef(_Contract):
     def _preserve_unpinned_wire(self, handler):
         value = handler(self)
         if self.result_sha256 is None:
-            # Existing L2 and legacy L1 records participate in immutable hashes.
+            # Stored records participate in immutable hashes.
             value.pop("result_sha256", None)
         return value
 

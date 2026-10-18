@@ -55,7 +55,7 @@ Host 将短引用解析为完整 `tool_call_id` 与结果 `result_sha256`，并�
 | --- | --- |
 | 下一步查什么、读什么、怎样回答 | 模型提出计划、工具参数、工作笔记和候选答复 |
 | 路由、预算、执行身份、消息提交 | `runtime/entry/` 与 `runtime/l1/` 的编排和持久端口 |
-| 模型请求与工具分派的逻辑/物理调用记录 | `runtime/model_calls/`、`runtime/tool_calls/` |
+| 模型请求与工具分派的逻辑/物理调用记录 | `runtime/model_calls/`、`runtime/l1/protected_tool_dispatch.py` |
 | Provider 方言、结构化输出解码与模型配置合同 | `model_io/` |
 | 工具定义、资源绑定、授权和领域适配 | `tools/`；模型展示归 `tools/model_interface/` |
 | Session 与 Project 的存储结构和事务 | `session/`、`workspace/`，通过显式连接和端口访问 |
@@ -65,9 +65,9 @@ Host 将短引用解析为完整 `tool_call_id` 与结果 `result_sha256`，并�
 机械检查保证的是结构与授权等条件，语义检查本身也依赖模型，两者都不能代替事实核验。
 
 源码入口：[模型内容投影](src/personagraph/runtime/l1/model_view/projection.py)、
-[工具调用状态](src/personagraph/runtime/tool_calls/authority.py)。
-对应测试：[输入边界](tests/runtime/test_attempt_input_projection_boundary.py)、
-[工具调用权威与重复分派](tests/runtime/test_runtime_tool_call_authority.py)。
+[工具调用状态](src/personagraph/session/persistence/l1/turn_runs.py)。
+对应测试：[输入与执行](tests/runtime/test_l1_executable_vertical_slice.py)、
+[工具调用权威与重复分派](tests/runtime/l1/test_serial_protected_tool_batch.py)。
 短引用边界：[提案与持久决定合同](src/personagraph/output_protocol/l1.py)、
 [模型引用准入](src/personagraph/runtime/l1/model_view/references.py)、
 [引用与持久内容校验测试](tests/output_protocol/test_l1_persistence.py)。
@@ -79,7 +79,32 @@ Host 将短引用解析为完整 `tool_call_id` 与结果 `result_sha256`，并�
 更早结果保留在存储中。计划与当前笔记工作集持续进入上下文，但同样受展示预算限制。
 提示要求笔记保留具体待办问题、关键事实、文件就绪状态和短调用引用，而不只是“已读取”。
 缺失旧正文时优先回读；不明确结构时从 `/result` 开始，不猜路径或重做文件准备。
-这是模型指导而非 Host 强制工作流，仍需真实运行检验模型是否遵从。
+另有从持久调用重建的有界阅读目录，最多保留 48 个不同参数的调用摘要，记录实际返回页、
+截断游标、续读参数、原调用短引用与相同参数的调用次数；不复制正文，也不推断全文已读。
+冻结附件另按读取范围汇总最远续读游标和实际尚无文字的物理页，重复旧前缀不会使游标回退。
+目录合计不超过 64 KB；页码摘要只说明出现过文字，不宣称整页或图片已读完。
+原生文档读取默认最多 64 个文本元素（可指定至 128），仍受 6000 默认字符、8000 最大字符
+和输出字节预算约束。已有显式分页参数保持原义，结果截断后必须使用返回游标续读。
+L1 准入要求字符游标同时指定元素偏移；参数先按冻结工具 schema 的默认值归一化。
+等价参数、同结果的冻结附件读取或历史回读，
+允许一次复核，第三次会进入动作修复，要求续读或改变查找方式。此规则不缓存或代替工具结果，
+不适用于可变工作区文件、不同范围、已变化的结果或可重试失败；不可变历史上已经确认不存在
+的同一路径必须先修正，不能原样重复请求。
+历史回读的 `partial/next_offset` 只描述已保存结果内部的分页；新增的可选
+`source_truncated/source_next_cursor` 保留原文件的截断状态和续读游标，
+读完一段历史结果不能据此宣称已经读完原文件。旧历史原件不改写，缺少范围信息时返回未知。
+模型正文投影保留文字、页码、坐标与截断范围，省去解析器内部 ID 和空元信息，并把已返回
+文字按页连接为 `content` 供连续阅读；它不摘要、不补读，持久原件不变。
+审查优先取显式引用，再补最多 24 条去重后的近期证据，仍受总字节预算限制。
+审查不接收执行模型的笔记与提交自述，而是核对候选、真实结果和附件覆盖摘要。
+审查请求因配额准入/等待、Provider 故障、超时或输出修复耗尽而无法取得有效结论时，
+L1 提交已经通过机械校验的原候选，以 `unavailable` 回执记录审查调用 ID 和失败码；
+不会伪造通过结果，也不会重新生成候选。有效的审查驳回仍走修正流程。
+证据/来源损坏、调用账本与租约错误继续阻断交付；整轮截止时间也不因降级延长。
+持久化使用 `l1-semantic-verification-receipt-v2` 的可选字段扩展；旧回执的 canonical JSON
+及 hash 保持不变，无需改写历史数据。提交事务重新核对候选与状态绑定，并拒绝把成功审查
+（包括有效驳回）或未结算请求改称不可用。L0 不进入这条审查路径。
+阅读策略与语义判断仍需真实运行验证；Host 准入只强制结构、身份、游标和重复请求规则。
 
 | 内容 | 用途与范围 | 不应混淆之处 |
 | --- | --- | --- |
@@ -158,7 +183,7 @@ TurnRun、Attempt 和调用账本记录执行事实，内存变量只是当前�
 
 源码入口：[L1 恢复资格与租约](src/personagraph/runtime/l1/recovery.py)、
 [恢复调度](src/personagraph/runtime/l1/recovery_worker.py)、
-[调用结果回放](src/personagraph/runtime/tool_calls/authority.py)、
+[调用结果回放](src/personagraph/runtime/l1/recovery.py)、
 [提交后任务](src/personagraph/runtime/post_commit/)。
 对应测试：[恢复 worker](tests/runtime/test_l1_recovery_worker.py)、
 [终局消息持久化](tests/session/persistence/l1/test_l1_terminal_delivery_persistence.py)、
@@ -186,7 +211,10 @@ TurnRun、Attempt 和调用账本记录执行事实，内存变量只是当前�
 模型展示不另建执行实现，controller 不拥有数据库 schema 或 Provider 传输。
 数据库 schema 与目录工厂是源码，实际数据库内容是私有运行数据。
 
-L2 任务图仍被路由、存储和回归引用，超出本文的公开 L1 功能与成绩范围，不能因默认关闭就视为可直接删除。
+运行时仅包含 L0 直接回答与 L1 单轮工具执行，路由协议 v2 只包含 `l1_enabled`。
+Session schema 105 支持从精确验证的 103/104 schema 原子迁移；保留 L0/L1 的会话、
+内联历史、附件授权、模型/工具调用账本和恢复状态。迁移前验证 schema 指纹与外键，
+迁移后重新验证；发生异常时整个迁移回滚。历史模型请求的持久化哈希在边界校验中保留。
 内部 Python 包名 `personagraph` 与 `persona_id` 存储兼容字段保留；公开会话没有角色选择或角色注入路径。
 本地界面外观与受范围约束的 Session 上下文是另外的现行功能。
 状态、配置和 token 路径覆盖必须是源码 checkout 外的绝对路径。

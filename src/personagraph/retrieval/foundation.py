@@ -4,7 +4,7 @@
 组装为一个 ``RetrievalFoundation``。它是多个子域依赖汇合的位置，因此保留在包根，而不归入
 任一具体子包，避免 Indexing 或 Sources 反向取得整个系统的组合权。
 
-Foundation 只负责构造可用组件和安全诊断快照；它不选择 L0/L1/L2、不决定某个 Turn 是否启用
+Foundation 只负责构造可用组件和安全诊断快照；它不选择 L0/L1、不决定某个 Turn 是否启用
 检索、不扩大 Session/Document 授权，也不把模型输出写回权威来源。上述决策由外层 Runtime、
 Source authority 与持久化事务各自负责。
 """

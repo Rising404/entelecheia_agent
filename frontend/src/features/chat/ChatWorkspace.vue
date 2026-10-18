@@ -1,15 +1,12 @@
 <script setup>
 import { computed, ref } from "vue";
 import { AlertTriangle, Archive, FolderOpen, MessageSquare, Paperclip, RotateCcw, Save, Send, Trash2, X, XCircle } from "@lucide/vue";
-import InSessionTaskCards from "../runtime/InSessionTaskCards.vue";
 import SessionHistoryPlacement from "../workspace/SessionHistoryPlacement.vue";
-import PendingUserQuestionDialog from "./PendingUserQuestionDialog.vue";
 import RuntimeModeControl from "../runtime/RuntimeModeControl.vue";
 import { roleText } from "./presentation";
 import { sessionStatusText } from "../../shared/presentation";
 import {
   MAX_ATTACHMENTS_PER_TURN,
-  TASK_MODE_SEND_BLOCKED_NOTICE
 } from "./useSessionChatActions";
 
 const props = defineProps({
@@ -24,7 +21,6 @@ const props = defineProps({
   attachmentUploading: Boolean,
   streamEvents: { type: Array, default: () => [] },
   runtimeEvents: { type: Array, default: () => [] },
-  insessionTaskDetails: { type: Array, default: () => [] },
   streamingReply: { type: String, default: "" },
   readOnlyReason: { type: String, default: "" },
   postCommitFailure: { type: Object, default: null },
@@ -32,8 +28,6 @@ const props = defineProps({
   canRecoverPostCommit: Boolean,
   input: { type: String, default: "" },
   canSend: Boolean,
-  pendingUserQuestions: { type: Array, default: () => [] },
-  canAnswerPendingQuestion: Boolean,
   inputPlaceholder: { type: String, default: "" },
   draftLength: { type: Number, default: 0 },
   developerMode: Boolean,
@@ -52,7 +46,6 @@ const incompleteReasonText = computed(() => ({
   process_lost: "运行进程意外结束，尚未形成正式回复。",
   unknown: "本轮未能正常结束，尚未形成正式回复。"
 }[props.incompleteTurn?.endReason] || "本轮未能形成正式回复。"));
-const taskModeSendBlocked = computed(() => props.runtimeMode === "task");
 
 const emit = defineEmits([
   "update:title",
@@ -68,7 +61,6 @@ const emit = defineEmits([
   "attach-files",
   "remove-attachment",
   "send",
-  "answer-pending-question",
   "retry-post-commit",
   "waive-post-commit",
   "composer-keydown"
@@ -190,7 +182,6 @@ function onDrop(event) {
       <div v-if="turns.length === 0 && !incompleteTurn && !chatBusy && !streamingReply" class="empty min-h-60"><MessageSquare :size="30" /><span>开始一轮真实会话</span></div>
     </section>
 
-    <InSessionTaskCards :tasks="insessionTaskDetails" />
 
     <div v-if="readOnlyReason" class="flex items-center gap-2 rounded-md border border-warn-line bg-warn-bg px-3 py-2 text-sm text-warn"><AlertTriangle :size="16" /><span>{{ readOnlyReason }}</span></div>
     <div v-if="postCommitFailure" class="flex flex-wrap items-center gap-2" data-testid="post-commit-recovery">
@@ -214,18 +205,8 @@ function onDrop(event) {
       @update:model-value="$emit('update:runtime-mode', $event)"
     />
 
-    <PendingUserQuestionDialog
-      v-if="pendingUserQuestions.length"
-      :questions="pendingUserQuestions"
-      :input="input"
-      :can-answer="canAnswerPendingQuestion"
-      :busy="chatBusy"
-      @update:input="$emit('update:input', $event)"
-      @send="$emit('answer-pending-question')"
-      @composer-keydown="$emit('composer-keydown', $event)"
-    />
 
-    <form v-else class="composer" @submit.prevent="$emit('send')">
+    <form class="composer" @submit.prevent="$emit('send')">
       <textarea
         :value="input"
         class="composer-input col-span-2"
@@ -268,7 +249,6 @@ function onDrop(event) {
           class="cmd primary"
           type="submit"
           :disabled="chatBusy || !canSend || !input.trim()"
-          :title="taskModeSendBlocked ? TASK_MODE_SEND_BLOCKED_NOTICE : undefined"
         >
           <Send :size="16" />{{ chatBusy ? "发送中" : "发送" }}
         </button>

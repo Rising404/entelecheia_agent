@@ -47,25 +47,10 @@ describe("retired feature boundary", () => {
       "listReminders",
       "createReminder",
       "patchReminder",
-      "cancelReminder"
+      "cancelReminder",
     ];
 
     for (const method of retiredMethods) expect(api).not.toHaveProperty(method);
-    expect(api.getInSessionTaskDetails).toBeTypeOf("function");
-  });
-});
-
-describe("getInSessionTaskDetails", () => {
-  it("uses the session-scoped read-only task endpoint", async () => {
-    const fetch = vi.fn().mockResolvedValue(new Response(JSON.stringify({ task: {} }), { status: 200 }));
-    vi.stubGlobal("fetch", fetch);
-
-    await api.getInSessionTaskDetails("session/a", "task b");
-
-    expect(fetch).toHaveBeenCalledWith(
-      "http://127.0.0.1:8765/api/sessions/session%2Fa/insession-tasks/task%20b",
-      expect.objectContaining({ headers: expect.objectContaining({ "Content-Type": "application/json" }) })
-    );
   });
 });
 

@@ -2,8 +2,7 @@
 
 This module owns only physical mounted-document selection, DocStore generation and
 freshness checks, managed-input admission, private-workspace exclusion, and raw
-document/visual bindings. It deliberately does not know about L1, L2 planning
-resources, AuxiliaryGraph projections, prompt cards, or model execution.
+document/visual bindings. Model execution is owned by the caller.
 """
 
 from __future__ import annotations

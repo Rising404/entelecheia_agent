@@ -120,7 +120,7 @@ def test_history_read_keeps_original_evidence_after_body_eviction(
 
     monkeypatch.setattr("personagraph.runtime.l1.model.complete_structured", as_prepared_test_provider(decide))
     monkeypatch.setattr("personagraph.runtime.entry.ingress.model.complete_structured", as_prepared_test_provider(
-        lambda *_args, **kwargs: _result({"processing_level": "L1", "task_matches": []}, kwargs),
+        lambda *_args, **kwargs: _result({"processing_level": "L1"}, kwargs),
     ))
     monkeypatch.setattr("personagraph.runtime.l1.semantic_verification.complete_structured", as_prepared_test_provider(review))
     monkeypatch.setattr("personagraph.runtime.model_calls.requests._sleep", lambda _: None)
@@ -128,7 +128,7 @@ def test_history_read_keeps_original_evidence_after_body_eviction(
         user_input=USER_TEXT, features={"context_guard_limit": 24_000, "l1_max_attempts": 6,
                                       "l1_max_tool_calls_per_attempt": 4},
         session_id=session_id, client_request_id=f"tool-history-{reject_first_answer}",
-        routing_policy=freeze_turn_routing_policy(TurnRoutingPolicy(l1_enabled=True, l2_enabled=False),
+        routing_policy=freeze_turn_routing_policy(TurnRoutingPolicy(l1_enabled=True),
                                                 source="request_override"),
         store=session_store,
     )

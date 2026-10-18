@@ -234,7 +234,6 @@ const {
   chatBusy,
   chatStreamEvents,
   runtimeEvents,
-  inSessionTaskDetails,
   streamingReply,
   incompleteTurn,
   chatDraftSessionIds,
@@ -244,11 +243,9 @@ const {
   runtimeRouting,
   canChangeRuntimeMode,
   turns,
-  pendingUserQuestions,
   sessionTitleDirty,
   currentChatDraftLength,
   canSendChat,
-  canAnswerPendingQuestion,
   chatReadOnlyReason,
   chatInputPlaceholder,
   postCommitFailure,
@@ -272,7 +269,6 @@ const {
   trashSession,
   restoreTrashedSession,
   sendChat,
-  sendPendingUserAnswer,
   handleChatComposerKeydown,
   reconcileRuntimeState
 } = useChatFeature({
@@ -711,12 +707,10 @@ function updateDraftField(target, { field, value }) {
           :title-dirty="sessionTitleDirty"
           :saving="saving"
           :turns="turns"
-          :pending-user-questions="pendingUserQuestions"
           :incomplete-turn="incompleteTurn"
           :chat-busy="chatBusy"
           :stream-events="chatStreamEvents"
           :runtime-events="runtimeEvents"
-          :insession-task-details="inSessionTaskDetails"
           :streaming-reply="streamingReply"
           :read-only-reason="chatReadOnlyReason"
           :post-commit-failure="postCommitFailure"
@@ -725,7 +719,6 @@ function updateDraftField(target, { field, value }) {
           @retry-post-commit="retryPostCommit"
           @waive-post-commit="waivePostCommit"
           :can-send="canSendChat"
-          :can-answer-pending-question="canAnswerPendingQuestion"
           :input-placeholder="chatInputPlaceholder"
           :draft-length="currentChatDraftLength"
           :history-folders="historyFolderOptions"
@@ -737,7 +730,6 @@ function updateDraftField(target, { field, value }) {
           @clear-draft="clearCurrentChatDraft"
           @move-session-history="moveSelectedSessionToHistory"
           @send="sendChat"
-          @answer-pending-question="sendPendingUserAnswer"
           :developer-mode="developerMode"
           @composer-keydown="handleChatComposerKeydown"
         />

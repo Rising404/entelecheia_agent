@@ -248,7 +248,7 @@ def test_scope_rejects_duplicate_aliases(picture: Path) -> None:
         )
 
 
-def test_tool_owner_has_no_l2_or_runtime_imports() -> None:
+def test_tool_owner_has_no_runtime_imports() -> None:
     module_path = (
         Path(__file__).resolve().parents[2]
         / "src/personagraph/tools/visual/mounted_visual_tools.py"
@@ -267,17 +267,13 @@ def test_tool_owner_has_no_l2_or_runtime_imports() -> None:
     )
 
     assert not any(
-        module == "personagraph.l2" or module.startswith("personagraph.l2.")
-        for module in imported_modules
-    )
-    assert not any(
         module == "personagraph.runtime"
         or module.startswith("personagraph.runtime.")
         for module in imported_modules
     )
     assert not any(
         node.level > 0
-        and (node.module or "").split(".", 1)[0] in {"l2", "runtime"}
+        and (node.module or "").split(".", 1)[0] in {"runtime"}
         for node in ast.walk(tree)
         if isinstance(node, ast.ImportFrom)
     )

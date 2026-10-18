@@ -98,7 +98,7 @@ def test_authoritative_pending_approval_holds_even_for_simple_or_quoted_text():
 
     assert decision.disposition == IngressDisposition.HOLD_APPROVAL
     assert decision.handler == IngressHandler.NONE
-    assert decision.analysis_floor == IngressAnalysisFloor.L2
+    assert decision.analysis_floor == IngressAnalysisFloor.L1
     assert IngressReason.PENDING_APPROVAL_EXISTS in decision.reason_codes
 
 

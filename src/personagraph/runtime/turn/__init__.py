@@ -1,4 +1,4 @@
-"""L0、L1 和 L2 可共享的冷 Turn 契约。"""
+"""L0/L1 共享的冷 Turn 契约。"""
 
 from .contracts import (
     DEFAULT_TURN_ROUTING_POLICY_SNAPSHOT,

@@ -547,8 +547,8 @@ def test_editing_a_referenced_profile_cannot_invalidate_its_tier_effort():
         base_url="https://api.openai.com/v1",
     )
     _route_payload("PUT", "/api/config", {
-        "tier_architect_profile_id": referenced["id"],
-        "tier_architect_reasoning_effort": "minimal",
+        "tier_l1_profile_id": referenced["id"],
+        "tier_l1_reasoning_effort": "minimal",
     })
 
     with pytest.raises(ApiError) as raised:
@@ -587,8 +587,8 @@ def test_activating_a_profile_cannot_invalidate_inherited_tier_effort(
         base_url="https://api.anthropic.com",
     )
     _route_payload("PUT", "/api/config", {
-        "tier_architect_profile_id": "-",
-        "tier_architect_reasoning_effort": "minimal",
+        "tier_l1_profile_id": "-",
+        "tier_l1_reasoning_effort": "minimal",
     })
 
     with pytest.raises(ApiError) as raised:

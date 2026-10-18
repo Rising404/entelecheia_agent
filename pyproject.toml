@@ -95,13 +95,10 @@ select = ["E4", "E7", "E9", "F"]
 # 会让 19 个网关测试报 `module has no attribute 'httpx'`）。
 #
 # 静态检查区分不了「接缝」「历史遗留的死 re-export」和「真正的未使用导入」，这需要按模块
-# 由所有者逐个判定，不能由工具默认。因此对这 7 个模块不启用 F401；其余全仓文件正常受
+# 由所有者逐个判定，不能由工具默认。因此对这 4 个模块不启用 F401；其余全仓文件正常受
 # F401 约束。收口方向：注入接缝改为显式命名的 seam（或测试改用依赖注入），历史遗留的
 # 死 re-export 直接删除，然后逐条移除下面的条目。不得整体 --fix。
 "src/personagraph/model_io/gateway.py" = ["F401"]
 "src/personagraph/model_io/provider_openai.py" = ["F401"]
 "src/personagraph/session/store.py" = ["F401"]
 "src/personagraph/runtime/entry/application.py" = ["F401"]
-"src/personagraph/l2/auxiliary_execution/planning/controller.py" = ["F401"]
-"src/personagraph/l2/auxiliary_execution/planning/goal_successor_controller.py" = ["F401"]
-"src/personagraph/l2/auxiliary_execution/planning/positive_controller.py" = ["F401"]

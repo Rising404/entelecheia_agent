@@ -36,14 +36,14 @@ def execution(tmp_path):
             CREATE TABLE l1_turn_plan_revisions (l1_turn_run_id TEXT, revision INTEGER);
             INSERT INTO l1_turn_runs VALUES ('run', 'session', 'turn', 1);
         """)
-        for ordinal in range(1, 11):
+        for ordinal in range(1, 31):
             # Deliberately reverse ID order, including two calls in the latest batch.
             step = f"step-{99 - ordinal}"
             conn.execute(
                 "INSERT INTO l1_turn_steps VALUES (?, 'run', ?, NULL, NULL)",
                 (step, ordinal),
             )
-            for call_ordinal in ((2, 1) if ordinal == 10 else (1,)):
+            for call_ordinal in ((2, 1) if ordinal == 30 else (1,)):
                 outcome = json.dumps({"result": {"position": [ordinal, call_ordinal]}})
                 conn.execute(
                     "INSERT INTO l1_turn_tool_calls VALUES "
@@ -63,15 +63,15 @@ def execution(tmp_path):
 
 
 def test_execution_projection_orders_calls_by_attempt_then_batch_ordinal(execution):
-    assert [attempt["ordinal"] for attempt in execution["attempts"]] == list(range(1, 11))
+    assert [attempt["ordinal"] for attempt in execution["attempts"]] == list(range(1, 31))
     assert [call["tool_call_id"] for call in execution["tool_calls"]] == [
-        *(f"call-{ordinal}-1" for ordinal in range(1, 11)), "call-10-2",
+        *(f"call-{ordinal}-1" for ordinal in range(1, 31)), "call-30-2",
     ]
 
 
 def test_recent_review_evidence_uses_latest_persisted_results_without_references(execution):
     evidence = project_review_evidence(references=(), execution=execution)
     assert [item["result"]["position"] for item in evidence["results"]] == [
-        [10, 2], [10, 1], [9, 1], [8, 1], [7, 1], [6, 1], [5, 1], [4, 1],
+        [30, 2], *([ordinal, 1] for ordinal in range(30, 7, -1)),
     ]
-    assert evidence["omitted_recent_result_count"] == 3
+    assert evidence["omitted_recent_result_count"] == 7

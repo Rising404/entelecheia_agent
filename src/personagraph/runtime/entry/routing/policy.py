@@ -16,7 +16,7 @@ from ...turn.contracts import (
 )
 
 
-_POLICY_KEYS = {"schema_version", "l1_enabled", "l2_enabled"}
+_POLICY_KEYS = {"schema_version", "l1_enabled"}
 _SNAPSHOT_KEYS = {
     "schema_version",
     "source",
@@ -55,7 +55,7 @@ def default_turn_routing_policy() -> TurnRoutingPolicy:
 def available_processing_levels() -> tuple[ProcessingLevel, ...]:
     """返回 Host 实现的处理层级；逐 Turn policy 决定其中哪些可用。"""
 
-    return ("L0", "L1", "L2")
+    return ("L0", "L1")
 
 
 def freeze_turn_routing_policy(
@@ -135,7 +135,7 @@ def parse_turn_routing_policy_snapshot(
             raise ValueError("invalid routing-policy snapshot source")
         raw_levels = parsed["allowed_processing_levels"]
         if not isinstance(raw_levels, (list, tuple)) or any(
-            type(level) is not str or level not in {"L0", "L1", "L2"}
+            type(level) is not str or level not in {"L0", "L1"}
             for level in raw_levels
         ):
             raise ValueError("invalid allowed_processing_levels")
@@ -195,9 +195,8 @@ def _policy_from_mapping(
     if require_complete and set(value) != _POLICY_KEYS:
         raise ValueError("stored routing policy is incomplete")
     return TurnRoutingPolicy(
-        schema_version=value.get("schema_version", 1),
+        schema_version=value.get("schema_version", 2),
         l1_enabled=value.get("l1_enabled", True),
-        l2_enabled=value.get("l2_enabled", False),
     )
 
 

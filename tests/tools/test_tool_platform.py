@@ -577,7 +577,7 @@ def test_tool_platform_and_catalog_have_one_way_dependencies() -> None:
         "schema_validation.py",
     }
     files = sorted(root.glob("*.py")) + sorted((root / "catalog").rglob("*.py"))
-    forbidden = {"runtime", "langgraph", "session", "insession_task"}
+    forbidden = {"runtime", "langgraph", "session"}
     for path in files:
         module = ast.parse(path.read_text(encoding="utf-8"))
         imported: set[str] = set()

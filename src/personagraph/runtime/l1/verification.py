@@ -27,13 +27,17 @@ class L1VerificationIssue:
     code: str
     acceptance_id: str | None = None
     tool_call_id: str | None = None
+    reference_index: int | None = None
 
-    def to_dict(self) -> dict[str, str | None]:
-        return {
+    def to_dict(self) -> dict[str, object]:
+        result: dict[str, object] = {
             "code": self.code,
             "acceptance_id": self.acceptance_id,
             "tool_call_id": self.tool_call_id,
         }
+        if self.reference_index is not None:
+            result["reference_index"] = self.reference_index
+        return result
 
 
 @dataclass(frozen=True, slots=True)
@@ -46,7 +50,15 @@ class L1VerificationResult:
 
     def safe_feedback(self) -> str:
         codes = tuple(dict.fromkeys(issue.code for issue in self.issues))
-        return "L1 final-reply verification failed: " + ", ".join(codes)
+        feedback = "L1 final-reply verification failed: " + ", ".join(codes)
+        for issue in self.issues:
+            if issue.code == "chunk_not_in_referenced_result" and issue.reference_index is not None:
+                feedback += (
+                    f"; references[{issue.reference_index}].chunk_id does not belong to its result. "
+                    "Copy the exact chunk_id from that result; page/section numbers are not chunk IDs. "
+                    "Alternatively omit optional chunk_id to cite the original result with the same call_ref."
+                )
+        return feedback
 
     def safe_details(self) -> dict[str, object]:
         return {
@@ -154,7 +166,12 @@ def verify_l1_final_reply(
         try:
             project_referenced_results(references=references, execution=execution)
         except L1EvidenceProjectionError as exc:
-            issues.append(L1VerificationIssue(str(exc)))
+            index = exc.reference_index
+            issues.append(L1VerificationIssue(
+                str(exc),
+                tool_call_id=references[index].tool_call_id if index is not None else None,
+                reference_index=index,
+            ))
 
     return L1VerificationResult(
         contract_version=L1_VERIFICATION_CONTRACT_VERSION,

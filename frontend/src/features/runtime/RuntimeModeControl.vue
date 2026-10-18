@@ -1,8 +1,7 @@
 <script setup>
 import { computed } from "vue";
-import { ListTodo, Zap } from "@lucide/vue";
+import { Zap } from "@lucide/vue";
 import {
-  RUNTIME_MODE_TASK,
   RUNTIME_MODE_TURN,
   runtimeModeAvailable
 } from "./runtimeRouting";
@@ -23,12 +22,6 @@ const options = computed(() => [
     title: runtimeModeAvailable(RUNTIME_MODE_TURN, props.routing)
       ? "本轮允许模型在直接回答与单轮工具执行之间选择（L0/L1）"
       : "L1 Runtime 当前未启用"
-  },
-  {
-    value: RUNTIME_MODE_TASK,
-    label: "任务",
-    icon: ListTodo,
-    title: "任务模式仍在开发中；当前可查看界面，但不会发送消息或启动真实任务"
   }
 ].map((option) => ({
   ...option,
@@ -83,7 +76,7 @@ function selectMode(option) {
 .runtime-mode-segments {
   display: grid;
   min-width: min(100%, 252px);
-  grid-template-columns: repeat(3, minmax(68px, 1fr));
+  grid-template-columns: minmax(68px, 1fr);
   overflow: hidden;
   border: 1px solid var(--color-line);
   border-radius: 6px;

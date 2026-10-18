@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from types import SimpleNamespace
 
 import pytest
 
@@ -17,10 +16,6 @@ from personagraph.runtime.turn.contracts import (
 from personagraph.runtime.concurrency import SessionRunBusyError
 from personagraph.runtime.post_commit.runner import process_due_turn_post_commit_jobs
 from personagraph.session import store as ss
-from personagraph.session.insession_task_contracts import (
-    InSessionTaskPersistenceError,
-)
-from personagraph.session.l2_store import task_graph as task_graph_store  # noqa: F401
 from tests.helpers.session_records import append_test_turn
 
 
@@ -59,7 +54,6 @@ def test_session_list_create_get_patch_contract():
     assert detail["session"]["title"] == "前端 API"
     assert "persona_id" not in detail["session"]
     assert [t["role"] for t in detail["turns"]] == ["user", "assistant"]
-    assert detail["pending_user_questions"] == []
     assert detail["turn_window"] is None
 
 
@@ -68,54 +62,6 @@ def test_session_creation_ignores_client_persona_selection():
 
     assert "persona_id" not in created["session"]
     assert ss.get_session(created["session"]["id"])["persona_id"] == "Entelecheia"
-
-
-def test_get_session_projects_pending_questions_without_execution_authority(monkeypatch):
-    sid = ss.create_session("Entelecheia", title="pending question")
-    monkeypatch.setattr(
-        ss,
-        "list_pending_user_questions",
-        lambda *, session_id: (
-            SimpleNamespace(
-                insession_task_id="task-trip",
-                question="你希望哪天出发？",
-                work_run_id="private-work-run",
-                question_attempt_id="private-attempt",
-                work_run_revision=7,
-            ),
-        ),
-    )
-
-    detail = service.get_session(sid)
-
-    assert detail["pending_user_questions"] == [{
-        "insession_task_id": "task-trip",
-        "question": "你希望哪天出发？",
-    }]
-    assert "private-work-run" not in str(detail)
-    assert "private-attempt" not in str(detail)
-
-    patched = service.patch_session(sid, {"title": "新标题", "status_action": "archive"})
-    assert patched["session"]["title"] == "新标题"
-    assert patched["session"]["status"] == "archived"
-
-
-def test_get_session_fails_closed_when_neutral_pending_projection_is_corrupt(
-    monkeypatch,
-):
-    sid = ss.create_session("Entelecheia", title="corrupt pending question")
-
-    def fail_pending_read(*, session_id: str) -> tuple[object, ...]:
-        assert session_id == sid
-        raise InSessionTaskPersistenceError("corrupt pending authority")
-
-    monkeypatch.setattr(ss, "list_pending_user_questions", fail_pending_read)
-
-    with pytest.raises(session_service.ApiError) as captured:
-        service.get_session(sid)
-
-    assert captured.value.code == "PENDING_USER_QUESTIONS_UNAVAILABLE"
-    assert captured.value.status == 409
 
 
 def test_chat_turn_forwards_client_id_and_projects_only_entry_contract(monkeypatch):
@@ -177,13 +123,9 @@ def test_chat_turn_forwards_client_id_and_projects_only_entry_contract(monkeypat
         "reply": "hello",
         "end_reason": None,
         "error_code": None,
-        "related_insession_task_ids": [],
-        "work_run_ids": [],
         "window_state": "empty",
         "window_revision": 3,
         "available_controls": [],
-        "delivery": None,
-        "pending_decision": None,
     }
     assert result["session"]["id"] == sid
 
@@ -202,7 +144,6 @@ def test_real_entry_returns_trusted_turn_fields_and_idempotent_replay(
     assert payload["processing_level"] == "L0"
     assert payload["turn_id"]
     assert payload["session_id"] == sid
-    assert payload["related_insession_task_ids"] == []
     assert replayed["result"]["turn_id"] == payload["turn_id"]
     assert [item["role"] for item in ss.get_turns(sid)] == ["user", "assistant"]
 
@@ -233,7 +174,7 @@ def test_turn_result_view_never_leaks_legacy_trace_or_diagnostics():
         session_id="s1",
         turn_id="t1",
         status="incomplete",
-        processing_level="L2",
+        processing_level="L1",
         window_state="interrupted",
         window_revision=4,
         end_reason="provider_unavailable",
@@ -245,17 +186,13 @@ def test_turn_result_view_never_leaks_legacy_trace_or_diagnostics():
         "session_id": "s1",
         "turn_id": "t1",
         "status": "incomplete",
-        "processing_level": "L2",
+        "processing_level": "L1",
         "reply": None,
         "end_reason": "provider_unavailable",
         "error_code": "MODEL_TIMEOUT",
-        "related_insession_task_ids": [],
-        "work_run_ids": [],
         "window_state": "interrupted",
         "window_revision": 4,
         "available_controls": ["retry"],
-        "delivery": None,
-        "pending_decision": None,
     }
     assert "diagnostics" not in result
     assert "trace" not in result

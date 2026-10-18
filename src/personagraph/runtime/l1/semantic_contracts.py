@@ -5,7 +5,10 @@ from __future__ import annotations
 from enum import StrEnum
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+from pydantic import (
+    BaseModel, ConfigDict, Field, SerializerFunctionWrapHandler,
+    field_validator, model_serializer, model_validator,
+)
 
 
 L1_SEMANTIC_VERIFICATION_CONTRACT_VERSION = "l1-semantic-verification-v2"
@@ -25,6 +28,16 @@ class L1SemanticVerificationMode(StrEnum):
     OFF = "off"
     CONDITIONAL = "conditional"
     ALWAYS = "always"
+
+
+class L1SemanticReviewUnavailableCode(StrEnum):
+    """仅审查服务失败可降级；身份、证据、租约和账本错误不在其中。"""
+
+    QUOTA_ADMISSION = "MODEL_QUOTA_ADMISSION_FAILED"
+    QUOTA_WAIT = "MODEL_QUOTA_WAIT_TIMEOUT"
+    PROVIDER = "MODEL_CALL_FAILED"
+    TIMEOUT = "MODEL_CALL_TIMEOUT"
+    INVALID_RESPONSE = "MODEL_BAD_RESPONSE"
 
 
 class L1SemanticIssue(_Contract):
@@ -95,7 +108,7 @@ class L1SemanticVerificationReceipt(_Contract):
     contract_version: Literal["l1-semantic-verification-receipt-v2"] = (
         L1_SEMANTIC_VERIFICATION_RECEIPT_VERSION
     )
-    disposition: Literal["not_required", "passed"]
+    disposition: Literal["not_required", "passed", "unavailable"]
     trigger: L1SemanticVerificationTrigger
     decision_hash: str = Field(pattern=_SHA256_PATTERN)
     plan_hash: str = Field(pattern=_SHA256_PATTERN)
@@ -112,6 +125,17 @@ class L1SemanticVerificationReceipt(_Contract):
         pattern=_SHA256_PATTERN,
     )
     reviewer_result: L1SemanticVerificationResult | None = None
+    unavailable_error_code: L1SemanticReviewUnavailableCode | None = None
+
+    @model_serializer(mode="wrap")
+    def _preserve_existing_receipt_bytes(
+        self, handler: SerializerFunctionWrapHandler
+    ) -> dict[str, object]:
+        # v2 的兼容扩展：旧回执不补 null 字段，保留已有 canonical JSON/hash。
+        value = handler(self)
+        if self.unavailable_error_code is None:
+            value.pop("unavailable_error_code", None)
+        return value
 
     @model_validator(mode="after")
     def _consistent_disposition(self) -> "L1SemanticVerificationReceipt":
@@ -120,6 +144,18 @@ class L1SemanticVerificationReceipt(_Contract):
             self.reviewer_result_hash,
             self.reviewer_result,
         )
+        if self.disposition == "unavailable":
+            if (
+                not self.trigger.required
+                or self.reviewer_logical_call_id is None
+                or self.unavailable_error_code is None
+                or self.reviewer_result_hash is not None
+                or self.reviewer_result is not None
+            ):
+                raise ValueError("unavailable receipt requires a failed review, not a verdict")
+            return self
+        if self.unavailable_error_code is not None:
+            raise ValueError("only unavailable receipts can carry a review failure")
         if self.disposition == "not_required":
             if self.trigger.required or any(
                 value is not None for value in review_fields

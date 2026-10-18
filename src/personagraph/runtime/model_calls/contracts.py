@@ -217,15 +217,9 @@ def runtime_model_dispatch_request_sha256(
 class RuntimeModelLogicalRequest(_Contract):
     """一个已预留语义请求及其完整有类型输入。"""
 
-    schema_version: Literal["runtime-model-logical-request-v1"] = (
-        "runtime-model-logical-request-v1"
-    )
+    schema_version: Literal["runtime-model-logical-request-v1", "runtime-model-logical-request-v2"] = "runtime-model-logical-request-v2"
     logical_call_id: str = Field(pattern=_ID_PATTERN)
     session_id: str = Field(pattern=_ID_PATTERN)
-    task_id: str | None = Field(default=None, pattern=_ID_PATTERN)
-    auxiliary_graph_id: str | None = Field(default=None, pattern=_ID_PATTERN)
-    goal_id: str | None = Field(default=None, pattern=_ID_PATTERN)
-    execution_subject_id: str | None = Field(default=None, pattern=_ID_PATTERN)
     invocation_turn_id: str = Field(pattern=_ID_PATTERN)
     call_kind: str = Field(pattern=_ID_PATTERN)
     purpose: str = Field(pattern=_ID_PATTERN)
@@ -242,6 +236,16 @@ class RuntimeModelLogicalRequest(_Contract):
     state_guard_sha256: str = Field(pattern=_SHA256_PATTERN)
     binding_sha256: str = Field(pattern=_SHA256_PATTERN)
 
+    @model_validator(mode="before")
+    @classmethod
+    def _read_persisted_request(cls, value: object) -> object:
+        if isinstance(value, dict) and value.get("schema_version") == "runtime-model-logical-request-v1":
+            value = dict(value)
+            for key in ("task_id", "auxiliary_graph_id", "goal_id", "execution_subject_id"):
+                if value.pop(key, None) is not None:
+                    raise ValueError("unsupported persisted model request owner")
+        return value
+
     @field_validator("model")
     @classmethod
     def _validate_model(cls, value: str) -> str:
@@ -251,12 +255,6 @@ class RuntimeModelLogicalRequest(_Contract):
 
     @model_validator(mode="after")
     def _validate_request(self) -> 'RuntimeModelLogicalRequest':
-        if (self.auxiliary_graph_id is None) != (self.goal_id is None):
-            raise ValueError(
-                "auxiliary_graph_id and goal_id must be supplied together"
-            )
-        if self.goal_id is not None and self.task_id is None:
-            raise ValueError("a planning-goal model call requires its Task owner")
         _require_canonical_json(
             self.request_json,
             label="logical model request",
@@ -326,6 +324,9 @@ class RuntimeModelLogicalRequest(_Contract):
 
 def _logical_request_binding_sha256(request: RuntimeModelLogicalRequest) -> str:
     payload = request.model_dump(mode="json", exclude={"binding_sha256"})
+    if request.schema_version == "runtime-model-logical-request-v1":
+        # Authenticate the original persisted wire bytes without changing any binding.
+        payload.update(dict.fromkeys(("task_id", "auxiliary_graph_id", "goal_id", "execution_subject_id")))
     return _sha256_text(_canonical_json(payload))
 
 

@@ -27,7 +27,7 @@ from personagraph.session import store as session_store
 
 
 def _accept_l1(session_id: str, *, request_id: str = "request-l1"):
-    policy = TurnRoutingPolicy(l1_enabled=True, l2_enabled=False)
+    policy = TurnRoutingPolicy(l1_enabled=True)
     snapshot = freeze_turn_routing_policy(policy, source="request_override")
     receipt = session_store.accept_turn_execution(
         session_id=session_id,
@@ -71,7 +71,7 @@ def test_explicit_policy_change_is_a_request_id_collision() -> None:
     session_id = session_store.create_session("Entelecheia")
     _snapshot, _receipt = _accept_l1(session_id)
     changed = freeze_turn_routing_policy(
-        TurnRoutingPolicy(l1_enabled=False, l2_enabled=False),
+        TurnRoutingPolicy(l1_enabled=False),
         source="request_override",
     )
 
@@ -120,17 +120,6 @@ def test_l1_shell_replays_after_a_lost_response_and_requires_the_window_lease() 
     assert findings is not None
     assert findings.ledger.originating_turn_id == turn_id
     assert findings.ledger.revision == 0
-
-    with sqlite3.connect(session_store.DB_PATH) as conn:
-        with pytest.raises(
-            sqlite3.IntegrityError,
-            match="execution lanes are mutually exclusive",
-        ):
-            conn.execute(
-                "UPDATE turn_execution_windows SET current_work_run_id='work-1' "
-                "WHERE session_id=?",
-                (session_id,),
-            )
 
     with pytest.raises(
         session_store.L1TurnRunPersistenceError,

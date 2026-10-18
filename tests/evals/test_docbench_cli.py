@@ -482,7 +482,6 @@ def test_retired_probe_and_adapter_sources_are_absent() -> None:
     retired_paths = (
         PROJECT_ROOT / "evals/docbench/adapters/common.py",
         PROJECT_ROOT / "evals/docbench/adapters/l1_live.py",
-        PROJECT_ROOT / "evals/docbench/adapters/l2_live.py",
         PROJECT_ROOT / "evals/docbench/experiments/catalog.py",
         PROJECT_ROOT / "evals/docbench/experiments/contracts.py",
         PROJECT_ROOT / "evals/docbench/experiments/probe_runner.py",

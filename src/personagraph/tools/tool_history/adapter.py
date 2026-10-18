@@ -78,6 +78,13 @@ class ToolHistoryRuntime:
                 "error": record.outcome.get("error"),
             }
             page = project_tool_result_content(source=record.source, content=content, **arguments)
+            result = content["result"]
+            if record.source.tool_id in {"read_text", "read_pdf_text", "read_word", "read_slides"} and isinstance(result, dict):
+                # 历史分页只能恢复当时保存的前缀；原文件续读仍需交回原工具。
+                page = page.model_copy(update={
+                    "source_truncated": result.get("truncated"),
+                    "source_next_cursor": result.get("next_cursor"),
+                })
             if record.source.tool_id in EXECUTION_FINDINGS_TOOL_IDS and content["result"] is not None:
                 page = page.model_copy(update={"partial": True, "source_content_compacted": True})
             return page
@@ -100,4 +107,8 @@ class ToolHistoryRuntime:
         try:
             return read(**request.model_dump()).model_dump(mode="json")
         except ToolHistoryError as exc:
-            raise ToolBusinessFailure(str(exc), str(exc)) from None
+            message = (
+                "history_path_unavailable：此结果没有该路径；保持 call_ref，先用 path=/result 查看真实字段和 expand_paths，不要原样重试。"
+                if str(exc) == "history_path_unavailable" else str(exc)
+            )
+            raise ToolBusinessFailure(str(exc), message) from None

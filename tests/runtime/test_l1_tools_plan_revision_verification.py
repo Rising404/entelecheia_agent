@@ -97,14 +97,14 @@ def _install_l1_classifier(monkeypatch) -> None:
         ingress_model,
         "complete_structured",
         lambda *_args, **kwargs: _model_result(
-            {"processing_level": "L1", "task_matches": []}, kwargs["model_call_id"]
+            {"processing_level": "L1"}, kwargs["model_call_id"]
         ),
     )
 
 
 def _l1_policy():
     return freeze_turn_routing_policy(
-        TurnRoutingPolicy(l1_enabled=True, l2_enabled=False), source="request_override"
+        TurnRoutingPolicy(l1_enabled=True), source="request_override"
     )
 
 

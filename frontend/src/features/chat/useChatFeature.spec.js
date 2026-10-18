@@ -4,28 +4,12 @@ import { flushPromises } from "@vue/test-utils";
 import { useChatFeature } from "./useChatFeature";
 import { useProjects } from "../workspace/useProjects";
 
-const relatedInSessionTask = {
-  insession_task_id: "insession_task_alpha",
-  title: "整理论文分析",
-  status: "active",
-  current_graph_revision: 1,
-  nodes: [{
-    insession_task_node_id: "insession_task_alpha",
-    parent_insession_task_node_id: null,
-    node_kind: "root",
-    ordinal: 0,
-    title: "整理论文分析",
-    status: "active"
-  }],
-  related_turn_count: 1
-};
-
 const turnRuntimeRouting = {
-  schema_version: 1,
+  schema_version: 2,
   source: "session_default",
-  policy: { schema_version: 1, l1_enabled: true, l2_enabled: false },
-  allowed_processing_levels: ["L0", "L1", "L2"],
-  available_processing_levels: ["L0", "L1", "L2"]
+  policy: { schema_version: 2, l1_enabled: true },
+  allowed_processing_levels: ["L0", "L1"],
+  available_processing_levels: ["L0", "L1"]
 };
 
 afterEach(() => {
@@ -126,11 +110,11 @@ describe("useChatFeature", () => {
       status: "active",
     };
     const routing = {
-      schema_version: 1,
+      schema_version: 2,
       source: "session_default",
-      policy: { schema_version: 1, l1_enabled: false, l2_enabled: true },
-      allowed_processing_levels: ["L0", "L2"],
-      available_processing_levels: ["L0", "L1", "L2"]
+      policy: { schema_version: 2, l1_enabled: false },
+      allowed_processing_levels: ["L0"],
+      available_processing_levels: ["L0", "L1"]
     };
     const feature = useChatFeature({
       api: { getSession: vi.fn().mockResolvedValue({ session, turns: [], runtime_routing: routing }) },
@@ -148,7 +132,7 @@ describe("useChatFeature", () => {
     });
     feature.sessionDetail.value = { session, turns: [], runtime_routing: routing };
     await flushPromises();
-    expect(feature.runtimeMode.value).toBe("task");
+    expect(feature.runtimeMode.value).toBe("turn");
 
     // 用一个仍然可选的模式来验"刷新不覆盖用户选择"这件事本身。
     // "direct" 已不再提供，见 RuntimeModeControl.spec 的对应用例。
@@ -269,7 +253,7 @@ describe("useChatFeature", () => {
     const running = {
       session, turns: [],
       turn_window: {
-        turn_id: "turn-1", window_state: "active", window_revision: 7, stage: "L2_PLAN"
+        turn_id: "turn-1", window_state: "active", window_revision: 7, stage: "TOOL"
       }
     };
     const feature = useChatFeature({
@@ -281,8 +265,8 @@ describe("useChatFeature", () => {
     feature.sessionDetail.value = running;
     await flushPromises();
 
-    expect(feature.turnWindow.value.stage).toBe("L2_PLAN");
-    expect(feature.chatReadOnlyReason.value).toContain("正在制定计划");
+    expect(feature.turnWindow.value.stage).toBe("TOOL");
+    expect(feature.chatReadOnlyReason.value).toContain("正在调用能力");
     expect(feature.chatReadOnlyReason.value).not.toContain("没有任何变化");
 
     vi.advanceTimersByTime(125_000);
@@ -297,7 +281,7 @@ describe("useChatFeature", () => {
       session, turns: [],
       turn_window: { turn_id: "turn-1", window_state: "active", window_revision: revision, stage }
     });
-    const latest = { value: window_(7, "L2_PLAN") };
+    const latest = { value: window_(7, "TOOL") };
     const feature = useChatFeature({
       api: { getSession: vi.fn(() => Promise.resolve(latest.value)) },
       mode: ref("chat"), loading: ref(false), saving: ref(false), notice: ref(""), workspace: null,
@@ -365,32 +349,6 @@ describe("useChatFeature", () => {
     expect(feature.canSendChat.value).toBe(true);
   });
 
-  it("keeps a durable pending question visible and permits its specialized stale-window send", () => {
-    const session = { id: "session-a", title: "旅行", status: "active" };
-    const feature = useChatFeature({
-      api: { getSession: vi.fn().mockResolvedValue({ session, turns: [] }) },
-      mode: ref("chat"), loading: ref(false), saving: ref(false), notice: ref(""), workspace: null,
-      sessions: ref([session]), selectedSessionId: ref(session.id), confirmDiscardChanges: () => true,
-      clearMessage: vi.fn(), showError: vi.fn(), loadReferenceChoices: vi.fn()
-    });
-    feature.sessionDetail.value = {
-      session,
-      turns: [],
-      runtime_routing: turnRuntimeRouting,
-      pending_user_questions: [{
-        insession_task_id: "task-trip",
-        question: "你希望哪天出发？"
-      }],
-      turn_window: { window_state: "active", window_revision: 9 }
-    };
-
-    expect(feature.pendingUserQuestions.value).toEqual([{
-      insession_task_id: "task-trip",
-      question: "你希望哪天出发？"
-    }]);
-    expect(feature.canSendChat.value).toBe(false);
-    expect(feature.canAnswerPendingQuestion.value).toBe(true);
-  });
 
   it("keeps session selection, title dirty state, and title reset within chat", async () => {
     const session = { id: "session-a", title: "项目讨论", status: "active" };
@@ -481,34 +439,6 @@ describe("useChatFeature", () => {
     expect(feature.canSendChat.value).toBe(false);
     expect(feature.chatInputPlaceholder.value).toBe("当前回合正在运行");
     expect(feature.chatReadOnlyReason.value).toContain("当前回合正在运行");
-  });
-
-  it("states that task-mode sending is unavailable in the composer placeholder", () => {
-    const session = { id: "session-a", title: "任务模式", status: "active" };
-    const routing = {
-      schema_version: 1,
-      source: "session_default",
-      policy: { schema_version: 1, l1_enabled: true, l2_enabled: false },
-      allowed_processing_levels: ["L0", "L1", "L2"],
-      available_processing_levels: ["L0", "L1", "L2"]
-    };
-    const feature = useChatFeature({
-      api: { getSession: vi.fn().mockResolvedValue({ session, turns: [], runtime_routing: routing }) },
-      mode: ref("chat"), loading: ref(false), saving: ref(false), notice: ref(""), workspace: null,
-      sessions: ref([session]), selectedSessionId: ref(session.id), confirmDiscardChanges: () => true,
-      clearMessage: vi.fn(), showError: vi.fn(), loadReferenceChoices: vi.fn()
-    });
-
-    feature.sessionDetail.value = { session, turns: [], runtime_routing: routing };
-
-    expect(feature.chatInputPlaceholder.value).toBe("输入消息");
-
-    feature.runtimeMode.value = "task";
-    expect(feature.chatInputPlaceholder.value).toBe("任务模式当前仍在开发中，暂不提供消息发送功能。");
-
-    // 更紧急的状态仍然优先，不能被这条长期提示盖住。
-    feature.chatBusy.value = true;
-    expect(feature.chatInputPlaceholder.value).toBe("当前回合正在运行");
   });
 
   it("shows a safe interruption marker after reloading the session", () => {
@@ -755,112 +685,5 @@ describe("useChatFeature", () => {
     expect(feature.canSendChat.value).toBe(true);
   });
 
-  it("loads only validated related in-session task details after an ordinary reply", async () => {
-    const session = { id: "session-a", title: "论文", status: "active" };
-    const api = {
-      chatTurnStream: vi.fn().mockResolvedValue({
-        result: {
-          status: "completed",
-          reply: "已完成",
-          related_insession_task_ids: [relatedInSessionTask.insession_task_id]
-        }
-      }),
-      getSession: vi.fn().mockResolvedValue({
-        session,
-        turns: [],
-        runtime_routing: turnRuntimeRouting
-      }),
-      getInSessionTaskDetails: vi.fn().mockResolvedValue({ task: relatedInSessionTask })
-    };
-    const feature = useChatFeature({
-      api,
-      mode: ref("chat"), loading: ref(false), saving: ref(false), notice: ref(""), workspace: null,
-      sessions: ref([session]), selectedSessionId: ref(session.id), confirmDiscardChanges: () => true,
-      clearMessage: vi.fn(), showError: vi.fn(), loadReferenceChoices: vi.fn()
-    });
-    feature.sessionDetail.value = { session, turns: [], runtime_routing: turnRuntimeRouting };
-    feature.chatInput.value = "继续论文分析";
 
-    await feature.sendChat();
-    await flushPromises();
-
-    expect(api.getInSessionTaskDetails).toHaveBeenCalledWith(session.id, relatedInSessionTask.insession_task_id);
-    expect(feature.inSessionTaskDetails.value).toEqual([relatedInSessionTask]);
-    expect(feature.chatBusy.value).toBe(false);
-  });
-
-  it("keeps a completed reply usable when task-detail reads fail", async () => {
-    const session = { id: "session-a", title: "论文", status: "active" };
-    const showError = vi.fn();
-    const notice = ref("");
-    const api = {
-      chatTurnStream: vi.fn().mockResolvedValue({
-        result: {
-          status: "completed",
-          reply: "已完成",
-          related_insession_task_ids: [relatedInSessionTask.insession_task_id]
-        }
-      }),
-      getSession: vi.fn().mockResolvedValue({
-        session,
-        turns: [],
-        runtime_routing: turnRuntimeRouting
-      }),
-      getInSessionTaskDetails: vi.fn().mockRejectedValue(new Error("task detail unavailable"))
-    };
-    const feature = useChatFeature({
-      api,
-      mode: ref("chat"), loading: ref(false), saving: ref(false), notice, workspace: null,
-      sessions: ref([session]), selectedSessionId: ref(session.id), confirmDiscardChanges: () => true,
-      clearMessage: vi.fn(), showError, loadReferenceChoices: vi.fn()
-    });
-    feature.sessionDetail.value = { session, turns: [], runtime_routing: turnRuntimeRouting };
-    feature.chatInput.value = "继续论文分析";
-
-    await feature.sendChat();
-    await flushPromises();
-
-    expect(feature.inSessionTaskDetails.value).toEqual([]);
-    expect(feature.chatBusy.value).toBe(false);
-    expect(notice.value).toBe("回复已返回");
-    expect(showError).not.toHaveBeenCalled();
-  });
-
-  it("drops a late task-detail response after the selected session changes", async () => {
-    const session = { id: "session-a", title: "论文", status: "active" };
-    let resolveTaskDetails;
-    const api = {
-      chatTurnStream: vi.fn().mockResolvedValue({
-        result: {
-          status: "completed",
-          reply: "已完成",
-          related_insession_task_ids: [relatedInSessionTask.insession_task_id]
-        }
-      }),
-      getSession: vi.fn().mockResolvedValue({
-        session,
-        turns: [],
-        runtime_routing: turnRuntimeRouting
-      }),
-      getInSessionTaskDetails: vi.fn().mockImplementation(() => new Promise((resolve) => {
-        resolveTaskDetails = resolve;
-      }))
-    };
-    const selectedSessionId = ref(session.id);
-    const feature = useChatFeature({
-      api,
-      mode: ref("chat"), loading: ref(false), saving: ref(false), notice: ref(""), workspace: null,
-      sessions: ref([session]), selectedSessionId, confirmDiscardChanges: () => true,
-      clearMessage: vi.fn(), showError: vi.fn(), loadReferenceChoices: vi.fn()
-    });
-    feature.sessionDetail.value = { session, turns: [], runtime_routing: turnRuntimeRouting };
-    feature.chatInput.value = "继续论文分析";
-
-    await feature.sendChat();
-    selectedSessionId.value = "session-b";
-    resolveTaskDetails({ task: relatedInSessionTask });
-    await flushPromises();
-
-    expect(feature.inSessionTaskDetails.value).toEqual([]);
-  });
 });

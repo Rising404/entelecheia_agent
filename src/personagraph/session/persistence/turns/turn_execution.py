@@ -6,7 +6,7 @@
 * 最终化正式 assistant 交付，而不重复该用户消息；
 * 在提交后任务待处理或失败时继续占用槽位。
 
-Task graph、WorkRun、模型调用、流式交付与面向用户的控制语义均位于此持久化边界之外。
+模型调用、流式交付与面向用户的控制语义均位于此持久化边界之外。
 """
 
 from __future__ import annotations
@@ -17,7 +17,6 @@ import json
 import sqlite3
 from typing import Literal
 
-from ...insession_task_contracts import InSessionTaskPersistenceError
 from ....entry_execution_snapshot import authenticate_entry_execution_snapshot_payload
 from ...turn_execution_contracts import (
     TurnExecutionBusyError,
@@ -27,14 +26,10 @@ from ...turn_execution_contracts import (
 )
 from .attachments import bind_attachments_to_turn_in_transaction
 from ..deps import StoreDeps
-from .pending_questions import require_pending_question_proof
 from ..history import turns as transcript_turns
 from ..l1 import turn_runs as l1_turn_runs
 from ..l1.delivery import require_terminal_notification
 from . import turn_routing_policies
-
-
-FormalTurnReference = transcript_turns.FormalTurnReference
 
 
 WindowState = Literal["empty", "active", "post_commit_pending", "interrupted"]
@@ -50,8 +45,8 @@ PostCommitControlAction = Literal["retry", "waive"]
 
 _WINDOW_COLUMNS = (
     "session_id, turn_id, window_state, stage, input_message_id, "
-    "attachment_binding_revision, turn_task_link_revision, turn_workrun_link_revision, "
-    "current_work_run_id, current_attempt_id, latest_checkpoint_id, pending_operation_id, "
+    "attachment_binding_revision, "
+    "latest_checkpoint_id, pending_operation_id, "
     "last_event_sequence, state_version, lease_owner, heartbeat_at, interruption_reason, "
     "claimed_at, updated_at, current_l1_turn_run_id, current_l1_attempt_id"
 )
@@ -323,8 +318,7 @@ def accept_turn_execution(
             updated = conn.execute(
                 "UPDATE turn_execution_windows SET "
                 "turn_id=?, window_state='active', stage=?, input_message_id=?, "
-                "attachment_binding_revision=?, turn_task_link_revision=0, turn_workrun_link_revision=0, "
-                "current_work_run_id=NULL, current_attempt_id=NULL, "
+                "attachment_binding_revision=?, "
                 f"{_l1_window_reset_clause(conn)}"
                 "latest_checkpoint_id=NULL, "
                 "pending_operation_id=NULL, last_event_sequence=NULL, state_version=?, lease_owner=?, "
@@ -629,7 +623,7 @@ def settle_interrupted_turn_execution(
 
     原始中断只留下持久化标记。此操作是后续唯一的审计变更：记录 ``incomplete``，
     并释放旧 Window 以供新接受的 Turn 使用。它有意不创建 assistant 消息、Task
-    事实、WorkRun 事实或合成检查点。
+    事实或合成检查点。
     """
 
     _require_identifier("session_id", session_id)
@@ -671,8 +665,7 @@ def settle_interrupted_turn_execution(
         )
         conn.execute(
             "UPDATE turn_execution_windows SET turn_id=NULL, window_state='empty', stage=NULL, "
-            "input_message_id=NULL, attachment_binding_revision=0, turn_task_link_revision=0, "
-            "turn_workrun_link_revision=0, current_work_run_id=NULL, current_attempt_id=NULL, "
+            "input_message_id=NULL, attachment_binding_revision=0, "
             f"{_l1_window_reset_clause(conn)}"
             "latest_checkpoint_id=NULL, pending_operation_id=NULL, last_event_sequence=NULL, "
             "state_version=?, lease_owner=NULL, heartbeat_at=NULL, interruption_reason=NULL, "
@@ -694,7 +687,7 @@ def finalize_turn_execution(
     session_id: str,
     turn_id: str,
     expected_window_revision: int,
-    processing_level: Literal["L0", "L1", "L2"],
+    processing_level: Literal["L0", "L1"],
     assistant_content: str,
     post_commit_job_kinds: tuple[str, ...],
     expected_lease_owner: str | None = None,
@@ -715,8 +708,8 @@ def finalize_turn_execution(
 
     _require_identifier("session_id", session_id)
     _require_identifier("turn_id", turn_id)
-    if processing_level not in {"L0", "L1", "L2"}:
-        raise ValueError("processing_level must be L0, L1, or L2")
+    if processing_level not in {"L0", "L1"}:
+        raise ValueError("processing_level must be L0 or L1")
     if l1_terminal_failure_code is not None:
         _require_identifier("l1_terminal_failure_code", l1_terminal_failure_code)
         if processing_level != "L1":
@@ -767,14 +760,6 @@ def finalize_turn_execution(
         _require_expected_lease_owner(window, expected_lease_owner)
         if window["window_state"] != "active":
             raise TurnExecutionFinalizationConflict("Turn window is not active")
-        if processing_level == "L2" and _turn_owns_auxiliary_root_delivery(
-            conn,
-            session_id=session_id,
-            turn_id=turn_id,
-        ):
-            raise TurnExecutionFinalizationConflict(
-                "Auxiliary root Delivery requires reference-only PASS publication"
-            )
         notification = None
         if l1_terminal_failure_code is not None:
             bound_run_id = str(window.get("current_l1_turn_run_id") or "")
@@ -843,415 +828,6 @@ def finalize_turn_execution(
             "replayed": False,
             "turn": _require_turn(conn, turn_id),
             "delivery": delivery,
-            "post_commit_jobs": jobs,
-            "window": _require_window(conn, session_id, turn_id),
-        }
-
-
-def finalize_verified_turn_execution(
-    deps: StoreDeps,
-    *,
-    session_id: str,
-    turn_id: str,
-    delivery_id: str,
-    expected_window_revision: int,
-    post_commit_job_kinds: tuple[str, ...],
-    expected_lease_owner: str | None = None,
-) -> dict[str, object]:
-    """用于一个已验证根 Delivery 的兼容包装器。"""
-
-    return finalize_verified_turn_deliveries(
-        deps,
-        session_id=session_id,
-        turn_id=turn_id,
-        delivery_ids=(delivery_id,),
-        expected_window_revision=expected_window_revision,
-        post_commit_job_kinds=post_commit_job_kinds,
-        expected_lease_owner=expected_lease_owner,
-    )
-
-
-def finalize_verified_turn_deliveries(
-    deps: StoreDeps,
-    *,
-    session_id: str,
-    turn_id: str,
-    delivery_ids: tuple[str, ...],
-    pending_question_attempt_ids: tuple[str, ...] = (),
-    expected_window_revision: int,
-    post_commit_job_kinds: tuple[str, ...],
-    expected_lease_owner: str | None = None,
-) -> dict[str, object]:
-    """发布有序的已验证根 Delivery，而不复制其正文。
-
-    每个冻结 OutputWindow 仍是其正文唯一的物理所有者。此事务会创建一个空的正式
-    assistant 槽位及一个有序引用元组，再结算 Runtime Turn 和持久化提交后任务。
-    """
-
-    _validate_delivery_ids(delivery_ids)
-    _validate_question_attempt_ids(pending_question_attempt_ids)
-    return finalize_referenced_turn_execution(
-        deps,
-        session_id=session_id,
-        turn_id=turn_id,
-        reference_items=(
-            tuple(
-                FormalTurnReference("node_delivery", delivery_id)
-                for delivery_id in delivery_ids
-            )
-            + tuple(
-                FormalTurnReference(
-                    "pending_question_attempt",
-                    question_attempt_id,
-                )
-                for question_attempt_id in pending_question_attempt_ids
-            )
-        ),
-        expected_window_revision=expected_window_revision,
-        post_commit_job_kinds=post_commit_job_kinds,
-        expected_lease_owner=expected_lease_owner,
-    )
-
-
-def finalize_referenced_turn_execution(
-    deps: StoreDeps,
-    *,
-    session_id: str,
-    turn_id: str,
-    reference_items: tuple[FormalTurnReference, ...],
-    expected_window_revision: int,
-    post_commit_job_kinds: tuple[str, ...],
-    expected_lease_owner: str | None = None,
-) -> dict[str, object]:
-    """重建 lane 权威状态后，发布调用方携带的精确元组。"""
-
-    return _finalize_referenced_turn_execution(
-        deps,
-        session_id=session_id,
-        turn_id=turn_id,
-        reference_items=reference_items,
-        expected_window_revision=expected_window_revision,
-        post_commit_job_kinds=post_commit_job_kinds,
-        expected_lease_owner=expected_lease_owner,
-    )
-
-
-def finalize_authoritative_referenced_turn_execution(
-    deps: StoreDeps,
-    *,
-    session_id: str,
-    turn_id: str,
-    expected_window_revision: int,
-    post_commit_job_kinds: tuple[str, ...],
-    expected_lease_owner: str | None = None,
-) -> dict[str, object]:
-    """在一个事务中推导并发布精确有序的正式引用。"""
-
-    return _finalize_referenced_turn_execution(
-        deps,
-        session_id=session_id,
-        turn_id=turn_id,
-        reference_items=None,
-        expected_window_revision=expected_window_revision,
-        post_commit_job_kinds=post_commit_job_kinds,
-        expected_lease_owner=expected_lease_owner,
-    )
-
-
-def mark_authoritative_no_public_turn_stop(
-    deps: StoreDeps,
-    *,
-    session_id: str,
-    turn_id: str,
-    expected_window_revision: int,
-) -> dict[str, object]:
-    """以原子方式证明并标记一个不含公开引用的全 lane 停止。
-
-    持久化 v54 lane manifest 与当前 WorkRun 聚合是唯一结果权威状态。若存在部分
-    lane 前缀、任何公开 root/question 或任何未结算执行 lane，则会在事务写入前
-    抛出异常。Turn 有意保持 ``running``，直到常规下一输入审计完成结算；在此期间，
-    完全重复的请求仍可将此有类型标记重放为同一公开 ``incomplete`` 结果。
-    """
-
-    _require_identifier("session_id", session_id)
-    _require_identifier("turn_id", turn_id)
-    if expected_window_revision < 1:
-        raise ValueError("expected_window_revision must be positive")
-
-    deps.init_db()
-    now = deps.now()
-    with deps.connect() as conn:
-        conn.execute("BEGIN IMMEDIATE")
-        turn = _require_turn(conn, turn_id)
-        if turn["session_id"] != session_id:
-            raise TurnExecutionFinalizationConflict(
-                "Turn belongs to another Session"
-            )
-        if turn["status"] != "running":
-            raise TurnExecutionFinalizationConflict(
-                f"only a running Turn can record a no-public stop, got {turn['status']}"
-            )
-
-        window = _require_window(conn, session_id, turn_id)
-        _require_expected_window_revision(window, expected_window_revision)
-        if window["window_state"] not in {"active", "interrupted"}:
-            raise TurnExecutionFinalizationConflict(
-                "no-public stop requires an active or exactly replayed interrupted Window"
-            )
-        if any(
-            window[field] is not None
-            for field in (
-                "current_work_run_id",
-                "current_attempt_id",
-                "latest_checkpoint_id",
-            )
-        ):
-            raise TurnExecutionFinalizationConflict(
-                "no-public stop requires a settled Turn work window"
-            )
-
-        stop = _derive_authoritative_no_public_stop(
-            conn,
-            session_id=session_id,
-            turn_id=turn_id,
-        )
-        if window["window_state"] == "interrupted":
-            if (
-                str(window["stage"] or "") != str(stop["stage"])
-                or str(window["interruption_reason"] or "")
-                != str(stop["error_code"])
-            ):
-                raise TurnExecutionFinalizationConflict(
-                    "interrupted Window disagrees with authoritative no-public stop"
-                )
-            return {
-                "replayed": True,
-                "turn": turn,
-                "window": window,
-                **stop,
-            }
-
-        if window["stage"] not in {"L2_PLAN", "PERSIST"}:
-            raise TurnExecutionFinalizationConflict(
-                "no-public stop requires an orchestration-settled Turn window"
-            )
-        next_revision = int(window["state_version"]) + 1
-        source_stage = str(window["stage"])
-        updated = conn.execute(
-            "UPDATE turn_execution_windows SET window_state='interrupted', stage=?, "
-            "state_version=?, lease_owner=NULL, heartbeat_at=?, interruption_reason=?, "
-            "updated_at=? WHERE session_id=? AND turn_id=? AND state_version=? "
-            "AND window_state='active' AND stage=?",
-            (
-                stop["stage"],
-                next_revision,
-                now,
-                stop["error_code"],
-                now,
-                session_id,
-                turn_id,
-                expected_window_revision,
-                source_stage,
-            ),
-        ).rowcount
-        if updated != 1:
-            raise TurnExecutionPersistenceError(
-                "Turn window changed during authoritative no-public stop"
-            )
-        return {
-            "replayed": False,
-            "turn": turn,
-            "window": _require_window(conn, session_id, turn_id),
-            **stop,
-        }
-
-
-def _finalize_referenced_turn_execution(
-    deps: StoreDeps,
-    *,
-    session_id: str,
-    turn_id: str,
-    reference_items: tuple[FormalTurnReference, ...] | None,
-    expected_window_revision: int,
-    post_commit_job_kinds: tuple[str, ...],
-    expected_lease_owner: str | None = None,
-) -> dict[str, object]:
-    """持有一个即时事务时，发布按来源排序的引用。"""
-
-    _require_identifier("session_id", session_id)
-    _require_identifier("turn_id", turn_id)
-    if reference_items is not None:
-        _validate_formal_reference_items(reference_items)
-        for item in reference_items:
-            _require_identifier("formal_reference_id", item.reference_id)
-    _validate_job_kinds(post_commit_job_kinds)
-    if expected_window_revision < 1:
-        raise ValueError("expected_window_revision must be positive")
-    if expected_lease_owner is not None:
-        _require_identifier("expected_lease_owner", expected_lease_owner)
-
-    deps.init_db()
-    now = deps.now()
-    with deps.connect() as conn:
-        conn.execute("BEGIN IMMEDIATE")
-        turn = _require_turn(conn, turn_id)
-        if turn["session_id"] != session_id:
-            raise TurnExecutionFinalizationConflict(
-                "Turn belongs to another Session"
-            )
-        owned_window = None
-        if expected_lease_owner is not None:
-            owned_window = _require_window(conn, session_id, turn_id)
-            _require_expected_lease_owner(owned_window, expected_lease_owner)
-        if turn["status"] == "completed":
-            replay_items = reference_items
-            if replay_items is None:
-                commit = conn.execute(
-                    "SELECT run_id FROM session_turn_commits "
-                    "WHERE session_id=? AND turn_id=?",
-                    (session_id, turn_id),
-                ).fetchone()
-                if commit is None:
-                    raise TurnExecutionFinalizationConflict(
-                        "completed Turn has no formal transcript commit"
-                    )
-                try:
-                    replay_items = (
-                        transcript_turns._load_commit_references_in_transaction(
-                            conn,
-                            run_id=str(commit["run_id"]),
-                        )
-                    )
-                except (RuntimeError, ValueError) as exc:
-                    raise TurnExecutionFinalizationConflict(
-                        "completed Turn formal reference authority is invalid"
-                    ) from exc
-                if not replay_items:
-                    raise TurnExecutionFinalizationConflict(
-                        "completed Turn is not a reference-only L2 delivery"
-                    )
-            return _replay_verified_finalization(
-                conn,
-                turn=turn,
-                session_id=session_id,
-                reference_items=replay_items,
-                post_commit_job_kinds=post_commit_job_kinds,
-            )
-        if turn["status"] != "running":
-            raise TurnExecutionFinalizationConflict(
-                f"only a running Turn can finalize, got {turn['status']}"
-            )
-        window = owned_window or _require_window(conn, session_id, turn_id)
-        _require_expected_window_revision(window, expected_window_revision)
-        _require_expected_lease_owner(window, expected_lease_owner)
-        authoritative_stage = (
-            reference_items is None
-            and window["stage"] in {"L2_PLAN", "PERSIST"}
-        )
-        if window["window_state"] != "active" or not (
-            window["stage"] == "PERSIST" or authoritative_stage
-        ):
-            raise TurnExecutionFinalizationConflict(
-                "verified delivery requires an active PERSIST Turn window"
-            )
-        if any(
-            window[field] is not None
-            for field in (
-                "current_work_run_id",
-                "current_attempt_id",
-                "latest_checkpoint_id",
-            )
-        ):
-            raise TurnExecutionFinalizationConflict(
-                "verified delivery requires a settled Turn work window"
-            )
-        authoritative_items = _derive_authoritative_formal_references(
-            conn,
-            session_id=session_id,
-            turn_id=turn_id,
-        )
-        if reference_items is None:
-            reference_items = authoritative_items
-        elif authoritative_items != reference_items:
-            raise TurnExecutionFinalizationConflict(
-                "formal reference tuple disagrees with current Turn lane authority"
-            )
-
-        try:
-            transcript_commit = (
-                transcript_turns.append_referenced_assistant_for_accepted_input_in_transaction(
-                    conn,
-                    session_id=session_id,
-                    turn_id=turn_id,
-                    reference_items=reference_items,
-                    occurred_at=now,
-                )
-            )
-        except ValueError as exc:
-            raise TurnExecutionFinalizationConflict(
-                "verified transcript commit conflicts with durable authority"
-            ) from exc
-        if not bool(transcript_commit["created"]):
-            raise TurnExecutionFinalizationConflict(
-                "running Turn already has a formal transcript commit"
-            )
-        jobs = _insert_post_commit_jobs(
-            conn,
-            deps=deps,
-            session_id=session_id,
-            turn_id=turn_id,
-            job_kinds=post_commit_job_kinds,
-            now=now,
-        )
-        updated_turn = conn.execute(
-            "UPDATE runtime_turns SET status='completed', processing_level='L2', "
-            "error_code=NULL, end_reason=NULL, completed_at=? "
-            "WHERE turn_id=? AND status='running'",
-            (now, turn_id),
-        ).rowcount
-        if updated_turn != 1:
-            raise TurnExecutionPersistenceError(
-                "Turn changed during verified finalization"
-            )
-        next_revision = int(window["state_version"]) + 1
-        source_stage = str(window["stage"])
-        updated_window = conn.execute(
-            "UPDATE turn_execution_windows SET window_state='post_commit_pending', "
-            "stage='PERSIST', state_version=?, lease_owner=NULL, heartbeat_at=?, "
-            "updated_at=? WHERE session_id=? AND turn_id=? AND state_version=? "
-            "AND window_state='active' AND stage=? "
-            "AND (? IS NULL OR lease_owner=?)",
-            (
-                next_revision,
-                now,
-                now,
-                session_id,
-                turn_id,
-                expected_window_revision,
-                source_stage,
-                expected_lease_owner,
-                expected_lease_owner,
-            ),
-        ).rowcount
-        if updated_window != 1:
-            raise TurnExecutionPersistenceError(
-                "Turn window changed during verified finalization"
-            )
-        return {
-            "replayed": False,
-            "turn": _require_turn(conn, turn_id),
-            "delivery": transcript_commit,
-            "formal_reference_items": reference_items,
-            "node_delivery_ids": tuple(
-                item.reference_id
-                for item in reference_items
-                if item.reference_kind == "node_delivery"
-            ),
-            "pending_question_attempt_ids": tuple(
-                item.reference_id
-                for item in reference_items
-                if item.reference_kind == "pending_question_attempt"
-            ),
             "post_commit_jobs": jobs,
             "window": _require_window(conn, session_id, turn_id),
         }
@@ -1610,8 +1186,7 @@ def release_turn_execution_window(
         next_revision = int(window["state_version"]) + 1
         conn.execute(
             "UPDATE turn_execution_windows SET turn_id=NULL, window_state='empty', stage=NULL, "
-            "input_message_id=NULL, attachment_binding_revision=0, turn_task_link_revision=0, "
-            "turn_workrun_link_revision=0, current_work_run_id=NULL, current_attempt_id=NULL, "
+            "input_message_id=NULL, attachment_binding_revision=0, "
             f"{_l1_window_reset_clause(conn)}"
             "latest_checkpoint_id=NULL, pending_operation_id=NULL, last_event_sequence=NULL, "
             "state_version=?, lease_owner=NULL, heartbeat_at=NULL, interruption_reason=NULL, "
@@ -1664,555 +1239,6 @@ def _replay_finalization(
         "post_commit_jobs": jobs,
         "window": _load_window(conn, session_id),
     }
-
-
-def _replay_verified_finalization(
-    conn: sqlite3.Connection,
-    *,
-    turn: dict[str, object],
-    session_id: str,
-    reference_items: tuple[FormalTurnReference, ...],
-    post_commit_job_kinds: tuple[str, ...],
-) -> dict[str, object]:
-    if turn["processing_level"] != "L2":
-        raise TurnExecutionFinalizationConflict(
-            "completed Turn is not a verified L2 delivery"
-        )
-    try:
-        transcript_commit = (
-            transcript_turns.append_referenced_assistant_for_accepted_input_in_transaction(
-                conn,
-                session_id=session_id,
-                turn_id=str(turn["turn_id"]),
-                reference_items=reference_items,
-                occurred_at=str(turn["completed_at"] or turn["received_at"]),
-            )
-        )
-    except ValueError as exc:
-        raise TurnExecutionFinalizationConflict(
-            "completed Turn has another transcript delivery"
-        ) from exc
-    jobs = _list_post_commit_jobs(conn, str(turn["turn_id"]))
-    if tuple(str(item["job_kind"]) for item in jobs) != tuple(
-        sorted(post_commit_job_kinds)
-    ):
-        raise TurnExecutionFinalizationConflict(
-            "completed Turn has another post-commit job set"
-        )
-    return {
-        "replayed": True,
-        "turn": turn,
-        "delivery": transcript_commit,
-        "formal_reference_items": reference_items,
-        "node_delivery_ids": tuple(
-            item.reference_id
-            for item in reference_items
-            if item.reference_kind == "node_delivery"
-        ),
-        "pending_question_attempt_ids": tuple(
-            item.reference_id
-            for item in reference_items
-            if item.reference_kind == "pending_question_attempt"
-        ),
-        "post_commit_jobs": jobs,
-        "window": _load_window(conn, session_id),
-    }
-
-
-def _derive_authoritative_formal_references(
-    conn: sqlite3.Connection,
-    *,
-    session_id: str,
-    turn_id: str,
-) -> tuple[FormalTurnReference, ...]:
-    """从当前 lane 权威状态重建非空公开元组。"""
-
-    references, _no_public_statuses = _derive_authoritative_turn_settlement(
-        conn,
-        session_id=session_id,
-        turn_id=turn_id,
-    )
-    if not references:
-        raise TurnExecutionFinalizationConflict(
-            "Turn has no authoritative formal Delivery or pending question"
-        )
-    return references
-
-
-def _derive_authoritative_turn_settlement(
-    conn: sqlite3.Connection,
-    *,
-    session_id: str,
-    turn_id: str,
-) -> tuple[tuple[FormalTurnReference, ...], tuple[str, ...]]:
-    """从持久化 lane manifest 重建公开引用和有类型的非公开状态。"""
-
-    manifest = _load_turn_lane_manifest_in_transaction(
-        conn,
-        session_id=session_id,
-        turn_id=turn_id,
-    )
-    lane_by_task = {
-        lane.insession_task_id: lane
-        for lane in manifest.lanes
-    }
-
-    root_rows = conn.execute(
-        "SELECT delivery.delivery_id, delivery.insession_task_id "
-        "FROM insession_task_node_deliveries AS delivery "
-        "JOIN insession_tasks AS task "
-        "ON task.session_id=delivery.session_id "
-        "AND task.insession_task_id=delivery.insession_task_id "
-        "AND task.current_graph_revision=delivery.graph_revision "
-        "WHERE delivery.session_id=? AND delivery.created_turn_id=? "
-        "AND delivery.insession_task_node_id=delivery.insession_task_id "
-        "ORDER BY delivery.insession_task_id, delivery.delivery_id",
-        (session_id, turn_id),
-    ).fetchall()
-    roots_by_task: dict[str, list[str]] = {}
-    for row in root_rows:
-        delivery_id = str(row["delivery_id"])
-        task_id = _require_verified_root_delivery_for_turn(
-            conn,
-            session_id=session_id,
-            turn_id=turn_id,
-            delivery_id=delivery_id,
-        )
-        roots_by_task.setdefault(task_id, []).append(delivery_id)
-
-    question_rows = conn.execute(
-        "SELECT attempt.attempt_id FROM insession_work_run_attempts AS attempt "
-        "JOIN insession_work_runs AS run ON run.work_run_id=attempt.work_run_id "
-        "WHERE run.session_id=? AND attempt.turn_id=? "
-        "AND attempt.status='closed' AND attempt.action='request_user_input' "
-        "AND run.status='waiting_user' AND run.reason='needs_input' "
-        "AND run.updated_turn_id=? AND run.current_attempt_id IS NULL "
-        "AND run.current_verification_request_id IS NULL "
-        "AND attempt.ordinal=run.attempts_started "
-        "ORDER BY attempt.attempt_id",
-        (session_id, turn_id, turn_id),
-    ).fetchall()
-    questions_by_task: dict[str, list[tuple[int, int, str]]] = {}
-    for row in question_rows:
-        attempt_id = str(row["attempt_id"])
-        task_id, node_ordinal, attempt_ordinal = (
-            _require_current_pending_question_for_turn(
-                conn,
-                session_id=session_id,
-                turn_id=turn_id,
-                question_attempt_id=attempt_id,
-            )
-        )
-        questions_by_task.setdefault(task_id, []).append(
-            (node_ordinal, attempt_ordinal, attempt_id)
-        )
-
-    candidate_tasks = set(roots_by_task) | set(questions_by_task)
-    for task_id in candidate_tasks:
-        lane = lane_by_task.get(task_id)
-        if lane is None or not lane.execution_requested:
-            raise TurnExecutionFinalizationConflict(
-                "formal reference candidate is outside an execution-requested Turn lane"
-            )
-
-    ordered: list[FormalTurnReference] = []
-    no_public_statuses: list[str] = []
-    for lane in manifest.lanes:
-        root_ids = roots_by_task.get(lane.insession_task_id, [])
-        questions = sorted(questions_by_task.get(lane.insession_task_id, []))
-        if len(root_ids) > 1:
-            raise TurnExecutionFinalizationConflict(
-                "one Task lane has multiple current root Deliveries"
-            )
-        if root_ids and questions:
-            raise TurnExecutionFinalizationConflict(
-                "one Task lane cannot be completed and waiting for user input"
-            )
-        if not lane.execution_requested and (root_ids or questions):
-            raise TurnExecutionFinalizationConflict(
-                "non-execution Task lane produced a formal reference"
-            )
-        if lane.execution_requested and not root_ids and not questions:
-            no_public_statuses.extend(
-                _require_no_reference_lane_settlement(
-                    conn,
-                    session_id=session_id,
-                    turn_id=turn_id,
-                    task_id=lane.insession_task_id,
-                )
-            )
-        if root_ids:
-            ordered.append(FormalTurnReference("node_delivery", root_ids[0]))
-        else:
-            ordered.extend(
-                FormalTurnReference("pending_question_attempt", attempt_id)
-                for _node_ordinal, _attempt_ordinal, attempt_id in questions
-            )
-    return tuple(ordered), tuple(no_public_statuses)
-
-
-def _derive_authoritative_no_public_stop(
-    conn: sqlite3.Connection,
-    *,
-    session_id: str,
-    turn_id: str,
-) -> dict[str, str]:
-    """为全无正文 lane 集合投影唯一的公开异常结果。"""
-
-    references, statuses = _derive_authoritative_turn_settlement(
-        conn,
-        session_id=session_id,
-        turn_id=turn_id,
-    )
-    if references:
-        raise TurnExecutionFinalizationConflict(
-            "Turn has an authoritative public reference"
-        )
-    if not statuses:
-        raise TurnExecutionFinalizationConflict(
-            "Turn has no authoritative no-public execution stop"
-        )
-    if "waiting_external" in statuses:
-        return {
-            "stop_kind": "waiting_external",
-            "end_reason": "host_stopped",
-            "error_code": "TOOL_COMPLETION_UNCONFIRMED",
-            "stage": "TOOL",
-        }
-    if "turn_limit_reached" in statuses:
-        return {
-            "stop_kind": "turn_limit_reached",
-            "end_reason": "host_stopped",
-            "error_code": "TURN_DEADLINE_EXCEEDED",
-            "stage": "RESPONSE",
-        }
-    if set(statuses) == {"failed"}:
-        return {
-            "stop_kind": "work_run_failed",
-            "end_reason": "module_error",
-            "error_code": "INTERNAL_FAILURE",
-            "stage": "RESPONSE",
-        }
-    raise TurnExecutionFinalizationConflict(
-        "Turn has an unsupported no-public execution stop"
-    )
-
-
-def _require_no_reference_lane_settlement(
-    conn: sqlite3.Connection,
-    *,
-    session_id: str,
-    turn_id: str,
-    task_id: str,
-) -> tuple[str, ...]:
-    """证明一个执行所请求的 lane 已安全停止且没有公开文本。"""
-
-    rows = conn.execute(
-        "SELECT run.work_run_id, run.status, run.reason, run.updated_turn_id, "
-        "run.current_attempt_id, run.current_verification_request_id, "
-        "link.link_revision FROM insession_work_runs AS run "
-        "JOIN insession_work_run_turn_links AS link "
-        "ON link.session_id=run.session_id AND link.work_run_id=run.work_run_id "
-        "AND link.turn_id=? "
-        "WHERE run.session_id=? AND run.insession_task_id=? "
-        "ORDER BY link.link_revision, run.work_run_id",
-        (turn_id, session_id, task_id),
-    ).fetchall()
-    safe_statuses = {"waiting_external", "turn_limit_reached", "failed"}
-    safe_rows = tuple(
-        row
-        for row in rows
-        if str(row["updated_turn_id"]) == turn_id
-        and (
-            (
-                str(row["status"]) == "waiting_external"
-                and str(row["reason"] or "")
-                == "operation_completion_unconfirmed"
-            )
-            or (
-                str(row["status"]) == "turn_limit_reached"
-                and str(row["reason"] or "") == "turn_limit_reached"
-            )
-            or str(row["status"]) == "failed"
-        )
-        and row["current_attempt_id"] is None
-        and row["current_verification_request_id"] is None
-    )
-    unsafe_current = tuple(
-        row
-        for row in rows
-        if str(row["updated_turn_id"]) == turn_id
-        and str(row["status"])
-        not in {"completed", "cancelled", *safe_statuses}
-    )
-    if not safe_rows or unsafe_current:
-        raise TurnExecutionFinalizationConflict(
-            "execution-requested Task is not completed and has no durable safe lane settlement"
-        )
-    # 在计入无正文 lane 前，完整聚合加载会发现过期 subject、损坏 budget 和不一致的
-    # 当前 Attempt 投影。
-    from ..l2.work_run.work_execution import _load_record
-
-    for row in safe_rows:
-        try:
-            record = _load_record(
-                conn,
-                str(row["work_run_id"]),
-                session_id=session_id,
-            )
-        except (RuntimeError, ValueError) as exc:
-            raise TurnExecutionFinalizationConflict(
-                "no-body Task lane settlement authority is invalid"
-            ) from exc
-        if record.work_run.status.value != str(row["status"]):
-            raise TurnExecutionFinalizationConflict(
-                "no-body Task lane settlement status is inconsistent"
-            )
-        if (
-            record.current_attempt_id is not None
-            or record.current_verification_request_id is not None
-        ):
-            raise TurnExecutionFinalizationConflict(
-                "no-body Task lane settlement retains active execution authority"
-            )
-    return tuple(str(row["status"]) for row in safe_rows)
-
-
-def _load_turn_lane_manifest_in_transaction(
-    conn: sqlite3.Connection,
-    *,
-    session_id: str,
-    turn_id: str,
-):
-    from ..l2.task_graph.insession_tasks import (
-        _decode_ids,
-        _load_authoritative_user_input,
-        _load_task_match_lane_manifest,
-    )
-
-    rows = conn.execute(
-        "SELECT related_insession_task_ids_json, "
-        "execution_lane_manifest_json, execution_lane_manifest_hash "
-        "FROM insession_task_match_apply_receipts "
-        "WHERE session_id=? AND source_turn_id=? ORDER BY created_at, apply_id",
-        (session_id, turn_id),
-    ).fetchall()
-    if len(rows) != 1:
-        raise TurnExecutionFinalizationConflict(
-            "Turn has no unique durable Task execution lane manifest"
-        )
-    try:
-        manifest = _load_task_match_lane_manifest(rows[0])
-        related_task_ids = _decode_ids(rows[0]["related_insession_task_ids_json"])
-        user_text = _load_authoritative_user_input(
-            conn,
-            session_id=session_id,
-            turn_id=turn_id,
-        )
-    except (RuntimeError, ValueError) as exc:
-        raise TurnExecutionFinalizationConflict(
-            "Turn Task execution lane manifest is invalid"
-        ) from exc
-    if tuple(lane.insession_task_id for lane in manifest.lanes) != related_task_ids:
-        raise TurnExecutionFinalizationConflict(
-            "Turn Task execution lane manifest disagrees with its match receipt"
-        )
-    for lane in manifest.lanes:
-        if conn.execute(
-            "SELECT 1 FROM insession_tasks WHERE session_id=? "
-            "AND insession_task_id=?",
-            (session_id, lane.insession_task_id),
-        ).fetchone() is None:
-            raise TurnExecutionFinalizationConflict(
-                "Turn Task execution lane references a missing Task"
-            )
-        for match in lane.matches:
-            span = match.source_span
-            excerpt = user_text[span.start : span.end]
-            if hashlib.sha256(excerpt.encode("utf-8")).hexdigest() != span.text_sha256:
-                raise TurnExecutionFinalizationConflict(
-                    "Turn Task execution lane source binding has drifted"
-                )
-    return manifest
-
-
-def _require_current_pending_question_for_turn(
-    conn: sqlite3.Connection,
-    *,
-    session_id: str,
-    turn_id: str,
-    question_attempt_id: str,
-) -> tuple[str, int, int]:
-    try:
-        proof = require_pending_question_proof(
-            conn,
-            session_id=session_id,
-            question_attempt_id=question_attempt_id,
-        )
-    except (InSessionTaskPersistenceError, sqlite3.Error, ValueError) as exc:
-        raise TurnExecutionFinalizationConflict(
-            "pending-question WorkRun authority is invalid"
-        ) from exc
-    if proof.question_turn_id != turn_id:
-        raise TurnExecutionFinalizationConflict(
-            "pending-question Attempt belongs to another Turn"
-        )
-    return (
-        proof.insession_task_id,
-        proof.node_ordinal,
-        proof.attempt_ordinal,
-    )
-
-
-def _require_verified_deliveries_for_turn(
-    conn: sqlite3.Connection,
-    *,
-    session_id: str,
-    turn_id: str,
-    delivery_ids: tuple[str, ...],
-) -> None:
-    task_ids: set[str] = set()
-    for delivery_id in delivery_ids:
-        task_id = _require_verified_root_delivery_for_turn(
-            conn,
-            session_id=session_id,
-            turn_id=turn_id,
-            delivery_id=delivery_id,
-        )
-        if task_id in task_ids:
-            raise TurnExecutionFinalizationConflict(
-                "verified formal Deliveries must belong to distinct root Tasks"
-            )
-        task_ids.add(task_id)
-
-
-def _turn_owns_auxiliary_root_delivery(
-    conn: sqlite3.Connection,
-    *,
-    session_id: str,
-    turn_id: str,
-) -> bool:
-    """返回此 Turn 是否生成了 规范根 Delivery。"""
-
-    row = conn.execute(
-        "SELECT 1 FROM insession_task_node_deliveries AS delivery "
-        "JOIN insession_auxiliary_v2_task_graph_commit_receipts AS commit_receipt "
-        "ON commit_receipt.session_id=delivery.session_id "
-        "AND commit_receipt.insession_task_id=delivery.insession_task_id "
-        "AND commit_receipt.committed_task_graph_revision=delivery.graph_revision "
-        "WHERE delivery.session_id=? AND delivery.created_turn_id=? "
-        "AND delivery.insession_task_node_id=delivery.insession_task_id "
-        "LIMIT 1",
-        (session_id, turn_id),
-    ).fetchone()
-    return row is not None
-
-
-def _require_verified_root_delivery_for_turn(
-    conn: sqlite3.Connection,
-    *,
-    session_id: str,
-    turn_id: str,
-    delivery_id: str,
-) -> str:
-    from ..l2.work_run.work_verification import _load_task_node_delivery
-
-    try:
-        resolved = _load_task_node_delivery(
-            conn,
-            session_id=session_id,
-            delivery_id=delivery_id,
-        )
-    except (RuntimeError, ValueError) as exc:
-        raise TurnExecutionFinalizationConflict(
-            "verified NodeDelivery authority is invalid"
-        ) from exc
-    delivery = resolved.delivery
-    if delivery.created_turn_id != turn_id:
-        raise TurnExecutionFinalizationConflict(
-            "verified NodeDelivery belongs to another Turn"
-        )
-    subject = delivery.subject
-    if subject.node_id != subject.task_id:
-        raise TurnExecutionFinalizationConflict(
-            "verified formal Delivery is not a canonical root TaskNode"
-        )
-    task = conn.execute(
-        "SELECT task.current_graph_revision, task.current_status, "
-        "task.state_version, "
-        "node.node_kind, node.node_revision "
-        "FROM insession_tasks AS task "
-        "LEFT JOIN insession_task_graph_nodes AS node "
-        "ON node.insession_task_id=task.insession_task_id "
-        "AND node.graph_revision=task.current_graph_revision "
-        "AND node.insession_task_node_id=task.insession_task_id "
-        "WHERE task.session_id=? AND task.insession_task_id=?",
-        (session_id, subject.task_id),
-    ).fetchone()
-    if (
-        task is None
-        or str(task["current_status"]) != "completed"
-        or task["current_graph_revision"] is None
-        or int(task["current_graph_revision"])
-        != subject.graph_revision
-        or str(task["node_kind"] or "") != "root"
-        or task["node_revision"] is None
-        or int(task["node_revision"]) != subject.node_revision
-    ):
-        raise TurnExecutionFinalizationConflict(
-            "verified delivery Task is not completed at its exact graph revision"
-        )
-    try:
-        from ..l2.delivery.task_delivery_validation import (
-            require_pass_settlement_for_publication_in_transaction,
-        )
-
-        require_pass_settlement_for_publication_in_transaction(
-            conn,
-            session_id=session_id,
-            turn_id=turn_id,
-            task_id=subject.task_id,
-            graph_revision=subject.graph_revision,
-            task_state_version=int(task["state_version"]),
-            root_delivery_id=delivery_id,
-        )
-    except Exception as exc:
-        raise TurnExecutionFinalizationConflict(
-            "root Delivery lacks current whole-Task PASS authority"
-        ) from exc
-    return subject.task_id
-
-
-def _validate_delivery_ids(delivery_ids: tuple[str, ...]) -> None:
-    if not isinstance(delivery_ids, tuple):
-        raise ValueError("delivery_ids must be a tuple")
-    if len(set(delivery_ids)) != len(delivery_ids):
-        raise ValueError("delivery_ids must not contain duplicates")
-
-
-def _validate_question_attempt_ids(
-    question_attempt_ids: tuple[str, ...],
-) -> None:
-    if not isinstance(question_attempt_ids, tuple):
-        raise ValueError("pending_question_attempt_ids must be a tuple")
-    if len(set(question_attempt_ids)) != len(question_attempt_ids):
-        raise ValueError(
-            "pending_question_attempt_ids must not contain duplicates"
-        )
-
-
-def _validate_formal_reference_items(
-    reference_items: tuple[FormalTurnReference, ...],
-) -> None:
-    if not isinstance(reference_items, tuple) or not reference_items:
-        raise ValueError("reference_items must be a non-empty tuple")
-    if any(
-        not isinstance(item, FormalTurnReference) for item in reference_items
-    ):
-        raise TypeError("reference_items must contain FormalTurnReference values")
-    reference_ids = tuple(item.reference_id for item in reference_items)
-    if len(set(reference_ids)) != len(reference_ids):
-        raise ValueError("formal reference IDs must not contain duplicates")
 
 
 def _insert_post_commit_jobs(
@@ -2460,8 +1486,6 @@ def _window_from_row(row: sqlite3.Row) -> dict[str, object]:
     result = dict(row)
     for field in (
         "attachment_binding_revision",
-        "turn_task_link_revision",
-        "turn_workrun_link_revision",
         "last_event_sequence",
         "state_version",
     ):

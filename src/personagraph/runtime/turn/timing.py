@@ -1,4 +1,4 @@
-"""L0/L1/L2 共用的 Turn 运行时间策略。
+"""L0/L1 共用的 Turn 运行时间策略。
 
 本模块只保存不依赖 Entry、模型或 Store 的冷常量。具体超时覆盖值仍由冻结后的
 feature snapshot 提供；这里的 Window heartbeat TTL 用于所有恢复者判断租约新鲜度。

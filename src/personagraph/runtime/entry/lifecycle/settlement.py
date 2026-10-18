@@ -29,21 +29,12 @@ class EntrySettlementRecoveryStorePort(Protocol):
 
     def inspect_turn_execution(self, session_id: str) -> dict[str, object]: ...
 
-    def list_turn_linked_work_run_ids(
-        self,
-        *,
-        session_id: str,
-        turn_id: str,
-    ) -> tuple[str, ...]: ...
-
 
 def recover_completed_entry_turn_from_commit(
     *,
     accepted: AcceptedEntryTurn,
     processing_level: ProcessingLevel,
-    related_insession_task_ids: tuple[str, ...],
     store: EntrySettlementRecoveryStorePort,
-    work_run_ids: tuple[str, ...] = (),
     error_code: str | None = None,
     end_reason: str | None = None,
 ) -> EntryTurnResult | None:
@@ -70,14 +61,6 @@ def recover_completed_entry_turn_from_commit(
             return None
         window_state = _require_entry_window_state(window.get("window_state"))
         window_revision = int(window.get("state_version") or 0)
-        if processing_level == "L1":
-            related_insession_task_ids = ()
-            work_run_ids = ()
-        elif not work_run_ids:
-            work_run_ids = store.list_turn_linked_work_run_ids(
-                session_id=accepted.session_id,
-                turn_id=accepted.turn_id,
-            )
     except Exception:
         return None
     return EntryTurnResult(
@@ -88,8 +71,6 @@ def recover_completed_entry_turn_from_commit(
         reply=reply,
         error_code=error_code,
         end_reason=end_reason,
-        related_insession_task_ids=related_insession_task_ids,
-        work_run_ids=work_run_ids,
         window_state=window_state,
         window_revision=window_revision,
     )

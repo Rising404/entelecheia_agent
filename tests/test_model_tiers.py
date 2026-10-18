@@ -69,7 +69,7 @@ def test_thinking_defaults_off_for_every_tier():
 
 def test_unconfigured_tier_inherits_global_endpoint():
     runtime_config.update_config({"provider": "deepseek", "model": "global-model"})
-    binding = model_tiers.resolve_tier(ModelTier.ARCHITECT)
+    binding = model_tiers.resolve_tier(ModelTier.L1)
     assert binding.origin is EndpointOrigin.GLOBAL
     assert binding.model == "global-model"
     assert binding.configured is False
@@ -81,7 +81,7 @@ def test_openai_global_binding_materializes_gateway_defaults_before_dialect_reso
         "api_key": "k",
     })
 
-    binding = model_tiers.resolve_tier(ModelTier.ARCHITECT)
+    binding = model_tiers.resolve_tier(ModelTier.L1)
 
     assert binding.base_url == "https://api.openai.com/v1"
     assert binding.model == "gpt-4o-mini"
@@ -96,7 +96,7 @@ def test_raw_anthropic_global_binding_keeps_native_endpoint_and_no_guessed_model
     monkeypatch.delenv("PERSONAGRAPH_BASE_URL", raising=False)
     monkeypatch.delenv("PERSONAGRAPH_MODEL", raising=False)
 
-    binding = model_tiers.resolve_tier(ModelTier.ARCHITECT)
+    binding = model_tiers.resolve_tier(ModelTier.L1)
 
     assert binding.provider == "anthropic-compatible"
     assert binding.base_url == "https://api.anthropic.com"
@@ -135,13 +135,13 @@ def test_tier_uses_its_own_profile_endpoint():
     profile_id = _make_profile("fast", "fast-model")
     runtime_config.update_config({
         "provider": "deepseek", "model": "global-model",
-        "tier_node_verification_profile_id": profile_id,
+        "tier_l1_profile_id": profile_id,
     })
-    binding = model_tiers.resolve_tier(ModelTier.NODE_VERIFICATION)
+    binding = model_tiers.resolve_tier(ModelTier.L1)
     assert binding.origin is EndpointOrigin.PROFILE
     assert (binding.model, binding.api_key) == ("fast-model", "k-fast")
     # 其它档不受影响
-    assert model_tiers.resolve_tier(ModelTier.ARCHITECT).model == "global-model"
+    assert model_tiers.resolve_tier(ModelTier.ROUTER).model == "global-model"
 
 
 def test_several_tiers_may_share_one_profile():
@@ -149,12 +149,12 @@ def test_several_tiers_may_share_one_profile():
     profile_id = _make_profile("shared", "shared-model")
     runtime_config.update_config({
         f"tier_{name}_profile_id": profile_id
-        for name in ("architect", "attempt", "node_verification")
+        for name in ("router", "l1")
     })
     models = {
         model_tiers.resolve_tier(t).model
-        for t in (ModelTier.ARCHITECT, ModelTier.ATTEMPT,
-                  ModelTier.NODE_VERIFICATION)
+        for t in (ModelTier.L1, ModelTier.L1,
+                  ModelTier.L1)
     }
     assert models == {"shared-model"}
 
@@ -177,17 +177,17 @@ def test_profile_quota_travels_with_every_tier_using_that_profile():
         },
     )["id"]
     runtime_config.update_config({
-        "tier_architect_profile_id": profile_id,
-        "tier_attempt_profile_id": profile_id,
+        "tier_l1_profile_id": profile_id,
+        "tier_router_profile_id": profile_id,
     })
 
-    architect = model_tiers.resolve_tier(ModelTier.ARCHITECT)
-    attempt = model_tiers.resolve_tier(ModelTier.ATTEMPT)
+    l1 = model_tiers.resolve_tier(ModelTier.L1)
+    router = model_tiers.resolve_tier(ModelTier.ROUTER)
 
-    assert architect.quota == attempt.quota
-    assert architect.quota.requests_per_minute == 10
-    assert architect.quota.max_in_flight == 2
-    assert architect.quota.quota_group == "shared-account"
+    assert l1.quota == router.quota
+    assert l1.quota.requests_per_minute == 10
+    assert l1.quota.max_in_flight == 2
+    assert l1.quota.quota_group == "shared-account"
 
 
 def test_global_binding_inherits_quota_only_from_the_matching_active_profile():
@@ -203,12 +203,12 @@ def test_global_binding_inherits_quota_only_from_the_matching_active_profile():
     )["id"]
     assert model_profiles.resolve_active_profile("model").id == profile_id
 
-    inherited = model_tiers.resolve_tier(ModelTier.ARCHITECT)
+    inherited = model_tiers.resolve_tier(ModelTier.L1)
     assert inherited.origin is EndpointOrigin.GLOBAL
     assert inherited.quota.requests_per_minute == 10
 
     runtime_config.update_config({"api_key": "a-manually-replaced-key"})
-    detached = model_tiers.resolve_tier(ModelTier.ARCHITECT)
+    detached = model_tiers.resolve_tier(ModelTier.L1)
     assert detached.quota == model_profiles.ModelProfileQuota()
 
 
@@ -240,11 +240,11 @@ def test_deleted_profile_falls_back_and_says_so():
     profile_id = _make_profile("temp", "temp-model")
     runtime_config.update_config({
         "provider": "deepseek", "model": "global-model",
-        "tier_final_gate_profile_id": profile_id,
+        "tier_router_profile_id": profile_id,
     })
     model_profiles.delete_profile(profile_id)
 
-    binding = model_tiers.resolve_tier(ModelTier.FINAL_GATE)
+    binding = model_tiers.resolve_tier(ModelTier.ROUTER)
     assert binding.origin is EndpointOrigin.STALE_PROFILE
     assert binding.provider == "mock"
     assert binding.profile_id == profile_id
@@ -257,9 +257,9 @@ def test_vision_profile_cannot_be_used_as_a_model_tier():
     )["id"]
     runtime_config.update_config({
         "provider": "deepseek", "model": "global-model",
-        "tier_attempt_profile_id": vision_id,
+        "tier_router_profile_id": vision_id,
     })
-    binding = model_tiers.resolve_tier(ModelTier.ATTEMPT)
+    binding = model_tiers.resolve_tier(ModelTier.ROUTER)
     assert binding.origin is EndpointOrigin.STALE_PROFILE
     assert binding.model == "global-model"
 
@@ -281,16 +281,16 @@ def test_thinking_switch_parsing(stored, expected):
 
 def test_redacted_tier_view_never_carries_the_key():
     _id = _make_profile("secret", "m")
-    runtime_config.update_config({"tier_architect_profile_id": _id})
+    runtime_config.update_config({"tier_l1_profile_id": _id})
     for row in model_tiers.redacted_tier_view():
         assert "api_key" not in row
         assert row["has_api_key"] in (True, False)
-    assert "k-secret" not in repr(model_tiers.resolve_tier(ModelTier.ARCHITECT))
+    assert "k-secret" not in repr(model_tiers.resolve_tier(ModelTier.L1))
 
 
 def test_redacted_view_separates_configured_effort_from_the_wire_value():
     common = {
-        "tier": ModelTier.ATTEMPT,
+        "tier": ModelTier.L1,
         "provider": "anthropic-compatible",
         "model": "reasoning-model",
         "api_key": "secret",
@@ -320,7 +320,7 @@ def test_redacted_view_separates_configured_effort_from_the_wire_value():
 def test_config_api_rejects_a_profile_id_that_does_not_exist():
     """运行期为了不毁掉 Turn 会静默回落；保存设置时不行——选中的东西必须存在。"""
     with pytest.raises(ApiError) as exc:
-        _d("POST", "/api/config", {"tier_architect_profile_id": "mp_nope"})
+        _d("POST", "/api/config", {"tier_l1_profile_id": "mp_nope"})
     assert exc.value.code == "PROFILE_NOT_FOUND"
 
 
@@ -335,24 +335,24 @@ def test_config_api_rejects_a_vision_profile_for_a_model_tier():
     )["id"]
 
     with pytest.raises(ApiError) as exc:
-        _d("POST", "/api/config", {"tier_architect_profile_id": vision_id})
+        _d("POST", "/api/config", {"tier_l1_profile_id": vision_id})
 
     assert exc.value.code == "PROFILE_KIND_MISMATCH"
-    assert runtime_config.get_setting("tier_architect_profile_id") is None
+    assert runtime_config.get_setting("tier_l1_profile_id") is None
 
 
 def test_config_api_accepts_bool_and_on_off_for_thinking():
     profile_id = _make_profile("p", "m")
     _d("POST", "/api/config", {
-        "tier_architect_profile_id": profile_id,
-        "tier_architect_thinking": True,
-        "tier_attempt_thinking": "on",
+        "tier_l1_profile_id": profile_id,
+        "tier_l1_thinking": True,
+        "tier_router_thinking": "on",
     })
-    assert model_tiers.read_thinking_enabled(ModelTier.ARCHITECT) is True
-    assert model_tiers.read_thinking_enabled(ModelTier.ATTEMPT) is True
+    assert model_tiers.read_thinking_enabled(ModelTier.L1) is True
+    assert model_tiers.read_thinking_enabled(ModelTier.L1) is True
 
-    _d("POST", "/api/config", {"tier_architect_thinking": False})
-    assert model_tiers.read_thinking_enabled(ModelTier.ARCHITECT) is False
+    _d("POST", "/api/config", {"tier_l1_thinking": False})
+    assert model_tiers.read_thinking_enabled(ModelTier.L1) is False
 
 
 def test_config_api_accepts_openai_reasoning_effort_levels():
@@ -360,11 +360,11 @@ def test_config_api_accepts_openai_reasoning_effort_levels():
         "provider": "openai-compatible",
         "request_dialect": "openai",
         "base_url": "https://api.openai.com/v1",
-        "tier_architect_reasoning_effort": "xhigh",
-        "tier_final_gate_reasoning_effort": "none",
+        "tier_l1_reasoning_effort": "xhigh",
+        "tier_router_reasoning_effort": "none",
     })
-    assert model_tiers.resolve_tier(ModelTier.ARCHITECT).reasoning_effort == "xhigh"
-    assert model_tiers.resolve_tier(ModelTier.FINAL_GATE).reasoning_effort == "none"
+    assert model_tiers.resolve_tier(ModelTier.L1).reasoning_effort == "xhigh"
+    assert model_tiers.resolve_tier(ModelTier.ROUTER).reasoning_effort == "none"
 
 
 def test_config_api_rejects_effort_left_over_from_an_incompatible_profile():
@@ -387,23 +387,23 @@ def test_config_api_rejects_effort_left_over_from_an_incompatible_profile():
         api_key="k-anthropic",
     )["id"]
     _d("PUT", "/api/config", {
-        "tier_architect_profile_id": openai_id,
-        "tier_architect_reasoning_effort": "minimal",
+        "tier_l1_profile_id": openai_id,
+        "tier_l1_reasoning_effort": "minimal",
     })
 
     with pytest.raises(ApiError) as exc:
         _d("PUT", "/api/config", {
-            "tier_architect_profile_id": anthropic_id,
+            "tier_l1_profile_id": anthropic_id,
         })
 
     assert exc.value.code == "TIER_REASONING_EFFORT_INCOMPATIBLE"
-    assert exc.value.details["tier"] == "architect"
+    assert exc.value.details["tier"] == "l1"
     assert exc.value.details["reasoning_effort"] == "minimal"
 
 
 def test_config_api_rejects_unknown_reasoning_effort():
     with pytest.raises(ApiError) as exc:
-        _d("POST", "/api/config", {"tier_attempt_reasoning_effort": "turbo"})
+        _d("POST", "/api/config", {"tier_router_reasoning_effort": "turbo"})
     assert exc.value.code == "INVALID_REASONING_EFFORT"
 
 
@@ -435,24 +435,24 @@ def test_get_config_reports_the_endpoint_each_tier_will_actually_call():
 
 
 def test_update_config_returns_the_same_effective_view_as_get_config():
-    profile_id = _make_profile("architect", "architect-model")
+    profile_id = _make_profile("l1", "l1-model")
 
     updated = _d(
         "PUT",
         "/api/config",
         {
-            "tier_architect_profile_id": profile_id,
-            "tier_architect_thinking": True,
+            "tier_l1_profile_id": profile_id,
+            "tier_l1_thinking": True,
         },
     )
 
     assert updated == _d("GET", "/api/config")
-    architect = next(
-        row for row in updated["model_tiers"] if row["tier"] == "architect"
+    l1 = next(
+        row for row in updated["model_tiers"] if row["tier"] == "l1"
     )
-    assert architect["profile_id"] == profile_id
-    assert architect["model"] == "architect-model"
-    assert architect["thinking_enabled"] is True
+    assert l1["profile_id"] == profile_id
+    assert l1["model"] == "l1-model"
+    assert l1["thinking_enabled"] is True
 
 
 # --- 前后端键名对齐 -------------------------------------------------------
@@ -467,9 +467,9 @@ def test_frontend_tier_keys_match_the_backend():
 
     js = Path("frontend/src/composables/useConfig.js").read_text(encoding="utf-8")
     block = js.split("export const MODEL_TIERS = [")[1].split("];")[0]
-    assert tuple(re.findall(r'key:\s*"([a-z0-9_]+)"', block)) == (
-        runtime_config.TIER_SETTING_NAMES
-    )
+    active_keys = tuple(re.findall(r'key:\s*"([a-z0-9_]+)"', block))
+    assert active_keys == (ModelTier.ROUTER.value, ModelTier.L1.value)
+    assert set(active_keys) <= set(runtime_config.TIER_SETTING_NAMES)
     cleared = re.search(r'TIER_CLEARED = "([^"]+)"', js).group(1)
     assert cleared == model_tiers.CLEARED_PROFILE_ID
 
@@ -543,121 +543,3 @@ def _captured_requests(monkeypatch):
     monkeypatch.setattr(models, "record_model_call", lambda **_: None)
     monkeypatch.setattr(httpx, "Client", _CapturingClient, raising=False)
     return _CapturingClient.captured
-
-
-def test_node_verification_provider_sends_its_tier_endpoint_and_switch(
-    _captured_requests,
-):
-    """端到端：分档配置 → provider → 真实请求体。"""
-    from personagraph.l2.task_execution.work_run.model_providers import (
-        build_verification_structured_provider,
-    )
-    from personagraph.l2.task_execution.work_run.model_profile import (
-        WorkRunStructuredModelProfile,
-    )
-
-    profile_id = _make_profile("verify", "cheap-model")
-    runtime_config.update_config({
-        "provider": "deepseek", "model": "global-model", "api_key": "global-key",
-        "tier_node_verification_profile_id": profile_id,
-        "tier_node_verification_thinking": "off",
-    })
-
-    provider = build_verification_structured_provider(
-        WorkRunStructuredModelProfile(
-            attempt_max_output_tokens=32_768,
-            verification_max_output_tokens=8_192,
-            timeout_s=600.0,
-        )
-    )
-    provider("sys", _NODE_INPUT, model_call_id="mc_1", purpose="runtime_x")
-
-    assert len(_captured_requests) == 1
-    sent = _captured_requests[0]
-    assert sent["payload"]["model"] == "cheap-model"
-    assert sent["payload"]["thinking"] == {"type": "disabled"}
-    assert sent["headers"]["x-api-key"] == "k-verify"   # 该档自己的凭据
-    assert "example.invalid" in sent["endpoint"]
-
-
-def test_thinking_on_sends_enabled_and_keeps_the_generous_cap(_captured_requests):
-    from personagraph.l2.task_execution.work_run.model_providers import (
-        build_attempt_structured_provider,
-    )
-    from personagraph.l2.task_execution.work_run.model_profile import (
-        WorkRunStructuredModelProfile,
-    )
-
-    runtime_config.update_config({
-        "provider": "deepseek", "model": "deepseek-global-model", "api_key": "global-key",
-        "tier_attempt_thinking": "on",
-    })
-    provider = build_attempt_structured_provider(
-        WorkRunStructuredModelProfile(
-            attempt_max_output_tokens=32_768,
-            verification_max_output_tokens=8_192,
-            timeout_s=600.0,
-        )
-    )
-    provider("sys", _NODE_INPUT, model_call_id="mc_2", purpose="runtime_y")
-
-    payload = _captured_requests[0]["payload"]
-    assert payload["thinking"] == {"type": "enabled"}
-    # 开思考时上限不得收窄——收窄会把可用调用变成截断失败（§6.4 A2/A4）
-    assert payload["max_tokens"] == 32_768
-    # budget_tokens 实测无效，绝不能出现在请求里（§6.2）
-    assert "budget_tokens" not in payload["thinking"]
-
-
-def test_deepseek_anthropic_tier_sends_the_selected_effort(_captured_requests):
-    from personagraph.l2.task_execution.work_run.model_providers import (
-        build_attempt_structured_provider,
-    )
-    from personagraph.l2.task_execution.work_run.model_profile import (
-        WorkRunStructuredModelProfile,
-    )
-
-    profile_id = _make_profile("deep", "deepseek-deep-model")
-    runtime_config.update_config({
-        "tier_attempt_profile_id": profile_id,
-        "tier_attempt_thinking": "on",
-        "tier_attempt_reasoning_effort": "xhigh",
-    })
-    provider = build_attempt_structured_provider(
-        WorkRunStructuredModelProfile(
-            attempt_max_output_tokens=32_768,
-            verification_max_output_tokens=8_192,
-            timeout_s=600.0,
-        )
-    )
-
-    provider("sys", _NODE_INPUT, model_call_id="mc_effort", purpose="runtime_effort")
-
-    payload = _captured_requests[0]["payload"]
-    assert payload["thinking"] == {"type": "enabled"}
-    assert payload["output_config"] == {"effort": "high"}
-    assert "temperature" not in payload
-
-
-def test_thinking_off_keeps_the_configured_output_cap(_captured_requests):
-    from personagraph.l2.task_execution.work_run.model_providers import (
-        build_attempt_structured_provider,
-    )
-    from personagraph.l2.task_execution.work_run.model_profile import (
-        WorkRunStructuredModelProfile,
-    )
-
-    runtime_config.update_config({
-        # 使用已注册的模型家族配置，使该测试只验证思考开关/输出上限契约，
-        # 而不触发未知模型的上下文准入（其保守窗口有意设为 32K）。
-        "provider": "deepseek", "model": "deepseek-v4-pro", "api_key": "global-key",
-    })
-    provider = build_attempt_structured_provider(
-        WorkRunStructuredModelProfile(
-            attempt_max_output_tokens=32_768,
-            verification_max_output_tokens=8_192,
-            timeout_s=600.0,
-        )
-    )
-    provider("sys", _NODE_INPUT, model_call_id="mc_3", purpose="runtime_z")
-    assert _captured_requests[0]["payload"]["max_tokens"] == 32_768

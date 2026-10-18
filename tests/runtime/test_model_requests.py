@@ -321,7 +321,7 @@ def test_turn_deadline_clamps_the_real_provider_http_timeout(monkeypatch) -> Non
 
     monkeypatch.setattr(models.httpx, "Client", Client)
     binding = ModelTierBinding(
-        tier=ModelTier.ATTEMPT,
+        tier=ModelTier.L1,
         provider="openai-compatible",
         base_url="https://example.invalid/v1",
         model="test-model",
@@ -334,7 +334,7 @@ def test_turn_deadline_clamps_the_real_provider_http_timeout(monkeypatch) -> Non
         turn_id="turn-timeout-clamp",
         session_id="session-timeout-clamp",
         purpose="timeout-clamp",
-        stage=RuntimeStage.L2_UNDERSTAND,
+        stage=RuntimeStage.CLASSIFY,
         prepare_request=prepare_test_model_request(
             lambda model_call_id: models.openai_compatible_chat(
                 [{"role": "user", "content": "hello"}],
@@ -374,7 +374,7 @@ def test_deadline_expiring_immediately_before_provider_prevents_http_io() -> Non
             turn_id="turn-expired-before-provider",
             session_id="session-expired-before-provider",
             purpose="timeout-clamp",
-            stage=RuntimeStage.L2_UNDERSTAND,
+            stage=RuntimeStage.CLASSIFY,
             prepare_request=prepare_test_model_request(provider),
             validate=lambda result: result.reply,
             emit=events.append,
@@ -527,7 +527,7 @@ def test_prepared_request_gates_before_reservation_and_dispatches_physical_id(
 ) -> None:
     operations: list[object] = []
     binding = ModelTierBinding(
-        tier=ModelTier.ATTEMPT,
+        tier=ModelTier.L1,
         provider="openai-compatible",
         base_url="https://example.invalid/v1",
         model="prepared-model",
@@ -1227,7 +1227,7 @@ def test_retry_wrapper_stops_on_non_retryable_output_validation_failure():
             turn_id="turn-1",
             session_id="session-1",
             purpose="test",
-            stage=RuntimeStage.L2_UNDERSTAND,
+            stage=RuntimeStage.CLASSIFY,
             prepare_request=prepare_test_model_request(request),
             validate=lambda _result: (_ for _ in ()).throw(
                 ModelOutputValidationError("budget exhausted", retryable=False)
@@ -1266,7 +1266,7 @@ def test_provider_declared_output_limit_is_never_blindly_retried(
             turn_id="turn-1",
             session_id="session-1",
             purpose="test",
-            stage=RuntimeStage.L2_PLAN,
+            stage=RuntimeStage.L1_BOOTSTRAP,
             prepare_request=prepare_test_model_request(request),
             validate=lambda result: result.reply,
             emit=lambda _event: None,
@@ -1397,7 +1397,7 @@ def test_prepared_repair_receives_structured_feedback_and_rejected_response() ->
         turn_id="turn-repair",
         session_id="session-repair",
         purpose="test-repair",
-        stage=RuntimeStage.L2_PLAN,
+        stage=RuntimeStage.L1_BOOTSTRAP,
         prepare_request=lambda: Prepared(rejected_body),
         prepare_repair_request=prepare_repair,
         repair_target_contract="test-result-v1",
@@ -1488,7 +1488,7 @@ def test_prepared_repair_keeps_transport_context_and_replaces_only_on_rejection(
         turn_id="turn-repair-context",
         session_id="session-repair-context",
         purpose="test-repair-context",
-        stage=RuntimeStage.L2_PLAN,
+        stage=RuntimeStage.L1_BOOTSTRAP,
         prepare_request=prepare_initial,
         prepare_repair_request=prepare_four_message_repair,
         repair_target_contract="test-output",
@@ -1545,7 +1545,7 @@ def test_prepared_repair_uses_the_canonical_callback() -> None:
         turn_id="turn-canonical-repair",
         session_id="session-canonical-repair",
         purpose="test-canonical-repair",
-        stage=RuntimeStage.L2_PLAN,
+        stage=RuntimeStage.L1_BOOTSTRAP,
         prepare_request=Prepared,
         prepare_repair_request=prepare_repair,
         repair_target_contract="test-output",
@@ -1591,7 +1591,7 @@ def test_durable_repair_without_an_explicit_protocol_fails_closed() -> None:
             turn_id="turn-missing-repair-protocol",
             session_id="session-missing-repair-protocol",
             purpose="missing-repair-protocol",
-            stage=RuntimeStage.L2_PLAN,
+            stage=RuntimeStage.L1_BOOTSTRAP,
             prepare_request=prepare,  # type: ignore[arg-type]
             prepare_repair_request=lambda _feedback, _body: pytest.fail(
                 "repair ran"
@@ -1680,7 +1680,7 @@ def test_rejected_body_with_isolated_surrogate_terminalizes_attempt() -> None:
             turn_id="turn-repair-surrogate",
             session_id="session-repair-surrogate",
             purpose="test-repair-surrogate",
-            stage=RuntimeStage.L2_PLAN,
+            stage=RuntimeStage.L1_BOOTSTRAP,
             prepare_request=Prepared,
             prepare_repair_request=repair,
             repair_target_contract="test-output",
@@ -1740,7 +1740,7 @@ def test_rejected_body_over_durable_limit_does_not_enter_repair() -> None:
             turn_id="turn-repair-oversized",
             session_id="session-repair-oversized",
             purpose="test-repair-oversized",
-            stage=RuntimeStage.L2_PLAN,
+            stage=RuntimeStage.L1_BOOTSTRAP,
             prepare_request=Prepared,
             prepare_repair_request=repair,
             repair_target_contract="test-output",
@@ -1810,7 +1810,7 @@ def test_shared_builder_truncates_issue_count_or_envelope_bytes(
         turn_id=f"turn-repair-issue-budget-{wide_paths}",
         session_id="session-repair-issue-budget",
         purpose="test-repair-issue-budget",
-        stage=RuntimeStage.L2_PLAN,
+        stage=RuntimeStage.L1_BOOTSTRAP,
         prepare_request=Prepared,
         prepare_repair_request=repair,
         repair_target_contract="test-output",
@@ -1879,7 +1879,7 @@ def test_transport_retry_does_not_invent_output_repair_feedback(monkeypatch) -> 
         turn_id="turn-transport-repair",
         session_id="session-repair",
         purpose="test-repair",
-        stage=RuntimeStage.L2_PLAN,
+        stage=RuntimeStage.L1_BOOTSTRAP,
         prepare_request=Prepared,
         prepare_repair_request=prepare_repair,
         repair_target_contract="test-result-v1",
@@ -1933,7 +1933,7 @@ def test_durable_repair_fails_before_provider_when_authority_lacks_checkpoint_se
             turn_id="turn-no-checkpoint",
             session_id="session-repair",
             purpose="test-repair",
-            stage=RuntimeStage.L2_PLAN,
+            stage=RuntimeStage.L1_BOOTSTRAP,
             prepare_request=Prepared,
             prepare_repair_request=lambda _feedback, _body: Prepared(),
             repair_target_contract="test-result-v1",
@@ -1968,7 +1968,7 @@ def test_output_repair_keeps_the_existing_six_attempt_limit() -> None:
             turn_id="turn-repair-limit",
             session_id="session-repair",
             purpose="test-repair",
-            stage=RuntimeStage.L2_PLAN,
+            stage=RuntimeStage.L1_BOOTSTRAP,
             prepare_request=lambda: Prepared(repair=False),
             prepare_repair_request=lambda _feedback, _body: Prepared(repair=True),
             repair_target_contract="test-result-v1",

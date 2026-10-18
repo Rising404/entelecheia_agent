@@ -155,11 +155,6 @@ ROUTES: tuple[Route, ...] = (
     Route("GET", ("api", "sessions", "{session_id}"), _get_no_query(service.get_session, "session_id")),
     Route("POST", ("api", "sessions", "{session_id}", "post-commit", "control"),
           _service_handler(service.control_turn_post_commit_jobs, "session_id")),
-    Route(
-        "GET",
-        ("api", "sessions", "{session_id}", "insession-tasks", "{insession_task_id}"),
-        _get_no_query(service.get_insession_task_details, "session_id", "insession_task_id"),
-    ),
     Route("GET", ("api", "sessions", "{session_id}", "runtime-events"), _get_with_params(service.get_runtime_events, "session_id")),
     Route("GET", ("api", "sessions", "{session_id}", "attachments"), _get_with_params(service.list_session_attachments, "session_id")),
     Route("DELETE", ("api", "sessions", "{session_id}", "attachments", "{attachment_id}"),

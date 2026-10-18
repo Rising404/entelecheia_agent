@@ -1,7 +1,7 @@
 """Decode lane-neutral facts from persisted Runtime Turn records.
 
 This module owns only cold, deterministic projections shared by Entry, L1, and
-L2.  It does not read storage, select a processing lane, or import an Entry
+execution. It does not read storage, select a processing lane, or import an Entry
 orchestrator.
 """
 
@@ -48,7 +48,7 @@ def require_processing_level(value: object) -> ProcessingLevel | None:
     text = optional_text(value)
     if text is None:
         return None
-    if text not in {"L0", "L1", "L2"}:
+    if text not in {"L0", "L1"}:
         raise RuntimeError(f"unexpected processing level: {text}")
     return text  # type: ignore[return-value]
 

@@ -14,8 +14,6 @@ function runtimeEvent(eventId, sequence, overrides = {}) {
     occurred_at: "2026-07-15T00:00:00Z",
     error_code: null,
     retryable: false,
-    insession_task_id: null,
-    work_run_id: null,
     attempt_id: null,
     operation_id: null,
     prompt_replay: false,

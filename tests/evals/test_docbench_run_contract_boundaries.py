@@ -130,7 +130,6 @@ def _result() -> dict[str, object]:
         "reply": "Answer",
         "execution_ok": True,
         "lane_ok": True,
-        "interaction_ok": True,
         "telemetry": {},
     }
 

@@ -95,21 +95,16 @@ def reserve_runtime_model_logical_call(
             )
         try:
             conn.execute(
-                "INSERT INTO insession_runtime_model_logical_calls "
-                "(logical_call_id, session_id, insession_task_id, "
-                "auxiliary_graph_id, goal_id, execution_subject_id, "
+                "INSERT INTO runtime_model_logical_calls "
+                "(logical_call_id, session_id, "
                 "invocation_turn_id, call_kind, purpose, provider, model, "
                 "endpoint_fingerprint, request_contract, request_sha256, "
                 "typed_result_contract, max_physical_attempts, "
                 "state_guard_sha256, binding_sha256, request_json, created_at) "
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 (
                     request.logical_call_id,
                     request.session_id,
-                    request.task_id,
-                    request.auxiliary_graph_id,
-                    request.goal_id,
-                    request.execution_subject_id,
                     request.invocation_turn_id,
                     request.call_kind,
                     request.purpose,
@@ -199,7 +194,7 @@ def append_runtime_model_physical_attempt(
         )
         try:
             conn.execute(
-                "INSERT INTO insession_runtime_model_physical_attempts "
+                "INSERT INTO runtime_model_physical_attempts "
                 "(physical_attempt_id, physical_attempt_key, session_id, "
                 "logical_call_id, logical_request_binding_sha256, "
                 "physical_ordinal, started_turn_id, provider, model, "
@@ -257,7 +252,7 @@ def settle_runtime_model_physical_attempt(
         conn.execute("BEGIN IMMEDIATE")
         replay = conn.execute(
             "SELECT settlement_json FROM "
-            "insession_runtime_model_call_settlement_receipts "
+            "runtime_model_call_settlement_receipts "
             "WHERE settle_apply_id=?",
             (settlement.settle_apply_id,),
         ).fetchone()
@@ -290,7 +285,7 @@ def settle_runtime_model_physical_attempt(
             )
         settlement_identity = conn.execute(
             "SELECT settle_apply_id FROM "
-            "insession_runtime_model_call_settlement_receipts "
+            "runtime_model_call_settlement_receipts "
             "WHERE settlement_id=?",
             (settlement.settlement_id,),
         ).fetchone()
@@ -337,7 +332,7 @@ def settle_runtime_model_physical_attempt(
         )
         try:
             conn.execute(
-                "INSERT INTO insession_runtime_model_call_settlement_receipts "
+                "INSERT INTO runtime_model_call_settlement_receipts "
                 "(settle_apply_id, settlement_id, session_id, logical_call_id, "
                 "physical_attempt_id, physical_request_binding_sha256, "
                 "physical_ordinal, outcome, receipt_sha256, settlement_json, "
@@ -363,7 +358,7 @@ def settle_runtime_model_physical_attempt(
                     record=rejected_output,
                 )
             updated = conn.execute(
-                "UPDATE insession_runtime_model_physical_attempts SET "
+                "UPDATE runtime_model_physical_attempts SET "
                 "status=?, settlement_apply_id=?, settled_at=? "
                 "WHERE physical_attempt_id=? AND logical_call_id=? "
                 "AND binding_sha256=? AND status='pending' "
@@ -423,7 +418,7 @@ def get_runtime_model_rejected_output(
         if logical is None or logical.request.session_id != session_id:
             return None
         row = conn.execute(
-            "SELECT * FROM insession_runtime_model_rejected_outputs "
+            "SELECT * FROM runtime_model_rejected_outputs "
             "WHERE session_id=? AND logical_call_id=? "
             "AND physical_ordinal=? AND response_sha256=?",
             (
@@ -554,7 +549,7 @@ def _insert_rejected_output_record(
     record: StoredRuntimeModelRejectedOutput,
 ) -> None:
     conn.execute(
-        "INSERT INTO insession_runtime_model_rejected_outputs "
+        "INSERT INTO runtime_model_rejected_outputs "
         "(session_id, logical_call_id, physical_attempt_id, "
         "physical_ordinal, response_sha256, byte_count, response_text, "
         "record_sha256) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
@@ -580,7 +575,7 @@ def _require_rejected_output_replay(
     if expected is None:
         return
     row = conn.execute(
-        "SELECT * FROM insession_runtime_model_rejected_outputs "
+        "SELECT * FROM runtime_model_rejected_outputs "
         "WHERE physical_attempt_id=?",
         (physical_attempt_id,),
     ).fetchone()
@@ -690,7 +685,7 @@ def _load_logical_call(
     logical_call_id: str,
 ) -> StoredRuntimeModelLogicalCall | None:
     row = conn.execute(
-        "SELECT * FROM insession_runtime_model_logical_calls "
+        "SELECT * FROM runtime_model_logical_calls "
         "WHERE logical_call_id=?",
         (logical_call_id,),
     ).fetchone()
@@ -708,7 +703,7 @@ def _load_logical_call(
 
     attempts: list[StoredRuntimeModelPhysicalAttempt] = []
     rows = conn.execute(
-        "SELECT * FROM insession_runtime_model_physical_attempts "
+        "SELECT * FROM runtime_model_physical_attempts "
         "WHERE logical_call_id=? ORDER BY physical_ordinal",
         (logical_call_id,),
     ).fetchall()
@@ -729,7 +724,7 @@ def _load_logical_call(
         _require_physical_binding(request, physical)
 
         settlement_row = conn.execute(
-            "SELECT * FROM insession_runtime_model_call_settlement_receipts "
+            "SELECT * FROM runtime_model_call_settlement_receipts "
             "WHERE physical_attempt_id=?",
             (physical.physical_attempt_id,),
         ).fetchone()
@@ -812,7 +807,7 @@ def _load_physical_attempt_by_identity(
     physical_attempt_key: str,
 ) -> StoredRuntimeModelPhysicalAttempt | None:
     rows = conn.execute(
-        "SELECT logical_call_id FROM insession_runtime_model_physical_attempts "
+        "SELECT logical_call_id FROM runtime_model_physical_attempts "
         "WHERE physical_attempt_id=? OR physical_attempt_key=?",
         (physical_attempt_id, physical_attempt_key),
     ).fetchall()
@@ -838,10 +833,6 @@ def _require_logical_row_projection(
     expected = {
         "logical_call_id": request.logical_call_id,
         "session_id": request.session_id,
-        "insession_task_id": request.task_id,
-        "auxiliary_graph_id": request.auxiliary_graph_id,
-        "goal_id": request.goal_id,
-        "execution_subject_id": request.execution_subject_id,
         "invocation_turn_id": request.invocation_turn_id,
         "call_kind": request.call_kind,
         "purpose": request.purpose,
@@ -916,7 +907,7 @@ def _require_settled_rejected_output_binding(
 
     feedback = settlement.next_output_repair_feedback
     row = conn.execute(
-        "SELECT * FROM insession_runtime_model_rejected_outputs "
+        "SELECT * FROM runtime_model_rejected_outputs "
         "WHERE physical_attempt_id=?",
         (physical.physical_attempt_id,),
     ).fetchone()

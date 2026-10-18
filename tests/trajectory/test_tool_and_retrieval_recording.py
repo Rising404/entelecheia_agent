@@ -382,7 +382,7 @@ def test_a_refusal_keeps_the_thing_that_was_refused(store):
     """运行时只记录守卫拒绝，却从不记录它拒绝了什么。"""
 
     recorder_module.record_rejected_output(
-        stage="query_guard:task_graph_create",
+        stage="query_guard:l1_document_search",
         rejected='{"queries": ["q1", "q2", "q3"], "source_hints": ["document"]}',
         reason_code="too_many_queries",
     )
@@ -400,7 +400,7 @@ def test_the_queries_a_generator_actually_produced_are_kept(store):
 
     recorder_module.record_retrieval(
         queries=("季度报告 Figure 2 数值", "quarterly report figure 2 values"),
-        source_scope="task_graph_create",
+        source_scope="l1_document_search",
         evidence=[{"source_unit_id": "u1", "fused_rank": 1}],
         outcome="ok",
         reason_code=None,

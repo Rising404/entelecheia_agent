@@ -21,45 +21,30 @@ def _payload(session_id: str, request_id: str) -> dict[str, object]:
     }
 
 
-def test_api_rejects_mutually_enabled_l1_and_l2_before_acceptance() -> None:
-    session_id = session_store.create_session("Entelecheia")
-    payload = _payload(session_id, "double-enabled")
-    payload["runtime_policy"] = {"l1_enabled": True, "l2_enabled": True}
-
-    with pytest.raises(ApiError) as captured:
-        service.chat_turn(payload)
-
-    assert captured.value.code == "INVALID_RUNTIME_POLICY"
-    assert captured.value.status == 400
-    assert session_store.get_turns(session_id) == []
-
-
 def test_session_detail_projects_effective_policy_and_host_capabilities() -> None:
     session_id = session_store.create_session("Entelecheia")
 
     enabled = service.get_session(session_id)["runtime_routing"]
     assert enabled == {
-        "schema_version": 1,
+        "schema_version": 2,
         "source": "default",
         "policy": {
-            "schema_version": 1,
+            "schema_version": 2,
             "l1_enabled": True,
-            "l2_enabled": False,
         },
         "allowed_processing_levels": ["L0", "L1"],
-        "available_processing_levels": ["L0", "L1", "L2"],
+        "available_processing_levels": ["L0", "L1"],
     }
 
 def test_system_status_publishes_available_levels_and_product_default() -> None:
     routing = service.system_status()["runtime_routing"]
 
     assert routing == {
-        "schema_version": 1,
-        "available_processing_levels": ["L0", "L1", "L2"],
+        "schema_version": 2,
+        "available_processing_levels": ["L0", "L1"],
         "default_policy": {
-            "schema_version": 1,
+            "schema_version": 2,
             "l1_enabled": True,
-            "l2_enabled": False,
         },
         "default_source": "default",
     }
@@ -68,8 +53,8 @@ def test_system_status_publishes_available_levels_and_product_default() -> None:
 @pytest.mark.parametrize(
     "policy,expected_levels",
     (
-        ({"l1_enabled": False, "l2_enabled": True}, ["L0", "L2"]),
-        ({"l1_enabled": False, "l2_enabled": False}, ["L0"]),
+        ({"l1_enabled": True}, ["L0", "L1"]),
+        ({"l1_enabled": False}, ["L0"]),
     ),
 )
 def test_api_persists_an_explicit_policy_as_the_session_default(
@@ -90,7 +75,7 @@ def test_api_persists_an_explicit_policy_as_the_session_default(
     stored = session_store.get_session_turn_routing_policy(session_id)
     assert stored is not None
     assert json.loads(str(stored["policy_json"])) == {
-        "schema_version": 1,
+        "schema_version": 2,
         **policy,
     }
     receipt = session_store.get_turn_execution_for_client_request(
@@ -119,10 +104,10 @@ def test_accepted_l1_request_replays_from_its_immutable_policy(
     workspace.mkdir()
     session_id = bound_partitioned_session(working_dir=workspace)
     payload = _payload(session_id, "l1-policy-replay")
-    payload["runtime_policy"] = {"l1_enabled": True, "l2_enabled": False}
+    payload["runtime_policy"] = {"l1_enabled": True}
     def classify(*_args: object, **kwargs: object) -> ModelResult:
         return ModelResult(
-            reply=json.dumps({"processing_level": "L1", "task_matches": []}),
+            reply=json.dumps({"processing_level": "L1"}),
             provider="test",
             model="test",
             latency_ms=1,
@@ -176,11 +161,11 @@ def test_accepted_l1_request_replays_with_its_explicit_policy(
     workspace.mkdir()
     session_id = bound_partitioned_session(working_dir=workspace)
     payload = _payload(session_id, "l1-explicit-replay")
-    payload["runtime_policy"] = {"l1_enabled": True, "l2_enabled": False}
+    payload["runtime_policy"] = {"l1_enabled": True}
 
     def classify(*_args: object, **kwargs: object) -> ModelResult:
         return ModelResult(
-            reply=json.dumps({"processing_level": "L1", "task_matches": []}),
+            reply=json.dumps({"processing_level": "L1"}),
             provider="test",
             model="test",
             latency_ms=1,
@@ -194,7 +179,7 @@ def test_accepted_l1_request_replays_with_its_explicit_policy(
 
     first = service.chat_turn(payload)
     replay = _payload(session_id, "l1-explicit-replay")
-    replay["runtime_policy"] = {"l1_enabled": True, "l2_enabled": False}
+    replay["runtime_policy"] = {"l1_enabled": True}
     replayed = service.chat_turn(replay)
 
     assert replayed["result"] == first["result"]
@@ -208,11 +193,11 @@ def test_replay_rejects_a_changed_runtime_policy(
     workspace.mkdir()
     session_id = bound_partitioned_session(working_dir=workspace)
     first = _payload(session_id, "policy-replay-mismatch")
-    first["runtime_policy"] = {"l1_enabled": False, "l2_enabled": False}
+    first["runtime_policy"] = {"l1_enabled": False}
     service.chat_turn(first)
 
     changed = _payload(session_id, "policy-replay-mismatch")
-    changed["runtime_policy"] = {"l1_enabled": False, "l2_enabled": True}
+    changed["runtime_policy"] = {"l1_enabled": True}
     with pytest.raises(ApiError) as captured:
         service.chat_turn(changed)
 

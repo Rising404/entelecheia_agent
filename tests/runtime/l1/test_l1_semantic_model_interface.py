@@ -112,8 +112,8 @@ def test_prompt_documents_review_inputs_in_four_ordered_sections():
         "candidate_final_reply",
         "execution_context.stop",
         "execution_context.tool_calls",
-        "execution_context.model_notes",
-        "execution_context.candidate_note",
+        "attachment_reading.documents",
+        "attachment_reading.pending_reads",
         "durable_evidence.results",
         "durable_evidence.results[].result_scope",
         "durable_evidence.omitted_recent_result_count",
@@ -196,3 +196,52 @@ def test_receipt_binds_authentic_issues_result_not_an_invented_completion_table(
                 1,
             ),
         )
+
+
+@pytest.mark.parametrize("disposition", ["not_required", "passed"])
+def test_existing_receipt_json_and_hash_survive_optional_fallback_extension(disposition):
+    from personagraph.runtime.l1.identity import canonical_json
+    from personagraph.runtime.l1.semantic_contracts import L1SemanticVerificationReceipt
+
+    reviewed = disposition == "passed"
+    original = {
+        "contract_version": "l1-semantic-verification-receipt-v2",
+        "disposition": disposition,
+        "trigger": {"mode": "always" if reviewed else "off", "reasons": ["policy_always"] if reviewed else []},
+        "decision_hash": "a" * 64,
+        "plan_hash": "b" * 64,
+        "mechanical_verification_hash": "c" * 64,
+        "state_guard_hash": "d" * 64,
+        "checked_acceptances": 1,
+        "checked_tool_results": 0,
+        "reviewer_logical_call_id": "review-1" if reviewed else None,
+        "reviewer_result_hash": sha256_json({"issues": []}) if reviewed else None,
+        "reviewer_result": {"issues": []} if reviewed else None,
+    }
+    restored = L1SemanticVerificationReceipt.model_validate_json(canonical_json(original))
+    assert canonical_json(restored) == canonical_json(original)
+    assert sha256_json(restored) == sha256_json(original)
+
+
+@pytest.mark.parametrize("invalid", [
+    {"unavailable_error_code": None},
+    {"unavailable_error_code": "UNKNOWN_FAILURE"},
+    {"reviewer_logical_call_id": None},
+    {"reviewer_result": {"issues": []}},
+    {"reviewer_result_hash": "a" * 64},
+    {"trigger": {"mode": "off", "reasons": []}},
+])
+def test_unavailable_receipt_cannot_fabricate_a_verdict_or_omit_failure(invalid):
+    from personagraph.runtime.l1.semantic_contracts import L1SemanticVerificationReceipt
+
+    receipt = {
+        "disposition": "unavailable",
+        "trigger": {"mode": "always", "reasons": ["policy_always"]},
+        "decision_hash": "a" * 64, "plan_hash": "b" * 64,
+        "mechanical_verification_hash": "c" * 64, "state_guard_hash": "d" * 64,
+        "checked_acceptances": 1, "checked_tool_results": 0,
+        "reviewer_logical_call_id": "review-1",
+        "unavailable_error_code": "MODEL_QUOTA_ADMISSION_FAILED",
+    }
+    with pytest.raises(ValidationError):
+        L1SemanticVerificationReceipt.model_validate({**receipt, **invalid})

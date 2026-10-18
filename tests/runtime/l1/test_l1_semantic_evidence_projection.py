@@ -20,6 +20,7 @@ from personagraph.runtime.l1.semantic_verification import (
     L1SemanticVerificationInputError,
     _semantic_review_view,
 )
+from personagraph.runtime.l1.verification import verify_l1_final_reply
 from personagraph.tools.model_interface import project_tool_result
 
 
@@ -88,7 +89,6 @@ def _view(*, references=(), calls=()):
             },
         },
         execution=_execution(calls),
-        candidate_note="缺少后半段材料，说明当前限制。",
     )
 
 
@@ -117,6 +117,60 @@ def test_reference_pins_original_result_even_if_body_and_ledger_digest_both_chan
     call["outcome_hash"] = sha256_json(replacement)
     with pytest.raises(L1EvidenceProjectionError, match="referenced_result_hash_mismatch"):
         project_referenced_results(references=(reference,), execution=_execution([call]))
+
+
+def test_repeated_prefix_does_not_evict_distinct_evidence_from_review():
+    original, _ = _call("original", result={"text": "important earlier fact"})
+    repeats = []
+    for ordinal in range(2, 14):
+        call, _ = _call(f"prefix-{ordinal}", attempt_ordinal=ordinal)
+        call["arguments_hash"] = "a" * 64
+        repeats.append(call)
+    evidence = project_review_evidence(references=(), execution=_execution([original, *repeats]))
+    assert [row["call_ref"] for row in evidence["results"]] == ["c13.1", "c1.1"]
+    assert evidence["omitted_recent_result_count"] == 11
+
+
+def test_successful_blocked_receipt_cannot_support_document_fact():
+    call, reference = _call(result={"status": "blocked", "outcome": "not_established"})
+    with pytest.raises(L1EvidenceProjectionError, match="blocked_result_is_not_task_evidence"):
+        project_referenced_results(references=(reference,), execution=_execution([call]))
+
+
+def test_bad_chunk_feedback_identifies_only_the_offending_reference():
+    calls, references = zip(*(_call(f"call-{i}", attempt_ordinal=i + 1) for i in range(4)))
+    references = list(references)
+    references[2] = references[2].model_copy(update={"chunk_id": "14"})
+    text = "Answer from the documents"
+    plan = materialize_l1_plan(
+        L1PlanProposal(objective=text, acceptances=({"criterion": text},)),
+        input_message_id="input-1", user_text=text,
+    )
+    rejected = verify_l1_final_reply(
+        plan=plan, reply="The cited fact.", references=tuple(references), execution=_execution(calls),
+    )
+    assert not rejected.passed
+    assert rejected.issues[0].to_dict() == {
+        "code": "chunk_not_in_referenced_result", "acceptance_id": None,
+        "tool_call_id": "call-2", "reference_index": 2,
+    }
+    assert "references[2].chunk_id" in rejected.safe_feedback()
+    assert "omit optional chunk_id" in rejected.safe_feedback()
+    # 修正引用时仍绑定同一原始结果及摘要；原协议允许引用完整结果。
+    references[2] = references[2].model_copy(update={"chunk_id": None})
+    accepted = verify_l1_final_reply(
+        plan=plan, reply="The cited fact.", references=tuple(references), execution=_execution(calls),
+    )
+    assert accepted.passed
+
+
+def test_review_keeps_a_document_fact_beyond_eight_recent_prefixes():
+    calls = [_call(f"file-{i}", attempt_ordinal=i + 1,
+                   result={"path": f"doc-{i}.pdf", "text": f"fact {i}"})[0]
+             for i in range(12)]
+    evidence = project_review_evidence(references=(), execution=_execution(calls))
+    assert {row["result"]["path"] for row in evidence["results"]} == {f"doc-{i}.pdf" for i in range(12)}
+    assert evidence["omitted_recent_result_count"] == 0
 
 
 def test_review_short_references_keep_persisted_coordinates_when_display_order_changes():
@@ -335,9 +389,8 @@ def test_no_references_still_exposes_recent_successful_results_not_failed_facts(
     assert "must not become evidence" not in canonical_json(view)
     assert view["execution_context"]["tool_calls"][-1]["status"] == "failed"
     assert view["execution_context"]["stop"]["must_finalize"] is True
-    assert (
-        view["execution_context"]["candidate_note"] == "缺少后半段材料，说明当前限制。"
-    )
+    assert "candidate_note" not in view["execution_context"]
+    assert "model_notes" not in view["execution_context"]
 
 
 def test_budget_preserves_explicit_reference_and_reports_unselected_recent_bodies():
@@ -381,3 +434,26 @@ def test_duplicate_or_ambiguous_chunk_identity_is_rejected():
             references=(result_id.model_copy(update={"chunk_id": "same"}),),
             execution=_execution([call]),
         )
+
+
+def test_review_uses_actual_coverage_and_omits_model_self_assessment():
+    call, reference = _call(tool_id="read_pdf_text", result={
+        "elements": [{"text": "Actual source fact", "locator": {"page": 2}}],
+        "coverage": {"physical_pages": 6}, "truncated": True,
+        "next_cursor": {"element_offset": 64, "character_offset": 0},
+    })
+    arguments = {"path": "paper.pdf", "start_page": 2, "end_page": 6}
+    call.update(arguments_json=canonical_json(arguments), arguments_hash=sha256_json(arguments))
+    text = "Answer the document question"
+    view = _semantic_review_view(
+        plan=materialize_l1_plan(L1PlanProposal(objective=text, acceptances=({"criterion": text},)),
+                                input_message_id="input-1", user_text=text),
+        reply="I read the whole file.", references=(reference,), execution=_execution([call]),
+        model_view={"current_user_text": text, "file_catalog": [{"relative_path": "paper.pdf"}],
+                    "execution_findings": {"notes": [{"summary": "UNSUPPORTED_SELF_ASSESSMENT"}]}},
+    )
+    assert "UNSUPPORTED_SELF_ASSESSMENT" not in canonical_json(view)
+    assert not {"model_notes", "candidate_note"} & view["execution_context"].keys()
+    assert view["attachment_reading"]["documents"][0]["pages_without_returned_text"] == [1, 3, 4, 5, 6]
+    assert view["attachment_reading"]["pending_reads"][0]["arguments"]["element_offset"] == 64
+    assert "Actual source fact" in canonical_json(view["durable_evidence"])

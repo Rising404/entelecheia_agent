@@ -100,6 +100,28 @@ def test_format_and_unknown_tool_body_stay_intact():
     assert project_tool_result("custom_tool", raw) == raw
 
 
+def test_native_projection_preserves_text_coordinates_and_cursor_without_parser_bookkeeping():
+    element = {"element_id": "parser-id", "index": 17, "text": "Exact source wording",
+               "text_range": [3, 23], "needs_vision": False, "source_pages": [6],
+               "text_evidence": None, "locator": {"page": 6, "ordinal": 17,
+               "bbox": [1.25, 2, 3, 4], "section_path": [], "char_range": None}}
+    raw = {"elements": [element], "truncated": True,
+           "next_cursor": {"element_offset": 18, "character_offset": 0}}
+    before = deepcopy(raw)
+    view = project_tool_result("read_pdf_text", raw)
+    assert view["elements"][0] == {"index": 17, "text": "Exact source wording",
+        "text_range": [3, 23], "needs_vision": False,
+        "locator": {"page": 6, "ordinal": 17, "bbox": [1.25, 2, 3, 4]}}
+    assert view["next_cursor"] == raw["next_cursor"] and view["truncated"] is True
+    assert raw == before
+
+
+def test_native_projection_retains_cross_page_provenance_and_visual_evidence():
+    element = {"text": "table text", "locator": {"page": 2}, "source_pages": [2, 3],
+               "text_evidence": {"uncertainty": 0.2}, "needs_vision": True}
+    assert project_tool_result("read_pdf_text", {"elements": [element]})["elements"] == [element]
+
+
 def test_host_selected_chunk_keeps_native_context_and_body_without_retrieval_diagnostics():
     from personagraph.persistent_turn_content.tool_results import select_tool_result_chunk
 
@@ -144,3 +166,19 @@ def test_result_metadata_retains_only_scope_and_continuation_without_rewriting_c
     assert project_tool_result_metadata(raw) == scope
     assert raw == before
     assert project_tool_result_metadata(None) == {}
+
+
+def test_native_readable_content_keeps_text_order_and_is_idempotent():
+    elements = [{"text": text, "locator": {"page": page}, "text_range": [0, len(text)]}
+                for page, text in ((2, "Exact first line"), (2, "  indented second line"),
+                                   (4, "Final visible fragment"))]
+    raw = {"elements": elements, "truncated": True,
+           "next_cursor": {"element_offset": 3, "character_offset": 8}}
+    before = deepcopy(raw)
+    view = project_tool_result("read_pdf_text", raw)
+    assert view["content"] == ("[physical page 2; returned text only]\nExact first line\n"
+        "  indented second line\n[physical page 4; returned text only]\nFinal visible fragment")
+    assert view["elements"] == elements
+    assert view["next_cursor"] == raw["next_cursor"] and view["truncated"] is True
+    assert project_tool_result("read_pdf_text", view) == view
+    assert raw == before

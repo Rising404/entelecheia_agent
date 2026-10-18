@@ -23,7 +23,7 @@ from ...turn_events import RuntimeErrorCode
 
 
 # 一次 entry 模型调用的 system prompt、已组装上下文和自身有界输出，都必须装入
-# 确定性 guard 保护的窗口。L2 文档/附件回答可能合理地需要超过历史 800-token
+# 确定性 guard 保护的窗口。回复可能合理地需要超过历史 800-token
 # provider 默认值。通过预留 ``entry.response.model.generate_response`` 使用的相同最大输出
 # 配额，保证输入组装器如实计算。
 ENTRY_PROMPT_RESERVE_TOKENS = 4096
@@ -71,13 +71,9 @@ def select_entry_ingress_short_circuit_outcome(
 
 
 def build_entry_runtime_snapshot(session_id: str | None) -> AuthoritativeRuntimeSnapshot:
-    """读取当前 Runtime 持有的权威控制事实。
+    """当前入口不发布跨轮控制状态。"""
 
-    在 `insession_task`/WorkRun 持久化落地前，没有可报告的 Runtime 控制状态，
-    因此空快照是当前权威结果。
-    """
-
-    del session_id  # 由 WorkRun 切片恢复，并读取新表。
+    del session_id
     return AuthoritativeRuntimeSnapshot()
 
 
@@ -136,31 +132,6 @@ def entry_history_budget(
         - user_text_tokens
         - summary_tokens
         - attachment_tokens
-        - ENTRY_PROMPT_RESERVE_TOKENS,
-    )
-
-
-def entry_task_catalog_budget(
-    *,
-    context_hard_limit: int,
-    user_text_tokens: int,
-    summary_tokens: int,
-    attachment_tokens: int,
-    history_tokens: int,
-) -> int:
-    """只将未使用的全局输入预算用于动态 Task catalog。
-
-    此处有意不虚构 catalog 专用产品上限。现有硬上下文限制是唯一上限；省略会作为
-    可信 ``truncated`` 事实返回，并强制采用保守 L2 路由。
-    """
-
-    return max(
-        0,
-        context_hard_limit
-        - user_text_tokens
-        - summary_tokens
-        - attachment_tokens
-        - history_tokens
         - ENTRY_PROMPT_RESERVE_TOKENS,
     )
 

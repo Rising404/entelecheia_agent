@@ -46,7 +46,7 @@ def _feedback() -> RuntimeModelOutputRepairFeedback:
 
 def test_preparation_selects_the_exact_request_variant_under_frozen_binding() -> None:
     binding = ModelTierBinding(
-        tier=ModelTier.ATTEMPT,
+        tier=ModelTier.L1,
         provider="test",
         base_url="https://example.invalid",
         model="test-model",

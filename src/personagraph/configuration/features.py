@@ -20,8 +20,6 @@ DEFAULT_TURN_WALL_CLOCK_BUDGET_S = 1500.0
 
 
 DEFAULT_FEATURES: FeatureFlags = {
-# 交互式产品 Turn 可以因缺少用户输入而暂停；封闭世界运行则必须基于已获授权的证据面完成。
-    "user_interaction_mode": "interactive",
     # Provider 控制通道：在原生工具调用能力经明确验证前，auto 一律走加固的 prompt-JSON 路径。
     "model_control_transport": "auto",
     # 普通产品运行保留公共 Web 能力；封闭世界评测必须在其 Runtime
@@ -43,12 +41,10 @@ DEFAULT_FEATURES: FeatureFlags = {
     "file_retrieval_write_enabled": True,
     "file_retrieval_read_enabled": True,
     # 兼容字段名暂保留 ``history``；当前实现只授权同一 Session、截止到 AcceptedTurn
-    # 快照的已提交 Turn，不会启用长期记忆或 L2 History。
+    # 快照的已提交 Turn，不会启用长期记忆。
     "history_retrieval_write_enabled": True,
     "history_retrieval_read_enabled": True,
     "l1_retrieval_tools_enabled": True,
-    "l2_aux_retrieval_tools_enabled": False,
-    "l2_task_retrieval_tools_enabled": False,
     "session_context_repair_apply_enabled": False, # controlled replace 默认关闭，只开放 dry-run
     "tools_loop": True,
     "context_guard_limit": 24000,            # C2：provider envelope 的硬准入上限
@@ -84,7 +80,6 @@ def resolve_features(raw_features: Mapping[str, Any] | None) -> FeatureFlags:
     features = DEFAULT_FEATURES.copy()
     features.update(raw_features)
 
-    _validate_user_interaction_mode(features)
     _validate_model_control_transport(features)
     _validate_l1_external_web_tools_enabled(features)
     _validate_l1_execution_limits(features)
@@ -95,16 +90,6 @@ def resolve_features(raw_features: Mapping[str, Any] | None) -> FeatureFlags:
     return features
 
 
-def _validate_user_interaction_mode(features: dict) -> None:
-    mode = features.get("user_interaction_mode", "interactive")
-    if not isinstance(mode, str) or mode.strip().lower() not in {
-        "interactive",
-        "closed_world",
-    }:
-        raise ValueError(
-            "user_interaction_mode must be 'interactive' or 'closed_world'"
-        )
-    features["user_interaction_mode"] = mode.strip().lower()
 
 
 def _validate_model_control_transport(features: dict) -> None:
@@ -162,8 +147,6 @@ def _validate_dual_corpus_retrieval_features(features: dict) -> None:
         "history_retrieval_write_enabled",
         "history_retrieval_read_enabled",
         "l1_retrieval_tools_enabled",
-        "l2_aux_retrieval_tools_enabled",
-        "l2_task_retrieval_tools_enabled",
     )
     for key in bool_keys:
         if not isinstance(features.get(key), bool):
@@ -187,16 +170,6 @@ def _validate_dual_corpus_retrieval_features(features: dict) -> None:
     ):
         raise ValueError(
             "l1_retrieval_tools_enabled requires at least one retrieval read gate"
-        )
-    if (
-        features["l2_aux_retrieval_tools_enabled"]
-        or features["l2_task_retrieval_tools_enabled"]
-    ) and not (
-        features["file_retrieval_read_enabled"]
-        or features["history_retrieval_read_enabled"]
-    ):
-        raise ValueError(
-            "L2 retrieval exposure requires at least one retrieval read gate"
         )
 
 

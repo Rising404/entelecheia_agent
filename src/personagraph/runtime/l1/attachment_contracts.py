@@ -2,7 +2,7 @@
 
 These values describe the frozen public attachment surface owned by an L1 Turn.
 They intentionally do not import the mounted-document planning implementation, so
-the L1 controller and catalog contracts stay loadable without initializing L2.
+the L1 controller and catalog contracts remain independently loadable.
 """
 
 from __future__ import annotations

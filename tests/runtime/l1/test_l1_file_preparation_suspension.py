@@ -83,7 +83,7 @@ def test_background_preparation_settles_original_call_without_polling_model_atte
         ingress_model, "complete_structured",
         as_prepared_test_provider(
             lambda *_args, **kwargs: _model_result(
-                {"processing_level": "L1", "task_matches": []}, kwargs["model_call_id"],
+                {"processing_level": "L1"}, kwargs["model_call_id"],
             ),
         ),
     )
@@ -144,7 +144,7 @@ def test_background_preparation_settles_original_call_without_polling_model_atte
         session_id=session_id,
         client_request_id="background-file-preparation",
         routing_policy=freeze_turn_routing_policy(
-            TurnRoutingPolicy(l1_enabled=True, l2_enabled=False),
+            TurnRoutingPolicy(l1_enabled=True),
             source="request_override",
         ),
         store=session_store,
@@ -269,7 +269,7 @@ def test_pending_image_preparation_and_other_tools_are_not_automatically_replaye
         ingress_model, "complete_structured",
         as_prepared_test_provider(
             lambda *_args, **kwargs: _model_result(
-                {"processing_level": "L1", "task_matches": []}, kwargs["model_call_id"],
+                {"processing_level": "L1"}, kwargs["model_call_id"],
             ),
         ),
     )
@@ -303,7 +303,7 @@ def test_pending_image_preparation_and_other_tools_are_not_automatically_replaye
             "l1_retrieval_tools_enabled": True,
         },
         routing_policy=freeze_turn_routing_policy(
-            TurnRoutingPolicy(l1_enabled=True, l2_enabled=False), source="request_override",
+            TurnRoutingPolicy(l1_enabled=True), source="request_override",
         ),
         store=session_store,
     )

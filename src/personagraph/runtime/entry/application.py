@@ -1,4 +1,4 @@
-"""权威 L0/L1/L2 Runtime 入口路径。
+"""权威 L0/L1 Runtime 入口路径。
 【turn入口的重点模块】
 entry 持有一个狭窄生命周期：恰好一次接受可信用户 Turn，运行确定性 ingress 与有界
 classification/generation，随后以原子方式提交一份正式交付。
@@ -61,10 +61,8 @@ from ..turn.persisted_projection import (
 )
 from .lifecycle.replay import reconcile_replayed_entry_turn
 from .lifecycle.settlement import recover_completed_entry_turn_from_commit
-from .routing.task_admission import admit_entry_task_matches
 from .routing.selection import (
     EntryL1ProcessingRoute,
-    EntryL2TaskProcessingRoute,
     EntryProcessingRoute,
     EntryResponseProcessingRoute,
     select_entry_processing_route,
@@ -109,17 +107,12 @@ _TURN_POST_COMMIT_JOB_KINDS: ContextVar[tuple[str, ...]] = ContextVar(
 )
 
 
-class _AuxiliaryTurnLeaseLost(RuntimeError):
-    """辅助执行返回时，当前 Turn 已不再由本 worker 持有。"""
-
-
 @dataclass(frozen=True, slots=True)
 class _EntryProcessingScope:
     """各 processing lane 共享的 Turn 生命周期权威。"""
 
     accepted: AcceptedEntryTurn
     context: EntryContext
-    related_insession_task_ids: tuple[str, ...]
     deadline: TurnDeadline
     features: dict[str, Any]
     emit: EntryEventEmitter
@@ -768,7 +761,6 @@ def _resume_active_l1_entry_turn_with_bound_retrieval(
                     not isinstance(window, dict)
                     or str(window.get("window_state") or "") != "active"
                     or not window.get("current_l1_turn_run_id")
-                    or window.get("current_work_run_id") is not None
                     or window.get("current_attempt_id") is not None
                 ):
                     return "not_waiting"
@@ -992,7 +984,6 @@ def _run_l1_controller_and_finalize(
         revision=l1_result.turn_window_revision,
         processing_level="L1",
         reply=l1_result.reply,
-        related_insession_task_ids=(),
         emit=emit,
         store=store,
         expected_lease_owner=lease_owner,
@@ -1121,7 +1112,6 @@ def _execute_new_turn(
             on_nonmodel_ingress=complete_nonmodel_ingress,
             on_classifier_error=complete_classifier_error,
         )
-        ingress = classification_stage.ingress
         if classification_stage.terminal_result is not None:
             return classification_stage.terminal_result
         classification = classification_stage.classification
@@ -1140,21 +1130,10 @@ def _execute_new_turn(
             stage=RuntimeStage.SUPERVISOR,
             status=TurnEventStatus.STARTED,
         ))
-        admission = admit_entry_task_matches(
-            accepted=accepted,
-            classification=classification,
-            context=context,
-            ingress=ingress,
-            expected_window_revision=revision,
-        )
-        processing_level = admission.processing_level
-        applied = admission.applied
-        related_insession_task_ids = admission.related_insession_task_ids
-        revision = admission.window_revision
+        processing_level = classification.processing_level
         processing_route = select_entry_processing_route(
             accepted=accepted,
             classification=classification,
-            applied=applied,
             processing_level=processing_level,
         )
         supervisor_completed = emit(new_turn_event(
@@ -1169,7 +1148,6 @@ def _execute_new_turn(
             scope=_EntryProcessingScope(
                 accepted=accepted,
                 context=context,
-                related_insession_task_ids=related_insession_task_ids,
                 deadline=deadline,
                 features=features,
                 emit=emit,
@@ -1186,7 +1164,7 @@ def _execute_new_turn(
             end_reason="persistence_error",
             error_code=RuntimeErrorCode.PERSIST_FAILED,
             stage=RuntimeStage.SUPERVISOR,
-            processing_level="L2",
+            processing_level=processing_level,
             emit=emit,
             store=store,
             expected_lease_owner=lease_owner,
@@ -1246,12 +1224,6 @@ def _execute_entry_processing_route(
 
     if isinstance(route, EntryL1ProcessingRoute):
         return _execute_l1_processing_lane(
-            revision=revision,
-            scope=scope,
-        )
-    if isinstance(route, EntryL2TaskProcessingRoute):
-        return _execute_l2_task_processing_lane(
-            task_id=route.task_id,
             revision=revision,
             scope=scope,
         )
@@ -1362,65 +1334,15 @@ def _execute_l1_processing_lane(
     )
 
 
-def _execute_l2_task_processing_lane(
-    *,
-    task_id: str,
-    revision: int,
-    scope: _EntryProcessingScope,
-) -> EntryTurnResult:
-    """运行已经 durable Guard 认证的 L2 Task lane。"""
-
-    accepted = scope.accepted
-    revision = scope.advance(
-        RuntimeStage.L2_PLAN,
-        scope.supervisor_completed_event_sequence,
-    )
-    try:
-        return _execute_auxiliary_production_chain(
-            accepted=accepted,
-            task_id=task_id,
-            revision=revision,
-            related_insession_task_ids=scope.related_insession_task_ids,
-            deadline=scope.deadline,
-            emit=scope.emit,
-            store=scope.store,
-            features=scope.features,
-        )
-    except ModelGatewayError as exc:
-        authoritative_window = _authoritative_active_turn_window(
-            accepted=accepted,
-            store=scope.store,
-            expected_lease_owner=scope.lease_owner,
-        )
-        if authoritative_window is None:
-            return _replayed_turn_result(
-                accepted=accepted,
-                store=scope.store,
-            )
-        return _incomplete_model_turn(
-            accepted=accepted,
-            revision=int(authoritative_window["state_version"]),
-            processing_level="L2",
-            error=exc,
-            emit=scope.emit,
-            store=scope.store,
-            expected_lease_owner=scope.lease_owner,
-        )
-
-
 def _execute_response_processing_lane(
     *,
-    processing_level: Literal["L0", "L2"],
+    processing_level: Literal["L0"],
     revision: int,
     scope: _EntryProcessingScope,
 ) -> EntryTurnResult:
-    """生成不需要 L1 controller 或 L2 Task executor 的单轮回复。"""
+    """生成 L0 的单轮直接回复。"""
 
-    stage = (
-        RuntimeStage.L0_GENERATE
-        if processing_level == "L0"
-        else RuntimeStage.L2_UNDERSTAND
-    )
+    stage = RuntimeStage.L0_GENERATE
     revision = scope.advance(
         stage,
         scope.supervisor_completed_event_sequence,
@@ -1446,7 +1368,6 @@ def _execute_response_processing_lane(
         revision=revision,
         processing_level=processing_level,
         reply=response.model_result.reply,
-        related_insession_task_ids=scope.related_insession_task_ids,
         emit=scope.emit,
         store=scope.store,
     )
@@ -1492,7 +1413,6 @@ def _complete_nonroutable_turn(
         revision=revision,
         processing_level="L0",
         reply=outcome.reply,
-        related_insession_task_ids=(),
         error_code=outcome.error_code.value,
         emit=emit,
         store=store,
@@ -1512,7 +1432,7 @@ def _finalize_l1_terminal_notification(
     ))
     return _finalize_formal_reply(
         accepted=accepted, revision=revision, processing_level="L1",
-        reply=notification.reply, related_insession_task_ids=(), emit=emit, store=store,
+        reply=notification.reply, emit=emit, store=store,
         error_code=notification.error_code, expected_lease_owner=expected_lease_owner,
         l1_terminal_failure_code=notification.failure_code,
     )
@@ -1524,7 +1444,6 @@ def _finalize_formal_reply(
     revision: int,
     processing_level: ProcessingLevel,
     reply: str,
-    related_insession_task_ids: tuple[str, ...],
     emit: EntryEventEmitter,
     store: EntryTurnFinalizationStorePort,
     error_code: str | None = None,
@@ -1577,7 +1496,6 @@ def _finalize_formal_reply(
         recovered = recover_completed_entry_turn_from_commit(
             accepted=accepted,
             processing_level=processing_level,
-            related_insession_task_ids=related_insession_task_ids,
             store=store,
             error_code=error_code,
             end_reason=end_reason,
@@ -1614,445 +1532,6 @@ def _finalize_formal_reply(
         reply=reply,
         error_code=error_code,
         end_reason=end_reason,
-        related_insession_task_ids=related_insession_task_ids,
-        window_state="post_commit_pending",
-        window_revision=revision,
-    )
-
-
-def _execute_auxiliary_production_chain(
-    *,
-    accepted: AcceptedEntryTurn,
-    task_id: str,
-    revision: int,
-    related_insession_task_ids: tuple[str, ...],
-    deadline: TurnDeadline,
-    emit: EntryEventEmitter,
-    store: EntryTurnFinalizationStorePort,
-    expected_lease_owner: str | None = None,
-    features: Mapping[str, Any] | None = None,
-) -> EntryTurnResult:
-    """运行所选 Auxiliary Task，并且只发布其冻结 Delivery 引用。"""
-
-    with turn_linkage_scope(
-        session_id=accepted.session_id,
-        turn_id=accepted.turn_id,
-    ):
-        return _execute_auxiliary_production_chain_scoped(
-            accepted=accepted,
-            task_id=task_id,
-            revision=revision,
-            related_insession_task_ids=related_insession_task_ids,
-            deadline=deadline,
-            emit=emit,
-            store=store,
-            expected_lease_owner=expected_lease_owner,
-            features=features,
-        )
-
-
-def _execute_auxiliary_production_chain_scoped(
-    *,
-    accepted: AcceptedEntryTurn,
-    task_id: str,
-    revision: int,
-    related_insession_task_ids: tuple[str, ...],
-    deadline: TurnDeadline,
-    emit: EntryEventEmitter,
-    store: EntryTurnFinalizationStorePort,
-    expected_lease_owner: str | None,
-    features: Mapping[str, Any] | None,
-) -> EntryTurnResult:
-    """Run the selected auxiliary chain inside the accepted Turn scope."""
-
-    from personagraph.l2.entry_adapter.auxiliary_outcome import (
-        AuxiliaryEntryOutcomeDecisionKind,
-        interpret_auxiliary_production_chain_outcome,
-    )
-    from personagraph.l2.entry_adapter.application import (
-        L2TaskTargetUnavailableError,
-        run_l2_task_lane,
-    )
-
-    try:
-        result = run_l2_task_lane(
-            session_id=accepted.session_id,
-            turn_id=accepted.turn_id,
-            task_id=task_id,
-            emit=emit,
-            deadline=deadline,
-            features=features,
-            file_retrieval_data_version=(
-                accepted.execution_snapshot.file_retrieval_data_version
-            ),
-        )
-    except L2TaskTargetUnavailableError:
-        return _incomplete_turn(
-            accepted=accepted,
-            revision=revision,
-            end_reason="module_error",
-            error_code=RuntimeErrorCode.TRANSITION_DENIED,
-            stage=RuntimeStage.TRANSITION_GUARD,
-            processing_level="L2",
-            emit=emit,
-            store=store,
-            expected_lease_owner=expected_lease_owner,
-        )
-    authoritative_window = _authoritative_active_turn_window(
-        accepted=accepted,
-        store=store,
-        expected_lease_owner=expected_lease_owner,
-    )
-    if expected_lease_owner is not None and authoritative_window is None:
-        raise _AuxiliaryTurnLeaseLost(
-            "auxiliary execution lost its Turn lease"
-        )
-    if authoritative_window is not None:
-        revision = int(authoritative_window["state_version"])
-
-    outcome = interpret_auxiliary_production_chain_outcome(
-        result,
-        authoritative_window_available=authoritative_window is not None,
-        allow_user_input=(
-            (features or {}).get("user_interaction_mode", "interactive")
-            == "interactive"
-        ),
-    )
-    if (
-        outcome.kind
-        is AuxiliaryEntryOutcomeDecisionKind.FINALIZE_VERIFIED_DELIVERY
-    ):
-        assert outcome.delivery_id is not None
-        # 有意丢弃组合中的 ``publication_body``。Entry finalizer 会重新加载冻结
-        # NodeDelivery，并请求 Store 将该精确已验证引用原子提交到对话记录。
-        return _finalize_verified_work_run_reply(
-            accepted=accepted,
-            delivery_id=outcome.delivery_id,
-            revision=revision,
-            related_insession_task_ids=related_insession_task_ids,
-            emit=emit,
-            store=store,
-            expected_lease_owner=expected_lease_owner,
-        )
-
-    if (
-        outcome.kind
-        is AuxiliaryEntryOutcomeDecisionKind.FINALIZE_FORMAL_QUESTION
-    ):
-        assert outcome.reply is not None
-        # 问题是 UserGate 持有的唯一公开材料。它将此 Turn 作为正式交互完成，而 Task
-        # 及其精确 WorkRun 会持久地等待下一回答 Turn。
-        return _finalize_formal_reply(
-            accepted=accepted,
-            revision=revision,
-            processing_level="L2",
-            reply=outcome.reply,
-            related_insession_task_ids=related_insession_task_ids,
-            emit=emit,
-            store=store,
-            expected_lease_owner=expected_lease_owner,
-        )
-
-    assert outcome.kind is AuxiliaryEntryOutcomeDecisionKind.INCOMPLETE
-    assert outcome.end_reason is not None
-    assert outcome.error_code is not None
-    assert outcome.stage is not None
-    return _incomplete_turn(
-        accepted=accepted,
-        revision=revision,
-        end_reason=outcome.end_reason,
-        error_code=outcome.error_code,
-        stage=outcome.stage,
-        processing_level="L2",
-        emit=emit,
-        store=store,
-        expected_lease_owner=expected_lease_owner,
-    )
-
-
-def _entry_turn_from_authoritative_no_public_stop(
-    *,
-    accepted: AcceptedEntryTurn,
-    settled: object,
-    related_insession_task_ids: tuple[str, ...],
-    work_run_ids: tuple[str, ...],
-) -> EntryTurnResult | None:
-    """验证并投影一个 Store 持有的非公开停止结果。"""
-
-    from personagraph.l2.entry_adapter.no_public_stop import (
-        project_authoritative_no_public_stop_settlement,
-    )
-
-    projection = project_authoritative_no_public_stop_settlement(
-        settled,
-        expected_turn_id=accepted.turn_id,
-    )
-    if projection is None:
-        return None
-    return EntryTurnResult(
-        session_id=accepted.session_id,
-        turn_id=accepted.turn_id,
-        status="incomplete",
-        processing_level="L2",
-        end_reason=projection.end_reason,
-        error_code=projection.error_code.value,
-        related_insession_task_ids=related_insession_task_ids,
-        work_run_ids=work_run_ids,
-        window_state="interrupted",
-        window_revision=projection.window_revision,
-    )
-
-
-def _try_replay_authoritative_turn_settlement(
-    *,
-    accepted: AcceptedEntryTurn,
-    revision: int,
-    related_insession_task_ids: tuple[str, ...],
-    store: EntryTurnFinalizationStorePort,
-) -> EntryTurnResult | None:
-    """重放经完整证明的公开或非公开 lane 集合，绝不重放前缀。"""
-
-    try:
-        store.finalize_authoritative_referenced_turn_execution(
-            session_id=accepted.session_id,
-            turn_id=accepted.turn_id,
-            expected_window_revision=revision,
-            post_commit_job_kinds=_TURN_POST_COMMIT_JOB_KINDS.get(),
-        )
-    except Exception:
-        # 不完整 lane 前缀会回滚 Store 事务。成功提交后丢失的响应从对话记录恢复。
-        completed = recover_completed_entry_turn_from_commit(
-            accepted=accepted,
-            processing_level="L2",
-            related_insession_task_ids=related_insession_task_ids,
-            store=store,
-        )
-        if completed is not None:
-            return completed
-    else:
-        completed = recover_completed_entry_turn_from_commit(
-            accepted=accepted,
-            processing_level="L2",
-            related_insession_task_ids=related_insession_task_ids,
-            store=store,
-        )
-        if completed is not None:
-            return completed
-
-    try:
-        stopped = store.mark_authoritative_no_public_turn_stop(
-            session_id=accepted.session_id,
-            turn_id=accepted.turn_id,
-            expected_window_revision=revision,
-        )
-    except Exception:
-        # 对部分 lane 前缀，两个 reducer 都会在写入前失败。一次最终 commit 读取可覆盖
-        # 响应/读取暂时丢失的公开最终化，而不将该歧义转成停止。
-        return recover_completed_entry_turn_from_commit(
-            accepted=accepted,
-            processing_level="L2",
-            related_insession_task_ids=related_insession_task_ids,
-            store=store,
-        )
-    try:
-        work_run_ids = store.list_turn_linked_work_run_ids(
-            session_id=accepted.session_id,
-            turn_id=accepted.turn_id,
-        )
-    except Exception:
-        try:
-            work_run_ids = store.list_turn_linked_work_run_ids(
-                session_id=accepted.session_id,
-                turn_id=accepted.turn_id,
-            )
-        except Exception:
-            return None
-    return _entry_turn_from_authoritative_no_public_stop(
-        accepted=accepted,
-        settled=stopped,
-        related_insession_task_ids=related_insession_task_ids,
-        work_run_ids=work_run_ids,
-    )
-
-
-def _finalize_verified_work_run_reply(
-    *,
-    accepted: AcceptedEntryTurn,
-    delivery_id: str,
-    revision: int,
-    related_insession_task_ids: tuple[str, ...],
-    emit: EntryEventEmitter,
-    store: EntryTurnFinalizationStorePort,
-    expected_lease_owner: str | None = None,
-) -> EntryTurnResult:
-    """通过引用发布一个冻结 NodeDelivery，并返回其投影。"""
-
-    from ...session.l2_store import verification as verification_store
-
-    try:
-        try:
-            resolved = verification_store.get_task_node_delivery(
-                session_id=accepted.session_id,
-                delivery_id=delivery_id,
-            )
-        except Exception:
-            # 读取不存在变更歧义。在将 Delivery 视为不可用前，对精确权威投影重试一次。
-            resolved = verification_store.get_task_node_delivery(
-                session_id=accepted.session_id,
-                delivery_id=delivery_id,
-            )
-    except Exception:
-        from ...l2.entry_adapter.settlement import (
-            project_pending_verified_publication_result,
-        )
-
-        pending = project_pending_verified_publication_result(
-            accepted=accepted,
-            delivery_id=delivery_id,
-            related_insession_task_ids=related_insession_task_ids,
-            store=store,
-        )
-        if pending is not None:
-            return pending
-        return _incomplete_turn(
-            accepted=accepted,
-            revision=revision,
-            end_reason="persistence_error",
-            error_code=RuntimeErrorCode.PERSIST_FAILED,
-            stage=RuntimeStage.PERSIST,
-            processing_level="L2",
-            emit=emit,
-            store=store,
-            expected_lease_owner=expected_lease_owner,
-        )
-    output_window = getattr(resolved, "output_window", None)
-    reply = getattr(output_window, "content", None)
-    if not isinstance(reply, str) or not reply:
-        return _incomplete_turn(
-            accepted=accepted,
-            revision=revision,
-            end_reason="persistence_error",
-            error_code=RuntimeErrorCode.PERSIST_FAILED,
-            stage=RuntimeStage.PERSIST,
-            processing_level="L2",
-            emit=emit,
-            store=store,
-            expected_lease_owner=expected_lease_owner,
-        )
-
-    delivery = getattr(resolved, "delivery", None)
-    delivery_work_run_id = getattr(delivery, "work_run_id", None)
-
-    def _load_public_work_run_ids() -> tuple[str, ...]:
-        work_run_ids = tuple(
-            store.list_turn_linked_work_run_ids(
-                session_id=accepted.session_id,
-                turn_id=accepted.turn_id,
-            )
-        )
-        if (
-            not isinstance(delivery_work_run_id, str)
-            or not delivery_work_run_id
-            or not work_run_ids
-            or delivery_work_run_id not in work_run_ids
-            or len(work_run_ids) != len(set(work_run_ids))
-        ):
-            raise ValueError(
-                "verified Delivery is missing its authoritative Turn--WorkRun link"
-            )
-        return work_run_ids
-
-    try:
-        try:
-            work_run_ids = _load_public_work_run_ids()
-        except Exception:
-            # 这是只读投影。重试一次，但当持久化权威状态仍不可读时，绝不使用伪造或
-            # 不完整 WorkRun 引用发布形式上已完成的 Turn。
-            work_run_ids = _load_public_work_run_ids()
-    except Exception:
-        return _incomplete_turn(
-            accepted=accepted,
-            revision=revision,
-            end_reason="persistence_error",
-            error_code=RuntimeErrorCode.PERSIST_FAILED,
-            stage=RuntimeStage.PERSIST,
-            processing_level="L2",
-            emit=emit,
-            store=store,
-            expected_lease_owner=expected_lease_owner,
-        )
-
-    persist_started = emit(new_turn_event(
-        turn_id=accepted.turn_id,
-        session_id=accepted.session_id,
-        stage=RuntimeStage.PERSIST,
-        status=TurnEventStatus.STARTED,
-    ))
-    del persist_started  # WorkRun PASS 已将 Window 移至 PERSIST。
-    try:
-        try:
-            finalized = store.finalize_verified_turn_execution(
-                session_id=accepted.session_id,
-                turn_id=accepted.turn_id,
-                delivery_id=delivery_id,
-                expected_window_revision=revision,
-                post_commit_job_kinds=_TURN_POST_COMMIT_JOB_KINDS.get(),
-                expected_lease_owner=expected_lease_owner,
-            )
-        except Exception:
-            # commit 后丢失的响应只能通过完全相同的不可变 Delivery 命令恢复；Store
-            # 重放会拒绝 collision。
-            finalized = store.finalize_verified_turn_execution(
-                session_id=accepted.session_id,
-                turn_id=accepted.turn_id,
-                delivery_id=delivery_id,
-                expected_window_revision=revision,
-                post_commit_job_kinds=_TURN_POST_COMMIT_JOB_KINDS.get(),
-                expected_lease_owner=expected_lease_owner,
-            )
-        window = _required_mapping(finalized, "window")
-        revision = int(window["state_version"])
-    except Exception:
-        recovered = recover_completed_entry_turn_from_commit(
-            accepted=accepted,
-            processing_level="L2",
-            related_insession_task_ids=related_insession_task_ids,
-            store=store,
-            work_run_ids=work_run_ids,
-        )
-        if recovered is not None:
-            return recovered
-        return _incomplete_turn(
-            accepted=accepted,
-            revision=revision,
-            end_reason="persistence_error",
-            error_code=RuntimeErrorCode.PERSIST_FAILED,
-            stage=RuntimeStage.PERSIST,
-            processing_level="L2",
-            emit=emit,
-            store=store,
-            expected_lease_owner=expected_lease_owner,
-        )
-    emit(new_turn_event(
-        turn_id=accepted.turn_id,
-        session_id=accepted.session_id,
-        stage=RuntimeStage.PERSIST,
-        status=TurnEventStatus.COMPLETED,
-    ))
-    emit(new_turn_event(
-        turn_id=accepted.turn_id,
-        session_id=accepted.session_id,
-        stage=RuntimeStage.RESPONSE,
-        status=TurnEventStatus.COMPLETED,
-    ))
-    return EntryTurnResult(
-        session_id=accepted.session_id,
-        turn_id=accepted.turn_id,
-        status="completed",
-        processing_level="L2",
-        reply=reply,
-        related_insession_task_ids=related_insession_task_ids,
-        work_run_ids=work_run_ids,
         window_state="post_commit_pending",
         window_revision=revision,
     )
@@ -2184,23 +1663,7 @@ def _replayed_turn_result(
     accepted: AcceptedEntryTurn,
     store: EntryReplayStorePort,
 ) -> EntryTurnResult:
-    def reconcile_authoritative_settlement(
-        *,
-        revision: int,
-        related_insession_task_ids: tuple[str, ...],
-    ) -> EntryTurnResult | None:
-        return _try_replay_authoritative_turn_settlement(
-            accepted=accepted,
-            revision=revision,
-            related_insession_task_ids=related_insession_task_ids,
-            store=store,
-        )
-
-    return reconcile_replayed_entry_turn(
-        accepted=accepted,
-        store=store,
-        reconcile_authoritative_settlement=reconcile_authoritative_settlement,
-    )
+    return reconcile_replayed_entry_turn(accepted=accepted, store=store)
 
 
 def _emit_turn_accepted(

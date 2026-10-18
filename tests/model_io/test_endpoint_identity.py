@@ -39,7 +39,7 @@ def _openai_binding(
     effort: ReasoningEffort | None = None,
 ) -> ModelTierBinding:
     return ModelTierBinding(
-        tier=ModelTier.ATTEMPT,
+        tier=ModelTier.L1,
         provider="openai-compatible",
         base_url="https://api.openai.com/v1",
         model="reasoning-model",
@@ -72,7 +72,7 @@ def test_openai_identity_tracks_wire_effort_not_the_ignored_legacy_checkbox() ->
 
 def test_blank_bound_openai_model_uses_the_gateway_default() -> None:
     binding = ModelTierBinding(
-        tier=ModelTier.ATTEMPT,
+        tier=ModelTier.L1,
         provider="openai-compatible",
         base_url="https://api.openai.com/v1",
         model="",

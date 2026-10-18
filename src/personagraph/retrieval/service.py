@@ -5,7 +5,7 @@ Service 接收已冻结的请求和显式注入的 ports，协调 query 准入�
 ``RetrievedContext``。具体阶段算法位于 ``orchestration``，本模块只维持公开读取生命周期及其
 跨阶段不变量。
 
-它不直接拥有 SQLite schema、Source 正文、模型调用、工具注册或 L0/L1/L2 状态推进。Tool 与
+它不直接拥有 SQLite schema、Source 正文、模型调用、工具注册或 L0/L1 状态推进。Tool 与
 Runtime 应调用这个门面或其有界 wrapper，而不是重新排列内部阶段。作为所有在线实现的稳定
 入口，它保留在包根。
 """

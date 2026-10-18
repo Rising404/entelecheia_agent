@@ -1,13 +1,13 @@
 """将一个 Turn 的上传文件绑定为已挂载 Document 权威状态。
 
 聊天附件与已挂载 Document 有意采用不同 ingress 边界。上传首先接受不透明字节，而
-AuxiliaryGraph 只能感知有类型且带来源指纹的 Document generation。本模块是这些
+工具只消费有类型且带来源指纹的 Document generation。本模块是这些
 边界间由 Host 持有的 bridge。
 
 此 bridge 只在 Session store 已将附件原子绑定到某 Turn 后运行。它准入当前支持的
 有限文本/文档/图像格式，重新检查 Project 已登记用户文件与不可变上传 receipt，通过共享有类型
 文档读取器解析，并在同一 Session 中挂载精确已准备 generation。不支持或不完整的
-目标输入会以封闭原因码失败；绝不会从规划权威状态中静默省略。
+目标输入会以封闭原因码失败；绝不会静默省略。
 """
 
 from __future__ import annotations
@@ -78,8 +78,6 @@ _SUPPORTED_MEDIA_BY_SUFFIX: Mapping[str, str] = {
     ),
 }
 _PLAIN_TEXT_RESOURCE_SUFFIXES = frozenset({".txt", ".md", ".markdown"})
-
-
 
 
 def mount_turn_document_attachments(

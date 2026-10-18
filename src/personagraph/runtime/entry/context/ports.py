@@ -5,11 +5,10 @@ from __future__ import annotations
 from typing import Any, Protocol
 
 from ....session.session_summary import SessionSummaryState
-from .task_catalog import EntryTaskCatalogItem
 
 
 class EntryContextAssemblyStorePort(Protocol):
-    """组装一份模型输入上下文所需的五项只读事实。"""
+    """组装一份模型输入上下文所需的三项只读事实。"""
 
     def list_turn_attachments(
         self,
@@ -28,17 +27,6 @@ class EntryContextAssemblyStorePort(Protocol):
         *,
         limit: int | None = None,
     ) -> list[dict[str, Any]]: ...
-
-    def list_insession_task_catalog(
-        self,
-        session_id: str,
-    ) -> tuple[EntryTaskCatalogItem, ...]: ...
-
-    def list_pending_user_questions(
-        self,
-        *,
-        session_id: str,
-    ) -> tuple[object, ...]: ...
 
 
 __all__ = ["EntryContextAssemblyStorePort"]

@@ -11,7 +11,6 @@ from personagraph.persistent_turn_content.findings import (
     ExecutionFindingStatus,
     ExecutionFindingsMutationCommand,
     ExecutionFindingsOwnerKind,
-    ExecutionFindingsQuota,
     RecordExecutionFinding,
     RetractExecutionFinding,
     SupersedeExecutionFinding,
@@ -32,8 +31,6 @@ from personagraph.output_protocol.l1_persistence import legacy_l1_tool_result_id
 
 L1_RUN_ID = "l1-run"
 L1_STEP_ID = "l1-step"
-WORK_RUN_ID = "work-run"
-WORK_ATTEMPT_ID = "work-attempt"
 
 
 @pytest.fixture
@@ -62,14 +59,6 @@ def findings_deps(tmp_path) -> StoreDeps:
                 status TEXT NOT NULL,
                 UNIQUE(session_id, turn_id, l1_turn_run_id)
             );
-            CREATE TABLE insession_work_runs (
-                work_run_id TEXT PRIMARY KEY,
-                session_id TEXT NOT NULL,
-                created_turn_id TEXT NOT NULL,
-                status TEXT NOT NULL,
-                current_attempt_id TEXT,
-                UNIQUE(session_id, work_run_id)
-            );
             CREATE TABLE l1_turn_run_states (
                 l1_turn_run_id TEXT PRIMARY KEY,
                 stage TEXT NOT NULL,
@@ -85,29 +74,6 @@ def findings_deps(tmp_path) -> StoreDeps:
                 outcome_json TEXT,
                 outcome_hash TEXT
             );
-            CREATE TABLE insession_work_run_attempts (
-                work_run_id TEXT NOT NULL,
-                attempt_id TEXT NOT NULL,
-                status TEXT NOT NULL,
-                PRIMARY KEY(work_run_id, attempt_id)
-            );
-            CREATE TABLE insession_work_run_acceptance_progress (
-                work_run_id TEXT PRIMARY KEY,
-                snapshot_json TEXT NOT NULL
-            );
-            CREATE TABLE insession_work_run_tool_calls (
-                tool_call_id TEXT PRIMARY KEY,
-                work_run_id TEXT NOT NULL,
-                attempt_id TEXT NOT NULL,
-                tool_id TEXT NOT NULL
-            );
-            CREATE TABLE insession_work_run_tool_results (
-                tool_result_id TEXT PRIMARY KEY,
-                work_run_id TEXT NOT NULL,
-                tool_call_id TEXT NOT NULL,
-                status TEXT NOT NULL,
-                result_json TEXT NOT NULL
-            );
             """
         )
         for statement in schema._sql_statements(CURRENT_SCHEMA_SQL):
@@ -115,7 +81,7 @@ def findings_deps(tmp_path) -> StoreDeps:
                 conn.execute(statement)
         conn.executemany(
             "INSERT INTO runtime_turns(session_id, turn_id) VALUES ('session', ?)",
-            (("turn-l1",), ("turn-work",)),
+            (("turn-l1",),),
         )
         conn.execute(
             "INSERT INTO l1_turn_runs "
@@ -164,57 +130,6 @@ def findings_deps(tmp_path) -> StoreDeps:
         )
         _insert_l1_writer(conn, "l1-record-call", "record_execution_findings")
 
-        conn.execute(
-            "INSERT INTO insession_work_runs "
-            "(work_run_id, session_id, created_turn_id, status, current_attempt_id) "
-            "VALUES (?, 'session', 'turn-work', 'active', ?)",
-            (WORK_RUN_ID, WORK_ATTEMPT_ID),
-        )
-        conn.execute(
-            "INSERT INTO insession_work_run_attempts "
-            "(work_run_id, attempt_id, status) VALUES (?, ?, 'active')",
-            (WORK_RUN_ID, WORK_ATTEMPT_ID),
-        )
-        progress = {
-            "work_run_id": WORK_RUN_ID,
-            "revision": 1,
-            "items": [
-                {"acceptance_id": "deliverable"},
-                {"acceptance_id": "quality"},
-            ],
-        }
-        conn.execute(
-            "INSERT INTO insession_work_run_acceptance_progress "
-            "(work_run_id, snapshot_json) VALUES (?, ?)",
-            (WORK_RUN_ID, canonical_json(progress)),
-        )
-        conn.execute(
-            "INSERT INTO insession_work_run_tool_calls "
-            "(tool_call_id, work_run_id, attempt_id, tool_id) "
-            "VALUES ('work-source-call', ?, ?, 'mounted_document_read')",
-            (WORK_RUN_ID, WORK_ATTEMPT_ID),
-        )
-        work_result = {
-            "status": "succeeded",
-            "tool_result_id": "work-source-result",
-            "tool_call_id": "work-source-call",
-            "attempt_id": WORK_ATTEMPT_ID,
-            "ordinal": 1,
-            "output": _document_output(),
-            "error_code": None,
-            "error_message": None,
-        }
-        conn.execute(
-            "INSERT INTO insession_work_run_tool_results "
-            "(tool_result_id, work_run_id, tool_call_id, status, result_json) "
-            "VALUES ('work-source-result', ?, 'work-source-call', 'succeeded', ?)",
-            (WORK_RUN_ID, canonical_json(work_result)),
-        )
-        _insert_work_writer(
-            conn,
-            "work-record-call",
-            "record_execution_findings",
-        )
 
     return StoreDeps(
         init_db=lambda: None,
@@ -236,8 +151,8 @@ def test_owner_companion_fails_closed_when_current_schema_is_missing() -> None:
         records.create_execution_findings_owner_companion_in_transaction(
             conn,
             session_id="session",
-            owner_kind=ExecutionFindingsOwnerKind.WORK_RUN,
-            execution_owner_id="current-work-run",
+            owner_kind=ExecutionFindingsOwnerKind.L1_TURN_RUN,
+            execution_owner_id="current-l1-run",
             now="2026-08-26T00:00:00+00:00",
         )
 
@@ -354,18 +269,18 @@ def test_persisted_claims_with_frozen_quota_remain_replayable_and_retractable(
     created = records.create_execution_findings_ledger(
         findings_deps,
         session_id="session",
-        owner_kind=ExecutionFindingsOwnerKind.WORK_RUN,
-        execution_owner_id=WORK_RUN_ID,
+        owner_kind=ExecutionFindingsOwnerKind.L1_TURN_RUN,
+        execution_owner_id=L1_RUN_ID,
     )
     first_command = _record_command(
         ledger_id=created.ledger.ledger_id,
-        writer_unit_id=WORK_ATTEMPT_ID,
-        writer_tool_call_id="work-record-call",
+        writer_unit_id=L1_STEP_ID,
+        writer_tool_call_id="l1-record-call",
         expected_revision=0,
         item=RecordExecutionFinding(
             kind=ExecutionFindingKind.FINDING,
             claim="Originally admitted under this ledger's frozen quota.",
-            scope_keys=("deliverable",),
+            scope_keys=("summary",),
         ),
     )
     first = records.apply_execution_findings_mutation(
@@ -393,20 +308,20 @@ def test_persisted_claims_with_frozen_quota_remain_replayable_and_retractable(
             (legacy_claim, first.ledger.entry_revisions[0].entry_revision_id),
         )
 
-    _insert_work_writer_with_deps(
+    _insert_l1_writer_with_deps(
         findings_deps,
-        "work-after-legacy-call",
+        "l1-after-legacy-call",
         "record_execution_findings",
     )
     second_command = _record_command(
         ledger_id=created.ledger.ledger_id,
-        writer_unit_id=WORK_ATTEMPT_ID,
-        writer_tool_call_id="work-after-legacy-call",
+        writer_unit_id=L1_STEP_ID,
+        writer_tool_call_id="l1-after-legacy-call",
         expected_revision=1,
         item=RecordExecutionFinding(
             kind=ExecutionFindingKind.GAP,
             claim="This is a current-size finding written after the upgrade.",
-            scope_keys=("quality",),
+            scope_keys=("risks",),
         ),
     )
     second = records.apply_execution_findings_mutation(
@@ -422,9 +337,9 @@ def test_persisted_claims_with_frozen_quota_remain_replayable_and_retractable(
     assert replayed.replayed is True
     assert replayed.ledger.entry_revisions[0].claim == legacy_claim
 
-    _insert_work_writer_with_deps(
+    _insert_l1_writer_with_deps(
         findings_deps,
-        "work-retract-legacy-call",
+        "l1-retract-legacy-call",
         "revise_execution_finding",
     )
     retracted = records.apply_execution_findings_mutation(
@@ -432,11 +347,11 @@ def test_persisted_claims_with_frozen_quota_remain_replayable_and_retractable(
         command=ExecutionFindingsMutationCommand(
             ledger_id=created.ledger.ledger_id,
             mutation_id=derive_execution_findings_mutation_id(
-                writer_tool_call_id="work-retract-legacy-call"
+                writer_tool_call_id="l1-retract-legacy-call"
             ),
             expected_ledger_revision=2,
-            writer_unit_id=WORK_ATTEMPT_ID,
-            writer_tool_call_id="work-retract-legacy-call",
+            writer_unit_id=L1_STEP_ID,
+            writer_tool_call_id="l1-retract-legacy-call",
             items=(
                 RetractExecutionFinding(
                     entry_id=first.ledger.entry_revisions[0].entry_id,
@@ -451,215 +366,6 @@ def test_persisted_claims_with_frozen_quota_remain_replayable_and_retractable(
     )
 
 
-def test_work_run_fifo_evicts_without_deleting_or_reviving_audit_history(
-    findings_deps: StoreDeps,
-) -> None:
-    created = records.create_execution_findings_ledger(
-        findings_deps,
-        session_id="session",
-        owner_kind=ExecutionFindingsOwnerKind.WORK_RUN,
-        execution_owner_id=WORK_RUN_ID,
-        quota=ExecutionFindingsQuota(
-            max_active_entries=1,
-            max_claim_characters=80,
-            max_active_projection_utf8_bytes=8_000,
-            max_durable_entry_revisions=8,
-            max_durable_utf8_bytes=32_000,
-        ),
-    )
-    replayed_create = records.create_execution_findings_ledger(
-        findings_deps,
-        session_id="session",
-        owner_kind=ExecutionFindingsOwnerKind.WORK_RUN,
-        execution_owner_id=WORK_RUN_ID,
-    )
-    assert replayed_create.replayed is True
-    assert replayed_create.ledger.quota == created.ledger.quota
-    with pytest.raises(
-        records.ExecutionFindingsPersistenceError,
-        match="replay facts changed",
-    ):
-        records.create_execution_findings_ledger(
-            findings_deps,
-            session_id="session",
-            owner_kind=ExecutionFindingsOwnerKind.WORK_RUN,
-            execution_owner_id=WORK_RUN_ID,
-            quota=created.ledger.quota.model_copy(
-                update={"max_active_entries": 2}
-            ),
-        )
-    command = ExecutionFindingsMutationCommand(
-        ledger_id=created.ledger.ledger_id,
-        mutation_id=derive_execution_findings_mutation_id(
-            writer_tool_call_id="work-record-call"
-        ),
-        expected_ledger_revision=0,
-        writer_unit_id=WORK_ATTEMPT_ID,
-        writer_tool_call_id="work-record-call",
-        items=(
-            RecordExecutionFinding(
-                kind=ExecutionFindingKind.GAP,
-                claim="The deliverable still lacks a conclusion.",
-                scope_keys=("deliverable",),
-            ),
-            RecordExecutionFinding(
-                kind=ExecutionFindingKind.GAP,
-                claim="The quality criterion still lacks cross-checking.",
-                scope_keys=("quality",),
-            ),
-        ),
-    )
-    applied = records.apply_execution_findings_mutation(
-        findings_deps,
-        command=command,
-    )
-    assert len(applied.ledger.entry_revisions) == 2
-    assert len(applied.active_projection.active_entries) == 1
-    assert applied.active_projection.omitted_active_count == 1
-
-    fifo_projection = records.get_execution_findings_ledger(
-        findings_deps,
-        ledger_id=created.ledger.ledger_id,
-    )
-    assert fifo_projection is not None
-    assert fifo_projection.active_projection.active_entries[0].scope_keys == (
-        "quality",
-    )
-    assert len(fifo_projection.ledger.entry_revisions) == 2
-
-    newest_entry_id = applied.active_projection.active_entries[0].entry_id
-    _insert_work_writer_with_deps(
-        findings_deps,
-        "work-retract-fifo-call",
-        "revise_execution_finding",
-    )
-    retracted = records.apply_execution_findings_mutation(
-        findings_deps,
-        command=ExecutionFindingsMutationCommand(
-            ledger_id=created.ledger.ledger_id,
-            mutation_id=derive_execution_findings_mutation_id(
-                writer_tool_call_id="work-retract-fifo-call"
-            ),
-            expected_ledger_revision=1,
-            writer_unit_id=WORK_ATTEMPT_ID,
-            writer_tool_call_id="work-retract-fifo-call",
-            items=(
-                RetractExecutionFinding(
-                    entry_id=newest_entry_id,
-                    reason="The newest queue item is no longer needed.",
-                ),
-            ),
-        ),
-    )
-    assert retracted.active_projection.active_entries == ()
-    assert retracted.active_projection.omitted_active_count == 1
-    assert len(retracted.ledger.entry_revisions) == 3
-
-    _insert_work_writer_with_deps(
-        findings_deps,
-        "work-overquota-call",
-        "record_execution_findings",
-    )
-    overquota = _record_command(
-        ledger_id=created.ledger.ledger_id,
-        writer_unit_id=WORK_ATTEMPT_ID,
-        writer_tool_call_id="work-overquota-call",
-        expected_revision=2,
-        item=RecordExecutionFinding(
-            kind=ExecutionFindingKind.GAP,
-            claim="x" * 81,
-            scope_keys=("quality",),
-        ),
-    )
-    with pytest.raises(records.ExecutionFindingsQuotaExceeded):
-        records.apply_execution_findings_mutation(
-            findings_deps,
-            command=overquota,
-        )
-    unchanged = records.get_execution_findings_ledger(
-        findings_deps,
-        ledger_id=created.ledger.ledger_id,
-    )
-    assert unchanged is not None
-    assert unchanged.ledger.revision == 2
-    assert len(unchanged.ledger.entry_revisions) == 3
-
-
-def test_work_run_byte_fifo_does_not_revive_an_evicted_entry(
-    findings_deps: StoreDeps,
-) -> None:
-    created = records.create_execution_findings_ledger(
-        findings_deps,
-        session_id="session",
-        owner_kind=ExecutionFindingsOwnerKind.WORK_RUN,
-        execution_owner_id=WORK_RUN_ID,
-        quota=ExecutionFindingsQuota(
-            max_claim_characters=800,
-            max_active_projection_utf8_bytes=2_400,
-        ),
-    )
-    _insert_work_writer_with_deps(
-        findings_deps,
-        "work-record-byte-fifo-call",
-        "record_execution_findings",
-    )
-    recorded = records.apply_execution_findings_mutation(
-        findings_deps,
-        command=ExecutionFindingsMutationCommand(
-            ledger_id=created.ledger.ledger_id,
-            mutation_id=derive_execution_findings_mutation_id(
-                writer_tool_call_id="work-record-byte-fifo-call"
-            ),
-            expected_ledger_revision=0,
-            writer_unit_id=WORK_ATTEMPT_ID,
-            writer_tool_call_id="work-record-byte-fifo-call",
-            items=(
-                RecordExecutionFinding(
-                    kind=ExecutionFindingKind.FINDING,
-                    claim="a" * 800,
-                    scope_keys=("deliverable",),
-                ),
-                RecordExecutionFinding(
-                    kind=ExecutionFindingKind.FINDING,
-                    claim="b" * 800,
-                    scope_keys=("quality",),
-                ),
-            ),
-        ),
-    )
-    assert len(recorded.active_projection.active_entries) == 1
-    assert recorded.active_projection.active_entries[0].claim == "b" * 800
-    assert recorded.active_projection.omitted_active_count == 1
-
-    newest_entry_id = recorded.active_projection.active_entries[0].entry_id
-    _insert_work_writer_with_deps(
-        findings_deps,
-        "work-retract-byte-fifo-call",
-        "revise_execution_finding",
-    )
-    retracted = records.apply_execution_findings_mutation(
-        findings_deps,
-        command=ExecutionFindingsMutationCommand(
-            ledger_id=created.ledger.ledger_id,
-            mutation_id=derive_execution_findings_mutation_id(
-                writer_tool_call_id="work-retract-byte-fifo-call"
-            ),
-            expected_ledger_revision=1,
-            writer_unit_id=WORK_ATTEMPT_ID,
-            writer_tool_call_id="work-retract-byte-fifo-call",
-            items=(
-                RetractExecutionFinding(
-                    entry_id=newest_entry_id,
-                    reason="The newest byte-bounded entry is obsolete.",
-                ),
-            ),
-        ),
-    )
-    assert retracted.active_projection.active_entries == ()
-    assert retracted.active_projection.omitted_active_count == 1
-    assert len(retracted.ledger.entry_revisions) == 3
-
-
 def test_projection_reducer_failure_is_stored_authority_corruption(
     findings_deps: StoreDeps,
     monkeypatch: pytest.MonkeyPatch,
@@ -667,8 +373,8 @@ def test_projection_reducer_failure_is_stored_authority_corruption(
     created = records.create_execution_findings_ledger(
         findings_deps,
         session_id="session",
-        owner_kind=ExecutionFindingsOwnerKind.WORK_RUN,
-        execution_owner_id=WORK_RUN_ID,
+        owner_kind=ExecutionFindingsOwnerKind.L1_TURN_RUN,
+        execution_owner_id=L1_RUN_ID,
     )
 
     def reject_corrupt_history(*_args: object, **_kwargs: object) -> object:
@@ -686,88 +392,6 @@ def test_projection_reducer_failure_is_stored_authority_corruption(
         records.get_execution_findings_ledger(
             findings_deps,
             ledger_id=created.ledger.ledger_id,
-        )
-
-
-def test_work_run_finding_requires_exact_durable_tool_result_identity(
-    findings_deps: StoreDeps,
-) -> None:
-    created = records.create_execution_findings_ledger(
-        findings_deps,
-        session_id="session",
-        owner_kind="work_run",
-        execution_owner_id=WORK_RUN_ID,
-    )
-    exact_ref = ExecutionFindingSourceRef(tool_result_id="work-source-result")
-    applied = records.apply_execution_findings_mutation(
-        findings_deps,
-        command=_record_command(
-            ledger_id=created.ledger.ledger_id,
-            writer_unit_id=WORK_ATTEMPT_ID,
-            writer_tool_call_id="work-record-call",
-            expected_revision=0,
-            item=RecordExecutionFinding(
-                kind=ExecutionFindingKind.FINDING,
-                claim="The durable read result supports the deliverable.",
-                source_refs=(exact_ref,),
-                scope_keys=("deliverable",),
-            ),
-        ),
-    )
-    assert applied.ledger.revision == 1
-
-    _insert_work_writer_with_deps(
-        findings_deps,
-        "work-invalid-source-call",
-        "record_execution_findings",
-    )
-    invalid_ref = exact_ref.model_copy(update={"tool_result_id": "forged-result"})
-    with pytest.raises(records.ExecutionFindingsSourceReferenceInvalid):
-        records.apply_execution_findings_mutation(
-            findings_deps,
-            command=_record_command(
-                ledger_id=created.ledger.ledger_id,
-                writer_unit_id=WORK_ATTEMPT_ID,
-                writer_tool_call_id="work-invalid-source-call",
-                expected_revision=1,
-                item=RecordExecutionFinding(
-                    kind=ExecutionFindingKind.FINDING,
-                    claim="This claim has a forged result identity.",
-                    source_refs=(invalid_ref,),
-                    scope_keys=("deliverable",),
-                ),
-            ),
-        )
-
-    with findings_deps.connect() as conn:
-        conn.execute(
-            "UPDATE insession_work_run_tool_calls "
-            "SET tool_id='record_execution_findings' "
-            "WHERE tool_call_id='work-source-call'"
-        )
-    _insert_work_writer_with_deps(
-        findings_deps,
-        "work-recursive-source-call",
-        "record_execution_findings",
-    )
-    with pytest.raises(
-        records.ExecutionFindingsSourceReferenceInvalid,
-        match="cannot support another finding",
-    ):
-        records.apply_execution_findings_mutation(
-            findings_deps,
-            command=_record_command(
-                ledger_id=created.ledger.ledger_id,
-                writer_unit_id=WORK_ATTEMPT_ID,
-                writer_tool_call_id="work-recursive-source-call",
-                expected_revision=1,
-                item=RecordExecutionFinding(
-                    kind=ExecutionFindingKind.FINDING,
-                    claim="A ledger receipt must not become recursive evidence.",
-                    source_refs=(exact_ref,),
-                    scope_keys=("deliverable",),
-                ),
-            ),
         )
 
 
@@ -830,39 +454,6 @@ def test_l1_tool_result_identity_is_preserved_and_replayed(findings_deps, legacy
     assert replayed.replayed is True
     assert replayed.ledger.revision == 1
     assert len(replayed.ledger.entry_revisions) == 1
-
-
-@pytest.mark.parametrize("pin", ["omitted", "valid", "invalid"])
-def test_work_run_result_pin_is_optional_and_verified_when_supplied(findings_deps, pin):
-    created = records.create_execution_findings_ledger(
-        findings_deps, session_id="session", owner_kind=ExecutionFindingsOwnerKind.WORK_RUN,
-        execution_owner_id=WORK_RUN_ID,
-    )
-    with findings_deps.connect() as conn:
-        result_json = conn.execute(
-            "SELECT result_json FROM insession_work_run_tool_results WHERE tool_result_id='work-source-result'",
-        ).fetchone()[0]
-    source = {"tool_result_id": "work-source-result", "chunk_id": "chunk-a"}
-    if pin != "omitted":
-        source["result_sha256"] = (
-            hashlib.sha256(result_json.encode()).hexdigest() if pin == "valid" else "0" * 64
-        )
-    command = _record_command(
-        ledger_id=created.ledger.ledger_id, writer_unit_id=WORK_ATTEMPT_ID,
-        writer_tool_call_id="work-record-call", expected_revision=0,
-        item=RecordExecutionFinding(kind="finding", claim="The WorkRun result supports this note.",
-                                    source_refs=(ExecutionFindingSourceRef(**source),)),
-    )
-    if pin == "invalid":
-        with pytest.raises(records.ExecutionFindingsSourceReferenceInvalid, match="digest changed"):
-            records.apply_execution_findings_mutation(findings_deps, command=command)
-        unchanged = records.get_execution_findings_ledger(findings_deps, ledger_id=created.ledger.ledger_id)
-        assert unchanged.ledger.revision == 0
-    else:
-        result = records.apply_execution_findings_mutation(findings_deps, command=command)
-        assert result.ledger.entry_revisions[0].source_refs[0].model_dump() == source
-        replayed = records.apply_execution_findings_mutation(findings_deps, command=command)
-        assert replayed.replayed and replayed.ledger == result.ledger
 
 
 @pytest.mark.parametrize("corruption", ["result_id", "hash", "missing_digest", "wrong_digest", "digest_and_body", "call", "scope", "failed", "findings", "history_list", "history_read"])
@@ -994,24 +585,3 @@ def _insert_l1_writer_with_deps(
 ) -> None:
     with deps.connect() as conn:
         _insert_l1_writer(conn, tool_call_id, tool_id)
-
-
-def _insert_work_writer(
-    conn: sqlite3.Connection,
-    tool_call_id: str,
-    tool_id: str,
-) -> None:
-    conn.execute(
-        "INSERT INTO insession_work_run_tool_calls "
-        "(tool_call_id, work_run_id, attempt_id, tool_id) VALUES (?, ?, ?, ?)",
-        (tool_call_id, WORK_RUN_ID, WORK_ATTEMPT_ID, tool_id),
-    )
-
-
-def _insert_work_writer_with_deps(
-    deps: StoreDeps,
-    tool_call_id: str,
-    tool_id: str,
-) -> None:
-    with deps.connect() as conn:
-        _insert_work_writer(conn, tool_call_id, tool_id)

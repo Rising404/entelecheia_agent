@@ -9,7 +9,7 @@ from personagraph.session import (
     runtime_call_ledger_store_facade,
     turn_input_store_facade,
 )
-from personagraph.session.persistence.calls import runtime_model_calls, runtime_tool_calls
+from personagraph.session.persistence.calls import runtime_model_calls
 from personagraph.session.persistence.history import turns
 from personagraph.session.persistence.turns import attachments
 
@@ -24,7 +24,7 @@ from personagraph.session.persistence.turns import attachments
             "get_turns",
             ("session",),
             {},
-            "TranscriptDeliveryReferenceError",
+            "TranscriptIntegrityError",
         ),
         (
             turn_input_store_facade,
@@ -44,15 +44,7 @@ from personagraph.session.persistence.turns import attachments
             {"session_id": "session", "logical_call_id": "model-call"},
             "RuntimeModelCallPersistenceError",
         ),
-        (
-            runtime_call_ledger_store_facade,
-            runtime_call_ledger_store_facade.RuntimeCallLedgerStoreFacade,
-            runtime_tool_calls,
-            "get_runtime_tool_logical_call",
-            (),
-            {"session_id": "session", "logical_tool_call_id": "tool-call"},
-            "RuntimeToolCallPersistenceError",
-        ),
+
     ],
 )
 def test_shared_facade_resolves_dependencies_once_per_call(

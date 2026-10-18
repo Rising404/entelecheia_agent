@@ -34,7 +34,7 @@ def _execution_snapshot() -> EntryExecutionSnapshot:
 
 
 def _routing_snapshot() -> TurnRoutingPolicySnapshot:
-    policy = TurnRoutingPolicy(l1_enabled=True, l2_enabled=False)
+    policy = TurnRoutingPolicy(l1_enabled=True)
     return TurnRoutingPolicySnapshot(
         source="default",
         policy=policy,
@@ -50,7 +50,7 @@ def _receipt(**overrides: object) -> dict[str, object]:
             "turn_id": "turn-1",
             "source": "cli",
             "status": "running",
-            "processing_level": "L2",
+            "processing_level": "L1",
             "end_reason": 7,
             "error_code": False,
             "execution_snapshot_json": execution_snapshot.to_json(),
@@ -113,7 +113,7 @@ def test_persisted_receipt_projects_acceptance_without_runtime_source() -> None:
     assert accepted.window_revision == 9
     assert accepted.replayed is False
     assert accepted.turn_status == "running"
-    assert accepted.processing_level == "L2"
+    assert accepted.processing_level == "L1"
     assert accepted.end_reason == "7"
     assert accepted.error_code == "False"
     assert accepted.window_state == "active"
@@ -311,7 +311,6 @@ allowed = {
     'personagraph.runtime.turn.persisted_projection',
 }
 blocked_prefixes = (
-    'personagraph.l2',
     'personagraph.model_io',
     'personagraph.runtime.l1',
     'personagraph.session',

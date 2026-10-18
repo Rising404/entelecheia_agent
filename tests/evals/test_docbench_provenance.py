@@ -81,7 +81,6 @@ def _write_case_result(root: Path, **overrides: object) -> None:
         "post_commit_complete": True,
         "chain_complete": True,
         "lane_ok": True,
-        "interaction_ok": True,
         "telemetry": {"telemetry_complete": True},
     }
     result.update(overrides)
@@ -109,14 +108,13 @@ def test_generation_gate_requires_all_runtime_checks(tmp_path: Path) -> None:
         "post_commit_complete": True,
         "chain_complete": True,
         "lane_ok": True,
-        "interaction_ok": True,
         "telemetry_complete": True,
         "source_stable": True,
     }
 
 
 def test_complete_artifacts_do_not_hide_a_failed_runtime_gate(tmp_path: Path) -> None:
-    _write_case_result(tmp_path, interaction_ok=False)
+    _write_case_result(tmp_path, telemetry={"telemetry_complete": False})
 
     report = runner._report(
         tmp_path,
@@ -126,7 +124,7 @@ def test_complete_artifacts_do_not_hide_a_failed_runtime_gate(tmp_path: Path) ->
 
     assert report["status"] == "complete"
     assert report["gate_passed"] is False
-    assert report["generation_gate"]["interaction_ok"] is False
+    assert report["generation_gate"]["telemetry_complete"] is False
     assert report["baseline_eligible"] is False
 
 

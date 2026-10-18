@@ -43,8 +43,11 @@ def build_retrieve_files_registration(
             contract_version=RETRIEVE_FILES_CONTRACT_VERSION,
             name="Retrieve file evidence",
             description=(
-                "检索当前 Session 已授权且已准备的 Document chunks 与已经发布的 "
-                "Picture observations；既往 agent outputs 不在本语料范围内。queries "
+                "检索当前 Session 已授权且已准备的 Document chunks 与已经发布的 Picture observations。"
+                "多文档或长文档找答案时优先使用本工具定位相关证据，尚未准备先调用 prepare_files。"
+                "可省略 file_ids 搜索全部授权材料，避免手写或猜测文件 ID。返回结果包含原文，"
+                "先核对命中内容与来源，再按需要精读，不能只看返回状态。"
+                "既往 agent outputs 不在本语料范围内。queries "
                 "提供 1-4 条面向同一信息需求的自然语言查询，第一条为主查询；仅在有帮助时"
                 "增加源语言表达、同义术语或互补子问题。每条 query 独立召回、融合，"
                 "候选统一评分后按精确来源合并去重；query_matches "

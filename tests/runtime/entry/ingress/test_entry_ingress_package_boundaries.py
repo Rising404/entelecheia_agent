@@ -67,23 +67,15 @@ print(json.dumps(loaded))
     assert json.loads(completed.stdout) == []
 
 
-def test_l1_model_contract_does_not_initialize_l2() -> None:
+def test_l1_model_contract_is_importable() -> None:
     code = """
 import importlib.abc
 import sys
 
-class RejectL2(importlib.abc.MetaPathFinder):
-    def find_spec(self, fullname, path=None, target=None):
-        if fullname == 'personagraph.l2' or fullname.startswith('personagraph.l2.'):
-            raise AssertionError(f'cold L1 model contract imported {fullname}')
-        return None
-
-sys.meta_path.insert(0, RejectL2())
 from personagraph.runtime.entry.ingress.model_contracts import EntryClassification
 
 classification = EntryClassification.model_validate({
     'processing_level': 'L1',
-    'task_matches': [],
 })
 print(classification.processing_level)
 """

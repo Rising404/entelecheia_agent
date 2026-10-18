@@ -364,14 +364,13 @@ def test_catalog_owner_does_not_read_runtime_or_session_state() -> None:
         for forbidden in (
             "personagraph.runtime",
             "personagraph.l1",
-            "personagraph.l2",
             "personagraph.session",
         )
     )
     assert not any(
         node.level > 0
         and (node.module or "").split(".", 1)[0]
-        in {"runtime", "l1", "l2", "session"}
+        in {"runtime", "l1", "session"}
         for node in ast.walk(tree)
         if isinstance(node, ast.ImportFrom)
     )

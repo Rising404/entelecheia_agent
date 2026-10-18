@@ -1,8 +1,6 @@
 import { computed, ref, watch } from "vue";
 import { useChatDrafts } from "./useChatDrafts";
-import { useChatRuntimeDecorations } from "./useChatRuntimeDecorations";
 import {
-  TASK_MODE_SEND_BLOCKED_NOTICE,
   useSessionChatActions
 } from "./useSessionChatActions";
 import { useTurnWindowRefresh } from "./useTurnWindowRefresh";
@@ -11,7 +9,6 @@ import { postCommitFailureLabel } from "./presentation";
 import { useRuntimeEvents } from "../runtime/useRuntimeEvents";
 import { stageText } from "../../shared/runtimeStages";
 import {
-  RUNTIME_MODE_TASK,
   RUNTIME_MODE_TURN,
   runtimeModeAvailable,
   runtimeModeFromProjection,
@@ -89,15 +86,6 @@ export function useChatFeature({
     onError: showError
   });
   const runtimeEvents = runtimeTimeline.events;
-  const {
-    inSessionTaskDetails,
-    clearInSessionTaskDetails,
-    loadRelatedInSessionTaskDetails
-  } = useChatRuntimeDecorations({
-    api,
-    selectedSessionId
-  });
-
   const streamingReply = ref("");
   const lastTurnResult = ref(null);
   const pendingClientRequest = ref(null);
@@ -122,18 +110,6 @@ export function useChatFeature({
     runtimeModeAvailable(runtimeMode.value, runtimeRouting.value)
   );
   const turns = computed(() => sessionDetail.value?.turns || []);
-  const pendingUserQuestions = computed(() => {
-    const values = sessionDetail.value?.pending_user_questions;
-    if (!Array.isArray(values)) return [];
-    return values.filter((item) =>
-      item &&
-      typeof item === "object" &&
-      typeof item.insession_task_id === "string" &&
-      item.insession_task_id.trim() &&
-      typeof item.question === "string" &&
-      item.question.trim()
-    );
-  });
   const turnWindow = computed(() => {
     // 无 ID 的草稿从未运行 Turn，不能继承上一会话仍在收尾的窗口状态。
     if (!selectedSession.value?.id) {
@@ -235,13 +211,6 @@ export function useChatFeature({
     !chatBusy.value &&
     !turnWindowBlocksNewInput(turnWindow.value.state)
   );
-  const canAnswerPendingQuestion = computed(() =>
-    pendingUserQuestions.value.length > 0 &&
-    selectedSession.value?.status === "active" &&
-    runtimeModeIsAvailable.value &&
-    !chatBusy.value &&
-    turnWindow.value.state !== "post_commit_pending"
-  );
   const chatReadOnlyReason = computed(() => {
     if (chatBusy.value) return "当前回合正在运行，完成后才能发送下一条消息。";
     if (
@@ -293,7 +262,6 @@ export function useChatFeature({
     if (selectedSession.value?.status !== "active") return "归档或回收站会话为只读";
     // 发送时还会在公共动作边界再次拦截；这里先把状态说清楚，避免暗示它只是
     // “不稳定”但仍可真实执行。
-    if (runtimeModeValue.value === RUNTIME_MODE_TASK) return TASK_MODE_SEND_BLOCKED_NOTICE;
     return "输入消息";
   });
 
@@ -324,7 +292,6 @@ export function useChatFeature({
     selectedSession,
     sessionTitleDirty,
     canSendChat,
-    canAnswerPendingQuestion,
     drafts: {
       load: drafts.load,
       save: drafts.save,
@@ -337,8 +304,6 @@ export function useChatFeature({
     projects,
     runtimeTimeline,
     runtimeMode,
-    clearInSessionTaskDetails,
-    loadRelatedInSessionTaskDetails
   });
 
   watch(chatInput, (value) => {
@@ -448,7 +413,6 @@ export function useChatFeature({
     chatBusy,
     chatStreamEvents,
     runtimeEvents,
-    inSessionTaskDetails,
     streamingReply,
     lastTurnResult,
     turnWindow,
@@ -460,11 +424,9 @@ export function useChatFeature({
     runtimeRouting,
     canChangeRuntimeMode,
     turns,
-    pendingUserQuestions,
     sessionTitleDirty,
     currentChatDraftLength,
     canSendChat,
-    canAnswerPendingQuestion,
     chatReadOnlyReason,
     chatInputPlaceholder,
     clearCurrentChatDraft,

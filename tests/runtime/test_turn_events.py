@@ -63,8 +63,6 @@ def test_model_attempt_and_started_duration_are_constrained():
 def test_public_projection_drops_private_correlation_and_diagnostics():
     event = _event(
         parent_event_id="turnevt-parent",
-        insession_task_id="task-1",
-        work_run_id="workrun-1",
         attempt_id="attempt-1",
         operation_id="operation-1",
         diagnostic_ref="diagnostic-1",
@@ -78,15 +76,12 @@ def test_public_projection_drops_private_correlation_and_diagnostics():
     assert public["sequence"] == 7
     assert public["prompt_replay"] is False
     assert public["retryable"] is False
-    assert public["insession_task_id"] == "task-1"
-    assert public["work_run_id"] == "workrun-1"
     assert public["attempt_id"] == "attempt-1"
     assert public["operation_id"] == "operation-1"
     assert "parent_event_id" not in public
     assert "model_call_id" not in public
     assert "diagnostic_ref" not in public
     assert "duration_ms" not in public
-    assert "insession_task_node_id" not in public
 
 
 def test_event_rejects_unstructured_diagnostic_payload_and_self_parenting():

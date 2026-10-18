@@ -110,14 +110,14 @@ describe("SettingsPanel", () => {
           }
         },
         tierForm: {
-          architect: {
+          l1: {
             profile_id: "mp-openai",
             thinking: false,
             reasoning_effort: "high"
           }
         },
         tierEffective: [{
-          tier: "architect",
+          tier: "l1",
           provider: "anthropic-compatible",
           reasoning_control: "toggle",
           model: "previous-model",
@@ -126,19 +126,19 @@ describe("SettingsPanel", () => {
       }
     });
 
-    const effort = wrapper.get('[data-testid="tier-architect-reasoning-effort"]');
+    const effort = wrapper.get('[data-testid="tier-l1-reasoning-effort"]');
     expect(effort.element.value).toBe("high");
-    expect(wrapper.find('[data-testid="tier-architect-thinking"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="tier-l1-thinking"]').exists()).toBe(false);
 
     await effort.setValue("xhigh");
     expect(wrapper.emitted("update-tier")?.at(-1)).toEqual([
-      { tier: "architect", field: "reasoning_effort", value: "xhigh" }
+      { tier: "l1", field: "reasoning_effort", value: "xhigh" }
     ]);
   });
 
   it("clears a stale effort immediately when the selected profile cannot use it", async () => {
     const tierForm = reactive({
-      architect: {
+      l1: {
         profile_id: "mp-openai",
         thinking: false,
         reasoning_effort: "minimal"
@@ -180,12 +180,12 @@ describe("SettingsPanel", () => {
       }
     });
 
-    await wrapper.get('[data-testid="tier-architect-profile"]')
+    await wrapper.get('[data-testid="tier-l1-profile"]')
       .setValue("mp-anthropic");
 
-    expect(tierForm.architect.profile_id).toBe("mp-anthropic");
-    expect(tierForm.architect.reasoning_effort).toBe("");
-    expect(wrapper.get('[data-testid="tier-architect-reasoning-effort"]')
+    expect(tierForm.l1.profile_id).toBe("mp-anthropic");
+    expect(tierForm.l1.reasoning_effort).toBe("");
+    expect(wrapper.get('[data-testid="tier-l1-reasoning-effort"]')
       .element.value).toBe("");
   });
 
@@ -197,10 +197,10 @@ describe("SettingsPanel", () => {
         modelConfigured: true,
         tierLoaded: true,
         tierForm: {
-          attempt: { profile_id: "", thinking: false, reasoning_effort: "" }
+          l1: { profile_id: "", thinking: false, reasoning_effort: "" }
         },
         tierEffective: [{
-          tier: "attempt",
+          tier: "l1",
           provider: "anthropic-compatible",
           reasoning_control: "toggle",
           model: "deepseek-v4-pro",
@@ -209,12 +209,12 @@ describe("SettingsPanel", () => {
       }
     });
 
-    const thinking = wrapper.get('[data-testid="tier-attempt-thinking"]');
-    expect(wrapper.find('[data-testid="tier-attempt-reasoning-effort"]').exists()).toBe(false);
+    const thinking = wrapper.get('[data-testid="tier-l1-thinking"]');
+    expect(wrapper.find('[data-testid="tier-l1-reasoning-effort"]').exists()).toBe(false);
 
     await thinking.setValue(true);
     expect(wrapper.emitted("update-tier")?.at(-1)).toEqual([
-      { tier: "attempt", field: "thinking", value: true }
+      { tier: "l1", field: "thinking", value: true }
     ]);
   });
 
@@ -226,14 +226,14 @@ describe("SettingsPanel", () => {
         modelConfigured: true,
         tierLoaded: true,
         tierForm: {
-          final_gate: {
+          l1: {
             profile_id: "",
             thinking: false,
             reasoning_effort: "medium"
           }
         },
         tierEffective: [{
-          tier: "final_gate",
+          tier: "l1",
           provider: "anthropic-compatible",
           request_dialect: "anthropic-native",
           reasoning_control: "toggle_independent_effort",
@@ -244,11 +244,11 @@ describe("SettingsPanel", () => {
       }
     });
 
-    expect(wrapper.get('[data-testid="tier-final_gate-thinking"]').element.checked)
+    expect(wrapper.get('[data-testid="tier-l1-thinking"]').element.checked)
       .toBe(false);
-    expect(wrapper.get('[data-testid="tier-final_gate-reasoning-effort"]').attributes("disabled"))
+    expect(wrapper.get('[data-testid="tier-l1-reasoning-effort"]').attributes("disabled"))
       .toBeUndefined();
-    expect(wrapper.get('[data-testid="tier-final_gate-reasoning-effort"]').element.value)
+    expect(wrapper.get('[data-testid="tier-l1-reasoning-effort"]').element.value)
       .toBe("medium");
   });
 
@@ -260,10 +260,10 @@ describe("SettingsPanel", () => {
         modelConfigured: true,
         tierLoaded: true,
         tierForm: {
-          final_gate: { profile_id: "", thinking: false, reasoning_effort: "" }
+          l1: { profile_id: "", thinking: false, reasoning_effort: "" }
         },
         tierEffective: [{
-          tier: "final_gate",
+          tier: "l1",
           provider: "mock",
           reasoning_control: "none",
           model: "mock-structured",
@@ -272,9 +272,9 @@ describe("SettingsPanel", () => {
       }
     });
 
-    expect(wrapper.find('[data-testid="tier-final_gate-thinking"]').exists()).toBe(false);
-    expect(wrapper.find('[data-testid="tier-final_gate-reasoning-effort"]').exists()).toBe(false);
-    expect(wrapper.get('[data-testid="tier-final_gate-reasoning-unavailable"]').text())
+    expect(wrapper.find('[data-testid="tier-l1-thinking"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="tier-l1-reasoning-effort"]').exists()).toBe(false);
+    expect(wrapper.get('[data-testid="tier-l1-reasoning-unavailable"]').text())
       .toContain("没有可配置的推理强度");
   });
 
@@ -286,14 +286,14 @@ describe("SettingsPanel", () => {
         modelConfigured: true,
         tierLoaded: false,
         tierForm: {
-          architect: {
+          l1: {
             profile_id: "mp-stale",
             thinking: false,
             reasoning_effort: "high"
           }
         },
         tierEffective: [{
-          tier: "architect",
+          tier: "l1",
           provider: "openai-compatible",
           reasoning_control: "effort",
           model: "stale-model",
@@ -304,9 +304,9 @@ describe("SettingsPanel", () => {
 
     expect(wrapper.get('[data-testid="tier-config-unavailable"]').text())
       .toContain("重新读取配置");
-    expect(wrapper.get('[data-testid="tier-architect-profile"]').attributes("disabled"))
+    expect(wrapper.get('[data-testid="tier-l1-profile"]').attributes("disabled"))
       .toBeDefined();
-    expect(wrapper.get('[data-testid="tier-architect-reasoning-effort"]').attributes("disabled"))
+    expect(wrapper.get('[data-testid="tier-l1-reasoning-effort"]').attributes("disabled"))
       .toBeDefined();
     expect(wrapper.get('[data-testid="settings-save"]').attributes("disabled"))
       .toBeDefined();

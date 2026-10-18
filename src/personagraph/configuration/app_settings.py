@@ -40,7 +40,7 @@ _CONFIG_ENV_MAP: dict[str, str] = {
     "base_url": "PERSONAGRAPH_BASE_URL",
     "model": "PERSONAGRAPH_MODEL",
     # Entry 文本生成有自己的有界默认值，但运维人员必须能够在不手工编辑 app_config 的情况下
-    # 降低该上限以控制成本。结构化 WorkRun profile 仍会显式传入精确上限，因此不继承此值。
+    # 降低该上限以控制成本。结构化调用 仍会显式传入精确上限，因此不继承此值。
     "max_tokens": "PERSONAGRAPH_MAX_TOKENS",
     # 视觉理解走独立的 provider（14/02 F3）。它与主模型平行而不是复用：主模型可以
     # 是纯文本的，视觉能力由工具在需要时调用另一个端点，两者的 key 与配额也应分开。
@@ -60,14 +60,8 @@ _CONFIG_ENV_MAP: dict[str, str] = {
 # 开关和 effort 档位，有的只支持 effort，通用代理则不擅自发送厂商字段。
 # 端点凭据仍然只存在 profile 池里，这里不复制。
 # 键名归本模块所有；`model_tiers` 在导入时断言它的枚举与这里一致，防止两边漂移。
-TIER_SETTING_NAMES: tuple[str, ...] = (
-    "router",
-    "architect",
-    "attempt",
-    "node_verification",
-    "final_gate",
-    "l1",
-)
+TIER_SETTING_NAMES: tuple[str, ...] = ("router", "l1")
+
 for _tier in TIER_SETTING_NAMES:
     _CONFIG_ENV_MAP[f"tier_{_tier}_profile_id"] = (
         f"PERSONAGRAPH_TIER_{_tier.upper()}_PROFILE_ID"

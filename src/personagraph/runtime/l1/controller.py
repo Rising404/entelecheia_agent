@@ -43,6 +43,7 @@ from ...output_protocol.l1 import L1AttemptDecision, L1PlanProposal, L1ResultRef
 from ...output_protocol.l1_persistence import decode_l1_decision
 from ...persistent_turn_content.evidence import l1_call_refs_by_id
 from .model_view.references import L1ReferenceAdmissionError, materialize_decision_references
+from .read_admission import check_read_admission
 from ...persistent_turn_content import (
     L1Plan,
 )
@@ -90,6 +91,7 @@ from .protected_tool_dispatch import (
     L1ProtectedToolDispatcher,
 )
 from .semantic_verification import (
+    L1SemanticReviewUnavailable,
     L1SemanticVerificationInputError,
     build_l1_semantic_verification_receipt,
     request_l1_semantic_verification,
@@ -950,8 +952,13 @@ def _model_payload(
         state.get("verification_feedback_json")
     )
     try:
+        from .tool_context.reading_progress import project_reading_progress
+
         prior_tool_results, tool_result_projection = project_recent_tool_results(
             execution
+        )
+        reading_progress = project_reading_progress(
+            execution, attachment_catalog=tool_runtime.attachment_file_catalog,
         )
     except ToolResultProjectionError as exc:
         raise L1ControllerFailure(RuntimeErrorCode.INTERNAL_FAILURE, str(exc)) from exc
@@ -978,6 +985,7 @@ def _model_payload(
             current_plan.model_dump(mode="json") if current_plan is not None else None
         ),
         "prior_tool_results": prior_tool_results,
+        "reading_progress": reading_progress,
         "tool_result_projection": tool_result_projection,
         "verification_feedback": (
             verification_feedback
@@ -1242,6 +1250,16 @@ def _admit_decision(
                 ) from exc
             if tool_runtime.is_execution_findings_tool(call.tool_id):
                 findings_call_count += 1
+        reading_issue = check_read_admission(
+            action, execution=execution,
+            attachment_catalog=tool_runtime.attachment_file_catalog,
+            tool_catalog=tool_runtime.model_catalog(),
+        )
+        if reading_issue is not None:
+            raise L1ControllerFailure(
+                RuntimeErrorCode.MODEL_OUTPUT_INVALID,
+                "L1 reading action needs correction", repair_issue=reading_issue,
+            )
         if findings_call_count > 1:
             raise L1ControllerFailure(
                 RuntimeErrorCode.MODEL_OUTPUT_INVALID,
@@ -1296,6 +1314,8 @@ def _materialize_proposed_plan(
                 safe_explanation=(
                     "此 acceptance_id 不属于当前计划；修改既有项目只能使用当前 plan 的 ID，"
                     "新增项目必须省略 acceptance_id，由 Host 分配。"
+                    f"当前合法 ID（最多列12项）：{', '.join(sorted(known_ids)[:12]) or '无'}。"
+                    "若只是继续执行，使用 plan=null。"
                 ),
             )
             if unknown_index is not None
@@ -1368,6 +1388,7 @@ def _semantic_receipt_for_final_reply(
 
     required 时调用独立逻辑模型请求；reviewer 的 revise 是有效审查结论，转成
     下一 L1 Attempt 的验证反馈，不是 HTTP 失败或 JSON repair。
+    审查服务不可用时保留原候选，以 unavailable 回执交付，不冒充审查通过。
     未触发也显式留下 not_required receipt；候选、Plan、机械报告和 state guard
     都按 hash 绑定，防止把另一个状态下的通过结论用于本次提交。
     """
@@ -1381,6 +1402,7 @@ def _semantic_receipt_for_final_reply(
     plan_hash = sha256_json(plan)
     mechanical_hash = sha256_json(mechanical_verification.to_dict())
     invocation = None
+    unavailable = None
     if trigger.required:
         try:
             invocation = request_l1_semantic_verification(
@@ -1397,20 +1419,21 @@ def _semantic_receipt_for_final_reply(
                 mechanical_verification=mechanical_verification,
                 mechanical_verification_hash=mechanical_hash,
                 model_view=model_view,
-                candidate_note=decision.note,
                 execution=execution,
                 emit=emit,
                 deadline=deadline,
                 store=store,
                 model_binding=model_binding,
             )
+        except L1SemanticReviewUnavailable as exc:
+            unavailable = exc
         except L1SemanticVerificationInputError as exc:
             return None, _verification_feedback(
                 source="semantic",
                 feedback=exc.safe_feedback,
                 details={"code": exc.code},
             )
-        if invocation.result.verdict != "pass":
+        if invocation is not None and invocation.result.verdict != "pass":
             return None, _verification_feedback(
                 source="semantic",
                 feedback=invocation.result.safe_feedback(),
@@ -1431,6 +1454,7 @@ def _semantic_receipt_for_final_reply(
                 checked_acceptances=mechanical_verification.checked_acceptances,
                 checked_tool_results=mechanical_verification.checked_tool_results,
                 invocation=invocation,
+                unavailable=unavailable,
             ),
             None,
         )

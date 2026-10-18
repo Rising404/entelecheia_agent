@@ -23,8 +23,6 @@ class RuntimeStage(StrEnum):
     SUPERVISOR = "SUPERVISOR"
     L0_GENERATE = "L0_GENERATE"
     L1_BOOTSTRAP = "L1_BOOTSTRAP"
-    L2_UNDERSTAND = "L2_UNDERSTAND"
-    L2_PLAN = "L2_PLAN"
     TRANSITION_GUARD = "TRANSITION_GUARD"
     TOOL = "TOOL"
     OBSERVATION = "OBSERVATION"
@@ -80,9 +78,6 @@ class TurnEvent(BaseModel):
     session_id: str | None = Field(default=None, min_length=1, max_length=128)
     turn_id: str = Field(min_length=1, max_length=128)
     parent_event_id: str | None = Field(default=None, min_length=1, max_length=128)
-    insession_task_id: str | None = Field(default=None, min_length=1, max_length=128)
-    insession_task_node_id: str | None = Field(default=None, min_length=1, max_length=128)
-    work_run_id: str | None = Field(default=None, min_length=1, max_length=128)
     attempt_id: str | None = Field(default=None, min_length=1, max_length=128)
     stage: RuntimeStage
     status: TurnEventStatus
@@ -120,7 +115,7 @@ class TurnEvent(BaseModel):
 
 # Runtime lanes emit the same persisted lifecycle event shape.  Keeping this
 # callable contract beside the event prevents L1 from importing Entry's
-# TaskGraph-aware orchestration contracts merely for a type annotation.
+# orchestration contracts merely for a type annotation.
 EntryEventEmitter = Callable[[TurnEvent], int | None]
 
 
@@ -144,12 +139,6 @@ class TurnPublicEvent(BaseModel):
     occurred_at: datetime
     error_code: RuntimeErrorCode | None = None
     retryable: bool = False
-    insession_task_id: str | None = Field(
-        default=None, min_length=1, max_length=128, pattern=r"^[A-Za-z0-9][A-Za-z0-9_-]*$"
-    )
-    work_run_id: str | None = Field(
-        default=None, min_length=1, max_length=128, pattern=r"^[A-Za-z0-9][A-Za-z0-9_-]*$"
-    )
     attempt_id: str | None = Field(
         default=None, min_length=1, max_length=128, pattern=r"^[A-Za-z0-9][A-Za-z0-9_-]*$"
     )
@@ -203,8 +192,6 @@ def project_turn_event(event: TurnEvent, *, sequence: int) -> TurnPublicEvent:
         occurred_at=event.occurred_at,
         error_code=event.error_code,
         retryable=event.retryable,
-        insession_task_id=event.insession_task_id,
-        work_run_id=event.work_run_id,
         attempt_id=event.attempt_id,
         operation_id=event.operation_id,
     )

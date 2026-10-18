@@ -18,7 +18,7 @@ from personagraph.session import store
 
 def _run(*, failed=True, code="VERIFICATION_FAILED"):
     session_id = store.create_session("terminal delivery")
-    policy = TurnRoutingPolicy(l1_enabled=True, l2_enabled=False)
+    policy = TurnRoutingPolicy(l1_enabled=True)
     snapshot = freeze_turn_routing_policy(policy, source="request_override")
     accepted = store.accept_turn_execution(
         session_id=session_id, client_request_id="terminal-notice",

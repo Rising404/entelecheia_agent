@@ -14,12 +14,8 @@ from ..runtime.model_calls.contracts import (
     RuntimeModelPhysicalAttemptRequest,
     RuntimeModelPhysicalAttemptSettlement,
 )
-from ..runtime.tool_calls import (
-    RuntimeToolLogicalRequest,
-    RuntimeToolPhysicalAttemptRequest,
-    RuntimeToolPhysicalAttemptSettlement,
-)
-from .persistence.calls import runtime_model_calls, runtime_tool_calls
+
+from .persistence.calls import runtime_model_calls
 from .persistence.deps import StoreDeps
 
 
@@ -31,14 +27,6 @@ RuntimeModelLedgerMutationResult = runtime_model_calls.RuntimeModelLedgerMutatio
 StoredRuntimeModelLogicalCall = runtime_model_calls.StoredRuntimeModelLogicalCall
 StoredRuntimeModelPhysicalAttempt = runtime_model_calls.StoredRuntimeModelPhysicalAttempt
 StoredRuntimeModelRejectedOutput = runtime_model_calls.StoredRuntimeModelRejectedOutput
-
-RuntimeToolCallPersistenceError = runtime_tool_calls.RuntimeToolCallPersistenceError
-RuntimeToolCallIdentityCollision = runtime_tool_calls.RuntimeToolCallIdentityCollision
-RuntimeToolCallTerminalState = runtime_tool_calls.RuntimeToolCallTerminalState
-RuntimeToolCallWaitingExternalState = runtime_tool_calls.RuntimeToolCallWaitingExternalState
-RuntimeToolLedgerMutationResult = runtime_tool_calls.RuntimeToolLedgerMutationResult
-StoredRuntimeToolLogicalCall = runtime_tool_calls.StoredRuntimeToolLogicalCall
-StoredRuntimeToolPhysicalAttempt = runtime_tool_calls.StoredRuntimeToolPhysicalAttempt
 
 
 class RuntimeCallLedgerStoreFacade:
@@ -115,56 +103,6 @@ class RuntimeCallLedgerStoreFacade:
             logical_call_id=logical_call_id,
             rejected_physical_ordinal=rejected_physical_ordinal,
             rejected_response_sha256=rejected_response_sha256,
-        )
-
-    def reserve_runtime_tool_logical_call(
-        self,
-        *,
-        request: RuntimeToolLogicalRequest,
-    ) -> RuntimeToolLedgerMutationResult:
-        """预留或精确重放一个 WorkRun 所有的逻辑工具请求。"""
-
-        return runtime_tool_calls.reserve_runtime_tool_logical_call(
-            self._deps_factory(),
-            request=request,
-        )
-
-    def append_runtime_tool_physical_attempt(
-        self,
-        *,
-        request: RuntimeToolPhysicalAttemptRequest,
-    ) -> RuntimeToolLedgerMutationResult:
-        """追加或精确重放一次分派前物理工具尝试。"""
-
-        return runtime_tool_calls.append_runtime_tool_physical_attempt(
-            self._deps_factory(),
-            request=request,
-        )
-
-    def settle_runtime_tool_physical_attempt(
-        self,
-        *,
-        settlement: RuntimeToolPhysicalAttemptSettlement,
-    ) -> RuntimeToolLedgerMutationResult:
-        """结算或精确重放一次物理工具调用尝试。"""
-
-        return runtime_tool_calls.settle_runtime_tool_physical_attempt(
-            self._deps_factory(),
-            settlement=settlement,
-        )
-
-    def get_runtime_tool_logical_call(
-        self,
-        *,
-        session_id: str,
-        logical_tool_call_id: str,
-    ) -> StoredRuntimeToolLogicalCall | None:
-        """加载一个经过认证的工具请求及其有序分派。"""
-
-        return runtime_tool_calls.get_runtime_tool_logical_call(
-            self._deps_factory(),
-            session_id=session_id,
-            logical_tool_call_id=logical_tool_call_id,
         )
 
 

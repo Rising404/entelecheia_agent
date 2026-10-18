@@ -115,7 +115,6 @@ def test_entry_retains_ingress_event_and_formal_finalization_authority(monkeypat
             "revision": 17,
             "processing_level": "L0",
             "reply": "输入超过当前安全上限，请缩短后重试。",
-            "related_insession_task_ids": (),
             "error_code": RuntimeErrorCode.INPUT_INVALID.value,
             "emit": emit,
             "store": store,

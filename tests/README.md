@@ -12,12 +12,11 @@
 | `documents/` | DocSet、文档 ingest、artifact spill/read |
 | `retrieval/` | 文件/历史检索、索引、召回、重排与相关持久化行为 |
 | `evals/` | DocBench 实验、正式 runner/scorer 与授权/复现边界 |
-| `l2/task_graph/` | TaskGraph 合同、验证、修订迁移与生产门 |
-| `runtime/` | trusted Turn 入口、Ingress/L0-L2、TaskGraph/AuxiliaryGraph/WorkRun 合同、TurnExecutionWindow、事件、恢复与 Host Guard |
+| `runtime/` | trusted Turn 入口、Ingress/L0-L1、共享调用账本、TurnExecutionWindow、事件、恢复与 Host Guard |
 | `configuration/` | 路径配置、敏感路径 deny rules 与调用方向围栏 |
 | `session/` | 会话管理、working memory、历史持久化 |
 | `session_context/` | SessionContext 契约、抽取、生命周期、当前持久化与 Repair |
-| `tools/` | ToolSpec、effect-aware ToolPolicy、Catalog/Registry 及具体工具；WorkRun/Attempt 接线归 `runtime/` |
+| `tools/` | ToolSpec、effect-aware ToolPolicy、Catalog/Registry 及具体工具；L1 执行接线归 `runtime/` |
 
 ## Placement Rules
 
@@ -32,7 +31,7 @@
 ## Runtime Migration Rule
 
 - 新测试不得导入 `personagraph.graph`、`runtime.turn/checkpoints/event_journal`、旧 supervisor/shadow 或旧 pending-review/resume 编排。
-- 旧图已验证过的领域行为只有在迁入新所有者后，才从 `runtime.entry`、TaskGraph/WorkRun application service 或领域 facade 重建测试。
+- 旧图已验证过的领域行为只有在迁入新所有者后，才从 `runtime.entry`、L1 application service 或领域 facade 重建测试。
 - 已退役模块由 `runtime/test_test_suite_runtime_boundaries.py` 防止重新进入活跃测试和源码边界。
 
 ## Common Commands
@@ -42,7 +41,6 @@
 .venv/bin/python -m pytest tests/retrieval
 .venv/bin/python -m pytest tests/session_context
 .venv/bin/python -m pytest tests/evals
-.venv/bin/python -m pytest tests/l2/task_graph/test_production_gate.py
 .venv/bin/python -m pytest tests/tools/test_tool_platform.py
 ```
 

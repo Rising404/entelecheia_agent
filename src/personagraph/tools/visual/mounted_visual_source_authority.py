@@ -2,7 +2,7 @@
 
 This module owns only physical source validation, page-manifest binding, renderable
 unit construction, and currentness checks.  It deliberately does not know about
-L1, AuxiliaryGraph, planning resources, prompt projections, or model execution.
+prompt projections or model execution.
 """
 
 from __future__ import annotations

@@ -1,6 +1,5 @@
 import { streamEventDetail } from "./presentation";
 import {
-  RUNTIME_MODE_TASK,
   RUNTIME_MODE_TURN,
   runtimePolicyForMode
 } from "../runtime/runtimeRouting";
@@ -8,7 +7,6 @@ import {
 // 与 input_processing/attachments/storage.py 的 MAX_ATTACHMENTS_PER_TURN 一致。
 // 前端写一个更大的数，只会让超出的那几个必然失败。
 export const MAX_ATTACHMENTS_PER_TURN = 16;
-export const TASK_MODE_SEND_BLOCKED_NOTICE = "任务模式当前仍在开发中，暂不提供消息发送功能。";
 
 function initialDraftTitle(message) {
   const normalized = String(message || "").trim().replace(/\s+/g, " ");
@@ -21,7 +19,6 @@ export function useSessionChatActions({
   selectedSession,
   sessionTitleDirty,
   canSendChat,
-  canAnswerPendingQuestion = { value: false },
   drafts,
   confirmDiscardChanges,
   clearMessage,
@@ -30,8 +27,6 @@ export function useSessionChatActions({
   projects = null,
   runtimeTimeline = null,
   runtimeMode = { value: RUNTIME_MODE_TURN },
-  clearInSessionTaskDetails = () => {},
-  loadRelatedInSessionTaskDetails = async () => [],
   clock = () => new Date().toLocaleTimeString()
 }) {
   const {
@@ -87,7 +82,6 @@ export function useSessionChatActions({
     clearSessionAuthority();
     pendingAttachments.value = [];
     pendingClientRequest.value = null;
-    clearInSessionTaskDetails();
   }
 
   function startDraft(workingDir = "") {
@@ -99,7 +93,7 @@ export function useSessionChatActions({
     // 尚未落库的草稿没有 Turn 窗口；创建空壳仅供聊天 UI 编辑第一条消息。
     sessionDetail.value = {
       session: { id: "", title: "新会话", status: "active", working_dir: null },
-      turns: [], pending_user_questions: []
+      turns: []
     };
     sessionTitleDraft.value = "新会话";
     chatInput.value = "";
@@ -169,7 +163,6 @@ export function useSessionChatActions({
     if (changedSession) {
       pendingAttachments.value = [];
       pendingClientRequest.value = null;
-      clearInSessionTaskDetails();
     }
     if (changedSession || needsInitialDraftLoad) {
       clearSessionAuthority({ clearTurn: false });
@@ -344,8 +337,7 @@ export function useSessionChatActions({
       candidate.attachmentIds.length === attachmentIds.length &&
       candidate.attachmentIds.every((attachmentId, index) => attachmentId === attachmentIds[index]) &&
       candidate.runtimePolicy?.schema_version === runtimePolicy.schema_version &&
-      candidate.runtimePolicy?.l1_enabled === runtimePolicy.l1_enabled &&
-      candidate.runtimePolicy?.l2_enabled === runtimePolicy.l2_enabled
+      candidate.runtimePolicy?.l1_enabled === runtimePolicy.l1_enabled
     );
   }
 
@@ -554,32 +546,28 @@ export function useSessionChatActions({
     } catch { /* 起名是装饰，不是这轮的交付物 */ }
   }
 
-  async function sendChat({ answerPendingQuestion = false } = {}) {
+  async function sendChat() {
     if (saving.value || chatBusy.value || attachmentUploading.value) return false;
     // 先把这句话抓在手里：草稿落库会切到新会话，切会话时输入框会被换成
     // 那个会话自己的草稿（新会话是空的），晚一步读就只剩空字符串了。
     const message = chatInput.value.trim();
     if (!message) return;
-    // 任务模式已经可以被选择和展示，但前端尚未开放真实执行。守在所有发送路径
-    // 汇合的动作边界，避免按钮、Enter、待回答问题或程序调用中的任意一条漏发。
-    // 这也必须早于草稿会话落库：被阻止的尝试不应产生任何持久化副作用。
-    if (runtimeMode.value === RUNTIME_MODE_TASK) {
-      clearMessage();
-      notice.value = TASK_MODE_SEND_BLOCKED_NOTICE;
-      return false;
-    }
     // 在草稿实体化前捕获：加载新建 Session 可能刷新 UI 默认值，但本次 AcceptedTurn
     // 必须保留用户按下发送时选择的模式。
-    const runtimePolicy = runtimePolicyForMode(runtimeMode.value);
+    let runtimePolicy;
+    try {
+      runtimePolicy = runtimePolicyForMode(runtimeMode.value);
+    } catch (err) {
+      showError(err);
+      return false;
+    }
     if (projects?.draftActive?.value) {
       saving.value = true;
       try {
         if (!(await materializeDraft(message))) return false;
       } catch (err) { showError(err); return false; } finally { saving.value = false; }
     }
-    const allowed = answerPendingQuestion
-      ? canAnswerPendingQuestion.value
-      : canSendChat.value;
+    const allowed = canSendChat.value;
     if (!selectedSession.value || !allowed) return;
     const sessionId = selectedSession.value.id;
     if (selectedSessionId.value !== sessionId) return;
@@ -590,7 +578,6 @@ export function useSessionChatActions({
     // 传输结果不明时的重试复用客户端请求 ID；消息、附件集合或 Runtime 模式发生变化时，
     // 则刻意创建新的 Turn。
     lastTurnResult.value = null;
-    clearInSessionTaskDetails();
     chatStreamEvents.value = [];
     if (runtimeTimeline) runtimeTimeline.clear();
     else runtimeEvents.value = [];
@@ -614,11 +601,6 @@ export function useSessionChatActions({
       }, { shouldPublish: isCurrentRequest });
       if (!isCurrentRequest()) return false;
       lastTurnResult.value = payload.result || null;
-      // Task 卡片只是普通回复的尽力而为只读装饰，刻意不影响 Turn 交付、重试或编辑器。
-      void loadRelatedInSessionTaskDetails(
-        sessionId,
-        lastTurnResult.value?.related_insession_task_ids
-      );
       pendingClientRequest.value = null;
       drafts.clear(sessionId);
       // 仅在发送成功后清空；Turn 失败时继续暂存文件，让用户无需重新上传即可重试。
@@ -641,7 +623,6 @@ export function useSessionChatActions({
     }
   }
 
-  const sendPendingUserAnswer = () => sendChat({ answerPendingQuestion: true });
 
   // 光标位置插一个换行。Shift+Enter 浏览器自己会插，但 Ctrl/Cmd+Enter 在 textarea
   // 里默认什么也不做，所以那两个组合得自己来。
@@ -675,8 +656,7 @@ export function useSessionChatActions({
     // 单独的 Enter 发送
     event.preventDefault();
     if (chatBusy.value || !chatInput.value.trim()) return;
-    if (canAnswerPendingQuestion.value) sendPendingUserAnswer();
-    else if (canSendChat.value) sendChat();
+    if (canSendChat.value) sendChat();
   }
 
   async function reconcileRuntimeState() {
@@ -693,7 +673,6 @@ export function useSessionChatActions({
     loadSessions, reloadSessionsFromSearch, guardedReloadSessionsFromSearch, clearSessionSearch,
     guardedClearSessionSearch, guardedSetSessionStatus, selectSession, guardedSelectSession, createSession,
     saveSessionTitle, archiveSession, unarchiveSession, trashSession, restoreTrashedSession, sendChat,
-    sendPendingUserAnswer,
     materializeDraft,
     attachFiles, removePendingAttachment, restoreStagedAttachments,
     handleChatComposerKeydown, sendChatWithStreamFallback, reconcileRuntimeState

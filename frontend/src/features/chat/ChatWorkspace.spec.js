@@ -55,44 +55,6 @@ describe("ChatWorkspace", () => {
     expect(wrapper.findAll("button").find((button) => button.text().includes("发送")).attributes("disabled")).toBeDefined();
   });
 
-  it("keeps task-mode Send clickable for feedback and explains that it is blocked", async () => {
-    const wrapper = mount(ChatWorkspace, {
-      props: {
-        session: { id: "s1", status: "active" },
-        input: "start the task",
-        canSend: true,
-        runtimeMode: "task"
-      }
-    });
-
-    const sendButton = wrapper.findAll("button").find((button) => button.text().includes("发送"));
-    expect(sendButton.attributes("disabled")).toBeUndefined();
-    expect(sendButton.attributes("title")).toBe("任务模式当前仍在开发中，暂不提供消息发送功能。");
-
-    // Vue Test Utils 不执行 submit 按钮的浏览器默认行为，直接触发表单提交来验证
-    // 这颗可点击按钮连接到的组件事件契约。
-    await wrapper.get("form.composer").trigger("submit");
-    expect(wrapper.emitted("send")).toHaveLength(1);
-  });
-
-  it("replaces the ordinary composer with a durable pending-question dialog", async () => {
-    const wrapper = mount(ChatWorkspace, {
-      props: {
-        session: { id: "s1", status: "active" },
-        input: "20 号",
-        pendingUserQuestions: [{
-          insession_task_id: "task-trip",
-          question: "你希望哪天出发？"
-        }],
-        canAnswerPendingQuestion: true
-      }
-    });
-
-    expect(wrapper.find('[data-testid="pending-user-question-dialog"]').exists()).toBe(true);
-    expect(wrapper.find("form.composer").exists()).toBe(false);
-    await wrapper.get('[data-testid="pending-user-question-dialog"] form').trigger("submit");
-    expect(wrapper.emitted("answer-pending-question")).toHaveLength(1);
-  });
 
   it("shows staged attachments and marks the ones that cannot be read", () => {
     const wrapper = mount(ChatWorkspace, {
@@ -226,35 +188,6 @@ describe("ChatWorkspace", () => {
     expect(wrapper.text()).toContain("模型服务暂时不可用");
     expect(wrapper.text()).toContain("MODEL_TIMEOUT");
   });
-
-  it("renders related in-session tasks as a read-only card", () => {
-    const wrapper = mount(ChatWorkspace, {
-      props: {
-        session: { id: "s1", status: "active" },
-        insessionTaskDetails: [{
-          insession_task_id: "insession_task_alpha",
-          title: "整理论文分析",
-          status: "active",
-          current_graph_revision: 1,
-          nodes: [{
-            insession_task_node_id: "insession_task_alpha",
-            parent_insession_task_node_id: null,
-            node_kind: "root",
-            ordinal: 0,
-            title: "整理论文分析",
-            status: "active"
-          }],
-          related_turn_count: 1
-        }]
-      }
-    });
-
-    expect(wrapper.get('[data-testid="insession-task-card"]').text()).toContain("整理论文分析");
-    expect(wrapper.get('[data-testid="insession-task-card"]').findAll("button")).toHaveLength(0);
-  });
-
-
-  // --- 把文件拖进来 -------------------------------------------------------------
 
   function fileDrag(type, files = [new File(["x"], "a.png", { type: "image/png" })]) {
     const transfer = { types: ["Files"], files };

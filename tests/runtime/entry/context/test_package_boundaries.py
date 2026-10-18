@@ -21,15 +21,11 @@ def test_context_modules_have_one_owner_and_retired_paths_are_absent() -> None:
         "attachments.py",
         "contracts.py",
         "ports.py",
-        "task_catalog.py",
-        "task_catalog_projection.py",
     }
 
     for module_name in (
         "attachments",
         "context_assembly",
-        "task_catalog",
-        "task_catalog_projection",
     ):
         assert not (
             PERSONAGRAPH_ROOT / "runtime" / "entry" / f"{module_name}.py"
@@ -71,7 +67,7 @@ print(json.dumps({
     assert json.loads(completed.stdout) == {"exports": [], "unexpected": []}
 
 
-def test_context_application_does_not_import_l1_or_l2() -> None:
+def test_context_application_does_not_import_l1() -> None:
     tree = ast.parse((CONTEXT_ROOT / "application.py").read_text(encoding="utf-8"))
     imports = {
         node.module or ""
@@ -86,6 +82,6 @@ def test_context_application_does_not_import_l1_or_l2() -> None:
     )
 
     assert not any(
-        name.startswith(("personagraph.runtime.l1", "personagraph.l2"))
+        name.startswith(("personagraph.runtime.l1",))
         for name in imports
     )

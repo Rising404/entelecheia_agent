@@ -1,59 +1,19 @@
 from __future__ import annotations
 
 import pytest
-from pydantic import ValidationError
 
 from personagraph.output_protocol import (
-    AcceptanceUpdate,
     L1PlanProposal,
     SubmitFinalReplyAction,
     materialize_l1_plan,
     require_completed_support_submission,
 )
 from personagraph.persistent_turn_content import (
-    AcceptanceProgressItem,
     EmptySupportJustification,
 )
 from personagraph.output_protocol.l1 import L1ResultReference
 from personagraph.runtime.l1.verification import verify_l1_final_reply
 from personagraph.runtime.l1.identity import canonical_json, sha256_json
-
-
-def _justification() -> EmptySupportJustification:
-    return EmptySupportJustification(
-        reason_code="candidate_is_primary_artifact",
-        explanation="The submitted answer is the primary artifact under review.",
-    )
-
-
-def test_acceptance_update_and_progress_allow_optional_empty_support() -> None:
-    update = AcceptanceUpdate.model_validate(
-        {
-            "acceptance_id": "answer_ready",
-            "model_claimed_satisfied": True,
-            "supporting_tool_result_ids": [],
-        }
-    )
-    progress_item = AcceptanceProgressItem.model_validate(
-        {
-            "acceptance_id": "answer_ready",
-            "model_claimed_satisfied": True,
-            "supporting_tool_result_ids": [],
-        }
-    )
-
-    assert update.empty_support_justification is None
-    assert progress_item.empty_support_justification is None
-
-
-def test_support_ids_and_empty_support_reason_are_mutually_exclusive() -> None:
-    with pytest.raises(ValidationError, match="cannot carry"):
-        AcceptanceUpdate(
-            acceptance_id="answer_ready",
-            model_claimed_satisfied=True,
-            supporting_tool_result_ids=("result-1",),
-            empty_support_justification=_justification(),
-        )
 
 
 def test_unavailable_evidence_reason_is_not_treated_as_evidence() -> None:

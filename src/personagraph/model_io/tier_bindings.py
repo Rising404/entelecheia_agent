@@ -1,7 +1,6 @@
 """定义各模型调用点所使用的端点和思考策略。
 
-Runtime 有六种调用点角色，其成本与风险特征不同。分别绑定 tier，允许验证与构图搜索
-选择不同端点和思考策略，而不强制所有调用点共享全局 ``model`` 设置。
+Runtime 使用 Router 与 L1 调用点，可选择不同端点和思考策略。
 
 因此，一个 tier 会选择以下四项内容：
 
@@ -44,13 +43,9 @@ _FALSE_VALUES = frozenset({"0", "false", "no", "off"})
 
 
 class ModelTier(StrEnum):
-    """六种可以独立配置的调用点角色。"""
+    """模型调用点的持久配置名称。"""
 
     ROUTER = "router"
-    ARCHITECT = "architect"
-    ATTEMPT = "attempt"
-    NODE_VERIFICATION = "node_verification"
-    FINAL_GATE = "final_gate"
     L1 = "l1"
 
 
@@ -284,7 +279,7 @@ def _global_binding(
     base_url = endpoint.base_url
     model = endpoint.model
     if provider not in {"mock", "anthropic-compatible", "openai-compatible"}:
-        # 手工编辑的全局供应商不能使设置读取或整个 L2 Turn 变成导入时/配置解析异常。
+        # 手工编辑的全局供应商不能使设置读取或整个 Turn 变成导入时/配置解析异常。
         # 以确定性 mock 绑定保守失败；脱敏后的全局配置仍会公开无效供应商和
         # 并公开为 model_configured=False。
         provider = "mock"

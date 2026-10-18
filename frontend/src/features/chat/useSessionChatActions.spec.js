@@ -2,7 +2,6 @@ import { computed, ref } from "vue";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { useProjects } from "../workspace/useProjects";
 import {
-  TASK_MODE_SEND_BLOCKED_NOTICE,
   useSessionChatActions
 } from "./useSessionChatActions";
 
@@ -269,36 +268,6 @@ describe("useSessionChatActions", () => {
     expect(state.pendingClientRequest.value).toBeNull();
   });
 
-  it("submits a pending-question response through the ordinary chat endpoint", async () => {
-    const session = { id: "s1", status: "active" };
-    const api = {
-      chatTurnStream: vi.fn().mockResolvedValue({
-        result: { status: "completed", reply: "已记录" }
-      }),
-      getSession: vi.fn().mockResolvedValue({
-        session,
-        turns: [],
-        pending_user_questions: [{
-          insession_task_id: "task-trip",
-          question: "哪天出发？"
-        }]
-      })
-    };
-    const { actions, state } = harness(api, session, null, {
-      canSendChat: ref(false),
-      canAnswerPendingQuestion: ref(true)
-    });
-    state.chatInput.value = "20 号";
-
-    await actions.sendPendingUserAnswer();
-
-    expect(api.chatTurnStream).toHaveBeenCalledOnce();
-    expect(api.chatTurnStream.mock.calls[0][0]).toMatchObject({
-      session_id: "s1",
-      message: "20 号"
-    });
-    expect(state.sessionDetail.value.pending_user_questions).toHaveLength(1);
-  });
 
   it("falls back only when the stream endpoint is missing", async () => {
     const api = {
@@ -338,9 +307,8 @@ describe("useSessionChatActions", () => {
       api.chatTurnStream.mock.calls[1][0].client_request_id
     );
     expect(api.chatTurnStream.mock.calls[0][0].runtime_policy).toEqual({
-      schema_version: 1,
-      l1_enabled: true,
-      l2_enabled: false
+      schema_version: 2,
+      l1_enabled: true
     });
     expect(state.pendingClientRequest.value).toBeNull();
   });
@@ -361,54 +329,8 @@ describe("useSessionChatActions", () => {
 
     const [first, second] = api.chatTurnStream.mock.calls.map(([payload]) => payload);
     expect(first.client_request_id).not.toBe(second.client_request_id);
-    expect(first.runtime_policy).toMatchObject({ l1_enabled: true, l2_enabled: false });
-    expect(second.runtime_policy).toMatchObject({ l1_enabled: false, l2_enabled: false });
-  });
-
-  it("blocks every task-mode send before creating a Session or calling the Runtime", async () => {
-    const runtimeMode = ref("task");
-    const api = {
-      createSession: vi.fn(),
-      chatTurnStream: vi.fn(),
-      chatTurn: vi.fn()
-    };
-    const projects = {
-      draftActive: ref(true)
-    };
-    const { actions, state } = harness(api, undefined, null, { runtimeMode, projects });
-    state.chatInput.value = "执行这个长期任务";
-    state.pendingAttachments.value = [{ attachment_id: "att-1", name: "plan.md" }];
-    state.pendingClientRequest.value = { sessionId: "s1", clientRequestId: "keep-me" };
-
-    const result = await actions.sendChat();
-
-    expect(result).toBe(false);
-    expect(state.notice.value).toBe(TASK_MODE_SEND_BLOCKED_NOTICE);
-    expect(state.chatInput.value).toBe("执行这个长期任务");
-    expect(state.pendingAttachments.value).toEqual([{ attachment_id: "att-1", name: "plan.md" }]);
-    expect(state.pendingClientRequest.value).toEqual({ sessionId: "s1", clientRequestId: "keep-me" });
-    expect(state.chatBusy.value).toBe(false);
-    expect(api.createSession).not.toHaveBeenCalled();
-    expect(api.chatTurnStream).not.toHaveBeenCalled();
-    expect(api.chatTurn).not.toHaveBeenCalled();
-
-    const keyboardEvent = {
-      key: "Enter",
-      isComposing: false,
-      keyCode: 13,
-      ctrlKey: false,
-      metaKey: false,
-      shiftKey: false,
-      preventDefault: vi.fn()
-    };
-    actions.handleChatComposerKeydown(keyboardEvent);
-    expect(keyboardEvent.preventDefault).toHaveBeenCalledOnce();
-    expect(state.notice.value).toBe(TASK_MODE_SEND_BLOCKED_NOTICE);
-    expect(api.chatTurnStream).not.toHaveBeenCalled();
-
-    await actions.sendPendingUserAnswer();
-    expect(state.notice.value).toBe(TASK_MODE_SEND_BLOCKED_NOTICE);
-    expect(api.chatTurnStream).not.toHaveBeenCalled();
+    expect(first.runtime_policy).toMatchObject({ l1_enabled: true });
+    expect(second.runtime_policy).toMatchObject({ l1_enabled: false });
   });
 
 
@@ -494,29 +416,6 @@ describe("useSessionChatActions", () => {
     expect(state.notice.value).toContain("未完成");
   });
 
-  it("starts related in-session task reads without holding the completed Turn", async () => {
-    const session = { id: "s1", status: "active" };
-    const loadRelatedInSessionTaskDetails = vi.fn().mockResolvedValue([]);
-    const api = {
-      chatTurnStream: vi.fn().mockResolvedValue({
-        result: {
-          status: "completed",
-          reply: "已返回",
-          related_insession_task_ids: ["insession_task_alpha"]
-        }
-      }),
-      getSession: vi.fn().mockResolvedValue({ session, turns: [] })
-    };
-    const { actions, state } = harness(api, session, null, { loadRelatedInSessionTaskDetails });
-    state.chatInput.value = "继续整理";
-
-    await actions.sendChat();
-
-    expect(loadRelatedInSessionTaskDetails).toHaveBeenCalledWith("s1", ["insession_task_alpha"]);
-    expect(state.chatBusy.value).toBe(false);
-    expect(state.notice.value).toBe("回复已返回");
-  });
-
   it("does not trash a session when confirmation is rejected", async () => {
     vi.stubGlobal("confirm", vi.fn(() => false));
     const api = { patchSession: vi.fn() };
@@ -524,7 +423,6 @@ describe("useSessionChatActions", () => {
     await actions.trashSession();
     expect(api.patchSession).not.toHaveBeenCalled();
   });
-
 
 
   it("does not carry staged attachments into another session", async () => {

@@ -97,7 +97,7 @@ def _binding(
     model: str,
 ) -> ModelTierBinding:
     return ModelTierBinding(
-        tier=ModelTier.ATTEMPT,
+        tier=ModelTier.L1,
         provider=provider,
         base_url=base_url,
         model=model,

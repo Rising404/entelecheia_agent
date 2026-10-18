@@ -26,14 +26,11 @@ from ...runtime.entry.routing.policy import (
 from ...runtime.post_commit.scheduler import schedule_turn_post_commit_jobs
 from ...runtime.entry.lifecycle.window_audit import TurnWindowBlockedError
 from ...session import store as session_store
-from ...session.insession_task_contracts import InSessionTaskPersistenceError
 from .common import empty_to_none, optional_int, require_session, required_str
 from .errors import ApiError
 from .post_commit import post_commit_control_view
 from .views import (
-    insession_task_detail_view,
     model_api_error,
-    pending_user_question_view,
     session_summary,
     turn_result_view,
     turn_view,
@@ -289,26 +286,9 @@ def get_session(session_id: str) -> dict[str, Any]:
     runtime_routing = _session_runtime_routing_view(
         session_id=session_id,
     )
-    try:
-        pending_questions = session_store.list_pending_user_questions(
-            session_id=session_id,
-        )
-        pending_question_views = [
-            pending_user_question_view(item) for item in pending_questions
-        ]
-    except (InSessionTaskPersistenceError, ValueError) as exc:
-        # 返回空列表会使持久问题在损坏或 authority join 断裂后从弹窗消失。应保留上一份
-        # 客户端投影，并让本次刷新保守失败。
-        raise ApiError(
-            "PENDING_USER_QUESTIONS_UNAVAILABLE",
-            "待回答问题暂时无法读取；任务状态未被修改",
-            status=409,
-            details={"session_id": session_id},
-        ) from exc
     return {
         "session": session,
         "turns": [turn_view(turn) for turn in turns],
-        "pending_user_questions": pending_question_views,
         "turn_window": turn_execution_window_view(
             execution.get("window") if isinstance(execution, dict) else None,
             post_commit_jobs=(
@@ -353,52 +333,6 @@ def _session_runtime_routing_view(
         "allowed_processing_levels": list(snapshot.allowed_processing_levels),
         "available_processing_levels": list(available_processing_levels()),
     }
-
-
-def get_insession_task_details(
-    session_id: str,
-    insession_task_id: str,
-) -> dict[str, Any]:
-    """返回一个 Session 范围的只读任务卡片投影。
-
-    ``insession_task`` 被刻意设为不同于旧长期任务 API。不能使用任务 ID 发现其他 Session
-    的任务：Store 读取和此公开端点都绑定到 ``session_id``。
-    """
-
-    require_session(session_id)
-    try:
-        from ...session.l2_store import task_graph as task_graph_store
-
-        details = task_graph_store.get_insession_task_details(
-            session_id,
-            insession_task_id,
-        )
-        if details is None:
-            raise ApiError(
-                "INSESSION_TASK_NOT_FOUND",
-                "会话内任务不存在或不属于当前会话",
-                status=404,
-                details={"insession_task_id": insession_task_id},
-            )
-        return {"task": insession_task_detail_view(details)}
-    except InSessionTaskPersistenceError as exc:
-        # 损坏的历史源 manifest 不能投影为看似合理的任务卡片。不要公开原始
-        # SQLite/manifest 诊断。
-        raise ApiError(
-            "INSESSION_TASK_DETAILS_UNAVAILABLE",
-            "会话内任务详情暂不可用；未修改任务状态",
-            status=409,
-            details={"insession_task_id": insession_task_id},
-        ) from exc
-    except ValueError as exc:
-        # 将格式错误的 Store 投影视同不可读 manifest：此端点只读，必须保守失败而非编造部分
-        # UI 表示。
-        raise ApiError(
-            "INSESSION_TASK_DETAILS_UNAVAILABLE",
-            "会话内任务详情暂不可用；未修改任务状态",
-            status=409,
-            details={"insession_task_id": insession_task_id},
-        ) from exc
 
 
 def turn_execution_window_view(

@@ -99,7 +99,7 @@ def test_runtime_event_endpoint_returns_tail_and_cursor_catch_up():
     assert [item["event_id"] for item in caught_up["events"]] == ["evt-2"]
     assert set(tail["events"][0]) == {
         "schema_version", "event_id", "sequence", "session_id", "turn_id", "stage", "status", "occurred_at",
-        "error_code", "retryable", "insession_task_id", "work_run_id", "attempt_id", "operation_id", "prompt_replay",
+        "error_code", "retryable", "attempt_id", "operation_id", "prompt_replay",
     }
     assert tail["events"][0]["sequence"] > 0
     assert tail["events"][0]["prompt_replay"] is False
@@ -112,8 +112,6 @@ def test_runtime_event_endpoint_projects_safe_ids_and_append_sequence_order():
         event_id="evt-second",
         session_id=session_id,
         turn_id="turn-events",
-        insession_task_id="task-1",
-        work_run_id="workrun-1",
         attempt_id="attempt-1",
         operation_id="operation-1",
         stage=RuntimeStage.TOOL,
@@ -132,8 +130,6 @@ def test_runtime_event_endpoint_projects_safe_ids_and_append_sequence_order():
     assert [item["event_id"] for item in payload["events"]] == ["evt-first", "evt-second"]
     assert [item["sequence"] for item in payload["events"]] == [first_sequence, second_sequence]
     public = payload["events"][1]
-    assert public["insession_task_id"] == "task-1"
-    assert public["work_run_id"] == "workrun-1"
     assert public["attempt_id"] == "attempt-1"
     assert public["operation_id"] == "operation-1"
     assert "model_call_id" not in public
@@ -150,19 +146,3 @@ def test_runtime_event_endpoint_rejects_cross_session_cursor():
 
     assert exc.value.status == 409
     assert exc.value.code == "RUNTIME_EVENT_CURSOR_NOT_FOUND"
-
-
-@pytest.mark.parametrize("method,path,body", [
-    ("GET", "/api/sessions/{session_id}/active-run", {}),
-    ("GET", "/api/sessions/{session_id}/pending-review", {}),
-    ("GET", "/api/sessions/{session_id}/work-run", {}),
-    ("GET", "/api/sessions/{session_id}/work-run-delivery", {}),
-    ("POST", "/api/sessions/{session_id}/active-run/resolve", {"action": "close_stale"}),
-    ("POST", "/api/chat/{session_id}/resume", {"approved": True}),
-])
-def test_retired_runtime_control_routes_are_not_public(method, path, body):
-    session_id = session_store.create_session("Entelecheia", "retired")
-    with pytest.raises(service.ApiError) as exc:
-        _route_payload(method, path.format(session_id=session_id), body)
-    assert exc.value.status == 404
-    assert exc.value.code == "NOT_FOUND"

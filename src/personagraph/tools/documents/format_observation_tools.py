@@ -104,8 +104,9 @@ EXTERNAL_VISUAL_ANALYSIS_TOOL_IDS = (
 
 DEFAULT_MAX_CHARS = 6_000
 MAX_CHARS = 8_000
-DEFAULT_MAX_ELEMENTS = 12
-MAX_ELEMENTS = 16
+# PDF 的一个文本元素通常只有一行；让普通页面能一次读完，字符和字节预算仍独立生效。
+DEFAULT_MAX_ELEMENTS = 64
+MAX_ELEMENTS = 128
 MAX_CURSOR_OFFSET = 1_000_000
 # ToolExecutor 会拒绝整个超过 90,000 字节的调用。读取器文本已有游标边界，但来源元数据没有：
 # 一个有效 DOCX 标题可能长达 20,000 个字符，并被复制到后续每个元素的 ``section_path`` 和
@@ -223,6 +224,8 @@ def build_format_observation_tool_specs() -> tuple[ToolSpec, ...]:
                 "按工作区相对路径读取有界 UTF-8 文本、Markdown 或 JSON/JSONL/NDJSON；截断后使用 "
                 "next_cursor 续读。path 应取 file_catalog.relative_path 或目录工具"
                 "返回的 path，不能仅把显示字段 name 当作路径。"
+                "多份长文档尚未定位答案时，先 prepare_files，再用 retrieve_files 或 search_file_text 定位相关段落；"
+                "本工具适合精读和按完整 next_cursor 续读，不适合反复读各文件开头。"
             ),
             input_schema=_text_input_schema(),
         ),
@@ -235,6 +238,10 @@ def build_format_observation_tool_specs() -> tuple[ToolSpec, ...]:
                 "仅视觉内容会保留为明确的覆盖缺口。path 应取 "
                 "file_catalog.relative_path 或目录工具返回的 path，不能仅把显示字段 "
                 "name 当作路径。"
+                "所选页码不等于已返回正文：若 next_cursor 非空，保持相同 path 和页码范围，"
+                "将游标中的 element_offset、character_offset 作为下次参数继续读取。"
+                "多文档问题优先 prepare_files 后用 retrieve_files 定位来源页，再用本工具精读；"
+                "不要按文件顺序反复读取每份长PDF的前缀。"
             ),
             input_schema=_paged_text_input_schema("page"),
         ),
@@ -285,7 +292,7 @@ def build_format_observation_execution_profile(
     return ToolExecutionProfile(
         default_timeout_s=max(30.0, timeout_s),
         hard_timeout_s=max(120.0, timeout_s * 2),
-        # WorkRun retains prior complete ToolResults below 128 KiB. Keep the
+        # The runtime retains prior complete ToolResults below 128 KiB. Keep the
         # registration below that ceiling so observations are not silently lost.
         max_output_bytes=90_000,
         max_transparent_retries=0,
@@ -1084,13 +1091,16 @@ def _page_elements(
     if element_offset > len(elements):
         raise ToolBusinessFailure(
             "invalid_cursor",
-            "element_offset is beyond the selected evidence.",
+            "element_offset is beyond the selected evidence. "
+            "A cursor is relative to its original page/slide selection. "
+            "Keep that selection when continuing; reset both offsets to 0 when changing it.",
             {"total_elements": len(elements)},
         )
     if element_offset == len(elements):
         if character_offset:
             raise ToolBusinessFailure(
-                "invalid_cursor", "character_offset requires an existing element."
+                "invalid_cursor", "character_offset requires an existing element. "
+                "Copy both cursor coordinates with the original page/slide selection."
             )
         return [], None, False
 
@@ -1105,7 +1115,9 @@ def _page_elements(
         if offset > len(text):
             raise ToolBusinessFailure(
                 "invalid_cursor",
-                "character_offset is beyond the selected element.",
+                "character_offset is beyond the selected element. "
+                "Copy both cursor coordinates with the original page/slide selection; "
+                "reset both offsets to 0 when changing the selection.",
                 {"element_offset": index, "element_characters": len(text)},
             )
         if offset == len(text):
@@ -2110,8 +2122,10 @@ def _cursor_properties() -> dict[str, Any]:
             "maximum": MAX_ELEMENTS,
             "default": DEFAULT_MAX_ELEMENTS,
         },
-        "element_offset": {"type": "integer", "minimum": 0, "default": 0},
-        "character_offset": {"type": "integer", "minimum": 0, "default": 0},
+        "element_offset": {"type": "integer", "minimum": 0, "default": 0,
+                           "description": "原样使用 next_cursor.element_offset；相对于本次所选页码范围。"},
+        "character_offset": {"type": "integer", "minimum": 0, "default": 0,
+                             "description": "原样使用 next_cursor.character_offset，不能仅增加页码跳过未读正文。"},
     }
 
 

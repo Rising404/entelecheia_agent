@@ -49,6 +49,7 @@ from .model_authority import (
 from .model_output_budgets import L1_SEMANTIC_VERIFIER_MAX_OUTPUT_TOKENS
 from .ports import L1StorePort
 from .semantic_contracts import (
+    L1SemanticReviewUnavailableCode,
     L1SemanticVerificationReceipt,
     L1SemanticVerificationResult,
     L1SemanticVerificationTrigger,
@@ -59,6 +60,7 @@ from .semantic_evidence import (
     project_review_execution_history,
 )
 from .verification import L1VerificationResult
+from .tool_context.reading_progress import project_attachment_reading
 
 
 _L1_SEMANTIC_SYSTEM_PROMPT = """一、审查职责
@@ -80,10 +82,9 @@ _L1_SEMANTIC_SYSTEM_PROMPT = """一、审查职责
 | plan.objective | 必有，非空 | 当前计划的目标；不能取代或扩大用户请求。 |
 | plan.acceptances[].acceptance_id / plan.acceptances[].criterion | 必有，列表非空 | 已有验收项的 ID 与要求；描述目标，不证明目标已经完成。 |
 | candidate_final_reply | 必有，非空 | 本次实际待交付的答复，是你审查的对象。 |
+| attachment_reading.documents / attachment_reading.pending_reads | 必有，可为空 | Host 从冻结附件的原生读取记录汇总的已返回文字页、尚无文字页和最远续读游标。出现部分文字不等于读完整页；没有记录也不代表没有内容。omitted_count 标明被省略的目录项。 |
 | execution_context.stop | 必有，子字段可为 null | 候选生成时冻结的执行额度与停止状态；must_finalize 表示是否必须收尾，stop_reason 说明停止原因，其他额度和时间字段不代表事实正确性。 |
 | execution_context.tool_calls | 必有，可为空列表 | 实际工具调用经过：call_ref、tool_id、attempt_ordinal、call_ordinal、status、error_code、result_status。call_ref 是当前执行内固定的调用坐标。可附 arguments 与 arguments_projection；参数可能经过脱敏或截断，arguments_unavailable=true 表示参数未提供。调用记录不是结果正文。 |
-| execution_context.model_notes | 必有，可为空列表 | 模型此前记录的笔记文本，用于理解过程，不是笔记中结论的独立证据。 |
-| execution_context.candidate_note | 必有，可为 null | 模型对本次提交的说明，不是候选正确性的证明。 |
 | durable_evidence.results | 必有，可为空列表 | 本次实际提供的工具结果；每项含 call_ref、tool_id、status 和 result，result 才是可审查正文。call_ref 仅标识当前执行内的调用，不替代结果正文。 |
 | durable_evidence.results[].chunk_id / durable_evidence.results[].result_scope | 可省略 | 若 result_scope=selected_chunk_only，该正文仅覆盖指定片段；未出现此标记也不代表提供了整个文件。 |
 | durable_evidence.results[].metadata | 可省略 | 结果的范围、截断等说明；结合正文判断其能支持多大范围的结论。 |
@@ -99,6 +100,11 @@ _L1_SEMANTIC_SYSTEM_PROMPT = """一、审查职责
 
 “根据当前材料无法确定”是在说明认识边界，不要求证明全文不存在答案或已经穷尽所有查找。
 “全文没有此信息”“已经检查全部内容”等则是更强的事实或覆盖范围声明，需要相应依据。不要把这两类表达混为一谈。
+先核对 attachment_reading：尚无文字页或 pending_reads 非空的范围，不能被候选说成已经全部读取；目录未覆盖的来源也不能据此声称已穷尽。
+逐项核对 tool_calls[].reading_scope：selected_pages 是请求范围，returned_pages 才是实际返回文字的页；truncated=true 或 next_cursor 非空说明未读完。重复同一前缀不能扩大覆盖范围。工具外层 succeeded 但 result_status=blocked / outcome=not_established 只说明返回了阻塞回执，不能作为无答案的证据。
+durable_evidence.explicit_reference_count 是候选声明的结构化来源数。文档事实或计算结论必须有可核验的原工具来源；仅正文写文件名、仅笔记复述数字或 count=0 而声称已核对某文档，均不能替代绑定的引用。直接对话和边界清楚的未取得证据说明不因此拒绝。
+逐个核对计算中的所有输入、单位和规则是否有原文支持，再核对计算过程；运算形式正确不能替代输入的证据。缺少某项依据应明确指出。
+逐条核对候选正文的文件名、物理页码、章节或图片行与支持该事实的证据 locator 是否一致。事实正确但引用位置错误仍须拒绝并指出正确位置；请求过某页、结果包含某文件，均不证明该事实出现在所写页码。不得用工具请求范围或模型笔记补猜定位。
 无需外部材料即可完成的回应，不机械要求工具引用；涉及文档内容、工具执行或其他需要材料支持的事实时，以实际提供的用户材料和 durable_evidence.results 正文核验。
 笔记、候选自述和先前模型回答不能互相充当独立证据。tool_calls 可证明尝试和返回状态，失败记录可以解释实际失败，但不能证明文档中没有答案。
 文件准备结果 status=ready 不等于正文已读；未尝试读取不等于权限拒绝。候选若声称权限拒绝、网络失败或解析失败，应核对对应文件或能力的工具错误等实际执行记录；笔记重复这样的说法不能代替记录。只有 ready 而没有正文时，可以如实说“尚未取得足够正文”，不应改称发生了未经记录的权限失败。
@@ -138,6 +144,17 @@ class L1SemanticVerificationInputError(RuntimeError):
         super().__init__(safe_feedback)
 
 
+class L1SemanticReviewUnavailable(RuntimeError):
+    """审查调用无法取得有效结论，保留真实失败身份供交付回执使用。"""
+
+    def __init__(
+        self, code: L1SemanticReviewUnavailableCode, logical_model_call_id: str
+    ) -> None:
+        self.code = code
+        self.logical_model_call_id = logical_model_call_id
+        super().__init__(code.value)
+
+
 class _L1SemanticHostGuardError(ValueError):
     def __init__(self, issues: tuple[RuntimeModelOutputRepairIssue, ...]) -> None:
         self.issues = issues
@@ -172,7 +189,6 @@ def request_l1_semantic_verification(
     deadline: TurnDeadline,
     store: L1StorePort,
     model_binding: ModelTierBinding,
-    candidate_note: str | None = None,
 ) -> L1SemanticVerificationInvocation:
     """一个候选只有一份真实审查结果；物理格式修复不制造第二套旧结果。"""
     review_view = _semantic_review_view(
@@ -181,7 +197,6 @@ def request_l1_semantic_verification(
         references=references,
         model_view=model_view,
         execution=execution,
-        candidate_note=candidate_note,
     )
     if (
         len(canonical_json(review_view).encode("utf-8"))
@@ -304,21 +319,28 @@ def request_l1_semantic_verification(
             ) from exc
         return result
 
-    requested = request_model_with_retry(
-        turn_id=turn_id,
-        session_id=session_id,
-        purpose="runtime_l1_semantic_verifier",
-        stage=RuntimeStage.VERIFICATION,
-        prepare_request=prepare_request,
-        prepare_repair_request=prepare_repair_request,
-        repair_target_contract=L1_SEMANTIC_RESULT_CONTRACT,
-        validate=validate,
-        emit=emit,
-        max_attempts=MAX_MODEL_ATTEMPTS,
-        deadline=deadline,
-        durable_call=durable_call,
-        logical_model_call_id=logical_model_call_id,
-    )
+    try:
+        requested = request_model_with_retry(
+            turn_id=turn_id,
+            session_id=session_id,
+            purpose="runtime_l1_semantic_verifier",
+            stage=RuntimeStage.VERIFICATION,
+            prepare_request=prepare_request,
+            prepare_repair_request=prepare_repair_request,
+            repair_target_contract=L1_SEMANTIC_RESULT_CONTRACT,
+            validate=validate,
+            emit=emit,
+            max_attempts=MAX_MODEL_ATTEMPTS,
+            deadline=deadline,
+            durable_call=durable_call,
+            logical_model_call_id=logical_model_call_id,
+        )
+    except ModelGatewayError as exc:
+        if exc.code not in {code.value for code in L1SemanticReviewUnavailableCode}:
+            raise
+        raise L1SemanticReviewUnavailable(
+            L1SemanticReviewUnavailableCode(exc.code), logical_model_call_id
+        ) from exc
     return L1SemanticVerificationInvocation(
         result=requested.value,
         logical_model_call_id=logical_model_call_id,
@@ -337,6 +359,7 @@ def build_l1_semantic_verification_receipt(
     checked_acceptances: int,
     checked_tool_results: int,
     invocation: L1SemanticVerificationInvocation | None,
+    unavailable: L1SemanticReviewUnavailable | None = None,
 ) -> L1SemanticVerificationReceipt:
     """候选绑定由 Host 记录；typed result 始终是模型实际返回的问题清单。"""
     fields = dict(
@@ -348,6 +371,15 @@ def build_l1_semantic_verification_receipt(
         checked_acceptances=checked_acceptances,
         checked_tool_results=checked_tool_results,
     )
+    if unavailable is not None:
+        if not trigger.required or invocation is not None:
+            raise ValueError("unavailable review cannot carry a verdict or be untriggered")
+        return L1SemanticVerificationReceipt(
+            disposition="unavailable",
+            **fields,
+            reviewer_logical_call_id=unavailable.logical_model_call_id,
+            unavailable_error_code=unavailable.code,
+        )
     if trigger.required:
         if invocation is None or invocation.result.issues:
             raise ValueError("triggered semantic verification did not pass")
@@ -370,7 +402,6 @@ def _semantic_review_view(
     references: tuple[L1ResultReference, ...],
     model_view: Mapping[str, object],
     execution: Mapping[str, object],
-    candidate_note: str | None = None,
 ) -> dict[str, object]:
     """只给语义所需材料；不存在模型可重新声明的完成表、hash 或引用别名。"""
     try:
@@ -386,6 +417,10 @@ def _semantic_review_view(
             ),
         ) from exc
     return {
+        "attachment_reading": project_attachment_reading(
+            [{**call, **call["reading_scope"]} for call in history],
+            model_view.get("file_catalog") or (),
+        ),
         "request_context": {
             key: model_view.get(key)
             for key in (
@@ -406,8 +441,6 @@ def _semantic_review_view(
         "execution_context": {
             "stop": project_l1_review_stop_context(model_view, execution),
             "tool_calls": history,
-            "model_notes": _review_notes(model_view.get("execution_findings")),
-            "candidate_note": candidate_note,
         },
         "durable_evidence": evidence,
         "verification_feedback": _review_feedback(
@@ -428,16 +461,6 @@ def _review_result(record: Mapping[str, object]) -> dict[str, object]:
     if metadata:
         view["metadata"] = metadata
     return view
-
-
-def _review_notes(value: object) -> list[str]:
-    if not isinstance(value, Mapping):
-        return []
-    return [
-        str(item["summary"])
-        for item in value.get("notes", [])
-        if isinstance(item, Mapping) and isinstance(item.get("summary"), str)
-    ]
 
 
 def _review_feedback(value: object) -> dict[str, object] | None:

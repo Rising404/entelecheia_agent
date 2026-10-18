@@ -26,10 +26,6 @@ def _logical_request(**overrides: object) -> RuntimeModelLogicalRequest:
     values: dict[str, object] = {
         "logical_call_id": "logical_prompt_01",
         "session_id": "session_01",
-        "task_id": None,
-        "auxiliary_graph_id": None,
-        "goal_id": None,
-        "execution_subject_id": None,
         "invocation_turn_id": "turn_01",
         "call_kind": "structured_test",
         "purpose": "structured_test",
@@ -242,6 +238,7 @@ def test_output_repair_move_preserves_persisted_hash_identities() -> None:
         user_content='{"原始":"user"}',
     )
     logical = _logical_request(
+        schema_version="runtime-model-logical-request-v1",
         output_repair_protocol=(
             RuntimeModelOutputRepairProtocol.FOUR_MESSAGE_WHOLE_RESPONSE_REGENERATION
         ),

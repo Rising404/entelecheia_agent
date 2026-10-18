@@ -215,15 +215,9 @@ def _create_l1_model_call_authority(
             user_content=canonical_json(model_view),
         )
         proposed = RuntimeModelLogicalRequest.create(
+            schema_version=(existing.schema_version if existing is not None else "runtime-model-logical-request-v2"),
             logical_call_id=logical_model_call_id,
             session_id=session_id,
-            task_id=None,
-            auxiliary_graph_id=None,
-            goal_id=None,
-            # 共享账本的 execution_subject_id 在当前数据库合同中是故意
-            # 由 Task 拥有的。L1 没有 Task。
-            # 这是它的 Turn FK，并且下面的冻结 Attempt/运行 ID 提供了权威状态。
-            execution_subject_id=None,
             invocation_turn_id=turn_id,
             call_kind=call_kind,
             purpose=purpose,

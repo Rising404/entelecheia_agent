@@ -574,6 +574,18 @@ def test_word_and_slide_readers_preserve_text_and_slide_rendering_is_an_honest_g
     )
 
 
+def test_default_pdf_read_reaches_bottom_of_normal_text_page(tmp_path: Path):
+    from reportlab.pdfgen import canvas
+
+    pdf = canvas.Canvas(str(tmp_path / "page.pdf"))
+    for line in range(40):
+        pdf.drawString(40, 800 - line * 17, f"Record {line}: ordinary source text.")
+    pdf.save()
+    result = _execute(_tools(tmp_path)["read_pdf_text"], {"path": "page.pdf"})
+    assert any("Record 39:" in item["text"] for item in result["elements"])
+    assert result["next_cursor"] is None
+
+
 def test_inspect_image_returns_only_pixel_metadata_and_keeps_visual_semantics_open(
     tmp_path: Path,
 ):
@@ -965,3 +977,23 @@ def test_wrong_format_is_a_typed_non_retryable_request_error(tmp_path: Path):
 
     assert raised.value.error.code == "format_mismatch"
     assert raised.value.error.details["actual_suffix"] == ".txt"
+
+
+def test_cursor_from_a_wider_pdf_selection_is_rejected_with_scope_guidance(tmp_path):
+    _make_pdf(tmp_path / "source.pdf", (
+        "Original source evidence on the first page.",
+        "Original source evidence on the second page.",
+        "Original source evidence on the third page.",
+    ))
+    registration = _tools(tmp_path)["read_pdf_text"]
+    first = _execute(registration, {"path": "source.pdf", "start_page": 1,
+                                   "end_page": 3, "max_elements": 2})
+    assert first["next_cursor"] == {"element_offset": 2, "character_offset": 0}
+    outcome = ToolExecutor().execute(ResolvedInvocation(
+        registration=registration,
+        arguments={"path": "source.pdf", "start_page": 3, "end_page": 3, **first["next_cursor"]},
+    ))
+    assert outcome.status.value == "failed"
+    assert outcome.error.code == "invalid_cursor"
+    assert "original page/slide selection" in outcome.error.message
+    assert "reset both offsets" in outcome.error.message

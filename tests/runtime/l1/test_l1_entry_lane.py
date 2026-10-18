@@ -163,7 +163,7 @@ def test_run_l1_entry_lane_only_adapts_controller_inputs(monkeypatch) -> None:
     assert seen["frozen_corpus_manifest"] is corpus_manifest
 
 
-def test_l1_entry_lane_has_no_runtime_entry_or_l2_dependency() -> None:
+def test_l1_entry_lane_has_no_runtime_entry_dependency() -> None:
     source = Path(entry_lane.__file__).read_text(encoding="utf-8")
     tree = ast.parse(source)
     imports = {
@@ -179,4 +179,3 @@ def test_l1_entry_lane_has_no_runtime_entry_or_l2_dependency() -> None:
     )
 
     assert not any("runtime.entry" in module for module in imports)
-    assert not any("personagraph.l2" in module for module in imports)

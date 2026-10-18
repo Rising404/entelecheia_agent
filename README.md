@@ -167,7 +167,7 @@ Provider 密钥保存在本地明文配置中，任务所需的摘录与页面�
 | 文本型 PDF、DOCX、PPTX、MD/TXT | 基础文档范围；解析有资源与覆盖限制，不保证复杂排版无损 |
 | JSON / JSONL / NDJSON、CSV/TSV、源码等文本 | 支持直接读取及按需入库检索；文本 reader 要求 UTF-8（可带 BOM），上限 16 MiB。按文本切块，不校验 JSON 语法、不保证逐条记录对齐，也不执行代码 |
 | 扫描页、图片和复杂图表 | 需要相应视觉能力；请求成功不等于内容完整或理解正确 |
-| Docling / 旧 Office / XLSX / L2 | Docling 增强解析是实验路径；旧 `.doc` / `.ppt`、XLSX 不属基础承诺；L2 图式编排保留部分代码，但不在本次展示与评测范围 |
+| Docling / 旧 Office / XLSX | Docling 增强解析是实验路径；旧 `.doc` / `.ppt`、XLSX 不属基础承诺 |
 
 ## 继续阅读与开发
 

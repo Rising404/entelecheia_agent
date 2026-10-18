@@ -34,7 +34,7 @@ def _context() -> EntryContext:
         history_pairs=(),
         session_summary=None,
         routing_policy=freeze_turn_routing_policy(
-            TurnRoutingPolicy(l1_enabled=False, l2_enabled=True),
+            TurnRoutingPolicy(l1_enabled=True),
             source="request_override",
         ),
     )
@@ -43,7 +43,7 @@ def _context() -> EntryContext:
 def _classification_result(model_call_id: str) -> ModelResult:
     return ModelResult(
         reply=json.dumps(
-            {"processing_level": "L2", "task_matches": []},
+            {"processing_level": "L1"},
             ensure_ascii=False,
         ),
         provider="test",
@@ -89,7 +89,7 @@ def test_classifier_uses_prepared_capability_when_provider_exposes_it(
 
     result = ingress_model.classify_turn(_context(), lambda _event: None)
 
-    assert result.processing_level == "L2"
+    assert result.processing_level == "L1"
     assert operations[0] == (
         "prepare",
         "runtime_entry_classify",
@@ -123,16 +123,7 @@ def test_classifier_prepared_repair_uses_latest_output_in_four_messages(
     prepared_messages: list[object] = []
     rejected = json.dumps(
         {
-            "processing_level": "L2",
-            "task_matches": [
-                {
-                    "match_type": "new_root",
-                    "local_key": "analysis",
-                    "title": "复杂任务",
-                    "objective": "分析任务",
-                    "source_excerpt": "不存在的原文",
-                }
-            ],
+            "processing_level": "unknown",
         },
         ensure_ascii=False,
         separators=(",", ":"),
@@ -167,7 +158,7 @@ def test_classifier_prepared_repair_uses_latest_output_in_four_messages(
             rejected
             if repair_messages is None
             else json.dumps(
-                {"processing_level": "L2", "task_matches": []},
+                {"processing_level": "L1"},
                 ensure_ascii=False,
             )
         )
@@ -177,7 +168,7 @@ def test_classifier_prepared_repair_uses_latest_output_in_four_messages(
 
     result = ingress_model.classify_turn(_context(), lambda _event: None)
 
-    assert result.processing_level == "L2"
+    assert result.processing_level == "L1"
     assert prepared_messages[0] is None
     messages = prepared_messages[1]
     assert isinstance(messages, list)
@@ -190,8 +181,8 @@ def test_classifier_prepared_repair_uses_latest_output_in_four_messages(
     assert messages[2]["content"] == rejected
     feedback = json.loads(messages[3]["content"].split("Host 修复清单：", 1)[1])
     assert feedback == {"current_issues": [{
-        "paths": ["/task_matches"],
-        "safe_explanation": "task_matches 未通过来源锚点、唯一性、数量或任务目录校验。",
+        "paths": ["/processing_level"],
+        "safe_explanation": "该位置的值不在目标合同允许的范围内。",
     }]}
     assert "返回符合原请求的完整 JSON" in messages[3]["content"]
     assert rejected not in messages[3]["content"]

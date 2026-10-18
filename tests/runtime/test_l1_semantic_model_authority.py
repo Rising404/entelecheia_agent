@@ -45,7 +45,7 @@ from personagraph.runtime.model_calls.contracts import (
 
 _GUARD = "a" * 64
 _BINDING = ModelTierBinding(
-    tier=ModelTier.FINAL_GATE,
+    tier=ModelTier.L1,
     provider="openai-compatible",
     base_url="https://offline.invalid/v1",
     model="offline-reviewer",

@@ -125,7 +125,7 @@ Windows 目前只有**桌面启动预览代码，不是完整链路支持**。El
 启动路径，但未提供对应的完整锁定安装。会话工作目录访问、把上传附件复制进工作目录、Agent
 写入工作区、以及工作区产物验证依赖 Unix 安全目录句柄，在 Windows 上会主动拒绝。
 这需要文件安全层适配，不是补齐解释器后跑一次 smoke 就能解决。因此不能把当前版本描述为
-“Windows 可正常跑完整 L1/L2 任务”。此外，当前 `pyproject.toml` 在 Windows 跳过 Python
+“Windows 可正常跑完整 L1 任务”。此外，当前 `pyproject.toml` 在 Windows 跳过 Python
 `ripgrep` 依赖；目录浏览/搜索要求系统 `PATH` 中有 `rg.exe`，但补上它也不解除前述阻塞。
 旧式 `.doc/.ppt` 的受限 LibreOffice 转换桥只实现了 macOS
 sandbox；PNG/JPG 的默认本地 OCR 使用 Apple Vision。扫描 PDF 存在非 macOS 选择 RapidOCR

@@ -297,7 +297,7 @@ def test_generic_authority_persists_and_replays_typed_success() -> None:
         turn_id="turn_01",
         session_id="session_01",
         purpose="runtime_architect_test",
-        stage=RuntimeStage.L2_PLAN,
+        stage=RuntimeStage.L1_BOOTSTRAP,
         prepare_request=prepare_test_model_request(provider),
         validate=lambda result: json.loads(result.reply),
         emit=lambda _event: None,
@@ -308,7 +308,7 @@ def test_generic_authority_persists_and_replays_typed_success() -> None:
         turn_id="turn_02",
         session_id="session_01",
         purpose="runtime_architect_test",
-        stage=RuntimeStage.L2_PLAN,
+        stage=RuntimeStage.L1_BOOTSTRAP,
         prepare_request=prepare_test_model_request(
             lambda _model_call_id: pytest.fail("replay reached Provider")
         ),
@@ -359,7 +359,7 @@ def test_pre_provider_deadline_is_recoverable_without_blind_provider_retry() -> 
             turn_id="turn_01",
             session_id="session_01",
             purpose="runtime_architect_test",
-            stage=RuntimeStage.L2_PLAN,
+            stage=RuntimeStage.L1_BOOTSTRAP,
             prepare_request=prepare_test_model_request(provider),
             validate=lambda result: json.loads(result.reply),
             emit=lambda _event: None,
@@ -378,7 +378,7 @@ def test_pre_provider_deadline_is_recoverable_without_blind_provider_retry() -> 
         turn_id="turn_02",
         session_id="session_01",
         purpose="runtime_architect_test",
-        stage=RuntimeStage.L2_PLAN,
+        stage=RuntimeStage.L1_BOOTSTRAP,
         prepare_request=prepare_test_model_request(provider),
         validate=lambda result: json.loads(result.reply),
         emit=lambda _event: None,
@@ -408,7 +408,7 @@ def test_pending_physical_attempt_blocks_duplicate_provider_dispatch() -> None:
             turn_id="turn_02",
             session_id="session_01",
             purpose="runtime_architect_test",
-            stage=RuntimeStage.L2_PLAN,
+            stage=RuntimeStage.L1_BOOTSTRAP,
             prepare_request=prepare_test_model_request(
                 lambda _model_call_id: pytest.fail("pending call was duplicated")
             ),
@@ -482,7 +482,7 @@ def test_uncertain_dispatch_remains_waiting_and_cannot_be_blindly_resettled() ->
             turn_id="turn_02",
             session_id="session_01",
             purpose="runtime_architect_test",
-            stage=RuntimeStage.L2_PLAN,
+            stage=RuntimeStage.L1_BOOTSTRAP,
             prepare_request=prepare_test_model_request(
                 lambda _model_call_id: pytest.fail("uncertain call was resent")
             ),
@@ -500,7 +500,7 @@ def test_state_guard_drift_prevents_reservation_and_provider_io() -> None:
             turn_id="turn_01",
             session_id="session_01",
             purpose="runtime_architect_test",
-            stage=RuntimeStage.L2_PLAN,
+            stage=RuntimeStage.L1_BOOTSTRAP,
             prepare_request=prepare_test_model_request(
                 lambda _model_call_id: pytest.fail("drift reached Provider")
             ),
@@ -526,7 +526,7 @@ def _repair_feedback(
     *,
     physical_ordinal: int,
     reply: str,
-    code: str = "architect_guard_rejected",
+    code: str = "attempt_guard_rejected",
     target_contract: str = "architect-provider-envelope-v1",
 ) -> RuntimeModelOutputRepairFeedback:
     return RuntimeModelOutputRepairFeedback(
@@ -790,7 +790,7 @@ def test_rejected_body_recovers_from_session_store_after_restart() -> None:
         turn_id=request.invocation_turn_id,
         session_id=request.session_id,
         purpose="runtime_architect_test",
-        stage=RuntimeStage.L2_PLAN,
+        stage=RuntimeStage.L1_BOOTSTRAP,
         prepare_request=Prepared,
         prepare_repair_request=prepare_repair,
         repair_target_contract="architect-provider-envelope-v1",
@@ -815,13 +815,13 @@ def test_rejected_body_recovery_fails_closed_when_store_record_is_invalid(
     with session_store._connect() as conn:
         if mutation == "missing":
             conn.execute(
-                "DELETE FROM insession_runtime_model_rejected_outputs "
+                "DELETE FROM runtime_model_rejected_outputs "
                 "WHERE logical_call_id=?",
                 (request.logical_call_id,),
             )
         else:
             conn.execute(
-                "UPDATE insession_runtime_model_rejected_outputs "
+                "UPDATE runtime_model_rejected_outputs "
                 "SET response_text=? WHERE logical_call_id=?",
                 ('{"proposal":"forged"}', request.logical_call_id),
             )
@@ -922,7 +922,7 @@ def test_shared_wrapper_persists_each_distinct_repair_dispatch() -> None:
         if parsed["proposal"] != "accepted":
             raise ModelOutputValidationError(
                 "proposal rejected",
-                repair_code="architect_guard_rejected",
+                repair_code="attempt_guard_rejected",
                 safe_repair_reason=(
                     "The proposal violates a deterministic frozen Guard."
                 ),
@@ -933,7 +933,7 @@ def test_shared_wrapper_persists_each_distinct_repair_dispatch() -> None:
         turn_id="turn_01",
         session_id="session_01",
         purpose="runtime_architect_test",
-        stage=RuntimeStage.L2_PLAN,
+        stage=RuntimeStage.L1_BOOTSTRAP,
         prepare_request=lambda: Prepared('{"proposal":"rejected"}'),
         prepare_repair_request=prepare_repair,
         repair_target_contract="architect-provider-envelope-v1",

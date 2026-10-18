@@ -158,7 +158,7 @@ def test_frozen_scope_rejects_cross_session_duplicate_or_inexact_documents() -> 
         )
 
 
-def test_tool_owner_has_no_l2_or_runtime_imports() -> None:
+def test_tool_owner_has_no_runtime_imports() -> None:
     module_path = (
         Path(__file__).resolve().parents[2]
         / "src/personagraph/tools/documents/mounted_document_cognition_tools.py"
@@ -176,10 +176,6 @@ def test_tool_owner_has_no_l2_or_runtime_imports() -> None:
         for alias in node.names
     )
 
-    assert not any(
-        module == "personagraph.l2" or module.startswith("personagraph.l2.")
-        for module in imported_modules
-    )
     assert not any(
         module == "personagraph.runtime"
         or module.startswith("personagraph.runtime.")

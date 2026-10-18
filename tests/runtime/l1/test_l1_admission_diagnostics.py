@@ -47,6 +47,8 @@ def _decision(*, calls=None, **fields):
 
 def _admit(decision, **overrides):
     runtime = SimpleNamespace(
+        attachment_file_catalog=(),
+        model_catalog=lambda: (),
         knows_tool=lambda tool_id: tool_id in {"inspect_file", "findings_write"},
         is_execution_findings_tool=lambda tool_id: tool_id == "findings_write",
     )
@@ -148,6 +150,29 @@ def test_unknown_host_failure_is_not_guessed_or_copied_into_repair():
     assert failure.repair_issue.paths == ("",)
     assert "PRIVATE_SENTINEL" not in failure.repair_issue.model_dump_json()
     assert "/private/key" not in failure.repair_issue.model_dump_json()
+
+
+def test_unknown_plan_id_feedback_provides_exact_current_ids():
+    with pytest.raises(L1ControllerFailure) as raised:
+        _admit(_decision(plan={"objective": "修订", "acceptances": [
+            {"acceptance_id": "a_deadbeefdeadbeef", "criterion": "错误身份"},
+        ]}))
+    feedback = raised.value.repair_issue.safe_explanation
+    assert all(item.acceptance_id in feedback for item in _plan().acceptances)
+    assert "plan=null" in feedback
+
+
+def test_plan_identity_feedback_stays_bounded_for_maximum_plan():
+    previous = materialize_l1_plan(
+        L1PlanProposal(objective="完整计划", acceptances=[{"criterion": f"项目 {i}"} for i in range(24)]),
+        input_message_id="message_test", user_text="请求",
+    )
+    with pytest.raises(L1ControllerFailure) as raised:
+        _admit(_decision(plan={"objective": "修订", "acceptances": [
+            {"acceptance_id": "a_deadbeefdeadbeef", "criterion": "未知身份"},
+        ]}), current_plan=previous)
+    assert raised.value.repair_issue.code == "host_guard.l1_unknown_acceptance"
+    assert len(raised.value.repair_issue.safe_explanation) <= 500
 
 
 def test_plan_revision_preserves_protected_item_diagnostic():

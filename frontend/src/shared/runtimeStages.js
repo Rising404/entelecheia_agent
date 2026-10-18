@@ -4,8 +4,6 @@ export const STAGE_LABELS = {
   CLASSIFY: "理解请求",
   SUPERVISOR: "选择处理路径",
   L0_GENERATE: "生成回复",
-  L2_UNDERSTAND: "分析任务",
-  L2_PLAN: "制定计划",
   TRANSITION_GUARD: "检查执行条件",
   TOOL: "调用能力",
   OBSERVATION: "记录观察结果",

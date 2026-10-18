@@ -56,6 +56,8 @@ def build_file_state_registration(
         "无需反复调用 check_files_state 等待。等待沿用 Host 的本轮剩余时间与取消信号，"
         "不额外消耗模型 Attempt；结束等待不会取消其他会话共享的后台任务。"
         "ready_indices 表示准备完成、已可检索；不代表已经读取正文，也不是仍待解析。"
+        "多份长文档找答案时，可一次准备全部文本/PDF，随后用 retrieve_files 跨文件定位；"
+        "图片中的颜色、表格语义另外使用 analyze_image。"
         "相同文件版本已 ready 时无需重复 prepare_files，应按任务需要检索或读取正文。"
         "not_ready_indices 包含处理中、变化和失败项，具体原因逐项返回。"
         "reason_code 明确标为 terminal 的失败，在文件版本与处理条件未改变时"

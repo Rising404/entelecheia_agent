@@ -59,7 +59,6 @@ for name in (
     importlib.import_module(f'personagraph.runtime.entry.lifecycle.{name}')
 
 blocked_prefixes = (
-    'personagraph.l2',
     'personagraph.runtime.l1',
 )
 print(json.dumps(sorted(

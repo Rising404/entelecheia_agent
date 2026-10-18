@@ -69,7 +69,7 @@ def serial_batch(monkeypatch, tmp_path, bound_partitioned_session):
         "complete_structured",
         as_prepared_test_provider(
             lambda *_args, **kwargs: _model_result(
-                {"processing_level": "L1", "task_matches": []},
+                {"processing_level": "L1"},
                 kwargs["model_call_id"],
             ),
         ),
@@ -132,7 +132,7 @@ def serial_batch(monkeypatch, tmp_path, bound_partitioned_session):
             session_id=session_id,
             client_request_id="serial-protected-batch",
             routing_policy=freeze_turn_routing_policy(
-                TurnRoutingPolicy(l1_enabled=True, l2_enabled=False),
+                TurnRoutingPolicy(l1_enabled=True),
                 source="request_override",
             ),
             store=session_store,
