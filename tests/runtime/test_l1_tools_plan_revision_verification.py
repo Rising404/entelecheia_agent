@@ -395,9 +395,9 @@ def test_l1_mechanical_rejection_identifies_the_exact_bad_support_binding(
     rejected_call_ref = ""
     original_materialize = l1_controller.materialize_decision_references
 
-    def admit_rejected_result_for_gate_test(proposal, *, execution):
+    def admit_rejected_result_for_gate_test(proposal, *, execution, files):
         # Bypass only the admission eligibility check to exercise the independent gate.
-        bound = original_materialize(proposal.model_copy(update={"references": ()}), execution=execution)
+        bound = original_materialize(proposal.model_copy(update={"references": ()}), execution=execution, files=files)
         calls = l1_calls_by_ref(execution)
         return bound.model_copy(update={"references": tuple(
             L1ResultReference(
@@ -606,10 +606,10 @@ def test_l1_finds_prepares_retrieves_and_reads_file_through_protected_dispatch(
     session_id = bound_partitioned_session(working_dir=workspace)
     _install_l1_classifier(monkeypatch)
     decisions: list[dict[str, object]] = []
-    file_id = ""
+    file_ref = ""
 
     def decide(_system: str, user_content: str, **kwargs: object) -> ModelResult:
-        nonlocal file_id
+        nonlocal file_ref
         payload = json.loads(user_content)
         decisions.append(payload)
         if len(decisions) == 1:
@@ -667,7 +667,7 @@ def test_l1_finds_prepares_retrieves_and_reads_file_through_protected_dispatch(
             checked_item = checked["result"]["results"][0]
             assert checked_item["status"] == "not_ingested"
             assert "file_ref" not in checked_item
-            assert checked_item["file_id"] is None
+            assert not {"file_id", "file_version_id"} & checked_item.keys()
             decision = {
                 "plan": None,
                 "action": {
@@ -685,9 +685,9 @@ def test_l1_finds_prepares_retrieves_and_reads_file_through_protected_dispatch(
             assert prepared["status"] == "succeeded"
             prepared_item = prepared["result"]["results"][0]
             assert prepared_item["status"] == "ready"
-            file_id = prepared_item["file_id"]
-            assert file_id
-            assert prepared_item["file_version_id"]
+            file_ref = prepared_item["file_ref"]
+            assert file_ref == "f1"
+            assert not {"file_id", "file_version_id"} & prepared_item.keys()
             assert prepared_item["document_version_id"]
             decision = {
                 "plan": None,
@@ -698,7 +698,7 @@ def test_l1_finds_prepares_retrieves_and_reads_file_through_protected_dispatch(
                             "tool_id": "retrieve_files",
                             "arguments": {
                                 "queries": ["Harbor accuracy"],
-                                "file_ids": [file_id],
+                                "file_refs": [file_ref],
                             },
                         }
                     ],
@@ -708,7 +708,7 @@ def test_l1_finds_prepares_retrieves_and_reads_file_through_protected_dispatch(
             retrieved = payload["prior_tool_results"][-1]
             assert retrieved["status"] == "succeeded"
             evidence = retrieved["result"]["files"][0]
-            assert evidence["file_id"] == file_id
+            assert evidence["file_ref"] == file_ref
             assert evidence["document_version_id"]
             decision = {
                 "plan": None,
@@ -788,7 +788,9 @@ def test_l1_finds_prepares_retrieves_and_reads_file_through_protected_dispatch(
     ]["results"][0]
     assert read_result["file_id"] == prepared_result["file_id"]
     assert read_result["document_version_id"] == prepared_result["document_version_id"]
-    assert prepared_result["file_id"] in json.dumps(decisions)
+    assert prepared_result["file_id"] not in json.dumps(decisions)
+    assert prepared_result["file_version_id"] not in json.dumps(decisions)
+    assert json.loads(calls_by_tool["retrieve_files"]["arguments_json"])["file_ids"] == [prepared_result["file_id"]]
 
 
 def test_l1_workspace_write_is_not_replayed_after_dispatch_interrupt(

@@ -17,6 +17,7 @@ import uuid
 
 from .cases import CASES, materialize
 from .complex_cases import COMPLEX_CASES
+from .pdf_cases import PDF_CASES
 from .text_cases import TEXT_CASES
 
 
@@ -28,11 +29,12 @@ FEATURES = {
     "turn_wall_clock_budget_s": 600,
     "l1_semantic_verification_mode": "always",
 }
-ALL_CASES = CASES + COMPLEX_CASES + TEXT_CASES
+ALL_CASES = CASES + COMPLEX_CASES + TEXT_CASES + PDF_CASES
 SUITES = {
     "smoke": CASES,
     "complex": COMPLEX_CASES,
     "text": tuple(case for case in CASES if not case.needs_vision) + TEXT_CASES,
+    "pdf": PDF_CASES,
 }
 
 
@@ -244,7 +246,7 @@ def write_report(directory: Path, report: dict) -> None:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--allow-live", action="store_true")
-    parser.add_argument("--suite", choices=tuple(SUITES), default="smoke")
+    parser.add_argument("--suite", choices=tuple(SUITES), default="pdf")
     parser.add_argument("--cases", nargs="+", choices=[case.id for case in ALL_CASES])
     parser.add_argument("--list", action="store_true")
     parser.add_argument("--worker", choices=[case.id for case in ALL_CASES], help=argparse.SUPPRESS)

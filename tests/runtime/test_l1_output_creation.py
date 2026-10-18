@@ -58,12 +58,11 @@ def test_l1_creates_output_without_workspace_update_and_can_prepare_and_read_it(
             assert result["status"] == "succeeded"
             created.update(result["result"])
             assert created["relative_path"] == "output/reports/summary.md"
-            assert created["file_id"] and created["file_version_id"]
-            assert "document_ref" not in created and "file_ref" not in created
+            assert created["file_ref"] == "f1"
+            assert not {"file_id", "file_version_id", "document_ref"} & created.keys()
             action = {"kind": "call_tools", "calls": [{
                 "tool_id": "prepare_files", "arguments": {"files": [{
-                    "file_id": created["file_id"],
-                    "file_version_id": created["file_version_id"],
+                    "file_ref": created["file_ref"],
                 }]},
             }]}
         elif len(calls) == 3:
@@ -71,10 +70,10 @@ def test_l1_creates_output_without_workspace_update_and_can_prepare_and_read_it(
             assert result["status"] == "succeeded"
             item = result["result"]["results"][0]
             assert item["status"] == "ready"
-            assert item["file_id"] == created["file_id"]
+            assert item["file_ref"] == created["file_ref"]
             action = {"kind": "call_tools", "calls": [{
                 "tool_id": "read_file_chunks", "arguments": {"targets": [{
-                    "file_id": item["file_id"], "document_version_id": item["document_version_id"],
+                    "file_ref": item["file_ref"], "document_version_id": item["document_version_id"],
                     "chunk_sequences": [0],
                 }]},
             }]}
@@ -112,6 +111,9 @@ def test_l1_creates_output_without_workspace_update_and_can_prepare_and_read_it(
     read_target = json.loads(read_call["arguments_json"])["targets"][0]
     assert read_target["file_id"] == canonical_output["file_id"]
     assert read_target["document_version_id"]
+    assert "file_ref" not in read_target
+    assert canonical_output["file_id"] not in json.dumps(calls)
+    assert canonical_output["file_version_id"] not in json.dumps(calls)
     assert "document_ref" not in read_target
     assert output_call["tool_id"] == "create_output_file"
     assert output_call["execution_class"] == "protected_effect"

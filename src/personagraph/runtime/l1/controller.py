@@ -953,6 +953,7 @@ def _model_payload(
     )
     try:
         from .tool_context.reading_progress import project_reading_progress
+        from .model_view.file_references import build_file_reference_catalog
 
         prior_tool_results, tool_result_projection = project_recent_tool_results(
             execution
@@ -960,6 +961,7 @@ def _model_payload(
         reading_progress = project_reading_progress(
             execution, attachment_catalog=tool_runtime.attachment_file_catalog,
         )
+        file_references = build_file_reference_catalog(tool_runtime.attachment_file_catalog, execution)
     except ToolResultProjectionError as exc:
         raise L1ControllerFailure(RuntimeErrorCode.INTERNAL_FAILURE, str(exc)) from exc
     if isinstance(verification_feedback, dict):
@@ -981,6 +983,7 @@ def _model_payload(
             redact_attachment_authority=(bool(tool_runtime.attachment_file_catalog)),
         ),
         "file_catalog": [dict(item) for item in tool_runtime.attachment_file_catalog],
+        "file_references": file_references,
         "plan": (
             current_plan.model_dump(mode="json") if current_plan is not None else None
         ),
@@ -1175,8 +1178,30 @@ def _admit_decision(
                     str(exc),
                     repair_issue=exc.repair_issue,
                 ) from exc
+    from .model_view.file_references import (
+        FileReferenceAdmissionError, FileReferences, build_file_reference_catalog,
+    )
+
     try:
-        canonical_decision = materialize_decision_references(decision, execution=execution)
+        canonical_decision = materialize_decision_references(
+            decision, execution=execution,
+            files=FileReferences(build_file_reference_catalog(tool_runtime.attachment_file_catalog, execution)),
+        )
+    except FileReferenceAdmissionError as exc:
+        available = ", ".join(exc.available) or "尚无已绑定文件；可先按授权相对路径准备文件"
+        raise L1ControllerFailure(
+            RuntimeErrorCode.MODEL_OUTPUT_INVALID,
+            "L1 file selector needs correction",
+            repair_issue=RuntimeModelOutputRepairIssue(
+                category="host_guard", code="host_guard.l1_unavailable_file_reference",
+                paths=(exc.path,),
+                safe_explanation=(
+                    "文件选择必须使用当前 file_catalog 的 file_ref，或工具允许的相对路径。"
+                    "不要填写 file_id/file_version_id；检索筛选字段是 file_refs。"
+                    f"可用引用：{available}。完整身份由 Host 绑定。"
+                ),
+            ),
+        ) from exc
     except L1ReferenceAdmissionError as exc:
         available = ", ".join(exc.available) or "当前没有可用的成功普通工具结果"
         raise L1ControllerFailure(

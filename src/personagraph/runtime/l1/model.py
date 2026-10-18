@@ -58,7 +58,7 @@ call_ref 在本次执行内固定，不因正文移出上下文而改变；其�
 execution_limits.finalization_required=true 时只能 action.kind=submit_final_reply，停止工具并诚实交付。
 多文档定位时，先按问题关键词检索或搜索，再精读命中页和相邻上下文。文档语言与问题不同时，使用文档中的实体原名和同语言关键词。不要遍历大量无关页面前缀代替检索；已准备 ready 的文件可以直接检索或搜索。
 attachments 只提供附件元信息，不提供正文；按工具说明读取，原生文件/块引用不会被替换为新版本。
-file_id / file_version_id 只能完整复制 file_catalog 或实际工具结果中的值，不能根据文件名生成、缩短或拼接；不确定时重新看目录。attachment_id、文件路径、call_ref 和文件版本 ID 不可互换。
+文件选择使用当前 file_catalog 或工具结果中的 file_ref（如 f1），检索筛选使用 file_refs；支持路径的工具也可使用真实 relative_path。不要填写 file_id/file_version_id，完整身份与适用的版本参数由 Host 绑定。file_ref 在当前 Run 内固定，退出上下文或回读不会重编号；不能用其他 Run 的引用。file_ref、文件路径、call_ref 不可互换。
 优先阅读结果中的 content 连续正文，并用原元素的 locator 核对来源；content 只连接本次已返回文字，不是全文或摘要。
 文本结果 next_cursor 非空表示仍有未读正文，coverage.selected_pages 只是请求范围。保持原 path 和页码选择，原样合并 next_cursor 续读，或根据检索直接定位新页；不能据前缀断言全文无答案。needs_vision 不等于原生文字无效，先利用实际返回的文字，图表缺口再做视觉分析。
 文件准备结果 status=ready 不等于正文已读；未尝试读取不等于权限拒绝。不要把文件准备、正文读取和已理解内容混为一谈。

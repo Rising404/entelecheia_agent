@@ -30,6 +30,7 @@ from .definitions import (
 class ToolHistoryRuntime:
     port: ToolHistoryReadPort
     effect_scope: str
+    result_projector: Callable[[str, object], object] = project_tool_result
 
     def __post_init__(self) -> None:
         if not self.effect_scope.strip() or self.effect_scope == "*":
@@ -74,7 +75,7 @@ class ToolHistoryRuntime:
         def read(**arguments):
             record = self.port.read_result(call_ref=arguments.pop("call_ref"))
             content = {
-                "result": project_tool_result(record.source.tool_id, record.outcome.get("result")),
+                "result": self.result_projector(record.source.tool_id, record.outcome.get("result")),
                 "error": record.outcome.get("error"),
             }
             page = project_tool_result_content(source=record.source, content=content, **arguments)

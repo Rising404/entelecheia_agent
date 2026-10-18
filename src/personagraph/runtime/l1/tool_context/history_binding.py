@@ -6,12 +6,21 @@
 
 from ....session import store as session_store
 from ....tools.tool_history import ToolHistoryRuntime
+from ....tools.model_interface import project_tool_result
 from ..corpus_contracts import derive_l1_turn_run_id
+from ..model_view.file_references import FileReferences, build_file_reference_catalog
 
 
-def bind_l1_tool_history(*, session_id: str, turn_id: str) -> ToolHistoryRuntime:
+def bind_l1_tool_history(*, session_id: str, turn_id: str, attachment_catalog=()) -> ToolHistoryRuntime:
     run_id = derive_l1_turn_run_id(session_id=session_id, turn_id=turn_id)
     reader = session_store.build_l1_tool_history_reader(
         session_id=session_id, l1_turn_run_id=run_id,
     )
-    return ToolHistoryRuntime(port=reader, effect_scope=f"l1_turn_run:{run_id}")
+    def project_result(tool_id, result):
+        execution = session_store.get_l1_turn_execution(session_id=session_id, turn_id=turn_id)
+        files = FileReferences(build_file_reference_catalog(attachment_catalog, execution))
+        return files.project_result(tool_id, project_tool_result(tool_id, result))
+
+    return ToolHistoryRuntime(
+        port=reader, effect_scope=f"l1_turn_run:{run_id}", result_projector=project_result,
+    )

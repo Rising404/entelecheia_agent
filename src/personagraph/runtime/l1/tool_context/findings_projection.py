@@ -7,8 +7,9 @@ import hashlib
 import json
 from typing import Any
 
-from ....output_protocol.l1 import L1AttemptDecision, L1_ATTEMPT_PROTOCOL_VERSION
+from ....output_protocol.l1 import L1AttemptDecision
 from ....output_protocol.l1_persistence import (
+    HOST_IDENTITY_DECISION_PROTOCOLS,
     SUPPORTED_L1_DECISION_PROTOCOLS,
     decode_l1_decision,
     resolve_legacy_l1_result,
@@ -144,7 +145,7 @@ def _require_fixed_note(entry: Mapping, *, ledger_id: str, attempt: Mapping) -> 
 def _context_call_ref(
     item: Mapping, *, schema_version: str, execution: Mapping, call_refs: Mapping,
 ) -> str:
-    if schema_version == L1_ATTEMPT_PROTOCOL_VERSION:
+    if schema_version in HOST_IDENTITY_DECISION_PROTOCOLS:
         call_id = _string(item, "tool_call_id")
         digest = _string(item, "result_sha256")
         ref = _checked_call_ref(call_id, digest=digest, execution=execution, call_refs=call_refs)

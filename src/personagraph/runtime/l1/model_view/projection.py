@@ -10,9 +10,11 @@ from ....tools.model_interface import (
     project_tool_result_metadata,
 )
 from .references import project_findings_tool_schema
+from .file_references import FileReferences, project_file_tool_schema
 
 
 def project_attempt_view(payload: dict) -> dict:
+    files = FileReferences(payload.get("file_references", []))
     view = {
         key: deepcopy(payload[key])
         for key in (
@@ -27,17 +29,20 @@ def project_attempt_view(payload: dict) -> dict:
         if key in payload
     }
     view["file_catalog"] = [
-        project_file_record(item) for item in payload.get("file_catalog", [])
+        files.project_record(project_file_record(item)) for item in files.catalog
     ]
     view["plan"] = project_plan(payload.get("plan"))
     view["prior_tool_results"] = [
-        project_result_record(item) for item in payload.get("prior_tool_results", [])
+        project_result_record(item, files=files) for item in payload.get("prior_tool_results", [])
     ]
     view["execution_findings"] = project_findings(payload.get("execution_findings"))
     view["tool_catalog"] = [
-        project_findings_tool_schema(entry)
+        project_file_tool_schema(project_findings_tool_schema(entry))
         for entry in project_model_tool_catalog(payload.get("tool_catalog", []))
     ]
+    for item in view.get("reading_progress", {}).get("results", []):
+        if "arguments" in item:
+            item["arguments"] = files.project_arguments(item["tool_id"], item["arguments"])
     report = payload.get("tool_result_projection") or {}
     view["tool_result_projection"] = {
         key: report[key]
@@ -87,7 +92,7 @@ def project_plan(plan: object) -> object:
     }
 
 
-def project_result_record(result: dict) -> dict:
+def project_result_record(result: dict, *, files: FileReferences | None = None) -> dict:
     projected = {
         key: deepcopy(result[key])
         for key in (
@@ -115,6 +120,11 @@ def project_result_record(result: dict) -> dict:
         }
     if "result" in result:
         projected["result"] = project_tool_result(tool_id, result["result"])
+    if files is not None:
+        if "arguments" in projected:
+            projected["arguments"] = files.project_arguments(tool_id, projected["arguments"])
+        if "result" in projected:
+            projected["result"] = files.project_result(tool_id, projected["result"])
     metadata = project_tool_result_metadata(result.get("metadata"))
     if metadata:
         projected["metadata"] = metadata

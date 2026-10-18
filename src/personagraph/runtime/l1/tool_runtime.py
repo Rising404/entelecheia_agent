@@ -569,12 +569,6 @@ def build_l1_tool_runtime(
     elif not execution_findings_enabled:
         disabled_tool_ids.update(EXECUTION_FINDINGS_TOOL_IDS)
     authority = AuthorityFacts()
-    if turn_id is not None:
-        from .tool_context.history_binding import bind_l1_tool_history
-
-        history_runtime = bind_l1_tool_history(session_id=session_id, turn_id=turn_id)
-        contextual_bindings.extend(history_runtime.bindings)
-        authority = _merge_authority(authority, history_runtime.authority)
     workspace_corpus_authority = None
     attachment_sources = ()
     protected_authority_by_key: dict[
@@ -590,6 +584,14 @@ def build_l1_tool_runtime(
             )
         except (OSError, TurnInputFileAuthorityError, TypeError, ValueError) as exc:
             raise L1TurnAttachmentToolRuntimeError() from exc
+        from .tool_context.history_binding import bind_l1_tool_history
+
+        history_runtime = bind_l1_tool_history(
+            session_id=session_id, turn_id=turn_id,
+            attachment_catalog=attachment_file_catalog(attachment_sources),
+        )
+        contextual_bindings.extend(history_runtime.bindings)
+        authority = _merge_authority(authority, history_runtime.authority)
     try:
         workspace = build_session_workspace_readonly_runtime(session_id)
     except (

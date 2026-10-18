@@ -17,7 +17,7 @@ from ..persistent_turn_content.findings import (
 )
 from ..persistent_turn_content.evidence import L1_CALL_REF_PATTERN, parse_l1_call_ref
 
-L1_ATTEMPT_PROTOCOL_VERSION = "l1-attempt-model-view-v6"
+L1_ATTEMPT_PROTOCOL_VERSION = "l1-attempt-model-view-v7"
 
 
 class _Contract(BaseModel):

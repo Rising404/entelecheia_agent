@@ -18,8 +18,9 @@ from ..persistent_turn_content.json_values import freeze_json
 
 
 LEGACY_L1_ATTEMPT_PROTOCOL_VERSION = "l1-attempt-model-view-v5"
+HOST_IDENTITY_DECISION_PROTOCOLS = frozenset({"l1-attempt-model-view-v6", L1_ATTEMPT_PROTOCOL_VERSION})
 SUPPORTED_L1_DECISION_PROTOCOLS = frozenset(
-    {LEGACY_L1_ATTEMPT_PROTOCOL_VERSION, L1_ATTEMPT_PROTOCOL_VERSION}
+    {LEGACY_L1_ATTEMPT_PROTOCOL_VERSION, *HOST_IDENTITY_DECISION_PROTOCOLS}
 )
 
 
@@ -64,7 +65,7 @@ def decode_l1_decision(
     """Normalize a supported stored decision and check every pinned result."""
     value = json.loads(raw) if isinstance(raw, str) else raw
     calls = _index_calls(tool_calls)
-    if request_schema_version == L1_ATTEMPT_PROTOCOL_VERSION:
+    if request_schema_version in HOST_IDENTITY_DECISION_PROTOCOLS:
         decision = L1AttemptDecision.model_validate(value)
     elif request_schema_version == LEGACY_L1_ATTEMPT_PROTOCOL_VERSION:
         legacy = _LegacyDecision.model_validate(value)
