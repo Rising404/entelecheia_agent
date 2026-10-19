@@ -24,6 +24,9 @@ Electron / Vue → 本地 API → Turn 入口 → L1 决策循环
    将文件和会话操作交给各自的应用服务；它不在 HTTP 层实现另一套 Agent 循环。
    Electron 复用 API 还需核对 checkout 路径摘要与源码内容摘要，不能只凭共享令牌接受旧仓库进程。
    后端摘要在进程启动时冻结，源码或依赖锁变化后需要重启；此检查不代替依赖安装与真实任务验证。
+  工具目录持久化的定义包含 schema、说明文字与执行限制；修改这些字段必须更新对应的
+  `implementation_version`。启动时由现行目录协调器发布当前定义、退役旧身份，保留历史记录；
+  不得覆盖同身份的旧定义。验证升级时须覆盖已有目录，不能只验证空白评测状态。
 2. [Turn 入口](src/personagraph/runtime/entry/) 接受这轮请求，确定执行路径，
    冻结相关模型、工具、来源与预算身份，并为执行和恢复建立持久记录。
 3. [L1 控制器](src/personagraph/runtime/l1/controller.py) 读取当前计划、笔记和可用材料，
@@ -58,8 +61,26 @@ Host 从冻结附件及已验证的文件工具回执重建文件版本绑定，
 在支持版本参数的工具中自动恢复 `file_version_id`；检索仍沿用其现行授权语料与版本校验。
 工具允许的相对路径入口保留，用于尚未登记的工作区文件。未知引用与直接填写内部文件 ID
 在 L1 准入时要求修正；底层工具合同、文件授权与持久身份不变，不模糊匹配错误身份。
-文档版本、chunk 和视觉单元的工具原生定位字段仍保留。文件引用不等于已准备或已读正文。
+文档版本和 chunk 的工具原生定位字段仍保留。文件引用不等于已准备或已读正文。
 转换所有者：[文件引用边界](src/personagraph/runtime/l1/model_view/file_references.py)。
+
+台账条目使用 `entry_ref`（如 `e1`），编号取该条目首次写入的持久 sequence；修订、撤回与
+FIFO 展示淘汰不重编号。视觉区域使用 `visual_ref`（如 `v1`），绑定精确文件版本与原生视觉
+单元。`list_file_visuals` 和 `list_workspace_directory` 的不透明分页游标展示为
+`next_cursor_ref`，续读参数为 `cursor_ref`（如 `p1`）；结构化文本游标保持原来的偏移字段。
+视觉与游标引用按已校验完整回执的持久调用顺序重建，不从当前可见窗口分配编号，也不建立
+数据库映射表。完整引用快照随 Host 请求冻结；模型只收到短引用，准入恢复原生参数后仍走
+原工具的台账状态、文件授权、版本与分页快照校验。历史回读先投影再分页，与当前结果、
+阅读目录和审查使用同一映射；只转换协议字段，不改正文中的相同字符串。
+
+模型协议从 `l1-attempt-model-view-v8` 使用上述字段。已提交的 v5/v6/v7 决定继续在持久边界
+读取并归一化，历史 JSON/hash 和数据库 schema 不变；未结束的旧协议模型请求不能在新
+提示词下重新发送，应结束旧执行并发起新一轮请求。
+职责分别归 [条目引用](src/personagraph/runtime/l1/model_view/entry_references.py)、
+[视觉引用](src/personagraph/runtime/l1/model_view/visual_references.py)、
+[游标引用](src/personagraph/runtime/l1/model_view/cursor_references.py)；
+[组合入口](src/personagraph/runtime/l1/model_view/tool_references.py) 只负责快照构建和领域转换顺序。
+对应测试：[短引用边界与历史回读](tests/runtime/l1/test_tool_references.py)。L0 不经过这些转换。
 
 | 决策或状态 | 责任所在 |
 | --- | --- |

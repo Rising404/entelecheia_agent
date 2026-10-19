@@ -251,7 +251,7 @@ def test_l1_findings_history_suppresses_malformed_unbounded_output() -> None:
     }
 
 
-def test_l1_records_and_reinjects_execution_findings(
+def test_l1_records_revises_and_reinjects_execution_findings_with_stable_refs(
     monkeypatch,
     tmp_path: Path,
 ) -> None:
@@ -319,7 +319,8 @@ def test_l1_records_and_reinjects_execution_findings(
             assert "ledger_revision" not in findings
             assert findings["active_entry_count"] == 1
             assert len(findings["notes"]) == 1
-            assert findings["notes"][0]["entry_id"]
+            assert findings["notes"][0]["entry_ref"] == "e1"
+            assert "entry_id" not in findings["notes"][0]
             decision = {
                 "plan": None,
                 "action": {
@@ -342,7 +343,7 @@ def test_l1_records_and_reinjects_execution_findings(
                     ],
                 },
             }
-        else:
+        elif len(model_payloads) == 3:
             findings = payload["execution_findings"]
             assert "ledger_revision" not in findings
             assert findings["active_entry_count"] == 3
@@ -358,6 +359,7 @@ def test_l1_records_and_reinjects_execution_findings(
                 if item["summary"] == "The date tool returned a current date."
             )
             assert explicit_note["source_refs"] == [{"call_ref": source_result_ref}]
+            assert explicit_note["entry_ref"] == "e3"
             prior_tool_results = payload["prior_tool_results"]
             assert len(prior_tool_results) == 1
             findings_receipt = prior_tool_results[0]
@@ -378,6 +380,23 @@ def test_l1_records_and_reinjects_execution_findings(
                 "projected_tool_result_count": 1,
                 "omitted_tool_result_count": 1,
             }
+            assert findings_receipt["result"]["affected_entry_refs"] == ["e3"]
+            decision = {
+                "action": {"kind": "call_tools", "calls": [{
+                    "tool_id": "revise_execution_finding",
+                    "arguments": {"items": [{
+                        "operation": "supersede", "entry_ref": explicit_note["entry_ref"],
+                        "kind": "finding", "claim": "The current date was checked.",
+                        "source_refs": [{"call_ref": source_result_ref}],
+                    }]},
+                }]},
+            }
+        else:
+            assert len(model_payloads) == 4
+            revised = next(item for item in payload["execution_findings"]["notes"] if item["entry_ref"] == "e3")
+            assert revised["summary"] == "The current date was checked."
+            assert payload["prior_tool_results"][0]["arguments"]["items"][0]["entry_ref"] == "e3"
+            assert payload["prior_tool_results"][0]["result"]["affected_entry_refs"] == ["e3"]
             decision = {
                 "plan": None,
                 "references": [{"call_ref": source_result_ref}],
@@ -407,6 +426,9 @@ def test_l1_records_and_reinjects_execution_findings(
         assert supporting_results[0]["call_ref"] == source_result_ref
         assert "tool_call_id" not in supporting_results[0]
         assert supporting_results[0]["result"] is not None
+        revision = next(call for call in payload["execution_context"]["tool_calls"] if call["tool_id"] == "revise_execution_finding")
+        assert revision["arguments"]["items"][0]["entry_ref"] == "e3"
+        assert "entry_id" not in revision["arguments"]["items"][0]
         return _model_result(
             {"issues": []},
             kwargs["model_call_id"],
@@ -490,14 +512,15 @@ def test_l1_records_and_reinjects_execution_findings(
     )
     assert ledger is not None
     assert ledger.ledger.status.value == "closed"
-    assert ledger.ledger.revision == 4
+    assert ledger.ledger.revision == 6
     assert ledger_revisions_before_tools == [
         ("get_today", 1),
         ("record_execution_findings", 2),
+        ("revise_execution_finding", 4),
     ]
     assert ledger.ledger.entry_revisions[0].status is (ExecutionFindingStatus.ACTIVE)
     calls_by_tool = {str(item["tool_id"]): item for item in execution["tool_calls"]}
-    assert set(calls_by_tool) == {"get_today", "record_execution_findings"}
+    assert set(calls_by_tool) == {"get_today", "record_execution_findings", "revise_execution_finding"}
     assert (
         calls_by_tool["record_execution_findings"]["execution_class"] == "runtime_state"
     )
@@ -512,6 +535,23 @@ def test_l1_records_and_reinjects_execution_findings(
         "result_sha256": calls_by_tool["get_today"]["outcome_hash"],
         "chunk_id": None,
     }
+    revised_arguments = json.loads(calls_by_tool["revise_execution_finding"]["arguments_json"])
+    assert revised_arguments["expected_ledger_revision"] == 4
+    original_entry = ledger.ledger.entry_revisions[2]
+    revised_entry = ledger.ledger.entry_revisions[4]
+    assert revised_arguments["items"][0]["entry_id"] == original_entry.entry_id == revised_entry.entry_id
+    assert "entry_ref" not in revised_arguments["items"][0]
+    assert revised_entry.entry_revision == 2
+    assert revised_entry.claim == "The current date was checked."
+    # 使用真实隔离数据库回读目录：完整参数先投影，摘要不会重新泄露长条目 ID。
+    from personagraph.runtime.l1.tool_context.history_binding import bind_l1_tool_history
+
+    history = bind_l1_tool_history(session_id=session_id, turn_id=result.turn_id)
+    page = history.list_results({})
+    revised_history = next(item for item in page["results"] if item["source"]["tool_id"] == "revise_execution_finding")
+    summary = json.loads(revised_history["arguments_summary"])
+    assert summary["items"][0]["entry_ref"] == "e3"
+    assert original_entry.entry_id not in revised_history["arguments_summary"]
 
 
 def _model_result(payload: dict[str, object], model_call_id: object) -> ModelResult:

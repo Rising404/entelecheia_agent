@@ -61,6 +61,7 @@ from .semantic_evidence import (
 )
 from .verification import L1VerificationResult
 from .tool_context.reading_progress import project_attachment_reading
+from .model_view.tool_references import ToolReferences, build_tool_reference_catalog
 
 
 _L1_SEMANTIC_SYSTEM_PROMPT = """一、审查职责
@@ -405,9 +406,15 @@ def _semantic_review_view(
 ) -> dict[str, object]:
     """只给语义所需材料；不存在模型可重新声明的完成表、hash 或引用别名。"""
     try:
+        tools = ToolReferences(model_view.get("tool_references") or build_tool_reference_catalog(execution))
         evidence = project_review_evidence(references=references, execution=execution)
-        evidence["results"] = [_review_result(record) for record in evidence["results"]]
+        evidence["results"] = [_review_result(record, tools=tools) for record in evidence["results"]]
         history = project_review_execution_history(execution)
+        for record in history:
+            tool_id = record["tool_id"]
+            tools.cursors.project_result(tool_id, record["reading_scope"], source=record.get("arguments", {}))
+            if "arguments" in record:
+                record["arguments"] = tools.project_arguments(tool_id, record["arguments"])
     except (L1EvidenceProjectionError, ValueError) as exc:
         raise L1SemanticVerificationInputError(
             code="durable_support_projection_invalid",
@@ -449,16 +456,18 @@ def _semantic_review_view(
     }
 
 
-def _review_result(record: Mapping[str, object]) -> dict[str, object]:
+def _review_result(record: Mapping[str, object], *, tools: ToolReferences) -> dict[str, object]:
     """完整结果先经 Host 校验，模型正文再复用工具域的统一阅读投影。"""
     view = {
         key: record[key]
         for key in ("call_ref", "tool_id", "status", "chunk_id", "result_scope")
         if key in record
     }
-    view["result"] = project_tool_result(str(record["tool_id"]), record["result"])
+    tool_id = str(record["tool_id"])
+    view["result"] = tools.project_result(tool_id, project_tool_result(tool_id, record["result"]))
     metadata = project_tool_result_metadata(record.get("metadata"))
     if metadata:
+        tools.cursors.project_result(tool_id, metadata, source=record["result"])
         view["metadata"] = metadata
     return view
 

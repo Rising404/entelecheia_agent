@@ -34,7 +34,7 @@ def _case():
     return decision, call
 
 
-@pytest.mark.parametrize("protocol", [L1_ATTEMPT_PROTOCOL_VERSION, "l1-attempt-model-view-v6"])
+@pytest.mark.parametrize("protocol", [L1_ATTEMPT_PROTOCOL_VERSION, "l1-attempt-model-view-v7", "l1-attempt-model-view-v6"])
 def test_current_decision_keeps_host_pin_and_rejects_model_short_ref(protocol):
     decision, call = _case()
     value = decode_l1_decision(
@@ -66,7 +66,7 @@ def test_legacy_committed_decision_resolves_without_rewriting_frozen_payload():
     assert raw == expected_raw and call == expected_call
 
 
-@pytest.mark.parametrize("protocol", [L1_ATTEMPT_PROTOCOL_VERSION, "l1-attempt-model-view-v6", LEGACY_L1_ATTEMPT_PROTOCOL_VERSION])
+@pytest.mark.parametrize("protocol", [L1_ATTEMPT_PROTOCOL_VERSION, "l1-attempt-model-view-v7", "l1-attempt-model-view-v6", LEGACY_L1_ATTEMPT_PROTOCOL_VERSION])
 @pytest.mark.parametrize("corruption", ["body", "digest_and_body", "missing", "duplicate", "failed"])
 def test_persisted_reference_rejects_changed_or_unscoped_result(protocol, corruption):
     decision, call = _case()

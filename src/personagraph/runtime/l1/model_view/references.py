@@ -12,6 +12,7 @@ from ....persistent_turn_content.evidence import l1_calls_by_ref
 from ....persistent_turn_content.findings import EXECUTION_FINDINGS_TOOL_IDS
 from ....tools.tool_history.definitions import TOOL_HISTORY_TOOL_IDS
 from .file_references import FileReferences
+from .tool_references import ToolReferences
 
 
 class L1ReferenceAdmissionError(ValueError):
@@ -24,6 +25,7 @@ class L1ReferenceAdmissionError(ValueError):
 def materialize_decision_references(
     proposal: L1AttemptDecisionProposal, *, execution: Mapping[str, object],
     files: FileReferences | None = None,
+    tools: ToolReferences | None = None,
 ) -> L1AttemptDecision:
     calls = {
         ref: call for ref, call in l1_calls_by_ref(execution).items()
@@ -52,6 +54,10 @@ def materialize_decision_references(
             arguments = call.model_dump(mode="json")["arguments"]
             if files is not None:
                 arguments = files.materialize_arguments(
+                    call.tool_id, arguments, path=f"/action/calls/{call_index}/arguments",
+                )
+            if tools is not None:
+                arguments = tools.materialize_arguments(
                     call.tool_id, arguments, path=f"/action/calls/{call_index}/arguments",
                 )
             if call.tool_id in EXECUTION_FINDINGS_TOOL_IDS and isinstance(arguments.get("items"), list):

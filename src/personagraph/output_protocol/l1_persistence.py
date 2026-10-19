@@ -18,7 +18,9 @@ from ..persistent_turn_content.json_values import freeze_json
 
 
 LEGACY_L1_ATTEMPT_PROTOCOL_VERSION = "l1-attempt-model-view-v5"
-HOST_IDENTITY_DECISION_PROTOCOLS = frozenset({"l1-attempt-model-view-v6", L1_ATTEMPT_PROTOCOL_VERSION})
+HOST_IDENTITY_DECISION_PROTOCOLS = frozenset({
+    "l1-attempt-model-view-v6", "l1-attempt-model-view-v7", L1_ATTEMPT_PROTOCOL_VERSION,
+})
 SUPPORTED_L1_DECISION_PROTOCOLS = frozenset(
     {LEGACY_L1_ATTEMPT_PROTOCOL_VERSION, *HOST_IDENTITY_DECISION_PROTOCOLS}
 )

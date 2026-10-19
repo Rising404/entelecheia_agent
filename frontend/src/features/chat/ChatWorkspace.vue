@@ -3,7 +3,7 @@ import { computed, ref } from "vue";
 import { AlertTriangle, Archive, FolderOpen, MessageSquare, Paperclip, RotateCcw, Save, Send, Trash2, X, XCircle } from "@lucide/vue";
 import SessionHistoryPlacement from "../workspace/SessionHistoryPlacement.vue";
 import RuntimeModeControl from "../runtime/RuntimeModeControl.vue";
-import { roleText } from "./presentation";
+import ChatMessage from "./ChatMessage.vue";
 import { sessionStatusText } from "../../shared/presentation";
 import {
   MAX_ATTACHMENTS_PER_TURN,
@@ -164,14 +164,8 @@ function onDrop(event) {
     </header>
 
     <section class="message-stream max-[780px]:min-h-64 max-[780px]:flex-none">
-      <article v-for="turn in turns" :key="turn.turn_idx" class="message-card" :class="turn.role">
-        <div class="mb-1 text-xs font-semibold text-ink-3">{{ roleText(turn.role) }}</div>
-        <p class="whitespace-pre-wrap">{{ turn.content }}</p>
-      </article>
-      <article v-if="streamingReply" class="message-card assistant" aria-live="polite" aria-label="模型正在回复">
-        <div class="mb-1 text-xs font-semibold text-ink-3">助手</div>
-        <p class="whitespace-pre-wrap">{{ streamingReply }}<span class="ml-0.5 inline-block animate-pulse">▍</span></p>
-      </article>
+      <ChatMessage v-for="turn in turns" :key="`${session.id}:${turn.turn_idx}`" :role="turn.role" :content="turn.content" />
+      <ChatMessage v-if="streamingReply" role="assistant" :content="streamingReply" streaming aria-label="模型正在回复" />
 
       <article v-if="incompleteTurn" class="message-card border-warn-line bg-warn-bg text-warn" aria-live="polite" data-testid="incomplete-turn-status">
         <div class="mb-1 text-xs font-semibold">本轮未完成</div>

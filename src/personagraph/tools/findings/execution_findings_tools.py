@@ -28,7 +28,7 @@ from ..registration import ToolExecutionProfile, ToolRegistration
 
 
 EXECUTION_FINDINGS_TOOL_CONTRACT_VERSION = "2.0.0"
-EXECUTION_FINDINGS_TOOL_IMPLEMENTATION_VERSION = "host-runtime-state-v3"
+EXECUTION_FINDINGS_TOOL_IMPLEMENTATION_VERSION = "host-runtime-state-v4"
 EXECUTION_FINDINGS_SOURCE_ID = "personagraph.execution_findings"
 EXECUTION_FINDINGS_SOURCE_DISPLAY_NAME = "Execution Findings Ledger"
 EXECUTION_FINDINGS_DEFAULT_EFFECT_SCOPE = "current_execution_findings"

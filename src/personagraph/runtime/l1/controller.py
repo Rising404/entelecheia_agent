@@ -578,6 +578,7 @@ def _run_l1_turn_impl(
                         tool_runtime=tool_runtime,
                         execution=execution,
                         finalization_required=finalization_required,
+                        tool_reference_catalog=payload.get("tool_references"),
                         max_tool_calls_per_attempt=(
                             effective_max_tool_calls_per_attempt
                         ),
@@ -954,6 +955,7 @@ def _model_payload(
     try:
         from .tool_context.reading_progress import project_reading_progress
         from .model_view.file_references import build_file_reference_catalog
+        from .model_view.tool_references import build_tool_reference_catalog
 
         prior_tool_results, tool_result_projection = project_recent_tool_results(
             execution
@@ -962,6 +964,9 @@ def _model_payload(
             execution, attachment_catalog=tool_runtime.attachment_file_catalog,
         )
         file_references = build_file_reference_catalog(tool_runtime.attachment_file_catalog, execution)
+        tool_references = build_tool_reference_catalog(
+            execution, entry_revisions=(findings_snapshot.ledger.entry_revisions if findings_snapshot else ()),
+        )
     except ToolResultProjectionError as exc:
         raise L1ControllerFailure(RuntimeErrorCode.INTERNAL_FAILURE, str(exc)) from exc
     if isinstance(verification_feedback, dict):
@@ -984,6 +989,7 @@ def _model_payload(
         ),
         "file_catalog": [dict(item) for item in tool_runtime.attachment_file_catalog],
         "file_references": file_references,
+        "tool_references": tool_references,
         "plan": (
             current_plan.model_dump(mode="json") if current_plan is not None else None
         ),
@@ -1106,6 +1112,7 @@ def _admit_decision(
     execution: dict[str, object],
     finalization_required: bool,
     max_tool_calls_per_attempt: int,
+    tool_reference_catalog: dict | None = None,
 ) -> tuple[
     L1AttemptDecision,
     L1Plan,
@@ -1181,12 +1188,29 @@ def _admit_decision(
     from .model_view.file_references import (
         FileReferenceAdmissionError, FileReferences, build_file_reference_catalog,
     )
+    from .model_view.reference_bindings import ToolReferenceAdmissionError
+    from .model_view.tool_references import ToolReferences
 
     try:
         canonical_decision = materialize_decision_references(
             decision, execution=execution,
             files=FileReferences(build_file_reference_catalog(tool_runtime.attachment_file_catalog, execution)),
+            tools=ToolReferences(tool_reference_catalog),
         )
+    except ToolReferenceAdmissionError as exc:
+        available = ", ".join(exc.available) or "当前范围内没有可用引用，请先查看笔记或列出相关资源"
+        raise L1ControllerFailure(
+            RuntimeErrorCode.MODEL_OUTPUT_INVALID,
+            "L1 tool selector needs correction",
+            repair_issue=RuntimeModelOutputRepairIssue(
+                category="host_guard", code="host_guard.l1_unavailable_tool_reference",
+                paths=(exc.path,),
+                safe_explanation=(
+                    f"此位置必须使用 {exc.field}，不能填写原生 ID/游标或另一范围的引用。"
+                    f"可用引用：{available}。不要猜测编号；完整身份由 Host 绑定。"
+                ),
+            ),
+        ) from exc
     except FileReferenceAdmissionError as exc:
         available = ", ".join(exc.available) or "尚无已绑定文件；可先按授权相对路径准备文件"
         raise L1ControllerFailure(

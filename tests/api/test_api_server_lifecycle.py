@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from dataclasses import replace
+
 import pytest
 
 from personagraph.api import server
@@ -80,6 +82,57 @@ def test_host_bootstrap_publishes_the_process_default_catalog(
         _EXPECTED_PRODUCTION_TOOL_IDS
     )
     assert repository.current_snapshot().revision == 1
+
+
+@pytest.mark.parametrize(
+    ("tool_id", "previous_implementation"),
+    [
+        ("read_text", "2"),
+        ("read_pdf_text", "2"),
+        ("read_word", "2"),
+        ("read_slides", "2"),
+        ("inspect_image", "3"),
+        ("analyze_image", "3"),
+        ("retrieve_files", "7"),
+        ("prepare_files", "4"),
+        ("record_execution_findings", "host-runtime-state-v3"),
+        ("revise_execution_finding", "host-runtime-state-v3"),
+    ],
+)
+def test_host_bootstrap_upgrades_published_tool_definitions_without_rewriting_history(
+    tmp_path, monkeypatch, tool_id, previous_implementation,
+):
+    """Existing catalogs must survive schema/description changes, unlike a fresh DB.
+
+    Identities are the published predecessors; descriptors are synthetic so this
+    regression never imports a user's catalog or keeps an old implementation.
+    """
+    database_path = tmp_path / "tool_catalog.sqlite"
+    repository = catalog_persistence.ToolCatalogRepository(database_path)
+    current = build_production_default_catalog_seeds()
+    seed = next(item for item in current if item.definition.identity.tool_id == tool_id)
+    previous = replace(
+        seed.definition,
+        implementation_version=previous_implementation,
+        spec=replace(seed.definition.spec, description="Earlier published tool contract"),
+    )
+    repository.bootstrap((ToolCatalogSeed(previous, seed.availability),))
+    monkeypatch.setattr(catalog_persistence, "DEFAULT_TOOL_CATALOG_DATABASE_PATH", database_path)
+
+    server._bootstrap_tool_catalog()
+
+    snapshot = repository.current_snapshot()
+    profile = repository.current_default_profile()
+    statuses = {entry.identity: entry.status for entry in snapshot.entries}
+    assert statuses[previous.identity] is CatalogStatus.RETIRED
+    assert statuses[seed.definition.identity] is CatalogStatus.ACTIVE
+    assert repository.load_definition(previous.identity) == previous
+    assert tuple(item.identity for item in profile.items) == tuple(
+        item.definition.identity for item in current
+    )
+    server._bootstrap_tool_catalog()
+    assert repository.current_snapshot() == snapshot
+    assert repository.current_default_profile() == profile
 
 
 @pytest.mark.parametrize("predecessor_count", (4, 8, 14, 16, 21))

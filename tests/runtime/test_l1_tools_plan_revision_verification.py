@@ -395,9 +395,9 @@ def test_l1_mechanical_rejection_identifies_the_exact_bad_support_binding(
     rejected_call_ref = ""
     original_materialize = l1_controller.materialize_decision_references
 
-    def admit_rejected_result_for_gate_test(proposal, *, execution, files):
+    def admit_rejected_result_for_gate_test(proposal, *, execution, files, tools):
         # Bypass only the admission eligibility check to exercise the independent gate.
-        bound = original_materialize(proposal.model_copy(update={"references": ()}), execution=execution, files=files)
+        bound = original_materialize(proposal.model_copy(update={"references": ()}), execution=execution, files=files, tools=tools)
         calls = l1_calls_by_ref(execution)
         return bound.model_copy(update={"references": tuple(
             L1ResultReference(

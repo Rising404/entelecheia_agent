@@ -4,6 +4,23 @@ import { describe, expect, it } from "vitest";
 import ChatWorkspace from "./ChatWorkspace.vue";
 
 describe("ChatWorkspace", () => {
+  it("renders saved and streaming replies through the same Markdown message component", () => {
+    const wrapper = mount(ChatWorkspace, {
+      props: {
+        session: { id: "s1", status: "active" },
+        turns: [
+          { turn_idx: 0, role: "user", content: "**保留输入**" },
+          { turn_idx: 1, role: "assistant", content: "## 结论\n\n**三类**" }
+        ],
+        streamingReply: "### 证据\n\n**第 3 页**"
+      }
+    });
+    expect(wrapper.get(".message-card.user p").text()).toBe("**保留输入**");
+    expect(wrapper.get("h2").text()).toBe("结论");
+    expect(wrapper.get('[aria-label="模型正在回复"] h3').text()).toBe("证据");
+    expect(wrapper.findAll('[aria-label="复制 Markdown 原文"]')).toHaveLength(1);
+  });
+
   it("offers explicit failed-task intentions without changing the saved reply", async () => {
     const wrapper = mount(ChatWorkspace, {
       props: {

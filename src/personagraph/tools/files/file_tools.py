@@ -34,7 +34,7 @@ def build_file_state_registration(
     if tool_id not in {CHECK_FILES_STATE_TOOL_ID, PREPARE_FILES_TOOL_ID}:
         raise ValueError("unknown file state tool")
     prepares = tool_id == PREPARE_FILES_TOOL_ID
-    implementation_version = "4" if prepares else "2"
+    implementation_version = "5" if prepares else "2"
     effects = [EffectDescriptor(
         resource=EffectResource.FILESYSTEM, action=EffectAction.READ,
         scope_kind=EffectScopeKind.SESSION, default_scope=effect_scope,

@@ -40,7 +40,7 @@ const REVIEW_TOOL_LABELS = {
 const REVIEW_FILE_PREVIEW_LINES = 40;
 
 export function roleText(role) {
-  return { user: "你", assistant: AGENT_NAME, system: "系统", tool: "工具" }[role] || role;
+  return { user: "用户", assistant: AGENT_NAME, system: "系统", tool: "工具" }[role] || role;
 }
 
 export function postCommitFailureLabel(jobs = [], errorCodes = []) {

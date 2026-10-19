@@ -184,13 +184,14 @@ def test_history_projects_file_refs_before_pagination_and_keeps_original_bytes(m
     assert execution["tool_calls"][0]["outcome_json"] == frozen
 
 
-def test_old_frozen_model_request_cannot_run_under_new_file_interface():
+@pytest.mark.parametrize("protocol", ["l1-attempt-model-view-v6", "l1-attempt-model-view-v7"])
+def test_old_frozen_model_request_cannot_run_under_current_reference_interface(protocol):
     from personagraph.model_io.gateway import ModelGatewayError
     from personagraph.runtime.l1.model import request_l1_attempt_decision
 
     with pytest.raises(ModelGatewayError, match="Unsupported frozen L1 protocol"):
         request_l1_attempt_decision(
             turn_id="turn", session_id="session", logical_model_call_id="call",
-            payload={"schema_version": "l1-attempt-model-view-v6"}, emit=None, deadline=None,
+            payload={"schema_version": protocol}, emit=None, deadline=None,
             l1_turn_run_id="run", attempt_id="attempt", state_guard_hash="state", store=None, model_binding=None,
         )

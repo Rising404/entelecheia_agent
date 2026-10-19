@@ -87,9 +87,10 @@ from ..workspace.workspace_tools import FrozenWorkspaceToolBoundary
 
 
 FORMAT_OBSERVATION_TOOL_CONTRACT_VERSION = "format-observation-v1"
-FORMAT_OBSERVATION_TOOL_IMPLEMENTATION_VERSION = "2"
+# Published definitions include schemas and descriptions; changes need a fresh identity.
+FORMAT_OBSERVATION_TOOL_IMPLEMENTATION_VERSION = "3"
 VISUAL_OBSERVATION_TOOL_CONTRACT_VERSION = "visual-observation-v2"
-VISUAL_OBSERVATION_TOOL_IMPLEMENTATION_VERSION = "3"
+VISUAL_OBSERVATION_TOOL_IMPLEMENTATION_VERSION = "4"
 FORMAT_OBSERVATION_LOCAL_TOOL_IDS = (
     "read_text",
     "read_pdf_text",
