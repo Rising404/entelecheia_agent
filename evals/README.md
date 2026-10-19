@@ -8,6 +8,10 @@
 跨页计算、条件筛选和引用。每题提供同一组四份 PDF，仅一份包含完整答案；样本文件已随仓库提供。
 它属于 Agent 端到端诊断，不是 DocBench，也不能作为总体能力或视觉理解成绩。
 
+[DocBench 四附件扩充](multi_doc/README.md#docbench-四附件套件)保留 12 道 DocBench 原题，
+每题加入三份干扰 PDF，走同一条多文档 L1 runner。原题和原 PDF 只存本地忽略目录；
+公开选集锁定来源与附件组合。这种多文档输入不属于官方 DocBench 设置。
+
 ## RAG 纯检索结果
 
 2026-09-23 完成 75 题完整 hybrid 运行，最终 **Hit@5 = 74/75（98.67%）、宏平均 Recall@5 = 96.04%、MRR = 0.9296**。同轮 RRF 阶段分别为 96.00%、92.04%、0.8648。每题使用一次原问题，先限定所属文档和模态，再运行 Dense + learned sparse + BM25 → RRF → reranker → packing。

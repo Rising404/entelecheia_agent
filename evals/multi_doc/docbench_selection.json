@@ -1,0 +1,152 @@
+{
+  "schema_version": "docbench-multi-document-selection-v1",
+  "source_selection": "../docbench/selections/balanced_125_v1.json",
+  "source_selection_sha256": "ec6704e97db982f02b122e12b455b2f246b907b216e0223473f58c212808d43b",
+  "cases": [
+    {
+      "case_id": "docbench:1:1",
+      "attachment_doc_ids": [
+        1,
+        10,
+        38,
+        2
+      ],
+      "evidence_pages": [
+        3
+      ]
+    },
+    {
+      "case_id": "docbench:2:0",
+      "attachment_doc_ids": [
+        38,
+        2,
+        1,
+        10
+      ],
+      "evidence_pages": [
+        3
+      ]
+    },
+    {
+      "case_id": "docbench:10:3",
+      "attachment_doc_ids": [
+        1,
+        2,
+        10,
+        38
+      ],
+      "evidence_pages": [
+        2
+      ]
+    },
+    {
+      "case_id": "docbench:38:4",
+      "attachment_doc_ids": [
+        2,
+        10,
+        1,
+        38
+      ],
+      "evidence_pages": [
+        2
+      ]
+    },
+    {
+      "case_id": "docbench:60:2",
+      "attachment_doc_ids": [
+        75,
+        60,
+        105,
+        123
+      ],
+      "evidence_pages": [
+        147
+      ]
+    },
+    {
+      "case_id": "docbench:75:0",
+      "attachment_doc_ids": [
+        105,
+        123,
+        75,
+        60
+      ],
+      "evidence_pages": [
+        15
+      ]
+    },
+    {
+      "case_id": "docbench:105:2",
+      "attachment_doc_ids": [
+        164,
+        123,
+        166,
+        105
+      ],
+      "evidence_pages": [
+        20
+      ]
+    },
+    {
+      "case_id": "docbench:123:0",
+      "attachment_doc_ids": [
+        123,
+        164,
+        105,
+        166
+      ],
+      "evidence_pages": [
+        8
+      ]
+    },
+    {
+      "case_id": "docbench:164:1",
+      "attachment_doc_ids": [
+        166,
+        164,
+        123,
+        105
+      ],
+      "evidence_pages": [
+        6
+      ]
+    },
+    {
+      "case_id": "docbench:166:2",
+      "attachment_doc_ids": [
+        105,
+        123,
+        166,
+        164
+      ],
+      "evidence_pages": [
+        7,
+        8
+      ]
+    },
+    {
+      "case_id": "docbench:187:0",
+      "attachment_doc_ids": [
+        202,
+        183,
+        189,
+        187
+      ],
+      "evidence_pages": [
+        1
+      ]
+    },
+    {
+      "case_id": "docbench:202:2",
+      "attachment_doc_ids": [
+        202,
+        189,
+        187,
+        183
+      ],
+      "evidence_pages": [
+        1
+      ]
+    }
+  ]
+}

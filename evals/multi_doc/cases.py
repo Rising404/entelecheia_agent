@@ -3,9 +3,18 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import hashlib
 from pathlib import Path
 
 from .fixture_documents import TableImage, write_pdf, write_table_image
+
+
+@dataclass(frozen=True)
+class SourcePDF:
+    name: str
+    path: Path
+    sha256: str
+    physical_pages: int
 
 
 @dataclass(frozen=True)
@@ -21,6 +30,7 @@ class Case:
     images: tuple[TableImage, ...] = ()
     evidence: tuple[tuple[str, int | None, str], ...] = ()
     review_rubric: tuple[str, ...] = ()
+    source_pdfs: tuple[SourcePDF, ...] = ()
 
 
 CASES = (
@@ -91,6 +101,20 @@ def materialize(case: Case, directory: Path) -> list[Path]:
     """Write only attachments, never question/reference metadata, into this folder."""
     directory.mkdir(parents=True, exist_ok=False)
     paths = []
+    if case.source_pdfs:
+        if case.documents or case.images:
+            raise ValueError("source PDFs cannot be mixed with generated fixtures")
+        for source in case.source_pdfs:
+            if Path(source.name).name != source.name or not source.name.endswith(".pdf"):
+                raise ValueError("source PDF needs a plain PDF filename")
+            content = source.path.read_bytes()
+            if hashlib.sha256(content).hexdigest() != source.sha256:
+                raise ValueError(f"source PDF hash drift: {source.name}")
+            path = directory / source.name
+            with path.open("xb") as stream:
+                stream.write(content)
+            paths.append(path)
+        return paths
     for name, content in case.documents:
         path = directory / name
         if path.suffix == ".pdf":

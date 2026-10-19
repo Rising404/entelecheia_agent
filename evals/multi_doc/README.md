@@ -1,7 +1,8 @@
 # 多文档 L1 问答用例
 
-输入为 **多份原创合成文档 + 1 个用户问题**，输出保存真实模型回复、工具执行情况、
-提交后收尾状态和人工复核参考。用例不属于 DocBench，也不作为模型总体能力基准。
+输入为 **多份文档 + 1 个用户问题**，输出保存真实模型回复、工具执行情况、
+提交后收尾状态和人工复核参考。`pdf` 是原创合成套件；`docbench` 使用本地 DocBench
+原题与原 PDF，并添加三份干扰文档。两者都不是模型总体能力基准。
 
 ## 现行 PDF 样本集
 
@@ -52,6 +53,48 @@ PDF 含可搜索中文文字层和真实表格，尚不覆盖扫描件、OCR 或
 其他环境需将 `ENTELECHEIA_EVAL_CJK_FONT` 设置为已有中文 TrueType 字体的绝对路径。
 生成过程不下载字体；清单记录字体哈希，同一字体与依赖环境下 PDF 可重复生成。
 更换字体会改变 PDF 字节和附件哈希，应作为一次新的样本导出记录。
+Ubuntu CI 显式安装 `fonts-wqy-zenhei` 并设置字体路径，运行 PDF 再生成与原生读取检查。
+
+## DocBench 四附件套件
+
+[选题与附件组合](docbench_selection.json)锁定 12 道原题、12 份不同目标文档，以及各题
+三份干扰 PDF。总计使用 14 份不同的完整 PDF，覆盖学术、金融、政府、法律和新闻；
+9 道文本题、2 道表格题、1 道图示题。每题为四附件，物理页数合计 4–242 页。
+不裁页、不改写问题、不把目标文件名或参考答案加进模型输入；文件显示名统一为
+`document_01.pdf` 至 `document_04.pdf`，目标位置在 12 题中均衡分布。
+
+[来源适配](docbench.py)复用正式 DocBench selection loader，校验原选集、QA 与 PDF 哈希。
+原题、答案和上游 evidence 按原文读取；物理证据页码是本套件额外核查的复核信息。
+每次复制到隔离 Project 前再次核验 PDF 字节。模型仅得到通用回答／引用要求、当前原题和四份 PDF。
+此设置改变了官方单文档输入，结果不得当作官方 DocBench 成绩或与历史 125 题直接比较。
+
+先按 [DocBench 数据准备](../docbench/reproduce_or_run_script/README.md)取得授权的本地完整来源，
+然后离线导出可浏览的问题和附件包：
+
+```bash
+.venv/bin/python -m evals.multi_doc.docbench \
+  --data-root "$PERSONAGRAPH_BENCH_EVAL_DIR/docbench/source/data"
+```
+
+导出默认位于 `evals/multi_doc/local/docbench/`，包含 `questions.json`、`gold.json`、
+`manifest.json` 和 `attachments/<case-id>/` 下的每题四份 PDF。
+该目录被 Git 忽略并由隐私门禁禁止发布；只提交无原题正文的选题身份与代码。
+`questions.json` 是这批原题及附件列表的入口；`gold.json` 只供人工复核。
+已有导出不会覆盖；如需保留另一份导出，使用 `--output` 指定仓库外新目录。
+
+从同一冻结来源启动真实测试，入口会先探测当前任务模型与 VLM：
+
+```bash
+.venv/bin/python -m evals.multi_doc.run --suite docbench --list \
+  --data-root "$PERSONAGRAPH_BENCH_EVAL_DIR/docbench/source/data"
+.venv/bin/python -m evals.multi_doc.run --suite docbench --allow-live \
+  --data-root "$PERSONAGRAPH_BENCH_EVAL_DIR/docbench/source/data"
+```
+
+可用 `--cases docbench-1-1` 定向运行。每题仍使用独立子进程、Project 和 Session，
+沿用当前模型配置与 L1 产品链路。长文档采用现有 complex 套件的 32 次 attempt、
+1800 秒整轮预算；引用／语义审查要求不变。输出保存在本目录下被忽略的 `runs/`，
+显式记录来源选集哈希、完成状态与收尾时间；字面匹配不是正确率。
 
 ## 历史诊断套件
 

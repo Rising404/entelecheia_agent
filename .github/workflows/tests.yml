@@ -77,9 +77,16 @@ jobs:
           python3 -m pip install --disable-pip-version-check --upgrade pip
           python3 -m pip install --disable-pip-version-check -e .
 
+      - name: Install the CJK font used by PDF fixture tests
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y fonts-wqy-zenhei
+          test -r /usr/share/fonts/truetype/wqy/wqy-zenhei.ttc
+
       - name: Run the test suite
         env:
           # 运行时严格离线：任何测试都不得在 CI 上访问模型 provider 或 Hugging Face。
           HF_HUB_OFFLINE: "1"
           TRANSFORMERS_OFFLINE: "1"
-        run: python3 -m pytest -q --tb=short -rf
+          ENTELECHEIA_EVAL_CJK_FONT: /usr/share/fonts/truetype/wqy/wqy-zenhei.ttc
+        run: python3 -m pytest -q --tb=short -rf tests evals/multi_doc

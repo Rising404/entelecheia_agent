@@ -1,4 +1,4 @@
-"""Run synthetic attachments through the existing Session/Entry/L1 product path."""
+"""Run multi-document attachments through the existing Session/Entry/L1 product path."""
 
 from __future__ import annotations
 
@@ -15,7 +15,7 @@ import tempfile
 import time
 import uuid
 
-from .cases import CASES, materialize
+from .cases import CASES, Case, materialize
 from .complex_cases import COMPLEX_CASES
 from .pdf_cases import PDF_CASES
 from .text_cases import TEXT_CASES
@@ -40,12 +40,18 @@ SUITES = {
 
 def features_for(case) -> dict:
     features = dict(FEATURES)
-    if case.suite == "complex":
+    if case.suite in {"complex", "docbench"}:
         features.update(l1_max_attempts=32, turn_wall_clock_budget_s=1800)
     return features
 
 
 def input_statistics(case) -> dict:
+    if case.source_pdfs:
+        return {
+            "document_count": len(case.source_pdfs), "pdf_count": len(case.source_pdfs),
+            "pdf_pages": sum(pdf.physical_pages for pdf in case.source_pdfs), "image_count": 0,
+            "pdf_bytes": sum(pdf.path.stat().st_size for pdf in case.source_pdfs),
+        }
     return {
         "document_count": len(case.documents) + len(case.images) + int(case.needs_vision and not case.images),
         "pdf_count": sum(name.endswith(".pdf") for name, _ in case.documents),
@@ -101,7 +107,7 @@ def require_worker_namespace(case_root: Path) -> None:
             raise ValueError(f"worker refuses a non-isolated {key}")
 
 
-def worker(case_id: str, case_root: Path, output: Path) -> int:
+def worker(case: Case, case_root: Path, output: Path) -> int:
     # All state environment variables are supplied before this fresh process imports the app.
     require_worker_namespace(case_root)
     from personagraph.configuration.paths import load_dotenv
@@ -117,7 +123,6 @@ def worker(case_id: str, case_root: Path, output: Path) -> int:
     from personagraph.workspace.ingestion.composition import build_document_maintenance_lifecycle
     from personagraph.workspace.storage.context import current as current_project_database
 
-    case = next(item for item in ALL_CASES if item.id == case_id)
     started = time.monotonic()
     row = {
         "case_id": case.id, "scenario": case.scenario, "question": case.question,
@@ -166,7 +171,7 @@ def worker(case_id: str, case_root: Path, output: Path) -> int:
             try:
                 response = sessions.chat_turn({
                     "session_id": session_id,
-                    "message": "请仅依据本轮提供的附件回答，不使用网络或外部知识。\n" + case.question,
+                    "message": question_message(case),
                     "attachment_ids": uploaded,
                     "client_request_id": f"multi-doc-{uuid.uuid4().hex}",
                     "config": str(config),
@@ -223,7 +228,7 @@ def worker(case_id: str, case_root: Path, output: Path) -> int:
 def write_report(directory: Path, report: dict) -> None:
     save(directory / "results.json", report)
     lines = ["# 多文档真实模型测试", "", f"运行：{report['run_id']}", "",
-             "输入均为原创合成文档；每题使用独立进程、Project 和 Session。参考答案不挂载给模型。",
+             "每题使用独立进程、Project 和 Session。参考答案不挂载给模型；来源与套件身份单独记录。",
              "工程完成状态与答案正确性分开；字面事实覆盖仅辅助人工检查，不作为正确率。", "",
              "## API 探测", "", "```json", json.dumps(report["probes"], ensure_ascii=False, indent=2), "```", ""]
     for row in report["cases"]:
@@ -243,24 +248,49 @@ def write_report(directory: Path, report: dict) -> None:
     (directory / "report.md").write_text("\n".join(lines), encoding="utf-8")
 
 
+def question_message(case: Case) -> str:
+    if case.suite == "docbench":
+        return ("Answer using only the four attached PDFs. Identify the relevant document and "
+                "cite its filename and physical PDF page numbers. Do not use external knowledge.\n\n"
+                + case.question)
+    return "请仅依据本轮提供的附件回答，不使用网络或外部知识。\n" + case.question
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--allow-live", action="store_true")
-    parser.add_argument("--suite", choices=tuple(SUITES), default="pdf")
-    parser.add_argument("--cases", nargs="+", choices=[case.id for case in ALL_CASES])
+    parser.add_argument("--suite", choices=(*SUITES, "docbench"), default="pdf")
+    parser.add_argument("--cases", nargs="+")
+    parser.add_argument("--data-root", type=Path, help="Original DocBench data directory (docbench suite only)")
     parser.add_argument("--list", action="store_true")
-    parser.add_argument("--worker", choices=[case.id for case in ALL_CASES], help=argparse.SUPPRESS)
+    parser.add_argument("--worker", help=argparse.SUPPRESS)
     parser.add_argument("--case-root", type=Path, help=argparse.SUPPRESS)
     parser.add_argument("--output", type=Path, help=argparse.SUPPRESS)
     args = parser.parse_args()
+    if not args.list and not args.allow_live:
+        parser.error("real API requests require --allow-live")
+    if args.suite == "docbench":
+        if args.data_root is None:
+            parser.error("docbench requires --data-root")
+        from .docbench import load_cases
+
+        available = load_cases(args.data_root)
+        defaults = available
+    else:
+        if args.data_root is not None:
+            parser.error("--data-root is only valid for docbench")
+        available, defaults = ALL_CASES, SUITES[args.suite]
+    by_id = {case.id: case for case in available}
+    requested = [args.worker] if args.worker else args.cases
+    if requested and (len(requested) != len(set(requested)) or any(key not in by_id for key in requested)):
+        parser.error("unknown or duplicate case ID for this suite")
+    selected = tuple(by_id[key] for key in requested) if requested else defaults
     if args.list:
-        for case in SUITES[args.suite]:
+        for case in selected:
             print(f"{case.id}: {case.scenario} {input_statistics(case)}")
         return 0
-    if not args.allow_live:
-        parser.error("real API requests require --allow-live")
     if args.worker:
-        return worker(args.worker, args.case_root, args.output)
+        return worker(selected[0], args.case_root, args.output)
 
     run_id = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ") + "-" + uuid.uuid4().hex[:6]
     directory = HERE / "runs" / run_id
@@ -277,10 +307,15 @@ def main() -> int:
         source.update(str(path.relative_to(ROOT)).encode())
         source.update(path.read_bytes())
     report = {"run_id": run_id, "probes": probes, "private_state_root": str(private_root),
-              "source_sha256": source.hexdigest(), "suite": args.suite, "cases": []}
+              "source_sha256": source.hexdigest(), "suite": args.suite,
+              "case_count": len(selected), "status": "running", "cases": []}
+    if args.suite == "docbench":
+        from .docbench import SELECTION
+
+        report["selection_sha256"] = hashlib.sha256(SELECTION.read_bytes()).hexdigest()
+        report["official_comparable"] = False
     write_report(directory, report)
     print(json.dumps({"probes": probes, "results": str(directory)}, ensure_ascii=False), flush=True)
-    selected = tuple(case for case in ALL_CASES if case.id in args.cases) if args.cases else SUITES[args.suite]
     for case in selected:
         blocked = not probes["task"]["ok"] or (case.needs_vision and not probes["vision"]["ok"])
         if blocked:
@@ -296,7 +331,10 @@ def main() -> int:
             output = directory / f"{case.id}.json"
             print(f"START {case.id}", flush=True)
             command = [sys.executable, "-m", "evals.multi_doc.run", "--allow-live",
-                       "--worker", case.id, "--case-root", str(case_root), "--output", str(output)]
+                       "--suite", args.suite, "--worker", case.id,
+                       "--case-root", str(case_root), "--output", str(output)]
+            if args.data_root is not None:
+                command += ["--data-root", str(args.data_root.resolve())]
             with (directory / f"{case.id}.log").open("w", encoding="utf-8") as log:
                 try:
                     process = subprocess.run(
@@ -320,7 +358,11 @@ def main() -> int:
         report["cases"].append(row)
         write_report(directory, report)
         print(f"END {case.id}: {row['status']} chain_complete={row['chain_complete']}", flush=True)
-    return 0 if all(row["chain_complete"] for row in report["cases"]) else 1
+    succeeded = all(row["chain_complete"] for row in report["cases"])
+    report.update(status="completed" if succeeded else "completed_with_failures",
+                  finished_at=datetime.now(timezone.utc).isoformat())
+    write_report(directory, report)
+    return 0 if succeeded else 1
 
 
 if __name__ == "__main__":

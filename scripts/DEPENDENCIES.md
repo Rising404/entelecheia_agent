@@ -42,6 +42,16 @@ directory-handle semantics and fail closed there. Evaluation file locking uses
 See the [platform notes](../frontend/README.md) before treating a shell launch as
 end-to-end application support.
 
+## CJK font for PDF fixture tests
+
+The multi-document PDF exporter needs a local CJK TrueType font. macOS uses
+`/System/Library/Fonts/STHeiti Light.ttc`; other environments must set
+`ENTELECHEIA_EVAL_CJK_FONT` explicitly. Ubuntu CI installs `fonts-wqy-zenhei`
+and uses `/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc`. This is a test resource,
+not a model download. Missing fonts fail the generation tests; they are not skipped.
+The published PDFs keep their original bytes. Regeneration records the selected
+font hash, and byte-for-byte comparison applies when that hash matches.
+
 ## Explicit retrieval model preparation
 
 Model weights are not in Git, the Python lock, or bootstrap. Check availability:

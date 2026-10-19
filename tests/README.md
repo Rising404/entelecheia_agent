@@ -41,6 +41,7 @@
 .venv/bin/python -m pytest tests/retrieval
 .venv/bin/python -m pytest tests/session_context
 .venv/bin/python -m pytest tests/evals
+.venv/bin/python -m pytest tests/evals/test_multi_doc_docbench.py evals/multi_doc
 .venv/bin/python -m pytest tests/tools/test_tool_platform.py
 ```
 

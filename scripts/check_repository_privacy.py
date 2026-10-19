@@ -836,6 +836,8 @@ def path_violations(
     lowered_parts = tuple(part.casefold() for part in parts)
     if lowered_parts[0] in FORBIDDEN_ROOTS:
         violations.append(Violation(path, f"private repository root: {parts[0]}/"))
+    if lowered_parts[:3] == ("evals", "multi_doc", "local"):
+        violations.append(Violation(path, "private multi-document benchmark inputs"))
 
     if (
         lowered_parts[:2] == RETRIEVAL_ARTIFACT_ROOT
