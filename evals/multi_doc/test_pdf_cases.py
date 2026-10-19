@@ -8,10 +8,10 @@ from pathlib import Path
 from pypdf import PdfReader
 import pytest
 
-from entelecheia.eval.multi_doc.cases import materialize
-from entelecheia.eval.multi_doc.export_pdf import export
-from entelecheia.eval.multi_doc.pdf_cases import ACTIVITIES, PDF_CASES, PDF_DOCUMENTS
-from entelecheia.eval.multi_doc.run import ROOT, SUITES
+from evals.multi_doc.cases import materialize
+from evals.multi_doc.export_pdf import export
+from evals.multi_doc.pdf_cases import ACTIVITIES, PDF_CASES, PDF_DOCUMENTS
+from evals.multi_doc.run import ROOT, SUITES
 
 
 def compact(text: str) -> str:

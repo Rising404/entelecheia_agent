@@ -537,6 +537,70 @@ def test_reviewed_desktop_screenshot_requires_exact_public_bytes() -> None:
         assert any("screenshot hash/size mismatch" in item.reason for item in violations)
 
 
+def _synthetic_pdf_dataset() -> dict[str, bytes]:
+    return {path: (REPOSITORY_ROOT / path).read_bytes()
+            for path in privacy.REVIEWED_SYNTHETIC_PDF_FILES}
+
+
+@pytest.mark.parametrize("mutation", ["replace", "missing", "extra", "manifest"])
+def test_reviewed_synthetic_pdf_dataset_requires_exact_complete_files(mutation) -> None:
+    files = _synthetic_pdf_dataset()
+    assert not inspect_snapshot(files, files.__getitem__)
+    pdf = next(path for path in files if path.endswith(".pdf"))
+    assert path_violations(pdf), "a filename alone does not approve a PDF"
+    if mutation == "replace":
+        files[pdf] += b"unreviewed content"
+    elif mutation == "missing":
+        del files[pdf]
+    elif mutation == "extra":
+        files[privacy.SYNTHETIC_PDF_DATASET_ROOT + "extra.json"] = b"{}"
+    else:
+        # Rewriting the local manifest cannot approve replacement payloads.
+        path = privacy.SYNTHETIC_PDF_DATASET_ROOT + "manifest.json"
+        value = json.loads(files[path])
+        files[pdf] += b"unreviewed content"
+        value["files"][0]["sha256"] = hashlib.sha256(files[pdf]).hexdigest()
+        value["files"][0]["bytes"] = len(files[pdf])
+        files[path] = json.dumps(value).encode()
+    assert inspect_snapshot(files, files.__getitem__)
+
+
+def test_reviewed_synthetic_pdf_dataset_rejects_other_pdf_paths_and_unreadable_files() -> None:
+    files = _synthetic_pdf_dataset()
+    pdf = next(path for path in files if path.endswith(".pdf"))
+    assert inspect_snapshot(["notes/document_01.pdf"], lambda _: files[pdf])
+
+    def read(path):
+        if path == pdf:
+            raise CheckError("unavailable fixture")
+        return files[path]
+
+    assert any("could not be read" in x.reason for x in inspect_snapshot(files, read))
+
+
+def test_reviewed_synthetic_pdf_dataset_uses_selected_git_snapshot(tmp_path) -> None:
+    repository = tmp_path / "repository"
+    repository.mkdir()
+    _git(repository, "init", "--quiet")
+    (repository / ".gitignore").write_bytes((REPOSITORY_ROOT / ".gitignore").read_bytes())
+    files = _synthetic_pdf_dataset()
+    for relative, content in files.items():
+        path = repository / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(content)
+    _git(repository, "add", ".gitignore", *files)
+    _git(repository, "-c", "user.name=Privacy Test", "-c", "user.email=privacy@example.invalid",
+         "commit", "--quiet", "-m", "reviewed synthetic PDF dataset")
+    pdf = next(path for path in files if path.endswith(".pdf"))
+    (repository / pdf).write_bytes(b"unreviewed replacement")
+    assert _check(repository, "--worktree").returncode == 1
+    assert _check(repository, "--staged").returncode == 0
+    assert _check(repository, "--tree", "HEAD").returncode == 0
+    _git(repository, "add", pdf)
+    assert _check(repository, "--staged").returncode == 1
+    assert _check(repository, "--tree", "HEAD").returncode == 0
+
+
 def test_reviewed_desktop_screenshot_does_not_approve_other_image_paths() -> None:
     content = (REPOSITORY_ROOT / PUBLIC_SCREENSHOT).read_bytes()
     for path in (

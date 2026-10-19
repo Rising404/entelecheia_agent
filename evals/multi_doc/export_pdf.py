@@ -15,7 +15,7 @@ def _save(path: Path, data) -> None:
 
 
 def export(directory: Path) -> dict:
-    checkout = Path(__file__).resolve().parents[3]
+    checkout = Path(__file__).resolve().parents[2]
     if not directory.is_absolute() or directory.resolve().is_relative_to(checkout):
         raise ValueError("output must be an absolute directory outside the checkout")
     directory.mkdir(parents=True, exist_ok=False)

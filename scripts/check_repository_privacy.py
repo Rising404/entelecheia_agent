@@ -111,6 +111,22 @@ REVIEWED_SCREENSHOT_FILES = {
     ),
 }
 
+# User-approved original synthetic benchmark, published on 2026-10-18.
+# Approval covers only these exact bytes and paths, not other PDFs or datasets.
+SYNTHETIC_PDF_DATASET_ROOT = "evals/multi_doc/dataset/"
+REVIEWED_SYNTHETIC_PDF_FILES = {
+    SYNTHETIC_PDF_DATASET_ROOT + name: (digest, size)
+    for name, digest, size in (
+        ("manifest.json", "6d564e2abdad9d0e84ef3f8b1fcdb00347a0b0633bf189303f63b1deb5986e1f", 1315),
+        ("questions.json", "7dda4551651177fdc8380e7ead552183273e99845d06b5b3bfc1af11055555b8", 4745),
+        ("gold.json", "817fe0ceae88095ad7db6691efc72129055bbb3ef02167427d69c2306959d4be", 11721),
+        ("attachments/document_01.pdf", "2e3e185de34e5843bd77931896e2b93c6e6a15e0d1e2fbe81fa14bb3ef44a175", 165803),
+        ("attachments/document_02.pdf", "00ff448a0ec62457a7c2f2686147966cc295fd0d48b962c4f63d5b0287f67bf8", 166114),
+        ("attachments/document_03.pdf", "ff5a336af1aaf36a854f3741327c90f100d60a92a10a5b95029bbb31b6178231", 165254),
+        ("attachments/document_04.pdf", "4b29df482e4ea0b0cb2678c161525fb5f9e00fec0456910dedac0dca840bf315", 165600),
+    )
+}
+
 FORBIDDEN_SUFFIXES = (
     ".arrow",
     ".aac",
@@ -687,7 +703,7 @@ def _snapshot_content_cache(
     selected = {
         path: object_id
         for path, object_id in object_ids_by_path.items()
-        if path in REVIEWED_SCREENSHOT_FILES or (
+        if path in REVIEWED_SCREENSHOT_FILES or path in REVIEWED_SYNTHETIC_PDF_FILES or (
             (not path_violations(path) or path in manifests)
             and (_is_eval_summary(path) or _is_text_candidate(path))
         )
@@ -810,7 +826,7 @@ def _retrieval_artifact_path(path: str) -> bool:
 
 def path_violations(
     path: str, *, reviewed_evidence: bool = False, reviewed_screenshot: bool = False,
-    reviewed_retrieval: bool = False,
+    reviewed_retrieval: bool = False, reviewed_synthetic_pdf: bool = False,
 ) -> list[Violation]:
     parts = _parts(path)
     if not parts:
@@ -850,6 +866,7 @@ def path_violations(
         violations.append(Violation(path, "local diagnostic artifact filename"))
     if filename.endswith(FORBIDDEN_SUFFIXES) and not (
         reviewed_retrieval or (reviewed_screenshot and path in REVIEWED_SCREENSHOT_FILES)
+        or (reviewed_synthetic_pdf and path in REVIEWED_SYNTHETIC_PDF_FILES)
     ):
         violations.append(Violation(path, "private data/database/key material file type"))
 
@@ -1551,6 +1568,31 @@ def _retrieval_content_violations(path: str, content: bytes) -> list[Violation]:
     return sorted(violations)
 
 
+def _reviewed_synthetic_pdf_entries(
+    paths: set[str], read: Callable[[str], bytes],
+) -> tuple[set[str], list[Violation]]:
+    present = {path for path in paths if path.startswith(SYNTHETIC_PDF_DATASET_ROOT)}
+    if not present:
+        return set(), []
+    approved = set()
+    violations = [Violation(path, "file is not in the reviewed synthetic PDF dataset")
+                  for path in sorted(present - REVIEWED_SYNTHETIC_PDF_FILES.keys())]
+    for path, expected in REVIEWED_SYNTHETIC_PDF_FILES.items():
+        if path not in present:
+            violations.append(Violation(path, "reviewed synthetic PDF dataset file is missing"))
+            continue
+        try:
+            content = read(path)
+        except (OSError, CheckError):
+            violations.append(Violation(path, "reviewed synthetic PDF dataset file could not be read"))
+            continue
+        if (hashlib.sha256(content).hexdigest(), len(content)) != expected:
+            violations.append(Violation(path, "reviewed synthetic PDF dataset hash/size mismatch"))
+        else:
+            approved.add(path)
+    return approved, violations
+
+
 def inspect_snapshot(
     paths: Iterable[str], read: Callable[[str], bytes], *, committed_history: bool = False,
 ) -> list[Violation]:
@@ -1559,7 +1601,10 @@ def inspect_snapshot(
         set(paths), read, committed_history=committed_history,
     )
     retrieval, retrieval_manifest_violations = _reviewed_retrieval_entries(set(paths), read)
-    violations: set[Violation] = set((*manifest_violations, *retrieval_manifest_violations))
+    synthetic, synthetic_violations = _reviewed_synthetic_pdf_entries(set(paths), read)
+    violations: set[Violation] = set((
+        *manifest_violations, *retrieval_manifest_violations, *synthetic_violations,
+    ))
     for path in paths:
         expected = retrieval.get(path) or evidence.get(path)
         is_retrieval = path in retrieval
@@ -1575,6 +1620,7 @@ def inspect_snapshot(
         current_path_violations = path_violations(
             path, reviewed_evidence=path in evidence, reviewed_screenshot=reviewed_screenshot,
             reviewed_retrieval=is_retrieval,
+            reviewed_synthetic_pdf=path in synthetic,
         )
         violations.update(current_path_violations)
         is_summary = _is_eval_summary(path)

@@ -83,6 +83,11 @@ htmlcov/
 *.csv
 *.tsv
 *.pdf
+# Original synthetic PDFs explicitly approved for publication; exact bytes are pinned by the privacy gate.
+!/evals/multi_doc/dataset/attachments/document_01.pdf
+!/evals/multi_doc/dataset/attachments/document_02.pdf
+!/evals/multi_doc/dataset/attachments/document_03.pdf
+!/evals/multi_doc/dataset/attachments/document_04.pdf
 *.doc
 *.docx
 *.odt

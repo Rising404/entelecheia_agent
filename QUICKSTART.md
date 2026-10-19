@@ -153,19 +153,16 @@ PERSONAGRAPH_DOCUMENT_ENGINE=native ./frontend/start-electron.command
 本身不会在命令退出后变成 shell 的永久配置。仓库根 `.env` 不作为运行配置加载，
 留空环境值也不会清除 GUI 中已有的配置。
 
-### 3.3 生成自己的小样例，再提问
+### 3.3 使用四份合成 PDF 提问
 
-先读 [合成文档样例](examples/document_qa/README.md)。它不是 DocBench 原题或第三方 PDF。
-用一个仓库外、尚未使用的输出文件路径生成样例：
+先读 [多文档评测样本](evals/multi_doc/README.md)。仓库已提供
+[四份合成 PDF](evals/multi_doc/dataset/attachments/)、
+[十二道问题](evals/multi_doc/dataset/questions.json)和独立的人工复核参考。
+这些内容由本项目原创，不使用 DocBench 原题或用户文档。
 
-```bash
-.venv/bin/python examples/document_qa/generate_sample.py \
-  --output /absolute/path/outside/repo/harbor_handbook.pdf
-```
-
-**成功标志：**命令完成，指定路径出现可打开的合成 PDF；内容与样例说明一致。
-在 GUI 中新建 Session，选择仓库外工作目录，上传该 PDF，再使用样例说明中的任务。
-不要把仓库、模型缓存、配置目录或 benchmark 的 QA/评分目录当成任务工作目录。
+在 GUI 中新建 Session，选择仓库外工作目录，上传全部四份 PDF，再从题目列表中输入一个问题。
+每题只有一份 PDF 包含完整答案，其余三份为干扰文档；模型应注明文件名和物理页码。
+逐题独立测试时，为每题新建 Session。只上传 PDF，不把题目 JSON、参考答案或整个仓库挂载给 Agent。
 
 新上传的附件保存在绑定工作目录的 `附件/YYYY-MM-DD/文件名` 下，按上传时的 UTC 日期归档。
 同日同名文件使用 `文件名_2.pdf`、`文件名_3.pdf` 等后缀，不覆盖已有文件；

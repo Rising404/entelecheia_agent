@@ -7,10 +7,10 @@ import sys
 
 import pytest
 
-from entelecheia.eval.multi_doc.cases import CASES, materialize
-from entelecheia.eval.multi_doc.complex_cases import COMPLEX_CASES
-from entelecheia.eval.multi_doc.run import ALL_CASES, ROOT, SUITES, chain_succeeded, isolated_environment, require_worker_namespace
-from entelecheia.eval.multi_doc.text_cases import TEXT_CASES
+from evals.multi_doc.cases import CASES, materialize
+from evals.multi_doc.complex_cases import COMPLEX_CASES
+from evals.multi_doc.run import ALL_CASES, ROOT, SUITES, chain_succeeded, isolated_environment, require_worker_namespace
+from evals.multi_doc.text_cases import TEXT_CASES
 
 
 @pytest.mark.parametrize("case", CASES, ids=lambda case: case.id)
@@ -30,7 +30,7 @@ def test_only_documents_are_materialized_without_answers(tmp_path, case):
 
 def test_live_execution_requires_explicit_opt_in():
     completed = subprocess.run(
-        [sys.executable, "-m", "entelecheia.eval.multi_doc.run"], cwd=ROOT,
+        [sys.executable, "-m", "evals.multi_doc.run"], cwd=ROOT,
         capture_output=True, text=True, check=False,
     )
     assert completed.returncode == 2

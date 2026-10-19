@@ -1,0 +1,378 @@
+[
+  {
+    "case_id": "pdf_qinglan_north_handoff",
+    "target_pdf": "document_01.pdf",
+    "distractor_pdfs": [
+      "document_02.pdf",
+      "document_03.pdf",
+      "document_04.pdf"
+    ],
+    "reference": "16:20前，B楼106室，陆溪；唯一来源document_01.pdf第2页。",
+    "evidence": [
+      {
+        "file": "document_01.pdf",
+        "physical_page": 2,
+        "quote": "设备须于16:20前送达B楼106室，由陆溪接收。"
+      }
+    ],
+    "review_rubric": [
+      "时间、房间和接收人均正确",
+      "选中唯一目标PDF并引用第2页",
+      "不混入同项目其他站点或另一项目的数据",
+      "不把会议或楼宇开放时间当作交接安排"
+    ]
+  },
+  {
+    "case_id": "pdf_qinglan_north_materials",
+    "target_pdf": "document_01.pdf",
+    "distractor_pdfs": [
+      "document_02.pdf",
+      "document_03.pdf",
+      "document_04.pdf"
+    ],
+    "reference": "正式参与者23人，23×3+7=76张；唯一来源document_01.pdf第3、4页。",
+    "evidence": [
+      {
+        "file": "document_01.pdf",
+        "physical_page": 3,
+        "quote": "材料卡按每名已确认正式参与者3张发放；每场另备7张，全场只加一次。"
+      },
+      {
+        "file": "document_01.pdf",
+        "physical_page": 4,
+        "quote": "青岚项目北站最终名单：已确认正式参与者23人；引导员2人；未确认候补4人。"
+      }
+    ],
+    "review_rubric": [
+      "人数23、总数76正确",
+      "备用量全场只加一次，排除引导员和未确认候补",
+      "全部运算输入来自同一目标PDF",
+      "引用规则第3页及名单第4页"
+    ]
+  },
+  {
+    "case_id": "pdf_qinglan_north_devices",
+    "target_pdf": "document_01.pdf",
+    "distractor_pdfs": [
+      "document_02.pdf",
+      "document_03.pdf",
+      "document_04.pdf"
+    ],
+    "reference": "仅QN-11、QN-12可以借出；维修设备和电量不足设备不合格；唯一来源document_01.pdf第3、4页。",
+    "evidence": [
+      {
+        "file": "document_01.pdf",
+        "physical_page": 3,
+        "quote": "可借设备必须同时满足状态为可用、电量至少60%；恰好达到阈值也合格。"
+      },
+      {
+        "file": "document_01.pdf",
+        "physical_page": 4,
+        "quote": "QN-11 可用 60%"
+      },
+      {
+        "file": "document_01.pdf",
+        "physical_page": 4,
+        "quote": "QN-12 可用 82%"
+      },
+      {
+        "file": "document_01.pdf",
+        "physical_page": 4,
+        "quote": "QN-13 维修中 91%"
+      },
+      {
+        "file": "document_01.pdf",
+        "physical_page": 4,
+        "quote": "QN-14 可用 55%"
+      }
+    ],
+    "review_rubric": [
+      "合格集合恰为QN-11、QN-12",
+      "恰好达到电量阈值合格，维修或不足阈值不合格",
+      "不借用其他PDF的规则或设备编号",
+      "引用规则第3页及台账第4页"
+    ]
+  },
+  {
+    "case_id": "pdf_qinglan_south_handoff",
+    "target_pdf": "document_02.pdf",
+    "distractor_pdfs": [
+      "document_01.pdf",
+      "document_03.pdf",
+      "document_04.pdf"
+    ],
+    "reference": "15:35前，C楼208室，唐越；唯一来源document_02.pdf第2页。",
+    "evidence": [
+      {
+        "file": "document_02.pdf",
+        "physical_page": 2,
+        "quote": "设备须于15:35前送达C楼208室，由唐越接收。"
+      }
+    ],
+    "review_rubric": [
+      "时间、房间和接收人均正确",
+      "选中唯一目标PDF并引用第2页",
+      "不混入同项目其他站点或另一项目的数据",
+      "不把会议或楼宇开放时间当作交接安排"
+    ]
+  },
+  {
+    "case_id": "pdf_qinglan_south_materials",
+    "target_pdf": "document_02.pdf",
+    "distractor_pdfs": [
+      "document_01.pdf",
+      "document_03.pdf",
+      "document_04.pdf"
+    ],
+    "reference": "正式参与者17人，17×4+6=74张；唯一来源document_02.pdf第3、4页。",
+    "evidence": [
+      {
+        "file": "document_02.pdf",
+        "physical_page": 3,
+        "quote": "材料卡按每名已确认正式参与者4张发放；每场另备6张，全场只加一次。"
+      },
+      {
+        "file": "document_02.pdf",
+        "physical_page": 4,
+        "quote": "青岚项目南站最终名单：已确认正式参与者17人；引导员3人；未确认候补6人。"
+      }
+    ],
+    "review_rubric": [
+      "人数17、总数74正确",
+      "备用量全场只加一次，排除引导员和未确认候补",
+      "全部运算输入来自同一目标PDF",
+      "引用规则第3页及名单第4页"
+    ]
+  },
+  {
+    "case_id": "pdf_qinglan_south_devices",
+    "target_pdf": "document_02.pdf",
+    "distractor_pdfs": [
+      "document_01.pdf",
+      "document_03.pdf",
+      "document_04.pdf"
+    ],
+    "reference": "仅QS-11、QS-12可以借出；维修设备和电量不足设备不合格；唯一来源document_02.pdf第3、4页。",
+    "evidence": [
+      {
+        "file": "document_02.pdf",
+        "physical_page": 3,
+        "quote": "可借设备必须同时满足状态为可用、电量至少70%；恰好达到阈值也合格。"
+      },
+      {
+        "file": "document_02.pdf",
+        "physical_page": 4,
+        "quote": "QS-11 可用 70%"
+      },
+      {
+        "file": "document_02.pdf",
+        "physical_page": 4,
+        "quote": "QS-12 可用 88%"
+      },
+      {
+        "file": "document_02.pdf",
+        "physical_page": 4,
+        "quote": "QS-13 维修中 93%"
+      },
+      {
+        "file": "document_02.pdf",
+        "physical_page": 4,
+        "quote": "QS-14 可用 64%"
+      }
+    ],
+    "review_rubric": [
+      "合格集合恰为QS-11、QS-12",
+      "恰好达到电量阈值合格，维修或不足阈值不合格",
+      "不借用其他PDF的规则或设备编号",
+      "引用规则第3页及台账第4页"
+    ]
+  },
+  {
+    "case_id": "pdf_chengchuan_north_handoff",
+    "target_pdf": "document_03.pdf",
+    "distractor_pdfs": [
+      "document_01.pdf",
+      "document_02.pdf",
+      "document_04.pdf"
+    ],
+    "reference": "17:10前，A楼315室，孟川；唯一来源document_03.pdf第2页。",
+    "evidence": [
+      {
+        "file": "document_03.pdf",
+        "physical_page": 2,
+        "quote": "设备须于17:10前送达A楼315室，由孟川接收。"
+      }
+    ],
+    "review_rubric": [
+      "时间、房间和接收人均正确",
+      "选中唯一目标PDF并引用第2页",
+      "不混入同项目其他站点或另一项目的数据",
+      "不把会议或楼宇开放时间当作交接安排"
+    ]
+  },
+  {
+    "case_id": "pdf_chengchuan_north_materials",
+    "target_pdf": "document_03.pdf",
+    "distractor_pdfs": [
+      "document_01.pdf",
+      "document_02.pdf",
+      "document_04.pdf"
+    ],
+    "reference": "正式参与者28人，28×2+9=65张；唯一来源document_03.pdf第3、4页。",
+    "evidence": [
+      {
+        "file": "document_03.pdf",
+        "physical_page": 3,
+        "quote": "材料卡按每名已确认正式参与者2张发放；每场另备9张，全场只加一次。"
+      },
+      {
+        "file": "document_03.pdf",
+        "physical_page": 4,
+        "quote": "澄川项目北站最终名单：已确认正式参与者28人；引导员2人；未确认候补5人。"
+      }
+    ],
+    "review_rubric": [
+      "人数28、总数65正确",
+      "备用量全场只加一次，排除引导员和未确认候补",
+      "全部运算输入来自同一目标PDF",
+      "引用规则第3页及名单第4页"
+    ]
+  },
+  {
+    "case_id": "pdf_chengchuan_north_devices",
+    "target_pdf": "document_03.pdf",
+    "distractor_pdfs": [
+      "document_01.pdf",
+      "document_02.pdf",
+      "document_04.pdf"
+    ],
+    "reference": "仅CN-11、CN-12可以借出；维修设备和电量不足设备不合格；唯一来源document_03.pdf第3、4页。",
+    "evidence": [
+      {
+        "file": "document_03.pdf",
+        "physical_page": 3,
+        "quote": "可借设备必须同时满足状态为可用、电量至少65%；恰好达到阈值也合格。"
+      },
+      {
+        "file": "document_03.pdf",
+        "physical_page": 4,
+        "quote": "CN-11 可用 65%"
+      },
+      {
+        "file": "document_03.pdf",
+        "physical_page": 4,
+        "quote": "CN-12 可用 79%"
+      },
+      {
+        "file": "document_03.pdf",
+        "physical_page": 4,
+        "quote": "CN-13 维修中 92%"
+      },
+      {
+        "file": "document_03.pdf",
+        "physical_page": 4,
+        "quote": "CN-14 可用 59%"
+      }
+    ],
+    "review_rubric": [
+      "合格集合恰为CN-11、CN-12",
+      "恰好达到电量阈值合格，维修或不足阈值不合格",
+      "不借用其他PDF的规则或设备编号",
+      "引用规则第3页及台账第4页"
+    ]
+  },
+  {
+    "case_id": "pdf_chengchuan_south_handoff",
+    "target_pdf": "document_04.pdf",
+    "distractor_pdfs": [
+      "document_01.pdf",
+      "document_02.pdf",
+      "document_03.pdf"
+    ],
+    "reference": "14:45前，D楼107室，叶舟；唯一来源document_04.pdf第2页。",
+    "evidence": [
+      {
+        "file": "document_04.pdf",
+        "physical_page": 2,
+        "quote": "设备须于14:45前送达D楼107室，由叶舟接收。"
+      }
+    ],
+    "review_rubric": [
+      "时间、房间和接收人均正确",
+      "选中唯一目标PDF并引用第2页",
+      "不混入同项目其他站点或另一项目的数据",
+      "不把会议或楼宇开放时间当作交接安排"
+    ]
+  },
+  {
+    "case_id": "pdf_chengchuan_south_materials",
+    "target_pdf": "document_04.pdf",
+    "distractor_pdfs": [
+      "document_01.pdf",
+      "document_02.pdf",
+      "document_03.pdf"
+    ],
+    "reference": "正式参与者19人，19×5+4=99张；唯一来源document_04.pdf第3、4页。",
+    "evidence": [
+      {
+        "file": "document_04.pdf",
+        "physical_page": 3,
+        "quote": "材料卡按每名已确认正式参与者5张发放；每场另备4张，全场只加一次。"
+      },
+      {
+        "file": "document_04.pdf",
+        "physical_page": 4,
+        "quote": "澄川项目南站最终名单：已确认正式参与者19人；引导员4人；未确认候补3人。"
+      }
+    ],
+    "review_rubric": [
+      "人数19、总数99正确",
+      "备用量全场只加一次，排除引导员和未确认候补",
+      "全部运算输入来自同一目标PDF",
+      "引用规则第3页及名单第4页"
+    ]
+  },
+  {
+    "case_id": "pdf_chengchuan_south_devices",
+    "target_pdf": "document_04.pdf",
+    "distractor_pdfs": [
+      "document_01.pdf",
+      "document_02.pdf",
+      "document_03.pdf"
+    ],
+    "reference": "仅CS-11、CS-12可以借出；维修设备和电量不足设备不合格；唯一来源document_04.pdf第3、4页。",
+    "evidence": [
+      {
+        "file": "document_04.pdf",
+        "physical_page": 3,
+        "quote": "可借设备必须同时满足状态为可用、电量至少80%；恰好达到阈值也合格。"
+      },
+      {
+        "file": "document_04.pdf",
+        "physical_page": 4,
+        "quote": "CS-11 可用 80%"
+      },
+      {
+        "file": "document_04.pdf",
+        "physical_page": 4,
+        "quote": "CS-12 可用 96%"
+      },
+      {
+        "file": "document_04.pdf",
+        "physical_page": 4,
+        "quote": "CS-13 维修中 98%"
+      },
+      {
+        "file": "document_04.pdf",
+        "physical_page": 4,
+        "quote": "CS-14 可用 72%"
+      }
+    ],
+    "review_rubric": [
+      "合格集合恰为CS-11、CS-12",
+      "恰好达到电量阈值合格，维修或不足阈值不合格",
+      "不借用其他PDF的规则或设备编号",
+      "引用规则第3页及台账第4页"
+    ]
+  }
+]

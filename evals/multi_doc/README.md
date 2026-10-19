@@ -20,10 +20,27 @@
 PDF 含可搜索中文文字层和真实表格，尚不覆盖扫描件、OCR 或复杂视觉理解。
 `smoke`、`text`、`complex` 保留为历史诊断套件，其多来源或混合格式任务不属于本次 PDF 基准。
 
+### 直接使用已提供的样本
+
+| 内容 | 文件 |
+| --- | --- |
+| 十二道完整问题及每题附件列表 | [questions.json](dataset/questions.json) |
+| 参考答案、唯一目标文件、物理页码与复核标准 | [gold.json](dataset/gold.json) |
+| 四份固定输入 PDF | [document_01.pdf](dataset/attachments/document_01.pdf)、[document_02.pdf](dataset/attachments/document_02.pdf)、[document_03.pdf](dataset/attachments/document_03.pdf)、[document_04.pdf](dataset/attachments/document_04.pdf) |
+| 文件大小、SHA-256 与字体身份 | [manifest.json](dataset/manifest.json) |
+
+这些文件是两轮十二题评测使用的原创合成样本，按原字节迁入；四份 PDF 由全部题目共享。
+用户已授权公开此精确样本包，仓库隐私门禁校验七个文件的完整集合和哈希。
+在 GUI 中每题新建 Session，绑定仓库外工作目录，上传四份 PDF，再输入一个问题。
+模型只能接收 PDF 和当前问题；`gold.json` 留给人工复核，不能挂载整个样本目录。
+原始模型回复、轨迹与数据库不随样本包发布。
+
+### 重新生成
+
 离线导出可直接使用的文件，输出必须在仓库之外，且目录不能已存在：
 
 ```bash
-.venv/bin/python -m entelecheia.eval.multi_doc.export_pdf \
+.venv/bin/python -m evals.multi_doc.export_pdf \
   --output /private/tmp/entelecheia-pdf-benchmark
 ```
 
@@ -79,24 +96,24 @@ PDF 含可搜索中文文字层和真实表格，尚不覆盖扫描件、OCR 或
 
 ```bash
 # 离线查看用例；不读取模型凭据，不调用 API。
-.venv/bin/python -m entelecheia.eval.multi_doc.run --list
+.venv/bin/python -m evals.multi_doc.run --list
 
 # 分别使用现行任务与视觉适配器发送最小真实请求。
-.venv/bin/python -m entelecheia.eval.multi_doc.probe --allow-live
+.venv/bin/python -m evals.multi_doc.probe --allow-live
 
 # 先自动探测 API，再运行现行 PDF 套件的十二题。
-.venv/bin/python -m entelecheia.eval.multi_doc.run --allow-live --suite pdf
+.venv/bin/python -m evals.multi_doc.run --allow-live --suite pdf
 
 # 单独运行或在更新视觉凭据后补跑；每次产生新的运行目录。
-.venv/bin/python -m entelecheia.eval.multi_doc.run --allow-live --suite smoke --cases visual_source
+.venv/bin/python -m evals.multi_doc.run --allow-live --suite smoke --cases visual_source
 
 # 扩充后的短文本套件：4 道原题 + 8 道新增题。
-.venv/bin/python -m entelecheia.eval.multi_doc.run --suite text --list
-.venv/bin/python -m entelecheia.eval.multi_doc.run --allow-live --suite text
+.venv/bin/python -m evals.multi_doc.run --suite text --list
+.venv/bin/python -m evals.multi_doc.run --allow-live --suite text
 
 # 查看并实际运行复杂混合格式套件。
-.venv/bin/python -m entelecheia.eval.multi_doc.run --suite complex --list
-.venv/bin/python -m entelecheia.eval.multi_doc.run --allow-live --suite complex
+.venv/bin/python -m evals.multi_doc.run --suite complex --list
+.venv/bin/python -m evals.multi_doc.run --allow-live --suite complex
 ```
 
 `--allow-live` 显式启用联网和可能收费的真实推理。复用本机已配置的 Router/L1 与视觉端点，
@@ -138,6 +155,6 @@ Python 源码。人工复核应逐项对照原文、图片、工具返回和最�
 离线检查：
 
 ```bash
-.venv/bin/python -m ruff check entelecheia/eval/multi_doc
-.venv/bin/python -m pytest -q entelecheia/eval/multi_doc
+.venv/bin/python -m ruff check evals/multi_doc
+.venv/bin/python -m pytest -q evals/multi_doc
 ```

@@ -1,0 +1,40 @@
+{
+  "suite": "pdf",
+  "case_count": 12,
+  "pdf_count": 4,
+  "contract": "Each question receives all four PDFs; exactly one PDF contains all answer evidence.",
+  "model_input": "Only attachments/ PDFs and one question; never mount the export root or gold.json.",
+  "font_sha256": "a57b0316cc0544f682b8fb9855e14ade79ae77340ef6a01ba9210e25b4c5a5b7",
+  "files": [
+    {
+      "path": "attachments/document_01.pdf",
+      "bytes": 165803,
+      "sha256": "2e3e185de34e5843bd77931896e2b93c6e6a15e0d1e2fbe81fa14bb3ef44a175"
+    },
+    {
+      "path": "attachments/document_02.pdf",
+      "bytes": 166114,
+      "sha256": "00ff448a0ec62457a7c2f2686147966cc295fd0d48b962c4f63d5b0287f67bf8"
+    },
+    {
+      "path": "attachments/document_03.pdf",
+      "bytes": 165254,
+      "sha256": "ff5a336af1aaf36a854f3741327c90f100d60a92a10a5b95029bbb31b6178231"
+    },
+    {
+      "path": "attachments/document_04.pdf",
+      "bytes": 165600,
+      "sha256": "4b29df482e4ea0b0cb2678c161525fb5f9e00fec0456910dedac0dca840bf315"
+    },
+    {
+      "path": "questions.json",
+      "bytes": 4745,
+      "sha256": "7dda4551651177fdc8380e7ead552183273e99845d06b5b3bfc1af11055555b8"
+    },
+    {
+      "path": "gold.json",
+      "bytes": 11721,
+      "sha256": "817fe0ceae88095ad7db6691efc72129055bbb3ef02167427d69c2306959d4be"
+    }
+  ]
+}

@@ -8,7 +8,7 @@ Entelecheia 是一个面向文档研究与问答的桌面 Agent 项目。模型�
 
 当前重点是 **L1 文档任务**：围绕一次用户请求，模型通过多步工具调用收集材料、组织回答。项目仍在开发中。
 
-[开始使用](QUICKSTART.md) · [合成文档示例](examples/document_qa/README.md) · [架构与源码导览](ARCHITECTURE.md) · [实验结果](#阶段性评测与能力表现)
+[开始使用](QUICKSTART.md) · [合成文档示例](evals/multi_doc/README.md) · [架构与源码导览](ARCHITECTURE.md) · [实验结果](#阶段性评测与能力表现)
 
 ## 可以用它做什么
 
@@ -17,7 +17,7 @@ Entelecheia 是一个面向文档研究与问答的桌面 Agent 项目。模型�
 - 在对话中查看工具活动，结合持久执行记录核对来源、调用和错误。
 - 在授权 Project 的 `output/` 下新建文本产物；当前默认能力不允许覆盖已有用户文件。
 
-第一次体验可使用仓库提供的[三页合成手册](examples/document_qa/README.md)：完成一次信息查找、一次跨页综合，再检查模型是否能如实说明文档未提供的信息。
+第一次体验可使用仓库提供的[四份合成 PDF 与十二道问题](evals/multi_doc/README.md)：每题从四份文档中找到唯一目标，完成信息查找、同一文档跨页计算或设备条件筛选。
 
 ## 核心设计
 
@@ -156,7 +156,7 @@ cd entelecheia_agent
 PERSONAGRAPH_DOCUMENT_ENGINE=native ./frontend/start-electron.command
 ```
 
-启动后，在“设置 → 任务模型配置”填写并启用自己的模型配置，再上传[合成示例](examples/document_qa/README.md)提问。默认 `mock` 只返回占位结果；页面视觉分析需要另行配置视觉模型。
+启动后，在“设置 → 任务模型配置”填写并启用自己的模型配置，再上传[合成示例](evals/multi_doc/README.md)提问。默认 `mock` 只返回占位结果；页面视觉分析需要另行配置视觉模型。
 
 Provider 密钥保存在本地明文配置中，任务所需的摘录与页面图像可能发送给你配置的服务商，真实调用可能收费。首次配置、独立状态预览、模型检查、其他平台限制与故障排查统一见 [QUICKSTART.md](QUICKSTART.md)。
 
@@ -174,7 +174,7 @@ Provider 密钥保存在本地明文配置中，任务所需的摘录与页面�
 | 你想了解 | 入口 |
 | --- | --- |
 | 第一次安装、配置与文档问答 | [QUICKSTART.md](QUICKSTART.md) |
-| 一个可公开、可重建的小型文档任务 | [examples/document_qa](examples/document_qa/README.md) |
+| 四份 PDF、十二道问题及参考证据 | [多文档评测样本](evals/multi_doc/README.md) |
 | 执行主干、状态边界和源码阅读路线 | [ARCHITECTURE.md](ARCHITECTURE.md) |
 | 安装闭包、锁文件与本地模型 | [scripts/DEPENDENCIES.md](scripts/DEPENDENCIES.md) |
 | 评测入口、隔离及复现边界 | [evals/README.md](evals/README.md) |

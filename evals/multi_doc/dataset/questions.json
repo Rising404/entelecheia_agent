@@ -1,0 +1,122 @@
+[
+  {
+    "case_id": "pdf_qinglan_north_handoff",
+    "question": "青岚项目北站本次活动的设备最晚几点送达、送到哪里、由谁接收？请仅依据附件回答，注明证据所在的PDF文件名和物理页码。",
+    "attachments": [
+      "document_01.pdf",
+      "document_02.pdf",
+      "document_03.pdf",
+      "document_04.pdf"
+    ]
+  },
+  {
+    "case_id": "pdf_qinglan_north_materials",
+    "question": "青岚项目北站本次活动需要准备多少张材料卡？请给出计入人数、计算过程及排除人员的依据。请仅依据附件回答，注明证据所在的PDF文件名和物理页码。",
+    "attachments": [
+      "document_01.pdf",
+      "document_02.pdf",
+      "document_03.pdf",
+      "document_04.pdf"
+    ]
+  },
+  {
+    "case_id": "pdf_qinglan_north_devices",
+    "question": "依据青岚项目北站本次活动的规则和台账，哪些设备可以借出？请列出编号，并逐台说明判断依据。请仅依据附件回答，注明证据所在的PDF文件名和物理页码。",
+    "attachments": [
+      "document_01.pdf",
+      "document_02.pdf",
+      "document_03.pdf",
+      "document_04.pdf"
+    ]
+  },
+  {
+    "case_id": "pdf_qinglan_south_handoff",
+    "question": "青岚项目南站本次活动的设备最晚几点送达、送到哪里、由谁接收？请仅依据附件回答，注明证据所在的PDF文件名和物理页码。",
+    "attachments": [
+      "document_01.pdf",
+      "document_02.pdf",
+      "document_03.pdf",
+      "document_04.pdf"
+    ]
+  },
+  {
+    "case_id": "pdf_qinglan_south_materials",
+    "question": "青岚项目南站本次活动需要准备多少张材料卡？请给出计入人数、计算过程及排除人员的依据。请仅依据附件回答，注明证据所在的PDF文件名和物理页码。",
+    "attachments": [
+      "document_01.pdf",
+      "document_02.pdf",
+      "document_03.pdf",
+      "document_04.pdf"
+    ]
+  },
+  {
+    "case_id": "pdf_qinglan_south_devices",
+    "question": "依据青岚项目南站本次活动的规则和台账，哪些设备可以借出？请列出编号，并逐台说明判断依据。请仅依据附件回答，注明证据所在的PDF文件名和物理页码。",
+    "attachments": [
+      "document_01.pdf",
+      "document_02.pdf",
+      "document_03.pdf",
+      "document_04.pdf"
+    ]
+  },
+  {
+    "case_id": "pdf_chengchuan_north_handoff",
+    "question": "澄川项目北站本次活动的设备最晚几点送达、送到哪里、由谁接收？请仅依据附件回答，注明证据所在的PDF文件名和物理页码。",
+    "attachments": [
+      "document_01.pdf",
+      "document_02.pdf",
+      "document_03.pdf",
+      "document_04.pdf"
+    ]
+  },
+  {
+    "case_id": "pdf_chengchuan_north_materials",
+    "question": "澄川项目北站本次活动需要准备多少张材料卡？请给出计入人数、计算过程及排除人员的依据。请仅依据附件回答，注明证据所在的PDF文件名和物理页码。",
+    "attachments": [
+      "document_01.pdf",
+      "document_02.pdf",
+      "document_03.pdf",
+      "document_04.pdf"
+    ]
+  },
+  {
+    "case_id": "pdf_chengchuan_north_devices",
+    "question": "依据澄川项目北站本次活动的规则和台账，哪些设备可以借出？请列出编号，并逐台说明判断依据。请仅依据附件回答，注明证据所在的PDF文件名和物理页码。",
+    "attachments": [
+      "document_01.pdf",
+      "document_02.pdf",
+      "document_03.pdf",
+      "document_04.pdf"
+    ]
+  },
+  {
+    "case_id": "pdf_chengchuan_south_handoff",
+    "question": "澄川项目南站本次活动的设备最晚几点送达、送到哪里、由谁接收？请仅依据附件回答，注明证据所在的PDF文件名和物理页码。",
+    "attachments": [
+      "document_01.pdf",
+      "document_02.pdf",
+      "document_03.pdf",
+      "document_04.pdf"
+    ]
+  },
+  {
+    "case_id": "pdf_chengchuan_south_materials",
+    "question": "澄川项目南站本次活动需要准备多少张材料卡？请给出计入人数、计算过程及排除人员的依据。请仅依据附件回答，注明证据所在的PDF文件名和物理页码。",
+    "attachments": [
+      "document_01.pdf",
+      "document_02.pdf",
+      "document_03.pdf",
+      "document_04.pdf"
+    ]
+  },
+  {
+    "case_id": "pdf_chengchuan_south_devices",
+    "question": "依据澄川项目南站本次活动的规则和台账，哪些设备可以借出？请列出编号，并逐台说明判断依据。请仅依据附件回答，注明证据所在的PDF文件名和物理页码。",
+    "attachments": [
+      "document_01.pdf",
+      "document_02.pdf",
+      "document_03.pdf",
+      "document_04.pdf"
+    ]
+  }
+]

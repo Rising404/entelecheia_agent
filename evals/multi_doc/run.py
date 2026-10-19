@@ -22,7 +22,7 @@ from .text_cases import TEXT_CASES
 
 
 HERE = Path(__file__).resolve().parent
-ROOT = HERE.parents[2]
+ROOT = HERE.parents[1]
 FEATURES = {
     "l1_external_web_tools_enabled": False,
     "l1_max_attempts": 12,
@@ -295,7 +295,7 @@ def main() -> int:
             case_root.mkdir()
             output = directory / f"{case.id}.json"
             print(f"START {case.id}", flush=True)
-            command = [sys.executable, "-m", "entelecheia.eval.multi_doc.run", "--allow-live",
+            command = [sys.executable, "-m", "evals.multi_doc.run", "--allow-live",
                        "--worker", case.id, "--case-root", str(case_root), "--output", str(output)]
             with (directory / f"{case.id}.log").open("w", encoding="utf-8") as log:
                 try:

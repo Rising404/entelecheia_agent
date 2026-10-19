@@ -79,7 +79,7 @@ def test_public_documentation_links_only_to_available_checkout_surfaces() -> Non
     documents = (
         "README.md",
         "QUICKSTART.md",
-        "examples/document_qa/README.md",
+        "evals/multi_doc/README.md",
         "ARCHITECTURE.md",
         "AGENTS.md",
         "scripts/DEPENDENCIES.md",
